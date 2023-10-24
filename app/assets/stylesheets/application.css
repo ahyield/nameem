@@ -1,0 +1,15 @@
+.ql-clipboard {
+  display: none;
+}
+
+#editor-container {
+  font-size: 1.2em;
+}
+
+.ql-editor {
+  height: 80vh;
+  outline: none;
+}
+
+.ql-container {
+}
