@@ -2,7 +2,3 @@
 import "@hotwired/turbo-rails"
 import "controllers"
 import "@fortawesome/fontawesome-free"
-
-import Quill from "quill";
-let editor = new Quill('#editor-container');
-
