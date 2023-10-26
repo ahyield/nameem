@@ -1,26 +1,22 @@
-<div id="tooltip-controls">
-  <button id="bold-button"><i class="fa-solid fa-bold"></i></button>
-  <button id="italic-button"><i class="fa-solid fa-italic"></i></button>
-  <button id="link-button"><i class="fa-solid fa-link"></i></button>
-  <button id="blockquote-button"><i class="fa-solid fa-quote-left"></i></button>
-  <button id="header-1-button"><i class="fa-solid fa-heading"></i><small>1</small></button>
-  <button id="header-2-button"><i class="fa-solid fa-heading"></i><small>2</small></button>
-</div>
-<div id="sidebar-controls">
-  <button id="show-controls"><i class="fa fa-plus"></i></button>
-  <span class="controls">
-    <button id="image-button"><i class="fa-solid fa-image"></i></button>
-    <button id="video-button"><i class="fa-brands fa-youtube"></i></button>
-    <button id="tweet-button"><i class="fa-brands fa-twitter" aria-hidden="true"></i>
-</button>
-    <button id="divider-button"><%= heroicon "ellipsis-horizontal" %></button>
-  </span>
-</div>
+<div id="editor" data-controller="editor">
+  <div class="tooltip-controls">
+    <button id="bold-button" data-action="click->editor#toggleBold"><i class="fa-solid fa-bold"></i></button>
+    <button id="italic-button" data-action="click->editor#toggleItalic"><i class="fa-solid fa-italic"></i></button>
+    <button id="link-button"><i class="fa-solid fa-link"></i></button>
+    <button id="blockquote-button" data-action="click->editor#toggleQuote"><i class="fa-solid fa-quote-left"></i></button>
+    <button id="header-1-button" data-action="click->editor#toggleHead1"><i class="fa-solid fa-heading"></i><small>1</small></button>
+    <button id="header-2-button" data-action="click->editor#toggleHead2"><i class="fa-solid fa-heading"></i><small>2</small></button>
+  </div>
+  <div id="sidebar-controls">
+    <button id="show-controls"><i class="fa fa-plus"></i></button>
+    <span class="controls">
+      <button id="image-button"><i class="fa-solid fa-image"></i></button>
+      <button id="video-button"><i class="fa-brands fa-youtube"></i></button>
+      <button id="tweet-button"><i class="fa-brands fa-twitter" aria-hidden="true"></i></button>
+      <button id="divider-button"><%= heroicon "ellipsis-horizontal" %></button>
+    </span>
+  </div>
 
-<div class="">
-  <div class="h-full mt-20 border-dashed border-2" id="editor-container">
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam semper turpis a sagittis iaculis. Ut bibendum nulla risus, a tempus arcu pulvinar ut. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus interdum sed enim porttitor sollicitudin. Proin nisl turpis, porttitor at metus et, laoreet condimentum dolor. Duis sodales lobortis urna sit amet sagittis. Morbi mollis, eros non fringilla mollis, ipsum enim facilisis nulla, vel scelerisque velit ligula eu mauris. Fusce et neque lacinia, pulvinar ante ut, dapibus odio.</p>
-
-  <p>Quisque at erat sodales, faucibus velit eu, pulvinar lacus. In aliquam malesuada neque, ac scelerisque enim faucibus sit amet. Pellentesque quis congue lacus, in feugiat tortor. Maecenas eu magna a ex fringilla porta at tincidunt leo. Quisque eu vehicula dui. Quisque fringilla vehicula metus, a euismod nunc finibus eu. Aenean quis arcu aliquet, suscipit ex efficitur, fringilla ipsum.</p>
+  <div class="h-full mt-20 border-dashed border-2 editor-container">
   </div>
 </div>
