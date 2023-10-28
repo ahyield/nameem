@@ -6,12 +6,15 @@
   font-size: 1.2em;
 }
 
+#editor {
+  position: relative;
+}
+
 .ql-editor {
   height: 80vh;
   outline: none;
-}
-
-.ql-container {
+  direction: rtl;
+  text-align: right;
 }
 
 .editor-container h1 + p,
@@ -19,32 +22,19 @@
   margin-top: 0.5em;
 }
 .editor-container blockquote {
-  border-left: 4px solid #111;
-  padding-left: 1em;
+  border-right: 4px solid #111;
+  padding-right: 1em;
+}
+
+blockquote {
+  border-left: none;
+  padding-right: none;
 }
 
 .tooltip-controls {
-  background-color: #111;
-  border-radius: 4px;
-  display: none;
-  padding: 5px 10px;
+  padding: 5px 15px;
   position: absolute;
-}
-
-.tooltip-controls::before {
-  box-sizing: border-box;
-  border-bottom: 6px solid #111;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  content: ' ';
-  display: block;
-  height: 6px;
-  left: 50%;
-  position: absolute;
-  margin-left: -6px;
-  margin-top: -6px;
-  top: 0;
-  width: 6px;
+  font-weight: normal;
 }
 
 .tooltip-controls button {
@@ -55,4 +45,28 @@
 
 .tooltip-controls button.active {
   color: #21b384;
+}
+
+.tooltip-separator {
+  border-left: 1.5px solid #FBFBFB;
+  opacity: 0.5;
+  margin: 0 3px 0 5px;
+}
+
+.head2 {
+  font-size: 0.8em;
+}
+
+.link-tip {
+  position: absolute;
+}
+
+.ql-editor a {
+  text-decoration: underline;
+}
+
+.sidebar-controls {
+  padding: 5px 15px;
+  position: absolute;
+  font-weight: normal;
 }
