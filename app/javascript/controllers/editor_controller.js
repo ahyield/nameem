@@ -1,11 +1,14 @@
 // I am ashamed of it.
 // needs hygine, but works for now.
 
+import { DirectUpload } from "@rails/activestorage"
 import { Controller } from "@hotwired/stimulus"
 import Quill from "quill";
 
 let Block = Quill.import('blots/block');
 let BlockEmbed = Quill.import('blots/block/embed');
+let Delta = Quill.import('delta');
+let change = new Delta();
 
 function outerWidth(el) {
   const style = getComputedStyle(el);
@@ -34,7 +37,9 @@ ImageBlot.blotName = 'image';
 ImageBlot.tagName = 'img';
 
 Quill.register(ImageBlot);
-const editor = new Quill(".editor-container");
+const editor = new Quill(".editor-container", {
+    scrollingContainer: 'html'
+});
 
 export default class extends Controller {
   initalize() {
@@ -80,6 +85,42 @@ export default class extends Controller {
        toolTip.style.marginTop = `${rangeBounds.top - 40}px`;
      }
     });
+
+    editor.on("text-change", (delta, oldContents, source) => {
+      if (source !== 'user') return;
+
+      const inserted = this.getImgUrls(delta);
+      const deleted = this.getImgUrls(editor.getContents().diff(oldContents));
+
+      change = change.compose(delta);
+
+      if(deleted.length >= 1) {
+        fetch(`api/attachments/delete?image_url=${deleted[0].url}`, { method: 'DELETE' })
+      }
+    });
+
+    setInterval(() => {
+      if (change.length() > 0) {
+        console.log('Saving changes', change);
+        /* 
+        Send partial changes
+        $.post('/your-endpoint', { 
+          partial: JSON.stringify(change) 
+        });
+
+        Send entire document
+        $.post('/your-endpoint', { 
+          doc: JSON.stringify(quill.getContents())
+        });
+        */
+        change = new Delta();
+      }
+    }, 5*1000);
+  }
+
+
+  getImgUrls(delta) {
+    return delta.ops.filter(i => i.insert && i.insert.image).map(i => i.insert.image);
   }
 
   toggleLink() {
@@ -212,12 +253,23 @@ export default class extends Controller {
 
     input.onchange = _ => {
       let range = editor.getSelection(true);
-      let files =   Array.from(input.files);
-      console.log(files);
-      editor.insertEmbed(range.index, 'image', {
-        url: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
-      }, Quill.sources.USER);
-      editor.setSelection(range.index + 1, Quill.sources.SILENT);
+      let file =   input.files[0];
+
+      const url = "/rails/active_storage/direct_uploads"
+      const upload = new DirectUpload(file, url)
+
+      upload.create((error, blob) => {
+        if (error) {
+          alert("Uploading failed!");
+        } else {
+          editor.insertEmbed(range.index, 'image', {
+            url: `/rails/active_storage/blobs/${blob.signed_id}/${blob.filename}`,
+          }, Quill.sources.USER);
+          editor.setSelection(range.index + 1, Quill.sources.SILENT);
+          const sidebar = document.querySelector(".sidebar-controls");
+          sidebar.style.display = "none";
+        }
+      });
     };
     input.click();
   }
