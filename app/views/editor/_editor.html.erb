@@ -1,22 +1,44 @@
-<div id="editor" data-controller="editor">
-  <div class="tooltip-controls">
+<div id="editor" data-controller="editor" class="w-3/4 mx-auto">
+  <div class="tooltip-controls hidden space-x-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg" data-action="click@window->editor#hideToolTip">
     <button id="bold-button" data-action="click->editor#toggleBold"><i class="fa-solid fa-bold"></i></button>
-    <button id="italic-button" data-action="click->editor#toggleItalic"><i class="fa-solid fa-italic"></i></button>
-    <button id="link-button"><i class="fa-solid fa-link"></i></button>
+    <button id="italic-button" class="pr-4" data-action="click->editor#toggleItalic"><i class="fa-solid fa-italic"></i></button>
+    <button id="link-button" data-action="click->editor#toggleLink"><i class="fa-solid fa-link"></i></button>
+    <span class="tooltip-separator"></span>
     <button id="blockquote-button" data-action="click->editor#toggleQuote"><i class="fa-solid fa-quote-left"></i></button>
-    <button id="header-1-button" data-action="click->editor#toggleHead1"><i class="fa-solid fa-heading"></i><small>1</small></button>
-    <button id="header-2-button" data-action="click->editor#toggleHead2"><i class="fa-solid fa-heading"></i><small>2</small></button>
+    <button id="header-1-button" data-action="click->editor#toggleHead1"><i class="fa-solid fa-t head1"></i></button>
+    <button id="header-2-button" data-action="click->editor#toggleHead2"><i class="fa-solid fa-t head2"></i></button>
   </div>
-  <div id="sidebar-controls">
-    <button id="show-controls"><i class="fa fa-plus"></i></button>
-    <span class="controls">
-      <button id="image-button"><i class="fa-solid fa-image"></i></button>
-      <button id="video-button"><i class="fa-brands fa-youtube"></i></button>
-      <button id="tweet-button"><i class="fa-brands fa-twitter" aria-hidden="true"></i></button>
-      <button id="divider-button"><%= heroicon "ellipsis-horizontal" %></button>
-    </span>
+  <div class="link-tip hidden">
+    <input type="text" placeholder="Paste or write link.." dir="ltr" id="link" data-action="click@window->editor#hideLinkTip keydown.enter->editor#enterLinkTip keydown.esc->editor#closeTips" class="shaddow-none border-0 placeholder:italic placeholder:text-slate-200 bg-gradient-to-r from-cyan-500 text-slate-50 to-blue-500 rounded-lg" name="link" />
+  </div>
+  <div class="hidden sidebar-controls space-x-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg text-slate-50">
+    <ul>
+      <li><button id="image-button" data-action="click->editor#imageUpload"><i class="fa-solid fa-image"></i></button></li>
+      <!--
+      <hr class="h-px bg-slate-200 border-0">
+      <li><button id="video-button"><i class="fa-brands fa-youtube"></i></button></li>
+      <hr class="h-px bg-slate-200 border-0">
+      <li><button id="tweet-button"><i class="fa-brands fa-twitter" aria-hidden="true"></i></button></li>
+      -->
+    </ul>
   </div>
 
   <div class="h-full mt-20 border-dashed border-2 editor-container">
+    <p>
+    حين خطرت الفكرة في رأسه وقرر أن ينفذها، لم يكن كبّاشة قد تجاوز عامه الرابع عشر بعد، كان كبّاشة إسم قد أُطلق عليه لأنه كان يشبه حشرة "كبّاش البيوض" كما يسميها البعض في
+    </p>
+
+    <p>
+    هذه المنطقة من ريف مصر النائي، دميم الوجه عريض الكتفين وفاره القامة لولد في طور النمو، و كانت الساعة وقت القيّالة والناس نيام يحتمون من قيظ الظهيرة. خرج من الزريبة ساحبًا خلفه المعزة محوّدًا ناحية البحر الكبير تجاه الغيط عازمًا النية. 
+    </p>
+    <br/>
+
+    <p>
+يومها قابله عبده الأعرج في الطريق، وهو يجرّ خلفه جاموستين هاربًا من الحر تجاه زريبته فسأله:
+على فين العزم يا كباشة، والجو ولعة كده!
+    </p>
+    <p>
+كان كباشة ساهمًا  فلم يرد عليه، فتوعده عبده - وهو يضحك - في المساء بكوب من عصير البُلَغ يسقيه إياه بنفسه!
+    </p>
   </div>
 </div>
