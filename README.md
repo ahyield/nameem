@@ -1,24 +1,17 @@
-# README
+# X
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Writing platform, sorta like medium, but for Arabic.
 
-Things you may want to cover:
+# Components
 
-* Ruby version
+- rails
+- stimulus
+- quilljs
+- active_storage
+- ...
 
-* System dependencies
+# setup
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- clone it
+- `gem install bundler`
+- `bundle install`
