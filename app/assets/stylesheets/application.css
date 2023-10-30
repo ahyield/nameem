@@ -79,3 +79,8 @@ blockquote {
    position: absolute;
    opacity: 0.4;
 }
+
+.btn-publish-disabled {
+  pointer-events: none;
+  opacity: 0.4;
+}

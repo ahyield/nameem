@@ -37,7 +37,7 @@ function timeout(ms) {
 }
 
 export default class extends Controller {
-  connect() {
+  async connect() {
     var editorOptions = {
       debug: 'error',
       placeholder: "إبدأ بالكتابة...",
@@ -85,6 +85,21 @@ export default class extends Controller {
      }
     });
 
+    if (!this.isNewArticle()) {
+      let articleTitle = document.getElementById("article-title");
+      let publishButton = document.querySelector(".btn-publish-disabled");
+      let publichText = document.querySelector(".btn-publish-text");
+
+      publichText.innerHTML = "حفظ ونشر";
+      publishButton.classList.remove("btn-publish-disabled");
+
+      const uuid = this.articleUuid();
+      const article = await this.fetchArticle(uuid);
+      sidebar.style.display = "none";
+      articleTitle.value = article.title;
+      editor.setContents(article.content);
+    }
+
     editor.on("text-change", (delta, oldContents, source) => {
       if (source !== 'user') return;
 
@@ -101,20 +116,29 @@ export default class extends Controller {
     setInterval(async () => {
       if (change.length() > 0) {
         if (this.isNewArticle()) {
-          let data = await this.newArticle();
+          const data = await this.newArticle();
           this.drawUrl(data);
-          // save article
+          this.activatePublishingButton();
+          const article = await this.updateArticleContent(data.uuid);
         } else {
-          // just save article
+          var uuid = this.articleUuid();
+          this.activatePublishingButton();
+          const article = await this.updateArticleContent(uuid);
         }
-        console.log('Saving changes', change);
         change = new Delta();
       }
-    }, 3 * 1000);
+    }, 2 * 1000);
+  }
+
+  async fetchArticle(uuid) {
+    const response = await fetch(`/api/articles/${uuid}/edit`, { method: 'GET' })
+
+    const data = await response.json();
+    return data;
   }
 
   async newArticle() {
-    const response = await fetch("api/articles/new", { method: 'GET' })
+    const response = await fetch("/api/articles/new", { method: 'GET' })
 
     const data = await response.json();
     return data;
@@ -122,35 +146,57 @@ export default class extends Controller {
 
   isNewArticle() {
     let path = window.location.pathname
-    if (path === '/new_article') {
+    if (path === '/new-story') {
       return true;
     } else {
       return false;
     }
   }
 
-  articleUuid() {
-    window.location.pathname.split("/")[2];
-  }
+  async upsertTitle(event) {
+    await timeout("2000");
 
-  async upsertTitle() {
-    let data = await this.newArticle();
-
-    await timeout(1000);
     if (this.isNewArticle()) {
+      let data = await this.newArticle();
       this.drawUrl(data);
-      this.articleUuid();
-
+      this.activatePublishingButton();
+      const article = await this.updateArticleTitle(data.uuid);
       } else {
-        // just handle save
+        var uuid = this.articleUuid();
+        this.activatePublishingButton();
+        const article = await this.updateArticleTitle(uuid);
       }
   }
 
-  async updateArticle(data) {
-    console.log(this.articleUuid());
-    //fetch("api/articles/new", { method: 'GET' })
-    //  .then(response => response.json())
-    //  .then(data => this.drawUrl(data));
+  async updateArticleTitle(uuid) {
+    const articleTitle = document.getElementById("article-title").value;
+
+    const response = await fetch(`/api/articles/${uuid}/edit`, {
+      method: 'PUT',
+      body: JSON.stringify({ article: { title: articleTitle, content: editor.getContents(), }}),
+      headers: {
+        "CONTENT-TYPE": "application/json",
+      }
+    });
+    const article = await response.json();
+    return article;
+  }
+
+  async updateArticleContent(uuid) {
+    const response = await fetch(`/api/articles/${uuid}/edit`, {
+      method: 'PUT',
+      body: JSON.stringify({ article: { content: editor.getContents(), }}),
+      headers: {
+        "CONTENT-TYPE": "application/json",
+      }
+    });
+    const article = await response.json();
+    return article;
+  }
+
+  articleUuid() {
+    const uuid = window.location.pathname.split("/")[2];
+    return uuid;
   }
 
   drawUrl(data) {
@@ -168,6 +214,13 @@ export default class extends Controller {
       return false;
     }
     return true;
+  }
+
+  activatePublishingButton() {
+    const btn = document.querySelector(".btn-publish-disabled");
+    if(btn) {
+      btn.classList.remove("btn-publish-disabled");
+    }
   }
 
   getImgUrls(delta) {
