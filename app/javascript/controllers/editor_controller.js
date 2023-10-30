@@ -37,10 +37,6 @@ function timeout(ms) {
 }
 
 export default class extends Controller {
-  initialize() {
-    this.timeout = null;
-  }
-
   connect() {
     var editorOptions = {
       debug: 'error',
@@ -102,10 +98,11 @@ export default class extends Controller {
     });
 
     // wow
-    setInterval(() => {
+    setInterval(async () => {
       if (change.length() > 0) {
         if (this.isNewArticle()) {
-          this.newArticle();
+          let data = await this.newArticle();
+          this.drawUrl(data);
           // save article
         } else {
           // just save article
@@ -133,26 +130,23 @@ export default class extends Controller {
   }
 
   articleUuid() {
-    console.log(window.location.pathname.split("/")[2]);
+    window.location.pathname.split("/")[2];
   }
 
   async upsertTitle() {
-    //clearTimeout(this.timeout)
-
     let data = await this.newArticle();
-    //console.log(data);
-    //this.timeout = setTimeout(() => {
+
     await timeout(1000);
     if (this.isNewArticle()) {
-      this.drawUrl(data.uuid);
-      //this.articleUuid();
+      this.drawUrl(data);
+      this.articleUuid();
+
       } else {
         // just handle save
       }
-    //}, 1000);
   }
 
-  updateArticle() {
+  async updateArticle(data) {
     console.log(this.articleUuid());
     //fetch("api/articles/new", { method: 'GET' })
     //  .then(response => response.json())
@@ -160,9 +154,6 @@ export default class extends Controller {
   }
 
   drawUrl(data) {
-    let uuid = window.location.pathname.split("/")[2];
-    if (!uuid === undefined) return;
-
     let url = window.location.origin + `/articles/${data.uuid}/edit`
     window.history.pushState(null, null, url);
   }
