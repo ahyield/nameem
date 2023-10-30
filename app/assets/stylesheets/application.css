@@ -3,7 +3,7 @@
 }
 
 .editor-container {
-  font-size: 1.2em;
+  font-size: 1.1em !important;
 }
 
 #editor {
@@ -69,4 +69,13 @@ blockquote {
   padding: 5px 15px;
   position: absolute;
   font-weight: normal;
+}
+
+.ql-editor.ql-blank::before {
+   content: attr(data-placeholder);
+   color: grey;
+   margin-top: 3px;
+   margin-right: 8px;
+   position: absolute;
+   opacity: 0.4;
 }

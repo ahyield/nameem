@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html dir="rtl">
   <head>
-    <title>X</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
-
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
-    <%= javascript_include_tag "activestorage" %>
+    <%= render "shared/head" %>
   </head>
-
   <body>
+    <% if current_page?(controller: "articles", action: "new") || current_page?(controller: "articles", action: "edit", uuid: (request.params[:uuid] || ""))%>
+      <%= render "shared/editor_nav" %>
+    <% else %>
+      <%= render "shared/nav" %>
+    <% end %>
     <main class="container mx-auto mt-2">
       <%= yield %>
     </main>
+
   </body>
 </html>

@@ -8,17 +8,6 @@ import Quill from "quill";
 let Block = Quill.import('blots/block');
 let BlockEmbed = Quill.import('blots/block/embed');
 let Delta = Quill.import('delta');
-let change = new Delta();
-
-function outerWidth(el) {
-  const style = getComputedStyle(el);
-
-  return (
-    el.getBoundingClientRect().width +
-    parseFloat(style.marginLeft) +
-    parseFloat(style.marginRight)
-  );
-}
 
 class ImageBlot extends BlockEmbed {
   static create(value) {
@@ -33,30 +22,46 @@ class ImageBlot extends BlockEmbed {
     };
   }
 }
+
 ImageBlot.blotName = 'image';
 ImageBlot.tagName = 'img';
 
 Quill.register(ImageBlot);
-const editor = new Quill(".editor-container", {
-    scrollingContainer: 'html'
-});
+
+let editor = null;
+let change = new Delta();
+
+//helper shit
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 export default class extends Controller {
-  initalize() {
-    this.boldToggle = false;
-    this.italicToggle = false;
-    this.quoteToggle = false;
-    this.head1Toggle = false;
-    this.head2Toggle = false;
+  initialize() {
+    this.timeout = null;
   }
 
   connect() {
+    var editorOptions = {
+      debug: 'error',
+      placeholder: "إبدأ بالكتابة...",
+      scrollingContainer: 'html',
+    };
+
+    editor = new Quill(".editor-container", editorOptions);
+
     const toolTip = document.querySelector(".tooltip-controls");
     const sidebar = document.querySelector(".sidebar-controls");
     const editorContainer = document.getElementById("editor");
     editor.format('direction', 'rtl');
     editor.format('align', 'right');
 
+    let range = editor.getSelection();
+    let rangeBounds = editor.getBounds(range);
+
+    sidebar.style.display = "block";
+    sidebar.style.marginTop = `${rangeBounds.top + 110}px`;
+    sidebar.style.left = `${ 8 + rangeBounds.left}px`;
 
     editor.on(Quill.events.EDITOR_CHANGE, function(event, range) {
       if (event !== Quill.events.SELECTION_CHANGE) return;
@@ -69,10 +74,8 @@ export default class extends Controller {
 
        if (block != null && block.domNode.firstChild instanceof HTMLBRElement) {
          sidebar.style.display = "block";
-         sidebar.style.marginTop = `${rangeBounds.top - 8}px`;
+         sidebar.style.marginTop = `${rangeBounds.top + 111}px`;
          sidebar.style.left = `${ 8 + rangeBounds.left}px`;
-         // position the sidebar
-
        } else {
          sidebar.style.display = "none";
        }
@@ -82,7 +85,7 @@ export default class extends Controller {
        toolTip.style.left = "0px";
        toolTip.style.marginRight = "-180px"; // Hack to enable proper styling.
        toolTip.style.marginLeft = `${rangeBounds.left - 100}px`;
-       toolTip.style.marginTop = `${rangeBounds.top - 40}px`;
+       toolTip.style.marginTop = `${rangeBounds.top + 60}px`;
      }
     });
 
@@ -93,31 +96,88 @@ export default class extends Controller {
       const deleted = this.getImgUrls(editor.getContents().diff(oldContents));
 
       change = change.compose(delta);
-
       if(deleted.length >= 1) {
-        fetch(`api/attachments/delete?image_url=${deleted[0].url}`, { method: 'DELETE' })
+        fetch(`/api/attachments/delete?image_url=${deleted[0].url}`, { method: 'DELETE' })
       }
     });
 
+    // wow
     setInterval(() => {
       if (change.length() > 0) {
+        if (this.isNewArticle()) {
+          this.newArticle();
+          // save article
+        } else {
+          // just save article
+        }
         console.log('Saving changes', change);
-        /* 
-        Send partial changes
-        $.post('/your-endpoint', { 
-          partial: JSON.stringify(change) 
-        });
-
-        Send entire document
-        $.post('/your-endpoint', { 
-          doc: JSON.stringify(quill.getContents())
-        });
-        */
         change = new Delta();
       }
-    }, 5*1000);
+    }, 3 * 1000);
   }
 
+  async newArticle() {
+    const response = await fetch("api/articles/new", { method: 'GET' })
+
+    const data = await response.json();
+    return data;
+  }
+
+  isNewArticle() {
+    let path = window.location.pathname
+    if (path === '/new_article') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  articleUuid() {
+    console.log(window.location.pathname.split("/")[2]);
+  }
+
+  async upsertTitle() {
+    //clearTimeout(this.timeout)
+
+    let data = await this.newArticle();
+    //console.log(data);
+    //this.timeout = setTimeout(() => {
+    await timeout(1000);
+    if (this.isNewArticle()) {
+      this.drawUrl(data.uuid);
+      //this.articleUuid();
+      } else {
+        // just handle save
+      }
+    //}, 1000);
+  }
+
+  updateArticle() {
+    console.log(this.articleUuid());
+    //fetch("api/articles/new", { method: 'GET' })
+    //  .then(response => response.json())
+    //  .then(data => this.drawUrl(data));
+  }
+
+  drawUrl(data) {
+    let uuid = window.location.pathname.split("/")[2];
+    if (!uuid === undefined) return;
+
+    let url = window.location.origin + `/articles/${data.uuid}/edit`
+    window.history.pushState(null, null, url);
+  }
+
+  isUuid(uuid) {
+    let s = `${uuid}`;
+
+    s = s.match(
+      "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    );
+    if (s === null) {
+      return false;
+    }
+    return true;
+  }
 
   getImgUrls(delta) {
     return delta.ops.filter(i => i.insert && i.insert.image).map(i => i.insert.image);
@@ -134,9 +194,9 @@ export default class extends Controller {
       toolTip.style.display = 'none';
       linkTip.style.display = 'block';
       linkTip.style.left = "0px";
-      linkTip.style.width = "14.6%";
+      linkTip.style.width = "22%";
       linkTip.style.marginLeft = `${rangeBounds.left - 100}px`;
-      linkTip.style.marginTop = `${rangeBounds.top - 40}px`;
+      linkTip.style.marginTop = `${rangeBounds.top + 60}px`;
       document.getElementById("link").focus();
     } else {
       toolTip.style.display = 'block';
@@ -145,52 +205,52 @@ export default class extends Controller {
   }
 
   toggleBold() {
-    if(this.boldToggle === true) {
-      editor.format('bold', false);
-      this.boldToggle = false;
+    let range = editor.getSelection();
+    let format = editor.getFormat(range);
+    if (format.bold === undefined) {
+      editor.format("bold", true);
     } else {
-      editor.format('bold', true);
-      this.boldToggle = true;
+      editor.format("bold", false);
     }
   }
 
   toggleItalic() {
-    if(this.italicToggle === true) {
-      editor.format('italic', false);
-      this.italicToggle = false;
+    let range = editor.getSelection();
+    let format = editor.getFormat(range);
+    if (format.italic === undefined) {
+      editor.format("italic", true);
     } else {
-      editor.format('italic', true);
-      this.italicToggle = true;
+      editor.format("italic", false);
     }
   }
 
   toggleQuote() {
-    if(this.quoteToggle === true) {
-      editor.format('blockquote', false);
-      this.quoteToggle = false;
+    let range = editor.getSelection();
+    let format = editor.getFormat(range);
+    if (format.blockquote === undefined) {
+      editor.format("blockquote", true);
     } else {
-      editor.format('blockquote', true);
-      this.quoteToggle = true;
+      editor.format("blockquote", false);
     }
   }
 
   toggleHead1() {
-    if(this.head1Toggle === true) {
-      editor.format('header', false);
-      this.head1Toggle = false;
+    let range = editor.getSelection();
+    let format = editor.getFormat(range);
+    if (format.header === undefined) {
+      editor.format("header", 1);
     } else {
-      editor.format('header', 1);
-      this.head1Toggle = true;
+      editor.format("header", false);
     }
   }
 
   toggleHead2() {
-    if(this.head2Toggle === true) {
-      editor.format('header', false);
-      this.head2Toggle = false;
+    let range = editor.getSelection();
+    let format = editor.getFormat(range);
+    if (format.header === undefined) {
+      editor.format("header", 2);
     } else {
-      editor.format('header', 2);
-      this.head2Toggle = true;
+      editor.format("header", false);
     }
   }
 
