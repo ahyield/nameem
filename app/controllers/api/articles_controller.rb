@@ -6,7 +6,15 @@ class Api::ArticlesController < ActionController::API
 
   def update
     @article = Article.find_or_create_by(uuid: params[:uuid])
-    # @article.attributes = article_params
+    @article.attributes = article_params
+    @article.user = User.first
+    @article.save!
+    render json: @article
+  end
+
+  def edit
+    @article = Article.find_by(uuid: params[:uuid])
+    render json: @article
   end
 
   private
