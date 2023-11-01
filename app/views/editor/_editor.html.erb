@@ -10,7 +10,7 @@
   </div>
   <input type="text" autocomplete="off" placeholder="Paste or write link.." dir="ltr" id="link"
         data-action="click@window->editor#hideLinkTip keydown.enter->editor#enterLinkTip keydown.esc->editor#closeTips"
-        class="link-tip hidden shaddow-none focus:ring-0 border-0 placeholder:italic placeholder:text-slate-200 bg-gradient-to-r from-cyan-500 text-slate-50 to-blue-500 rounded-lg" name="link" />
+        class="link-tip hidden shaddow-none focus:ring-0 border-0 placeholder:italic placeholder:text-slate-200 bg-gradient-to-r from-cyan-500 text-slate-50 to-blue-500 rounded-lg" name="link">
   <div class="hidden sidebar-controls space-x-3 bg-gradient-to-r from-cyan-300 to-blue-500 rounded-full text-slate-50">
       <button id="image-button" data-action="click->editor#imageUpload"><i class="fa-solid fa-image"></i></button>
       <!--
@@ -23,7 +23,7 @@
 
   <div class="h-full mt-20 title">
     <input type="text" autocomplete="off" placeholder="العنوان" dir="rtl" id="article-title" data-action="keyup->editor#upsertTitle" class="border-0 placeholder:opacity-50 text-black
-    placeholder:text-grey-300 w-full focus:ring-0 text-5xl" />
+    placeholder:text-grey-300 w-full focus:ring-0 text-5xl">
   </div>
   <hr class="h-px bg-slate-200 border-0 w-1/2">
   <div class="h-full editor-container mt-10">
