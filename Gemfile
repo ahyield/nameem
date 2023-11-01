@@ -24,12 +24,12 @@ gem "turbo-rails"
 gem "stimulus-rails"
 
 # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
-gem "tailwindcss-rails"
-gem "rails_heroicon"
 gem "font-awesome-rails"
+gem "rails_heroicon"
+gem "tailwindcss-rails"
 
-gem "omniauth"
 gem "bcrypt", "~> 3.1.7"
+gem "omniauth"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
@@ -40,17 +40,22 @@ gem "mysql-binuuid-rails"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri windows ]
+  gem "debug", platforms: %i[mri windows]
 end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 
+  gem "erb_lint", require: false
+  gem "rubocop"
+  gem "rubocop-rails", require: false
+  gem "rubocop-rspec", require: false
+
+  gem "rubocop-performance", require: false
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   gem "rack-mini-profiler"
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
-
 end
