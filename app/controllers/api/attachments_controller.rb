@@ -1,12 +1,14 @@
-class Api::AttachmentsController < ActionController::API
-  def delete
-    blob = ActiveStorage::Blob.find_signed(signed_id, purpose: :blob_id)
-    blob.purge
-  end
+module Api
+  class AttachmentsController < ActionController::API
+    def delete
+      blob = ActiveStorage::Blob.find_signed(signed_id, purpose: :blob_id)
+      blob.purge
+    end
 
-  private
+    private
 
-  def signed_id
-    params[:image_url].split('/')[4]
+    def signed_id
+      params[:image_url].split("/")[4]
+    end
   end
 end

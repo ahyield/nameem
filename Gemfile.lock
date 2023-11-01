@@ -74,8 +74,16 @@ GEM
       minitest (>= 5.1)
       mutex_m
       tzinfo (~> 2.0)
+    ast (2.4.2)
     base64 (0.1.1)
     bcrypt (3.1.19)
+    better_html (2.0.2)
+      actionview (>= 6.0)
+      activesupport (>= 6.0)
+      ast (~> 2.0)
+      erubi (~> 1.4)
+      parser (>= 2.4)
+      smart_properties
     bigdecimal (3.1.4)
     bindex (0.8.1)
     bootsnap (1.16.0)
@@ -88,17 +96,15 @@ GEM
     debug (1.8.0)
       irb (>= 1.5.0)
       reline (>= 0.3.1)
-    devise (4.9.3)
-      bcrypt (~> 3.0)
-      orm_adapter (~> 0.1)
-      railties (>= 4.1.0)
-      responders
-      warden (~> 1.2.3)
-    devise-passwordless (1.0.1)
-      devise
-      globalid
     drb (2.1.1)
       ruby2_keywords
+    erb_lint (0.5.0)
+      activesupport
+      better_html (>= 2.0.1)
+      parser (>= 2.7.1.4)
+      rainbow
+      rubocop
+      smart_properties
     erubi (1.12.0)
     font-awesome-rails (4.7.0.8)
       railties (>= 3.2, < 8.0)
@@ -114,6 +120,8 @@ GEM
     irb (1.8.2)
       rdoc
       reline (>= 0.3.8)
+    json (2.6.3)
+    language_server-protocol (3.17.0.3)
     loofah (2.21.4)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -148,7 +156,10 @@ GEM
       hashie (>= 3.4.6)
       rack (>= 2.2.3)
       rack-protection
-    orm_adapter (0.5.0)
+    parallel (1.23.0)
+    parser (3.2.2.4)
+      ast (~> 2.4.1)
+      racc
     propshaft (0.7.0)
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
@@ -203,15 +214,45 @@ GEM
       rake (>= 12.2)
       thor (~> 1.0, >= 1.2.2)
       zeitwerk (~> 2.6)
+    rainbow (3.1.1)
     rake (13.0.6)
     rdoc (6.5.0)
       psych (>= 4.0.0)
+    regexp_parser (2.8.2)
     reline (0.3.9)
       io-console (~> 0.5)
-    responders (3.1.1)
-      actionpack (>= 5.2)
-      railties (>= 5.2)
+    rexml (3.2.6)
+    rubocop (1.57.2)
+      json (~> 2.3)
+      language_server-protocol (>= 3.17.0)
+      parallel (~> 1.10)
+      parser (>= 3.2.2.4)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.28.1, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 3.0)
+    rubocop-ast (1.30.0)
+      parser (>= 3.2.1.0)
+    rubocop-capybara (2.19.0)
+      rubocop (~> 1.41)
+    rubocop-factory_bot (2.24.0)
+      rubocop (~> 1.33)
+    rubocop-performance (1.19.1)
+      rubocop (>= 1.7.0, < 2.0)
+      rubocop-ast (>= 0.4.0)
+    rubocop-rails (2.22.1)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 1.33.0, < 2.0)
+    rubocop-rspec (2.25.0)
+      rubocop (~> 1.40)
+      rubocop-capybara (~> 2.17)
+      rubocop-factory_bot (~> 2.22)
+    ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
+    smart_properties (1.17.0)
     stimulus-rails (1.3.0)
       railties (>= 6.0.0)
     stringio (3.0.8)
@@ -227,8 +268,7 @@ GEM
       railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    warden (1.2.9)
-      rack (>= 2.0.9)
+    unicode-display_width (2.5.0)
     web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -248,8 +288,7 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootsnap
   debug
-  devise
-  devise-passwordless
+  erb_lint
   font-awesome-rails
   importmap-rails
   mysql-binuuid-rails
@@ -260,6 +299,10 @@ DEPENDENCIES
   rack-mini-profiler
   rails (~> 7.1.1)
   rails_heroicon
+  rubocop
+  rubocop-performance
+  rubocop-rails
+  rubocop-rspec
   stimulus-rails
   tailwindcss-rails
   turbo-rails

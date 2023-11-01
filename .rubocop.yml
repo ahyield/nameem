@@ -1,0 +1,141 @@
+require:
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-performance
+
+AllCops:
+  TargetRubyVersion: 2.7
+  DisplayCopNames: true
+  CacheRootDirectory: '.git'
+  NewCops: enable
+  Exclude:
+    - frontend/**/**
+    - node_modules/**/**
+    - db/**/**
+    - config/**/**
+    - bin/**
+Style/Documentation:
+  Enabled: false
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+Metrics/AbcSize:
+  Max: 18
+  Severity: refactor
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*
+
+Metrics/ClassLength:
+  Exclude:
+    - spec/**/*
+
+Metrics/CyclomaticComplexity:
+  Severity: refactor
+
+Layout/LineLength:
+  Max: 119
+  Exclude:
+    - Gemfile
+  IgnoreCopDirectives: true
+
+Metrics/MethodLength:
+  Enabled: true
+  CountComments: false # count full line comments?
+  Max: 10
+  Severity: refactor
+
+### Style / Layout
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never
+
+#### Hash
+Layout/HashAlignment:
+  EnforcedColonStyle: table
+  EnforcedHashRocketStyle: table
+
+Style/HashSyntax:
+  EnforcedStyle: ruby19_no_mixed_keys
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: false
+
+Style/HashTransformValues:
+  Enabled: false
+
+#### MultilineOperation
+Layout/MultilineOperationIndentation:
+  Description: Checks indentation of binary operations that span more than one line.
+  EnforcedStyle: indented
+
+Style/DoubleNegation:
+  Enabled: false
+
+Style/ExponentialNotation:
+  EnforcedStyle: engineering
+
+Style/NumericLiterals:
+  Description: Add underscores to large numeric literals to improve their readability.
+  StyleGuide: https://github.com/bbatsov/ruby-style-guide#underscores-in-numerics
+  Enabled: false
+
+Style/PerlBackrefs:
+  Enabled: false
+
+Style/RaiseArgs:
+  EnforcedStyle: compact
+
+Style/RegexpLiteral:
+  Enabled: false
+
+Style/SignalException:
+  EnforcedStyle: only_raise
+
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
+### RSpec
+
+RSpec/DescribeClass:
+  Exclude:
+    - spec/integration/**/*
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/ExampleWording:
+  IgnoredWords:
+    - only
+  CustomTransform:
+    have: has
+
+RSpec/FilePath:
+  Exclude:
+    - spec/**/*
+
+RSpec/MessageExpectation:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Enabled: false
+
