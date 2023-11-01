@@ -46,7 +46,7 @@
             <span class="text-transparent rtl:mr-1 font-bold bg-clip-text mt-1 bg-gradient-to-r from-cyan-400 to-blue-500">أكــتــب</span>
           <% end %>
 
-          <% if user_signed_in? %>
+          <% if !user_signed_in? %>
             <!-- Profile dropdown -->
             <div class="relative rtl:mr-3" data-controller="dropdown"
                   data-action="click->dropdown#toggle click@window->dropdown#hide">
