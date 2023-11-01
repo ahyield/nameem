@@ -7,12 +7,14 @@ Rails.application.routes.draw do
 
     put "articles/:uuid/edit", to: "articles#update", as: "articles_update"
   end
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
 
-  resources "articles", param: :uuid
+  resources :articles, param: :uuid
+  resources :sessions
 
   get "new-story", to: "articles#new", as: "new-story"
+
+  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  get "up" => "rails/health#show", as: :rails_health_check
 
   root "home#index"
 end

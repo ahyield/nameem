@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+   html {
+    font-family: "Noto Naskh Arabic", Arial, sans-serif;
+  }
+
   h1 {
     @apply text-3xl;
   }

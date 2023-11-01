@@ -28,7 +28,7 @@ gem "tailwindcss-rails"
 gem "rails_heroicon"
 gem "font-awesome-rails"
 
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
+gem "omniauth"
 gem "bcrypt", "~> 3.1.7"
 
 # Reduces boot times through caching; required in config/boot.rb
