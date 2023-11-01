@@ -13,6 +13,7 @@ module Authentication
     if (authenticated_user = User.find_by(id: session[:user_id]))
       Current.user = authenticated_user
     else
+      logger.info "do nothing for now"
       # redirect_to new_session_url
     end
   end

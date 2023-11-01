@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  has_many :articles
+  has_many :articles, dependent: :destroy
 
   normalizes :email, with: ->(email) { email.downcase.strip }
 
