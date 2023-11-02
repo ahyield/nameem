@@ -56,7 +56,7 @@ export default class extends Controller {
     let rangeBounds = editor.getBounds(range);
 
     sidebar.style.display = "block";
-    sidebar.style.marginTop = `${rangeBounds.top + 110}px`;
+    sidebar.style.marginTop = `${rangeBounds.top + 135}px`;
     sidebar.style.left = `${ 8 + rangeBounds.left}px`;
 
     editor.on(Quill.events.EDITOR_CHANGE, function(event, range) {
@@ -70,7 +70,7 @@ export default class extends Controller {
 
        if (block != null && block.domNode.firstChild instanceof HTMLBRElement) {
          sidebar.style.display = "block";
-         sidebar.style.marginTop = `${rangeBounds.top + 111}px`;
+         sidebar.style.marginTop = `${rangeBounds.top + 135}px`;
          sidebar.style.left = `${ 8 + rangeBounds.left}px`;
        } else {
          sidebar.style.display = "none";
@@ -81,7 +81,7 @@ export default class extends Controller {
        toolTip.style.left = "0px";
        toolTip.style.marginRight = "-180px"; // Hack to enable proper styling.
        toolTip.style.marginLeft = `${rangeBounds.left - 100}px`;
-       toolTip.style.marginTop = `${rangeBounds.top + 60}px`;
+       toolTip.style.marginTop = `${rangeBounds.top + 90}px`;
      }
     });
 
@@ -240,7 +240,7 @@ export default class extends Controller {
       linkTip.style.left = "0px";
       linkTip.style.width = "22%";
       linkTip.style.marginLeft = `${rangeBounds.left - 100}px`;
-      linkTip.style.marginTop = `${rangeBounds.top + 60}px`;
+      linkTip.style.marginTop = `${rangeBounds.top + 90}px`;
       document.getElementById("link").focus();
     } else {
       toolTip.style.display = 'block';

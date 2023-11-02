@@ -3,7 +3,7 @@
   <head>
     <%= render "shared/head" %>
   </head>
-  <body>
+  <body class="font-naskh">
     <% if current_page?(new_story_path) || current_page?(controller: "articles", action: "edit", uuid: (request.params[:uuid] || "")) %>
       <%= render "shared/editor_nav" %>
     <% else %>
@@ -14,5 +14,6 @@
       <%= yield %>
     </main>
 
+    <%= render "shared/footer" %>
   </body>
 </html>
