@@ -84,37 +84,3 @@ blockquote {
   pointer-events: none;
   opacity: 0.4;
 }
-
-.animation-container span {
-  position: absolute;
-  color: black;
-  user-select: none;
-  pointer-events: none;
-  cursor: default;
-  z-index: 1;
-  opacity: 0;
-  top: 0;
-  will-change: transform, opacity;
-  animation-timing-function: ease-out;
-  animation-name: move;
-}
-
-@keyframes move {
-  0% {
-    opacity: 0;
-    top: 100%;
-  }
-  25% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 1;
-  }
-  75% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 0;
-    transform: none;
-  }
-}

@@ -11,7 +11,10 @@ Rails.application.routes.draw do
   end
 
   resources :articles, param: :uuid
-  resources :sessions
+
+  get 'login', to: 'sessions#new', as: 'login'
+  get 'signup', to: 'registrations#new', as: 'signup'
+  delete 'logout', to: 'sessions#destroy', as: 'logout'
 
   get 'new-story', to: 'articles#new', as: 'new-story'
 
