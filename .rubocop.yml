@@ -55,9 +55,6 @@ Style/StringLiterals:
   EnforcedStyle: double_quotes
 
 Style/FrozenStringLiteralComment:
-  Enabled: false
-
-Style/FrozenStringLiteralComment:
   EnforcedStyle: never
 
 Rails/I18nLocaleTexts:
@@ -119,6 +116,7 @@ Layout/SpaceAroundMethodCallOperator:
 RSpec/DescribeClass:
   Exclude:
     - spec/integration/**/*
+    - spec/views/**/*
 
 RSpec/ExampleLength:
   Enabled: false
