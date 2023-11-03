@@ -4,8 +4,8 @@ class MagicSignUpLinkMailer < ApplicationMailer
     @token = params[:token]
 
     mail(
-      to:            @email,
-      subject:       "Nameem Magic Signup Link"
+      to:      @email,
+      subject: "Nameem Magic Signup Link"
     )
   end
 end

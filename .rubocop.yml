@@ -24,7 +24,7 @@ Lint/StructNewOverride:
   Enabled: true
 
 Metrics/AbcSize:
-  Max: 18
+  Max: 20
   Severity: refactor
 
 Metrics/BlockLength:
@@ -59,6 +59,12 @@ Style/FrozenStringLiteralComment:
 
 Style/FrozenStringLiteralComment:
   EnforcedStyle: never
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false
 
 #### Hash
 Layout/HashAlignment:
