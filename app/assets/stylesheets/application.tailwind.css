@@ -6,9 +6,11 @@
   h1 {
     @apply text-3xl;
   }
+
   h2 {
     @apply text-2xl;
   }
+
   blockquote {
     border-left: 4px solid #111;
     padding-left: 1em;
