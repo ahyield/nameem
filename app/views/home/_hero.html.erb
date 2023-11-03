@@ -1,3 +1,7 @@
+<%= render "flashes/alert", alert: flash[:alert] if !flash[:alert].nil? %>
+<%= render "flashes/notice", notice: flash[:notice] if !flash[:notice].nil? %>
+<%= render "flashes/error", error: flash[:error] if !flash[:error].nil? %>
+
 <div class="bg-white -mb-10">
   <div class="relative isolate px-6 pt-4 lg:px-8">
     <div class="absolute inset-x-0 -top-20 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-40" aria-hidden="true">

@@ -1,4 +1,6 @@
-<div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8 pt-20" dir="ltr">
+<%= render "flashes/error", error: flash[:error] if !flash[:error].nil? %>
+
+<div class="login-accounts-form flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8 pt-20" dir="ltr">
   <div class="sm:mx-auto sm:w-full sm:max-w-md">
     <img class="mx-auto h-10 w-auto" src="https://scontent-vie1-1.xx.fbcdn.net/v/t39.30808-6/398650437_3485800738399976_5251004330150639205_n.jpg?stp=dst-jpg_s1080x2048&_nc_cat=103&ccb=1-7&_nc_sid=5f2048&_nc_ohc=LVDq8yERo20AX-hPjK1&_nc_ht=scontent-vie1-1.xx&oh=00_AfBZSEMgx_I2g78-gGoKaK_iY2UZyMBvb5oAvNkEWCTGmA&oe=6545AC25" alt="Your Company">
     <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">تسجيل الدخول</h2>
@@ -18,10 +20,37 @@
         <span class="text-sm font-semibold font-montserrat leading-6">Twitter</span>
       </a>
 
-      <a href="#" class="flex w-full items-center justify-center gap-3 rounded-md bg-slate-400 px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0]">
-        <i class="fa-regular fa-envelope pr-2"></i>
+      <button data-controller="forms--sign-in" data-action="click->forms--sign-in#emailForm" class="flex w-full items-center justify-center gap-3 rounded-md bg-slate-700 hover:opacity-90 px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0]">
+        <%= heroicon "envelope", class: "h-5 w-5" %>
         <span class="text-sm font-semibold font-montserrat leading-6">Email</span>
-      </a>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="email-form flex min-h-full hidden flex-col justify-center py-12 text-right sm:px-6 lg:px-8 pt-20" dir="ltr">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <img class="mx-auto h-10 w-auto" src="https://scontent-vie1-1.xx.fbcdn.net/v/t39.30808-6/398650437_3485800738399976_5251004330150639205_n.jpg?stp=dst-jpg_s1080x2048&_nc_cat=103&ccb=1-7&_nc_sid=5f2048&_nc_ohc=LVDq8yERo20AX-hPjK1&_nc_ht=scontent-vie1-1.xx&oh=00_AfBZSEMgx_I2g78-gGoKaK_iY2UZyMBvb5oAvNkEWCTGmA&oe=6545AC25" alt="Your Company">
+    <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">حساب جديد</h2>
+  </div>
+
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
+    <div class="bg-white px-6 space-y-4 py-12 shadow sm:rounded-lg sm:px-12">
+      <%= form_for "login", url: login_path, method: :post, class: "space-y-6 font-montserrat" do |form| %>
+        <div class="text-left">
+          <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
+          <div class="mt-2">
+            <%= form.text_field :email, id: "email", type: "email", autocomplete: "email", required: true,
+              class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+          </div>
+        </div>
+
+        <%= form.button "تسجيل دخول", class: "flex font-naskh w-full justify-center rounded-md
+                                     text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 px-3 py-1.5
+                                     text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2
+                                     focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+      <% end %>
+      <button data-controller="forms--sign-in" data-action="click->forms--sign-in#signInForm" class="font-semibold font-nask text-gray-600 hover:text-gray-500">طريقة أخرى؟</button>
     </div>
   </div>
 </div>

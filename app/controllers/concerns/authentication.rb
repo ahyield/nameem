@@ -2,20 +2,24 @@ module Authentication
   extend ActiveSupport::Concern
 
   included do
-    before_action :authenticate_from_session
-
     helper_method :current_user, :user_signed_in?
   end
 
   private
 
+  def authenticate_user_after_sign_up(user)
+    session[:user_id] = user.id
+    user.touch(:last_sign_in_at)
+    Current.user = user
+    redirect_to root_path
+  end
+
+  def authenticate_user!
+    redirect_to root_path, alert: "يجب تسجيل الدخول أولًا!" unless user_signed_in?
+  end
+
   def authenticate_from_session
-    if (authenticated_user = User.find_by(id: session[:user_id]))
-      Current.user = authenticated_user
-    else
-      logger.info "do nothing for now"
-      # redirect_to new_session_url
-    end
+    Current.user ||= User.find_by(id: session[:user_id])
   end
 
   def user_signed_in?
