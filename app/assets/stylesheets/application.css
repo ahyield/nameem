@@ -21,14 +21,15 @@
 .editor-container h2 + p {
   margin-top: 0.5em;
 }
-.editor-container blockquote {
-  border-right: 4px solid #111;
-  padding-right: 1em;
-}
 
 blockquote {
   border-left: none;
   padding-right: none;
+}
+
+.editor-container blockquote {
+  border-right: 4px solid #111;
+  padding-right: 1em;
 }
 
 .tooltip-controls {
