@@ -3,5 +3,5 @@ import "@hotwired/turbo-rails"
 import "controllers"
 import "@fortawesome/fontawesome-free"
 
-import "@rails/activestorage"
+import * as ActiveStorage from "@rails/activestorage"
 ActiveStorage.start()
