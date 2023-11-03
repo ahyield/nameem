@@ -1,13 +1,15 @@
 class CallbacksController < ApplicationController
+  skip_before_action :authenticate_user!
+
   def new
     @email = params[:email]
     @token = params[:token]
 
-    @user = User.find_by_token_for(:magic_login,  @token)
-    if !@user && !@user&.confirmed?
-      flash[:error] = "لم نجد مستخدم"
-      redirect_to root_path
-    end
+    @user = User.find_by_token_for(:magic_login, @token)
+    return unless !@user && !@user&.confirmed?
+
+    flash[:error] = "لم نجد مستخدم"
+    redirect_to root_path
   end
 
   def create
@@ -22,8 +24,9 @@ class CallbacksController < ApplicationController
   end
 
   def login
-    @user = User.find_by_token_for(:magic_login,  params[:token])
-    if @user && @user.confirmed
+    @user = User.find_by_token_for(:magic_login, params[:token])
+
+    if @user&.confirmed?
       authenticate_user_after_sign_up(@user)
     else
       flash[:error] = "عفوًا حدث خطأ"
