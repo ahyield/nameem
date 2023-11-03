@@ -7,6 +7,12 @@ class SignedInConstraint
 end
 
 Rails.application.routes.draw do
+  resources :articles, param: :uuid
+  resources :feed
+
+  get 'about-nameem', to: "static_pages#about_nameem"
+  get 'policy', to: "static_pages#policy"
+
   namespace :api do
     delete 'attachments/delete', to: 'attachments#delete'
 
@@ -16,9 +22,7 @@ Rails.application.routes.draw do
     put 'articles/:uuid/edit', to: 'articles#update', as: 'articles_update'
   end
 
-  resources :articles, param: :uuid
-  resources :feed
-
+  ################### Since auth is from scratch ####################
   get 'login', to: 'sessions#new', as: 'login'
   post 'login', to: 'sessions#create'
 
@@ -30,12 +34,14 @@ Rails.application.routes.draw do
   get "callback", to: "callbacks#new", as: 'callback'
   get "callback/login", to: "callbacks#login", as: 'callback_login'
   post "callback", to: "callbacks#create", as: 'callback_create'
+  ##################################################################
 
   get 'new-story', to: 'articles#new', as: 'new-story'
 
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get 'up' => 'rails/health#show', as: :rails_health_check
 
+  # When user signed in, we root to the feed
   constraints(SignedInConstraint.new) do
     root "feed#index", as: nil
   end
