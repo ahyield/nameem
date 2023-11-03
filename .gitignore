@@ -36,6 +36,8 @@ package.json
 .eslintrc.js
 .stylelintrc.json
 
+.pre-commit-config.yaml
+
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
