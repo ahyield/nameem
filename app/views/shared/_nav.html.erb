@@ -9,7 +9,7 @@
           <div class="hidden rtl:mr-6 lg:ml-6 lg:flex lg:space-x-8">
             <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
             <a href="#" class="inline-flex rtl:ml-6 items-center border-b-2 border-indigo-500 px-1 pt-1 text-lg font-medium text-gray-900 ">عن نميم</a>
-            <a href="#" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-lg font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">دخول</a>
+            <a href="/login" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-lg font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">دخول</a>
             <a href="#" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-lg font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">الشروط</a>
           </div>
         </div>
@@ -46,7 +46,7 @@
             <span class="text-transparent rtl:mr-1 font-bold bg-clip-text mt-1 bg-gradient-to-r from-cyan-400 to-blue-500">أكــتــب</span>
           <% end %>
 
-          <% if !user_signed_in? %>
+          <% if user_signed_in? %>
             <!-- Profile dropdown -->
             <div class="relative rtl:mr-3" data-controller="dropdown"
                   data-action="click->dropdown#toggle click@window->dropdown#hide">
@@ -70,15 +70,18 @@
                   role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
                 <a href="#" class="block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500" role="menuitem" tabindex="-1" id="user-menu-item-0">الصفحة الشخصية</a>
                 <a href="#" class="block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500" role="menuitem" tabindex="-1" id="user-menu-item-1">الإعدادات</a>
-                <a href="#" class="block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500" role="menuitem" tabindex="-1" id="user-menu-item-2">خروج</a>
+                <%= button_to "تسجيل خروج", logout_path, class: "block px-4 py-2 hover:transition-all hover:duration-300
+                                                                          hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr
+                                                                          hover:from-cyan-300 hover:to-blue-500", role: "menuitem", method: :delete %>
               </div>
             </div>
-          <% end %>
+          <% else %>
 
           <%= button_to signup_path, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", method: :get do %>
             <span class="absolute -inset-1.5"></span>
             <span class="btn-publish-text">حساب جديد</span>
           <% end %>
+        <% end %>
         </div>
       </div>
     </div>

@@ -13,8 +13,16 @@ Rails.application.routes.draw do
   resources :articles, param: :uuid
 
   get 'login', to: 'sessions#new', as: 'login'
+  post 'login', to: 'sessions#create'
+
   get 'signup', to: 'registrations#new', as: 'signup'
+  post 'signup', to: 'registrations#create'
+
   delete 'logout', to: 'sessions#destroy', as: 'logout'
+
+  get "callback", to: "callbacks#new", as: 'callback'
+  get "callback/login", to: "callbacks#login", as: 'callback_login'
+  post "callback", to: "callbacks#create", as: 'callback_create'
 
   get 'new-story', to: 'articles#new', as: 'new-story'
 
