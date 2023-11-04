@@ -3,7 +3,7 @@
   <head>
     <%= render "shared/head" %>
   </head>
-  <body class="font-naskh">
+  <body class="font-naskh min-h-screen">
     <% if current_page?(new_story_path) || current_page?(controller: "articles", action: "edit", uuid: (request.params[:uuid] || "")) %>
       <%= render "shared/editor_nav" %>
     <% else %>
