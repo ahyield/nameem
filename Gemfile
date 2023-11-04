@@ -30,6 +30,8 @@ gem "tailwindcss-rails"
 
 gem "bcrypt", "~> 3.1.7"
 gem "omniauth"
+gem "omniauth-facebook"
+gem "omniauth-rails_csrf_protection"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
@@ -41,6 +43,7 @@ gem "mysql-binuuid-rails"
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri windows]
+  gem "dotenv-rails"
   gem "rspec-rails"
 end
 
