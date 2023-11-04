@@ -6,8 +6,6 @@
   <body class="font-naskh min-h-screen scroll-smooth">
     <% if current_page?(new_story_path) || current_page?(controller: "articles", action: "edit", uuid: (request.params[:uuid] || "")) %>
       <%= render "shared/editor_nav" %>
-    <% else %>
-      <%= render "shared/nav" %>
     <% end %>
 
     <main class="container mx-auto mt-2">
