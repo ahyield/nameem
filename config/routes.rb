@@ -31,9 +31,12 @@ Rails.application.routes.draw do
 
   delete 'logout', to: 'sessions#destroy', as: 'logout'
 
-  get "callback", to: "callbacks#new", as: 'callback'
-  get "callback/login", to: "callbacks#login", as: 'callback_login'
-  post "callback", to: "callbacks#create", as: 'callback_create'
+  get "auth/callback", to: "callbacks#new", as: 'callback'
+  get "auth/callback/login", to: "callbacks#login", as: 'callback_login'
+  post "auth/callback", to: "callbacks#create", as: 'callback_create'
+
+  get 'auth/facebook/callback', to: 'callbacks#facebook'
+  get '/auth/failure', to: "home#index"
   ##################################################################
 
   get 'new-story', to: 'articles#new', as: 'new-story'
