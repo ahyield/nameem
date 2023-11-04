@@ -34,6 +34,13 @@ module X
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    if Rails.env.production?
+      config.asset_host = ENV['CDN_HOST']
+      config.action_mailer.asset_host = ENV['CDN_HOST']
+    else
+      config.asset_host = "http://localhost:3000"
+      config.action_mailer.asset_host = "http://localhost:3000"
+    end
 
     # Don't generate system test files.
     config.generators do |g|
