@@ -34,7 +34,28 @@ class CallbacksController < ApplicationController
     end
   end
 
+  def facebook
+    email = auth_hash.info["email"]
+    @user = User.find_by(email: email)
+
+    if @user&.confirmed?
+      authenticate_user_after_sign_up(@user)
+    else
+      @user = User.create(email: email)
+      render :new
+    end
+  end
+
+  def failure
+    flash[:error] = "عفوًا حدث خطأ"
+    redirect_to root_path
+  end
+
   private
+
+  def auth_hash
+    request.env["omniauth.auth"]
+  end
 
   def user_params
     user_params = params[:user]
