@@ -18,6 +18,7 @@ Rails.application.routes.draw do
 
     get 'articles/new', to: 'articles#new'
     get 'articles/:uuid/edit', to: 'articles#edit', as: 'articles_edit'
+    get 'articles/:uuid', to: 'articles#show', as: 'show_article'
 
     put 'articles/:uuid/edit', to: 'articles#update', as: 'articles_update'
   end

@@ -1,6 +1,11 @@
 class Article < ApplicationRecord
-  belongs_to :user
   has_many_attached :images
+
+  belongs_to :user
+
+  scope :published, -> { where(published: true) }
+  scope :picked, -> { where(picked: true) }
+  scope :featured, -> { where(featured: true) }
 
   attribute :uuid, MySQLBinUUID::Type.new
 

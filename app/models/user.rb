@@ -1,6 +1,8 @@
 class User < ApplicationRecord
   has_many :articles, dependent: :destroy
 
+  has_one_attached :avatar
+
   normalizes :email, with: ->(email) { email.downcase.strip }
 
   validates :email, uniqueness: true

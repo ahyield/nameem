@@ -4,12 +4,14 @@
       <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
         <div class="flex flex-shrink-0 items-center rtl:ml-3">
           <a href="/">
-            <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company">
+            <img class="h-8 w-auto" src="<%= asset_path("brand/logo.png") %>" alt="نميم">
           </a>
         </div>
       </div>
       <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-        <%= button_to articles_path, class: "btn-publish-disabled relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0" do %>
+        <%= button_to article_path(uuid: params[:uuid] || "new-story"), form: { id: "save-button-form" }, class: "btn-publish-disabled relative h-8
+        px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500
+        hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", method: :put do %>
           <span class="absolute -inset-1.5"></span>
           <span class="btn-publish-text">نشر</span>
         <% end %>

@@ -4,57 +4,23 @@
   </div>
 
   <ul role="list" class="grid mx-auto grid-cols-1 pt-8 relative gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <% @articles.each do |article| %>
     <li class="col-span-1 flex rounded">
       <div class="flex w-full items-center justify-between p-6">
         <div class="flex-1 truncate">
           <div class="flex items-center">
 
-            <img class="shrink-0 h-6 w-6 rounded-full" src="https://scontent-vie1-1.xx.fbcdn.net/v/t39.30808-6/373754473_10159985363357055_1924089907370005476_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=5f2048&_nc_ohc=ZNJTJadktUoAX_q5ojV&_nc_ht=scontent-vie1-1.xx&oh=00_AfDCvZRvwytzDylcECWijet4abMLaIGNYnXheJGCLqbCKA&oe=654722E7" alt="">
-            <h3 class="truncate text-sm mr-2 text-gray-900">جنة عادل</h3>
+            <img class="shrink-0 h-6 w-6 rounded-full" src="<%= article.user.avatar %>" alt="">
+            <h3 class="truncate text-sm mr-2 text-gray-900"><%= article.user.name %></h3>
 
           </div>
 
-          <h1 class="mt-1 truncate text-2xl text-black">نميم: جرح طفيف في ذراع الحاضر العبثي</h1>
+          <h1 class="mt-1 truncate text-2xl text-black"><%= article.title %></h1>
 
-          <span class="mt-1 text-sm text-gray-400">٧ أكتوبر</span>
+          <span class="mt-1 text-sm text-gray-400"><%= article.created_at %></span>
         </div>
       <div>
     </li>
-    <li class="col-span-1 flex rounded">
-      <div class="flex w-full items-center justify-between p-6">
-        <div class="flex-1 truncate">
-          <div class="flex items-center">
-          <img class="shrink-0 h-6 w-6 rounded-full" src="https://scontent-vie1-1.xx.fbcdn.net/v/t39.30808-6/373754473_10159985363357055_1924089907370005476_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=5f2048&_nc_ohc=ZNJTJadktUoAX_q5ojV&_nc_ht=scontent-vie1-1.xx&oh=00_AfDCvZRvwytzDylcECWijet4abMLaIGNYnXheJGCLqbCKA&oe=654722E7" alt="">
-            <h3 class="truncate text-sm mr-2 text-gray-900">جنة عادل</h3>
-          </div>
-          <h1 class="mt-1 truncate text-2xl text-black">نميم: جرح طفيف في ذراع الحاضر العبثي</h1>
-          <span class="mt-1 text-sm text-gray-400">٧ أكتوبر</span>
-        </div>
-      <div>
-    </li>
-    <li class="col-span-1 flex rounded">
-      <div class="flex w-full items-center justify-between p-6">
-        <div class="flex-1 truncate">
-          <div class="flex items-center">
-          <img class="shrink-0 h-6 w-6 rounded-full" src="https://scontent-vie1-1.xx.fbcdn.net/v/t39.30808-6/373754473_10159985363357055_1924089907370005476_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=5f2048&_nc_ohc=ZNJTJadktUoAX_q5ojV&_nc_ht=scontent-vie1-1.xx&oh=00_AfDCvZRvwytzDylcECWijet4abMLaIGNYnXheJGCLqbCKA&oe=654722E7" alt="">
-            <h3 class="truncate text-sm mr-2 text-gray-900">جنة عادل</h3>
-          </div>
-          <h1 class="mt-1 truncate text-2xl text-black">لغز الجيتار المشطور</h1>
-          <span class="mt-1 text-sm text-gray-400">٧ أكتوبر</span>
-        </div>
-      <div>
-    </li>
-    <li class="col-span-1 flex rounded">
-      <div class="flex w-full items-center justify-between p-6">
-        <div class="flex-1 truncate">
-          <div class="flex items-center">
-          <img class="shrink-0 h-6 w-6 rounded-full" src="https://scontent-vie1-1.xx.fbcdn.net/v/t39.30808-6/373754473_10159985363357055_1924089907370005476_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=5f2048&_nc_ohc=ZNJTJadktUoAX_q5ojV&_nc_ht=scontent-vie1-1.xx&oh=00_AfDCvZRvwytzDylcECWijet4abMLaIGNYnXheJGCLqbCKA&oe=654722E7" alt="">
-            <h3 class="truncate text-sm mr-2 text-gray-900">جنة عادل</h3>
-          </div>
-          <h1 class="mt-1 truncate text-2xl text-black">لغز الجيتار المشطور</h1>
-          <span class="mt-1 text-sm text-gray-400">٧ أكتوبر</span>
-        </div>
-      <div>
-    </li>
+  <% end %>
   </ul>
 </div>
