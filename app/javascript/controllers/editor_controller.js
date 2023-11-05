@@ -23,7 +23,7 @@ class ImageBlot extends BlockEmbed {
   }
 }
 
-ImageBlot.blotName = "image"
+ImageBlot.blotName = "customImage"
 ImageBlot.tagName = "img"
 
 Quill.register(ImageBlot)
@@ -107,7 +107,9 @@ export default class extends Controller {
 
       change = change.compose(delta)
       if(deleted.length >= 1) {
-        fetch(`/api/attachments/delete?image_url=${deleted[0].url}`, { method: "DELETE" })
+        const imageURL = deleted[0].url
+        const signed_id = imageURL.split("/")[6]
+        fetch(`/api/attachments/delete?image_url=${signed_id}`, { method: "DELETE" })
       }
     })
 
@@ -117,11 +119,11 @@ export default class extends Controller {
         if (this.isNewArticle()) {
           const data = await this.newArticle()
           this.drawUrl(data)
-          this.activatePublishingButton()
+          this.activatePublishingButton(data.uuid)
           await this.updateArticleContent(data.uuid)
         } else {
           var uuid = this.articleUuid()
-          this.activatePublishingButton()
+          this.activatePublishingButton(uuid)
           await this.updateArticleContent(uuid)
         }
         change = new Delta()
@@ -158,11 +160,11 @@ export default class extends Controller {
     if (this.isNewArticle()) {
       const data = await this.newArticle()
       this.drawUrl(data)
-      this.activatePublishingButton()
+      this.activatePublishingButton(data.uuid)
       await this.updateArticleTitle(data.uuid)
       } else {
         var uuid = this.articleUuid()
-        this.activatePublishingButton()
+        this.activatePublishingButton(uuid)
         await this.updateArticleTitle(uuid)
       }
   }
@@ -203,27 +205,18 @@ export default class extends Controller {
     window.history.pushState(null, null, url)
   }
 
-  isUuid(uuid) {
-    let s = `${uuid}`
-
-    s = s.match(
-      "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-    )
-    if (s === null) {
-      return false
-    }
-    return true
-  }
-
-  activatePublishingButton() {
+  activatePublishingButton(uuid) {
     const btn = document.querySelector(".btn-publish-disabled")
     if(btn) {
       btn.classList.remove("btn-publish-disabled")
+
+      const form  = document.getElementById("save-button-form")
+      form.action = `/articles/${uuid}`
     }
   }
 
   getImgUrls(delta) {
-    return delta.ops.filter(i => i.insert && i.insert.image).map(i => i.insert.image)
+    return delta.ops.filter(i => i.insert && i.insert.customImage).map(i => i.insert.customImage)
   }
 
   toggleLink() {
@@ -358,15 +351,16 @@ export default class extends Controller {
       const range = editor.getSelection(true)
       const file =   input.files[0]
 
-      const url = "/rails/active_storage/direct_uploads"
+      const baseURL = window.location.origin
+      const url = `${baseURL}/rails/active_storage/direct_uploads`
       const upload = new DirectUpload(file, url)
 
       upload.create((error, blob) => {
         if (error) {
           alert("Uploading failed!")
         } else {
-          editor.insertEmbed(range.index, "image", {
-            url: `/rails/active_storage/blobs/${blob.signed_id}/${blob.filename}`,
+          editor.insertEmbed(range.index, "customImage", {
+            url: `${baseURL}/rails/active_storage/blobs/${blob.signed_id}/${blob.filename}`,
           }, Quill.sources.USER)
           editor.setSelection(range.index + 1, Quill.sources.SILENT)
           const sidebar = document.querySelector(".sidebar-controls")

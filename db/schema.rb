@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_04_055628) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_04_194052) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -48,7 +48,15 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_04_055628) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.binary "uuid", limit: 16
+    t.boolean "featured"
+    t.boolean "published"
+    t.boolean "picked"
+    t.index ["featured"], name: "index_articles_on_featured"
+    t.index ["picked"], name: "index_articles_on_picked"
+    t.index ["published"], name: "index_articles_on_published"
+    t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["user_id"], name: "index_articles_on_user_id"
+    t.index ["uuid"], name: "index_articles_on_uuid"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

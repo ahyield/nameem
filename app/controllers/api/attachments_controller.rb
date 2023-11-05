@@ -8,7 +8,7 @@ module Api
     private
 
     def signed_id
-      params[:image_url].split("/")[4]
+      params[:image_url]
     end
   end
 end
