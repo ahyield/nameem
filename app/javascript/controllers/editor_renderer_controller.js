@@ -12,7 +12,7 @@ export default class extends Controller {
     converter.renderCustomWith(function(customOp, contextOp){
       if (customOp.insert.type === "customImage") {
         const url = customOp.insert.value.url
-        return `<image src="${url}" />`
+        return `<img src="${url}">`
       } else {
         return "Unmanaged custom blot!"
       }

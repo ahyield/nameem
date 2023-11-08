@@ -1,8 +1,13 @@
 class ArticlesController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:show]
 
   def show
     @article = Article.find_by(uuid: params[:uuid])
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @article }
+    end
   end
 
   def new; end
@@ -17,4 +22,6 @@ class ArticlesController < ApplicationController
 
     redirect_to article_path(uuid: @article.uuid)
   end
+
+  def modal; end
 end
