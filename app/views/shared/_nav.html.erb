@@ -43,11 +43,19 @@
       </div>
       <div class="flex items-center">
         <div class="flex-shrink-0">
-          <%= link_to new_story_path, class: "relative rounded-full flex focus:outline-none focus:ring-0 gap-x-1.5 px-3 py-2 opacity-70 hover:opacity-100" do %>
-            <span class="absolute -inset-1.5"></span>
-            <%= heroicon "pencil-square", class: "fill-blue-200" %>
-            <span class="text-transparent rtl:mr-1 font-bold bg-clip-text mt-1 bg-gradient-to-r from-cyan-400 to-blue-500">أكــتــب</span>
-          <% end %>
+          <% if !user_signed_in? %>
+            <%= link_to signup_path, class: "relative rounded-full flex focus:outline-none focus:ring-0 gap-x-1.5 px-3 py-2 opacity-70 hover:opacity-100" do %>
+              <span class="absolute -inset-1.5"></span>
+              <%= heroicon "pencil-square", class: "fill-blue-200" %>
+              <span class="text-transparent rtl:mr-1 font-bold bg-clip-text mt-1 bg-gradient-to-r from-cyan-400 to-blue-500">أكــتــب</span>
+            <% end %>
+          <% else %>
+            <%= link_to new_story_path, class: "relative rounded-full flex focus:outline-none focus:ring-0 gap-x-1.5 px-3 py-2 opacity-70 hover:opacity-100" do %>
+              <span class="absolute -inset-1.5"></span>
+              <%= heroicon "pencil-square", class: "fill-blue-200" %>
+              <span class="text-transparent rtl:mr-1 font-bold bg-clip-text mt-1 bg-gradient-to-r from-cyan-400 to-blue-500">أكــتــب</span>
+            <% end %>
+         <% end %>
         </div>
         <div class="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
 

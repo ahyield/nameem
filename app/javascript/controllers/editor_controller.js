@@ -155,6 +155,9 @@ export default class extends Controller {
   }
 
   async upsertTitle(event) {
+    const articleTitle = document.getElementById("article-title").value
+    if (articleTitle === null) return
+
     await timeout("2000")
 
     if (this.isNewArticle()) {
@@ -210,8 +213,8 @@ export default class extends Controller {
     if(btn) {
       btn.classList.remove("btn-publish-disabled")
 
-      const form  = document.getElementById("save-button-form")
-      form.action = `/articles/${uuid}`
+      const link  = document.getElementById("save-button")
+      link.href = `/articles/${uuid}/edit`
     }
   }
 

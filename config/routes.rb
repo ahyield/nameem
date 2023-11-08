@@ -9,9 +9,11 @@ end
 Rails.application.routes.draw do
   resources :articles, param: :uuid
   resources :feed
+  resources :users
 
   get 'about-nameem', to: "static_pages#about_nameem"
   get 'policy', to: "static_pages#policy"
+  get 'article_modal', to: "articles#modal", as: "modal_show"
 
   namespace :api do
     delete 'attachments/delete', to: 'attachments#delete'

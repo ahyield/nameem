@@ -3,7 +3,7 @@ module Api
     include ActionController::Helpers
     include Authentication
 
-    before_action :authenticate_user!
+    before_action :authenticate_user!, except: [:show]
 
     def show
       @article = Article.find_by(uuid: params[:uuid])

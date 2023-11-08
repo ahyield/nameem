@@ -14,4 +14,8 @@ module ApplicationHelper
       "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
     end
   end
+
+  def first_paragraph(article)
+    article.title.nil? ? article.alternative_titles.sample : article.title
+  end
 end
