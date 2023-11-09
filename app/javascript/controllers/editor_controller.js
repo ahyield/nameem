@@ -7,12 +7,14 @@ import Quill from "quill"
 
 const Block = Quill.import("blots/block")
 const BlockEmbed = Quill.import("blots/block/embed")
+
 const Delta = Quill.import("delta")
 
 class ImageBlot extends BlockEmbed {
   static create(value) {
     const node = super.create()
     node.setAttribute("src", value.url)
+    node.setAttribute("class", "p-4")
     return node
   }
 
@@ -56,7 +58,7 @@ export default class extends Controller {
     const rangeBounds = editor.getBounds(range)
 
     sidebar.style.display = "block"
-    sidebar.style.marginTop = `${rangeBounds.top + 135}px`
+    sidebar.style.marginTop = `${rangeBounds.top + 139}px`
     sidebar.style.left = `${ 8 + rangeBounds.left}px`
 
     editor.on(Quill.events.EDITOR_CHANGE, function(event, range) {
@@ -70,7 +72,7 @@ export default class extends Controller {
 
        if (block != null && block.domNode.firstChild instanceof HTMLBRElement) {
          sidebar.style.display = "block"
-         sidebar.style.marginTop = `${rangeBounds.top + 135}px`
+         sidebar.style.marginTop = `${rangeBounds.top + 139}px`
          sidebar.style.left = `${ 8 + rangeBounds.left}px`
        } else {
          sidebar.style.display = "none"
@@ -79,7 +81,7 @@ export default class extends Controller {
        toolTip.style.display = "block"
        // position the tooltip
        toolTip.style.left = "0px"
-       toolTip.style.marginRight = "-180px" // Hack to enable proper styling.
+       toolTip.style.marginRight = "-180px" // Hack to enable proper styling.)
        toolTip.style.marginLeft = `${rangeBounds.left - 100}px`
        toolTip.style.marginTop = `${rangeBounds.top + 90}px`
      }
