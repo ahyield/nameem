@@ -9,6 +9,10 @@ class Article < ApplicationRecord
 
   attribute :uuid, MySQLBinUUID::Type.new
 
+  validates :featured, inclusion: { in: [true, false] }, allow_blank: true
+  validates :published, inclusion: { in: [true, false] }, allow_blank: true
+  validates :picked, inclusion: { in: [true, false] }, allow_blank: true
+
   def to_param
     uuid
   end
@@ -18,7 +22,7 @@ class Article < ApplicationRecord
     titles = []
 
     ops.each do |element|
-      titles << element.fetch("insert") if element.fetch("insert").is_a?(String) && element.size == 1
+      titles << element.fetch("insert") if element.fetch("insert").is_a?(String) && element.fetch("insert").size >= 5
     end
 
     titles
@@ -30,7 +34,7 @@ class Article < ApplicationRecord
 
     ops.each do |element|
       if element.fetch("insert").include?("customImage") && element.fetch("insert").key?("customImage")
-        urls << element.fetch("customImage").fetch("url")
+        urls << element.fetch("insert").fetch("customImage").fetch("url")
       end
     end
 

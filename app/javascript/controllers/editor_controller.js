@@ -213,8 +213,8 @@ export default class extends Controller {
     if(btn) {
       btn.classList.remove("btn-publish-disabled")
 
-      const link  = document.getElementById("save-button")
-      link.href = `/articles/${uuid}/edit`
+      const form = document.getElementById("publish-form-btn")
+      form.action = `/publish_modal/${uuid}`
     }
   }
 

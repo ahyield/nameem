@@ -7,6 +7,16 @@ export default class extends Controller {
 
     const modalPanel = document.querySelector(".modal-panel")
     modalPanel.classList.add("opacity-100", "translate-y-4", "sm:translate-y-0", "sm:scale-95", "ease-out", "duration-600")
+
+    const publishBtn = document.querySelector(".publish-btn")
+    const titleBox = document.querySelector(".title-box")
+    const titleNeeded = document.querySelector(".title-needed")
+
+    if (titleBox.contains(titleNeeded)) {
+      publishBtn.disabled = true
+      publishBtn.classList.remove("bg-gradient-to-l", "from-cyan-400", "to-blue-500")
+      publishBtn.classList.add("bg-gray-400")
+    }
   }
 
   closeModal(event) {

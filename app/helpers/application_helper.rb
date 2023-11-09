@@ -16,6 +16,10 @@ module ApplicationHelper
   end
 
   def first_paragraph(article)
-    article.title.nil? ? article.alternative_titles.sample : article.title
+    article.alternative_titles.first
+  end
+
+  def article_cover(article)
+    article.article_images.first
   end
 end

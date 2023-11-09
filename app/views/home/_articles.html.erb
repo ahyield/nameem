@@ -20,7 +20,12 @@
             </div>
 
             <%= link_to article_path(article) do %>
-              <h1 class="mt-1 truncate text-2xl text-black"><%= first_paragraph(article) %></h1>
+              <% if article.title.blank? %>
+                <h1 class="mt-1 truncate text-2xl text-black"><%= first_paragraph(article) %></h1>
+              <% else %>
+                <h1 class="mt-1 truncate text-2xl text-black"><%= article.title %></h1>
+              <% end %>
+
             <% end %>
 
             <span class="mt-1 text-sm text-gray-400"><%= article.created_at %></span>

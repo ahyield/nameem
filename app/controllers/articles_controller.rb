@@ -16,12 +16,14 @@ class ArticlesController < ApplicationController
 
   def update
     @article = Article.find_by(uuid: params[:uuid])
-    @article.published    = true
-    @article.published_at = DateTime.now if @article.published_at.nil?
+    @article.published    = params[:published]
+    @article.published_at = DateTime.now if @article.published_at.nil? && @article.published?
     @article.save!
 
     redirect_to article_path(uuid: @article.uuid)
   end
 
-  def modal; end
+  def show_modal
+    @article = Article.find_by(uuid: params[:uuid])
+  end
 end
