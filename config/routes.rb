@@ -13,7 +13,8 @@ Rails.application.routes.draw do
 
   get 'about-nameem', to: "static_pages#about_nameem"
   get 'policy', to: "static_pages#policy"
-  get 'article_modal', to: "articles#modal", as: "modal_show"
+
+  get 'publish_modal/:uuid', to: "articles#show_modal", as: "publish_modal"
 
   namespace :api do
     delete 'attachments/delete', to: 'attachments#delete'
