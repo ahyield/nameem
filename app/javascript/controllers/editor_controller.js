@@ -103,15 +103,18 @@ export default class extends Controller {
     }
 
     editor.on("text-change", (delta, oldContents, source) => {
-      if (source !== "user") return
+      if (source == "api") {
+          var uuid = this.articleUuid()
+          this.updateArticleContent(uuid)
+      } else if (source == "user") {
+        const deleted = this.getImgUrls(editor.getContents().diff(oldContents))
 
-      const deleted = this.getImgUrls(editor.getContents().diff(oldContents))
-
-      change = change.compose(delta)
-      if(deleted.length >= 1) {
-        const imageURL = deleted[0].url
-        const signed_id = imageURL.split("/")[6]
-        fetch(`/api/attachments/delete?image_url=${signed_id}`, { method: "DELETE" })
+        change = change.compose(delta)
+        if(deleted.length >= 1) {
+          const imageURL = deleted[0].url
+          const signed_id = imageURL.split("/")[6]
+          fetch(`/api/attachments/delete?image_url=${signed_id}`, { method: "DELETE" })
+        }
       }
     })
 
