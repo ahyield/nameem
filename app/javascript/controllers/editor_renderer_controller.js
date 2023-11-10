@@ -7,7 +7,16 @@ export default class extends Controller {
     const article =  await this.fetchArticle(uuid)
     const deltaOps = article.content.ops
 
-    var converter = new QuillDeltaToHtmlConverter(deltaOps)
+    const cfg = { customCssClasses: (op) => {
+      if (op.attributes.link){
+        return ["text-blue-500 font-semibold no-underline hover:underline"]
+      }
+
+      if (op.attributes.blockquote){
+        return ["text-xl italic content-center grid font-semibold text-gray-900 pr-3"]
+      }
+    }}
+    var converter = new QuillDeltaToHtmlConverter(deltaOps, cfg)
 
     converter.renderCustomWith(function(customOp, contextOp){
       if (customOp.insert.type === "customImage") {
