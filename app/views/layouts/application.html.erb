@@ -12,8 +12,5 @@
       <%= yield %>
     </main>
 
-    <% unless current_page?(new_story_path) || current_page?(controller: "articles", action: "edit", uuid: (request.params[:uuid] || "")) %>
-      <%= render "shared/footer" %>
-    <% end %>
   </body>
 </html>
