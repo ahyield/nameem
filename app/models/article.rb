@@ -40,4 +40,18 @@ class Article < ApplicationRecord
 
     urls
   end
+
+  # a method to get some paragraphs from the article
+  # to be used as a description
+  def description
+    ops = content.fetch("ops")
+    paragraphs = []
+
+    ops.each do |element|
+      paragraphs << element.fetch("insert") if element.fetch("insert").is_a?(String) &&
+        element.fetch("insert").size >= 20
+    end
+
+    paragraphs
+  end
 end

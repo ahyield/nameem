@@ -22,4 +22,8 @@ module ApplicationHelper
   def article_cover(article)
     article.article_images.first
   end
+
+  def article_description(article)
+    article.description.first
+  end
 end
