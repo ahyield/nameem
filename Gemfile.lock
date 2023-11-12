@@ -189,6 +189,7 @@ GEM
     omniauth-rails_csrf_protection (1.0.1)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
+    pagy (6.2.0)
     parallel (1.23.0)
     parser (3.2.2.4)
       ast (~> 2.4.1)
@@ -353,6 +354,7 @@ DEPENDENCIES
   omniauth
   omniauth-facebook
   omniauth-rails_csrf_protection
+  pagy
   propshaft
   puma (>= 5.0)
   rack-mini-profiler
