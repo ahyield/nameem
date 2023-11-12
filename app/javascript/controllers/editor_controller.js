@@ -10,6 +10,27 @@ const BlockEmbed = Quill.import("blots/block/embed")
 
 const Delta = Quill.import("delta")
 
+var Clipboard = Quill.import("modules/clipboard")
+
+class PlainClipboard extends Clipboard {
+  // This is to prevent quill from styling the pasted text
+  // with the same style as the editor.
+  onPaste (e) {
+    e.preventDefault()
+    const range = this.quill.getSelection()
+    const text = e.clipboardData.getData("text/plain")
+    const delta = new Delta()
+    .retain(range.index)
+    .delete(range.length)
+    .insert(text)
+    const index = text.length + range.index
+    const length = 0
+    this.quill.updateContents(delta, "silent")
+    this.quill.setSelection(index, length, "silent")
+    this.quill.scrollIntoView()
+  }
+}
+
 class ImageBlot extends BlockEmbed {
   static create(value) {
     const node = super.create()
@@ -29,6 +50,7 @@ ImageBlot.blotName = "customImage"
 ImageBlot.tagName = "img"
 
 Quill.register(ImageBlot)
+Quill.register("modules/clipboard", PlainClipboard, true)
 
 let editor = null
 let change = new Delta()

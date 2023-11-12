@@ -11,6 +11,11 @@ Rails.application.routes.draw do
   resources :feed
   resources :users
 
+  get "latest_feed", to: "feed#latest_feed", as: "latest_feed"
+  get "popular_feed", to: "feed#popular_feed", as: "popular_feed"
+  get "featured_feed", to: "feed#featured_feed", as: "featured_feed"
+  get "picked_feed", to: "feed#picked_feed", as: "picked_feed"
+
   get 'about-nameem', to: "static_pages#about_nameem"
   get 'policy', to: "static_pages#policy"
 
