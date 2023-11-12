@@ -8,10 +8,10 @@
     <div class="grid grid-cols-1 gap-4 lg:col-span-2">
       <section aria-labelledby="section-1-title">
         <h2 class="sr-only" id="section-1-title">Section title</h2>
-        <div class="overflow-hidden rounded-lg bg-white">
+        <div class="rounded-lg bg-white">
           <div class="p-6">
 
-            <div>
+            <div class="self-start sticky top-0 z-40 bg-white">
               <div class="sm:hidden">
                 <label for="tabs" class="sr-only">اختر من القائمة</label>
                 <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
@@ -25,11 +25,11 @@
                 <div class="border-b border-gray-200">
                   <nav class="-mb-px flex space-x-4 rtl:space-x-reverse" data-controller="turbo-active-link" data-turbo-frame="feed" aria-label="Tabs">
                     <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
-                    <%= link_to "الأحدث", latest_feed_path, data: { turbo_frame: "feed"},
+                    <%= link_to "الأحدث", latest_feed_path, data: { turbo_stream: "feed" },
                       class: "whitespace-nowrap border-b-2 text-lg py-4 px-1 font-medium", "data-turbo-active-link-target": "link" %>
-                    <%= link_to "اختيارات المحررين", picked_feed_path, data: { turbo_frame: "feed"},
+                    <%= link_to "اختيارات المحررين", picked_feed_path, data: { turbo_stream: "feed" },
                       class: "text-lg whitespace-nowrap border-b-2 py-4 px-1 font-medium", "data-turbo-active-link-target": "link" %>
-                    <%= link_to "الشائع", popular_feed_path, data: { turbo_frame: "feed"},
+                    <%= link_to "الشائع", popular_feed_path, data: { turbo_stream: "feed" },
                       class: "text-lg whitespace-nowrap border-b-2 py-4 px-1 font-medium", "data-turbo-active-link-target": "link" %>
                   </nav>
                 </div>
@@ -37,8 +37,10 @@
             </div>
 
             <div class="my-6 content-center space-y-14 lg:space-y-10">
-              <%= turbo_frame_tag "feed", src: latest_feed_path, loading: "lazy" do %>
+              <%= turbo_frame_tag "feed", src: latest_feed_path(format: :turbo_stream, page: params[:page]), loading: "lazy" do %>
               <% end %>
+
+              <%= turbo_frame_tag "feed_pagination" %>
             </div>
 
           </div>
@@ -47,7 +49,7 @@
     </div>
 
     <!-- Left column -->
-    <div class="grid grid-cols-1 gap-4">
+    <div class="grid my-6 grid-cols-1 gap-4 self-start sticky top-0">
       <section aria-labelledby="section-2-title">
         <h2 class="sr-only" id="section-2-title">اخترنا لك</h2>
         <div class="overflow-hidden rounded-lg bg-white">
@@ -60,20 +62,24 @@
             <% @users.each do |user| %>
               <li>
                 <div class="flex gap-x-3">
-                  <% if user.avatar.attached? %>
-                    <%= image_tag user.avatar.url(:thumb), class: "h-8 w-8 inline-block flex-shrink-0 overflow-hidden rounded-full" %>
-                  <% else %>
-                    <span class="inline-block h-8 w-8 flex-shrink-0 overflow-hidden rounded-full bg-gray-100">
-                      <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                      </svg>
-                    </span>
+                  <%= link_to user_path(user) do %>
+                    <% if user.avatar.attached? %>
+                      <%= image_tag user.avatar.url(:thumb), class: "h-8 w-8 inline-block flex-shrink-0 overflow-hidden rounded-full" %>
+                    <% else %>
+                      <span class="inline-block h-8 w-8 flex-shrink-0 overflow-hidden rounded-full bg-gray-100">
+                        <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                      </span>
+                    <% end %>
                   <% end %>
                   <div>
-                    <h3 class="text-base text-sm font-semibold leading-7 tracking-tight text-gray-900"><%= user.name %></h3>
-                    <p class="text-xs leading-6 text-gray-500">
-                    <%= user.bio&.truncate(120) %>
-                    </p>
+                    <%= link_to user_path(user) do %>
+                      <h3 class="text-base text-sm font-semibold leading-7 tracking-tight text-gray-900"><%= user.name %></h3>
+                      <p class="text-xs leading-6 text-gray-500">
+                      <%= user.bio&.truncate(120) %>
+                      </p>
+                    <% end %>
                   </div>
                 </div>
               </li>

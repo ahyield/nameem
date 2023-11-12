@@ -12,7 +12,10 @@
         data-action="click@window->editor#hideLinkTip keydown.enter->editor#enterLinkTip keydown.esc->editor#closeTips"
         class="link-tip hidden shaddow-none focus:ring-0 border-0 placeholder:italic placeholder:text-slate-200 bg-gradient-to-r from-cyan-500 text-slate-50 to-blue-500 rounded-lg" name="link">
   <div class="hidden sidebar-controls h-7 space-x-3 bg-gradient-to-r from-cyan-300 to-blue-500 rounded-full text-slate-50">
-      <button id="image-button" data-action="click->editor#imageUpload"><i class="fa-solid fa-image"></i></button>
+    <button id="image-button" data-action="click->editor#imageUpload">
+      <i class="fa-solid fa-image"></i>
+      <div class="absolute inset-0 ring-inset"></div>
+    </button>
       <!--
       <hr class="h-px bg-slate-200 border-0">
       <li><button id="video-button"><i class="fa-brands fa-youtube"></i></button></li>

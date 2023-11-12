@@ -1,18 +1,38 @@
 class FeedController < ApplicationController
   def index
-    @articles = Article.published.order("published_at DESC")
+    @pagy, @articles = pagy(Article.published.order(published_at: :desc))
     @users = User.last(6)
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def latest_feed
-    @articles = Article.published.order("published_at DESC")
+    @pagy, @articles = pagy(Article.published.order(published_at: :desc))
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def picked_feed
-    @articles = Article.picked.order("published_at DESC")
+    @pagy, @articles = pagy(Article.picked.order(published_at: :desc))
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def popular_feed
-    @articles = Article.published.order("published_at DESC")
+    @pagy, @articles = pagy(Article.published.order(published_at: :desc))
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 end

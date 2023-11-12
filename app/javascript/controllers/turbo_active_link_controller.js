@@ -19,6 +19,8 @@ export default class extends Controller{
   }
 
   handleTurboClick(event){
+    this.clearFeed()
+    this.clearFeedPagination()
     this.linkTargets.forEach(target => {
       if(target == event.target){
         target.classList.add("border-blue-500", "text-blue-600")
@@ -28,5 +30,14 @@ export default class extends Controller{
         target.classList.add("border-transparent", "text-gray-700", "hover:border-gray-300", "hover:text-gray-500")
       }
     })
+  }
+
+  clearFeed() {
+    const feedForm = document.getElementById("feed")
+    feedForm.innerHTML = ""
+  }
+  clearFeedPagination() {
+    const feedForm = document.getElementById("feed_pagination")
+    feedForm.innerHTML = ""
   }
 }
