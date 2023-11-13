@@ -9,7 +9,7 @@
       </div>
       <div class="flex-1 py-10">
         <h3 class="font-medium text-gray-900"><%= @article.user.name %></h3>
-        <p><time datetime="2021-07-16"><%= @article.created_at %></time></p>
+          <p class="pt-2"><time datetime="2021-07-16"><%= short_date(@article.published_at) %></time></p>
       </div>
     </div>
     <div id="quill-renderer" class="mt-4" data-controller="editor-renderer">
