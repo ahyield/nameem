@@ -23,11 +23,7 @@
         </div>
       </div>
       <span>.</span>
-      <% if article.published_at.to_date.year != Date.today.year %>
-        <time datetime="2020-03-16" class="text-gray-500"><%= l article.published_at.to_date, format: :long %> </time>
-      <% else %>
-        <time datetime="2020-03-16" class="text-gray-500"><%= l article.published_at.to_date, format: :short %> </time>
-      <% end %>
+      <time class="text-gray-500"><%= short_date(article.published_at) %> </time>
     </div>
     <div class="group relative max-w-xl">
       <%= link_to article_path(article), data: { turbo: false } do %>

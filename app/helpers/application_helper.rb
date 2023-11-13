@@ -28,4 +28,12 @@ module ApplicationHelper
   def article_description(article)
     article.description.first
   end
+
+  def short_date(date)
+    if date.to_date.year == Time.zone.today.year
+      l date.to_date, format: :short
+    else
+      l date.to_date, format: :long
+    end
+  end
 end

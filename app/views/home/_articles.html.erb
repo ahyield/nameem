@@ -28,11 +28,7 @@
 
             <% end %>
 
-            <% if article.published_at.to_date.year != Date.today.year %>
-              <span class="mt-1 text-sm text-gray-400"><%= l article.published_at.to_date, format: :long %></span>
-            <% else %>
-              <span class="mt-1 text-sm text-gray-400"><%= l article.published_at.to_date, format: :short %></span>
-            <% end %>
+            <span class="mt-1 text-sm text-gray-400"><%= short_date(article.published_at) %></span>
           </div>
         <div>
       </li>
