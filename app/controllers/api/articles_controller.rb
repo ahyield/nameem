@@ -11,7 +11,7 @@ module Api
     end
 
     def new
-      @article = Article.new(uuid: SecureRandom.uuid)
+      @article = Current.user.articles.new(uuid: SecureRandom.uuid)
       render json: @article
     end
 
@@ -23,7 +23,7 @@ module Api
     def update
       @article = Article.find_or_create_by(uuid: params[:uuid])
       @article.attributes = article_params
-      @article.user = Current.user
+      @article.user = Current.user unless @article.user
       @article.save!
       render json: @article
     end

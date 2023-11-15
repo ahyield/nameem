@@ -12,10 +12,14 @@ export default class extends Controller{
 
   connect(){
     this.element.addEventListener("turbo:click", this.handleTurboClick)
+    this.clearFeed()
+    this.clearFeedPagination()
   }
 
   disconnect(){
     this.element.removeEventListener("turbo:click", this.handleTurboClick)
+    this.clearFeed()
+    this.clearFeedPagination()
   }
 
   handleTurboClick(event){
@@ -34,10 +38,14 @@ export default class extends Controller{
 
   clearFeed() {
     const feedForm = document.getElementById("feed")
-    feedForm.innerHTML = ""
+    if (feedForm) {
+      feedForm.innerHTML = ""
+    }
   }
   clearFeedPagination() {
-    const feedForm = document.getElementById("feed_pagination")
-    feedForm.innerHTML = ""
+    const feedPagination = document.getElementById("feed_pagination")
+    if (feedPagination) {
+      feedPagination.innerHTML = ""
+    }
   }
 }
