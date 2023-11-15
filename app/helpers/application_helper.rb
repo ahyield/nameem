@@ -31,9 +31,9 @@ module ApplicationHelper
 
   def short_date(date)
     if date.to_date.year == Time.zone.today.year
-      l date.to_date, format: :short
+      l date.to_date, format: :short, locale: :ar
     else
-      l date.to_date, format: :long
+      l date.to_date, format: :long, locale: :ar
     end
   end
 end
