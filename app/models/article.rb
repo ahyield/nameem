@@ -21,30 +21,6 @@ class Article < ApplicationRecord
     uuid
   end
 
-  def alternative_titles
-    ops = content.fetch("ops")
-    titles = []
-
-    ops.each do |element|
-      titles << element.fetch("insert") if element.fetch("insert").is_a?(String) && element.fetch("insert").size >= 5
-    end
-
-    titles
-  end
-
-  def article_images
-    ops = content.fetch("ops")
-    urls = []
-
-    ops.each do |element|
-      if element.fetch("insert").include?("customImage") && element.fetch("insert").key?("customImage")
-        urls << element.fetch("insert").fetch("customImage").fetch("url")
-      end
-    end
-
-    urls
-  end
-
   def publish
     update(published: true, published_at: Time.zone.now)
   end

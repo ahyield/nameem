@@ -30,6 +30,7 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   Exclude:
     - spec/**/*
+    - app/models/concerns/*
 
 Metrics/ClassLength:
   Exclude:
