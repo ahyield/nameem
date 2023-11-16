@@ -25,10 +25,6 @@ module ApplicationHelper
     article.article_images.first
   end
 
-  def article_description(article)
-    article.description.first
-  end
-
   def short_date(date)
     if date.to_date.year == Time.zone.today.year
       l date.to_date, format: :short, locale: :ar
