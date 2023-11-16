@@ -36,7 +36,7 @@
           <% end %>
         </h1>
       <% end %>
-      <p class="hidden lg:block mt-2 text-sm leading-6 text-gray-600"><%= article_description(article)&.truncate(320) %></p>
+      <p class="hidden lg:block mt-2 text-sm leading-6 text-gray-600"><%= article.description&.truncate(320) %></p>
     </div>
   </div>
   <%= link_to article_path(article), data: { turbo: false } do %>

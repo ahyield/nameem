@@ -1,4 +1,6 @@
 class Article < ApplicationRecord
+  include Metable
+
   has_many_attached :images
 
   belongs_to :user
@@ -12,6 +14,8 @@ class Article < ApplicationRecord
   validates :featured, inclusion: { in: [true, false] }, allow_blank: true
   validates :published, inclusion: { in: [true, false] }, allow_blank: true
   validates :picked, inclusion: { in: [true, false] }, allow_blank: true
+
+  after_update :create_description
 
   def to_param
     uuid
@@ -41,17 +45,15 @@ class Article < ApplicationRecord
     urls
   end
 
-  # a method to get some paragraphs from the article
-  # to be used as a description
-  def description
-    ops = content.fetch("ops")
-    paragraphs = []
+  def publish
+    update(published: true, published_at: Time.zone.now)
+  end
 
-    ops.each do |element|
-      paragraphs << element.fetch("insert") if element.fetch("insert").is_a?(String) &&
-        element.fetch("insert").size >= 20
-    end
+  def pick
+    update(picked: true)
+  end
 
-    paragraphs
+  def feature
+    update(featured: true)
   end
 end
