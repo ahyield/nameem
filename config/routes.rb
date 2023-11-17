@@ -9,7 +9,9 @@ end
 Rails.application.routes.draw do
   resources :articles, param: :uuid
   resources :feed
-  resources :users, param: :slug
+  resources :users, param: :slug, only: [:show]
+
+  match "settings", to: "users#edit", via: [:get, :post, :put], as: "user_settings"
 
   get "latest_feed", to: "feed#latest_feed", as: "latest_feed"
   get "popular_feed", to: "feed#popular_feed", as: "popular_feed"
@@ -51,8 +53,6 @@ Rails.application.routes.draw do
   ##################################################################
 
   get 'new-story', to: 'articles#new', as: 'new-story'
-
-  # get ':slug', to: 'users#show', as: 'user_profile'
 
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get 'up' => 'rails/health#show', as: :rails_health_check

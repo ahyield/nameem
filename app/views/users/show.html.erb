@@ -82,9 +82,7 @@
 
               <% if Current.user == @user %>
                 <div class="mt-6 text-sm text-blue-400 hover:text-black">
-                  <a href="#" class="">
-                    تعديل الحساب
-                  </a>
+                  <%= link_to "تعديل الحساب", user_settings_path %>
                 </div>
               <% end %>
             </div>
