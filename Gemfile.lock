@@ -350,7 +350,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  bcrypt (~> 3.1.7)
+  bcrypt
   bootsnap
   debug
   dotenv-rails
@@ -360,16 +360,16 @@ DEPENDENCIES
   importmap-rails
   letter_opener
   mysql-binuuid-rails
-  mysql2 (~> 0.5)
+  mysql2
   name_of_person
   omniauth
   omniauth-facebook
   omniauth-rails_csrf_protection
   pagy
   propshaft
-  puma (>= 5.0)
+  puma
   rack-mini-profiler
-  rails (~> 7.1.1)
+  rails
   rails-i18n
   rails_heroicon
   rspec-rails
