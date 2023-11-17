@@ -1,80 +1,5 @@
 # frozen_string_literal: true
 
-class SignedInConstraint
-  def matches?(request)
-    request.session[:user_id].present?
-  end
-end
-
-class RootNameSpaceRoutes
-    TOP_LEVEL_ROUTES = %w[
-      -
-      .well-known
-      404.html
-      422.html
-      500.html
-      502.html
-      503.html
-      admin
-      api
-      apple-touch-icon.png
-      assets
-      dashboard
-      articles
-      attachments
-      settings
-      about-nameem
-      policy
-      explore
-      favicon.ico
-      favicon.png
-      files
-      groups
-      health_check
-      up
-      help
-      import
-      jwt
-      login
-      oauth
-      profile
-      projects
-      public
-      robots.txt
-      signup
-      search
-      sitemap
-      sitemap.xml
-      sitemap.xml.gz
-      uploads
-      users
-      latest_feed
-      popular_feed
-      featured_feed
-      picked_feed
-      user_articles
-      feed
-      new-story
-      auth
-      callback
-      callback_login
-      callback_create
-      publish_modal
-      static_pages
-      home
-      sessions
-      registrations
-      callbacks
-      rails
-      rails_health_check
-      root
-    ].freeze
-
-  def matches?(request)
-    request.path_parameters[:slug].present? && !TOP_LEVEL_ROUTES.include?(request.path_parameters[:slug])
-  end
-end
-
 Rails.application.routes.draw do
   resources :articles, param: :uuid
   resources :feed
@@ -82,7 +7,7 @@ Rails.application.routes.draw do
 
   match "settings", to: "users#edit", via: [:get], as: "user_settings"
 
-  scope(path: ':slug', as: :user, constraints: RootNameSpaceRoutes.new, controller: :users) do
+  scope(path: ':slug', as: :user, constraints: Constraints::RootNamespaceRoutesConstraint.new, controller: :users) do
     get '/', action: :show
 
   end
@@ -133,7 +58,7 @@ Rails.application.routes.draw do
   get 'up' => 'rails/health#show', as: :rails_health_check
 
   # When user signed in, we root to the feed
-  constraints(SignedInConstraint.new) do
+  constraints(Constraints::SignedInConstraint.new) do
     root "feed#index", as: nil
   end
 
