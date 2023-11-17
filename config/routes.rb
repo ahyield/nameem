@@ -6,12 +6,87 @@ class SignedInConstraint
   end
 end
 
+class RootNameSpaceRoutes
+    TOP_LEVEL_ROUTES = %w[
+      -
+      .well-known
+      404.html
+      422.html
+      500.html
+      502.html
+      503.html
+      admin
+      api
+      apple-touch-icon.png
+      assets
+      dashboard
+      articles
+      attachments
+      settings
+      about-nameem
+      policy
+      explore
+      favicon.ico
+      favicon.png
+      files
+      groups
+      health_check
+      up
+      help
+      import
+      jwt
+      login
+      oauth
+      profile
+      projects
+      public
+      robots.txt
+      signup
+      search
+      sitemap
+      sitemap.xml
+      sitemap.xml.gz
+      uploads
+      users
+      latest_feed
+      popular_feed
+      featured_feed
+      picked_feed
+      user_articles
+      feed
+      new-story
+      auth
+      callback
+      callback_login
+      callback_create
+      publish_modal
+      static_pages
+      home
+      sessions
+      registrations
+      callbacks
+      rails
+      rails_health_check
+      root
+    ].freeze
+
+  def matches?(request)
+    request.path_parameters[:slug].present? && !TOP_LEVEL_ROUTES.include?(request.path_parameters[:slug])
+  end
+end
+
 Rails.application.routes.draw do
   resources :articles, param: :uuid
   resources :feed
   resources :users, param: :slug, only: [:show]
 
-  match "settings", to: "users#edit", via: [:get, :post, :put], as: "user_settings"
+  match "settings", to: "users#edit", via: [:get], as: "user_settings"
+
+  scope(path: ':slug', as: :user, constraints: RootNameSpaceRoutes.new, controller: :users) do
+    get '/', action: :show
+
+  end
+
 
   get "latest_feed", to: "feed#latest_feed", as: "latest_feed"
   get "popular_feed", to: "feed#popular_feed", as: "popular_feed"

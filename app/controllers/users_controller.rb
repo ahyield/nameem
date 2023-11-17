@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, except: [:show]
+  before_action :authenticate_user!, except: %i[show user_articles]
 
   def show
     @user = User.friendly.find(params[:slug])
