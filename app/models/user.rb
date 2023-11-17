@@ -6,11 +6,11 @@ class User < ApplicationRecord
 
   has_one_attached :avatar
 
+  has_person_name
+
   normalizes :email, with: ->(email) { email.downcase.strip }
 
   validates :email, uniqueness: true
-
-  has_person_name
 
   generates_token_for :magic_login, expires_in: 15.minutes do
     last_sign_in_at
