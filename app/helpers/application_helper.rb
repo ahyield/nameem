@@ -18,7 +18,7 @@ module ApplicationHelper
   end
 
   def first_paragraph(article)
-    article.alternative_titles.first
+    article.alternative_titles.first.truncate(86)
   end
 
   def article_cover(article)
