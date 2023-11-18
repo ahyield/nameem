@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  resources :feed
+  resources :feed, only: [:index]
 
   scope(path: ':slug', as: :user, constraints: Constraints::RootNamespaceRoutesConstraint.new, controller: :users) do
     get '/', action: :show
 
     get ":uuid", action: :article, as: "article", constraints: Constraints::ArticleUuidConstraint.new
+    delete ":uuid", action: :destroy, as: "destroy_article", constraints: Constraints::ArticleUuidConstraint.new
     put ":uuid", to: "articles#update", as: "update_article"
     get ":uuid/edit", to: "articles#edit", as: "edit_article"
 

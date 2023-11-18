@@ -128,7 +128,8 @@ export default class extends Controller {
     editor.on("text-change", (delta, oldContents, source) => {
       if (source == "api") {
           var uuid = this.articleUuid()
-          this.updateArticleContent(uuid)
+          var slug = this.userSlug()
+          this.updateArticleContent(uuid, slug)
       } else if (source == "user") {
         const deleted = this.getImgUrls(editor.getContents().diff(oldContents))
 
@@ -147,12 +148,12 @@ export default class extends Controller {
         if (this.isNewArticle()) {
           const data = await this.newArticle()
           this.drawUrl(data)
-          this.activatePublishingButton(data.uuid)
-          await this.updateArticleContent(data.uuid, data.user.slug)
+          this.activatePublishingButton(data.article.uuid, data.user.slug)
+          await this.updateArticleContent(data.article.uuid, data.user.slug)
         } else {
           var uuid = this.articleUuid()
           var slug = this.userSlug()
-          this.activatePublishingButton(uuid)
+          this.activatePublishingButton(uuid, slug)
           await this.updateArticleContent(uuid, slug)
         }
         change = new Delta()
@@ -192,12 +193,12 @@ export default class extends Controller {
     if (this.isNewArticle()) {
       const data = await this.newArticle()
       this.drawUrl(data)
-      this.activatePublishingButton(data.article.uuid)
+      this.activatePublishingButton(data.article.uuid, data.user.slug)
       await this.updateArticleTitle(data.article.uuid, data.user.slug)
       } else {
         var uuid = this.articleUuid()
         var slug = this.userSlug()
-        this.activatePublishingButton(uuid)
+        this.activatePublishingButton(uuid, slug)
         await this.updateArticleTitle(uuid, slug)
       }
   }
@@ -243,10 +244,9 @@ export default class extends Controller {
     window.history.pushState(null, null, url)
   }
 
-  activatePublishingButton(uuid) {
+  activatePublishingButton(uuid, slug) {
     const btn = document.querySelector(".btn-publish-disabled")
     if(btn) {
-      const slug = this.userSlug()
       btn.classList.remove("btn-publish-disabled")
 
       const form = document.getElementById("publish-form-btn")

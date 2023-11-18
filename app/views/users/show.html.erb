@@ -27,7 +27,12 @@
           <% if Current.user == @user %>
             <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900" role="menuitem" tabindex="-1" id="options-menu-2-item-0">تعديل الحساب<span class="sr-only">, Reform</span></a>
           <% end %>
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900" role="menuitem" tabindex="-1" id="options-menu-2-item-0">رابط الصفحة<span class="sr-only">, Reform</span></a>
+          <div data-controller="clipboard" data-clipboard-success-content-value="تم نسخ الرابط">
+            <input type="text" value="<%= user_url(@user) %>" class="hidden" data-clipboard-target="source" autocomplete="off">
+
+            <button type="button" class="block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900"
+            data-action="clipboard#copy" data-clipboard-target="button">رابط الصفحة</button>
+          </div>
         </div>
       </div>
 

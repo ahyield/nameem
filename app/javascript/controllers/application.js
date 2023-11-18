@@ -8,3 +8,6 @@ export { application }
 // Import things
 import {Dropdown } from "tailwindcss-stimulus-components"
 application.register("dropdown", Dropdown)
+
+import Clipboard from "stimulus-clipboard"
+application.register("clipboard", Clipboard)

@@ -23,7 +23,7 @@
         </div>
       </div>
       <span>.</span>
-      <time class="text-gray-500"><%= short_date(article.published_at) %> </time>
+      <time class="text-gray-500"><%= short_date(article.published_at || article.created_at) %> </time>
     </div>
     <div class="group relative max-w-xl">
       <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false } do %>
@@ -67,7 +67,11 @@
         تعديل
         <span class="sr-only">, Reform</span>
       <% end %>
-      <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900" role="menuitem" tabindex="-1" id="options-menu-2-item-0">حذف<span class="sr-only">, Reform</span></a>
+      <%= button_to user_destroy_article_path(slug: @user, uuid: article), method: :delete,
+        class: "block px-3 py-1 text-sm leading-6 text-red-500 hover:text-gray-900", role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0", data: { turbo: false }  do %>
+        حذف
+        <span class="sr-only">, Reform</span>
+      <% end %>
     </div>
   </div>
 <% end %>
