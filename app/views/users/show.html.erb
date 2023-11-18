@@ -48,10 +48,10 @@
               </div>
             </div>
             <div class="my-6 content-center space-y-14 lg:space-y-10">
-              <%= turbo_frame_tag "user_articles", src: user_articles_path(format: :turbo_stream, page: params[:page]), loading: "lazy" do %>
+              <%= turbo_frame_tag "articles", src: user_articles_path(format: "turbo_stream", page: params[:page]), loading: "lazy" do %>
               <% end %>
 
-              <%= turbo_frame_tag "user_articles_pagination" %>
+              <%= turbo_frame_tag "articles_pagination" %>
             </div>
           </div>
         </div>

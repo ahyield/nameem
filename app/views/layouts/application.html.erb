@@ -4,7 +4,7 @@
     <%= render "shared/head" %>
   </head>
   <body class="font-naskh min-h-screen scroll-smooth">
-    <% if current_page?(new_story_path) || current_page?(controller: "articles", action: "edit", uuid: (request.params[:uuid] || "")) %>
+    <% if current_page?(new_story_path) || current_page?(user_edit_article_path(slug: (params[:slug] || ""), uuid: (params[:uuid] || ""))) %>
       <%= render "shared/editor_nav" %>
     <% end %>
 

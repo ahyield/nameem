@@ -1,7 +1,9 @@
 class ArticlesController < ApplicationController
-  before_action :authenticate_user!, except: [:show]
+  before_action :authenticate_user!
 
-  def show
+  def new; end
+
+  def edit
     @article = Article.find_by(uuid: params[:uuid])
 
     respond_to do |format|
@@ -10,17 +12,13 @@ class ArticlesController < ApplicationController
     end
   end
 
-  def new; end
-
-  def edit; end
-
   def update
     @article = Article.find_by(uuid: params[:uuid])
     @article.published    = params[:published]
     @article.published_at = DateTime.now if @article.published_at.nil? && @article.published?
     @article.save!
 
-    redirect_to article_path(uuid: @article.uuid)
+    redirect_to user_article_path(uuid: @article.uuid, slug: Current.user.slug)
   end
 
   def show_modal
