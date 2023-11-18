@@ -9,7 +9,7 @@
         </div>
       </div>
       <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-        <%= button_to publish_modal_path(uuid: params[:uuid] || ""), form: { id: "publish-form-btn" }, data: { turbo_frame: "modal"}, class: "btn-publish-disabled relative h-8
+        <%= button_to user_publish_modal_path(uuid: params[:uuid] || ""), form: { id: "publish-form-btn" }, data: { turbo_frame: "modal"}, class: "btn-publish-disabled relative h-8
         px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500
         hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", method: :get do %>
           <span class="absolute -inset-1.5"></span>

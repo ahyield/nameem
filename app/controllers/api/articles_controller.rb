@@ -6,7 +6,8 @@ module Api
     before_action :authenticate_user!, except: [:show]
 
     def show
-      @article = Article.find_by(uuid: params[:uuid])
+      @user = User.find_by(slug: params[:slug])
+      @article = @user.articles.find_by(uuid: params[:uuid])
       render json: @article
     end
 

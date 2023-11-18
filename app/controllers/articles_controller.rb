@@ -14,7 +14,7 @@ class ArticlesController < ApplicationController
 
   def update
     @article = Article.find_by(uuid: params[:uuid])
-    @article.published    = params[:published]
+    @article.published    = params[:publish] == true ? @article.publish : @article.draft
     @article.published_at = DateTime.now if @article.published_at.nil? && @article.published?
     @article.save!
 

@@ -6,8 +6,8 @@ class UsersController < ApplicationController
   end
 
   def article
-    user = User.friendly.find(params[:slug])
-    @article = user.articles.find_by(uuid: params[:uuid])
+    @user = User.friendly.find(params[:slug])
+    @article = @user.articles.find_by(uuid: params[:uuid])
 
     respond_to do |format|
       format.html
@@ -16,8 +16,8 @@ class UsersController < ApplicationController
   end
 
   def articles
-    user = User.friendly.find(params[:slug])
-    @pagy, @articles = pagy(user.articles.published.order(published_at: :desc))
+    @user = User.friendly.find(params[:slug])
+    @pagy, @articles = pagy(@user.articles.published.order(published_at: :desc))
 
     respond_to do |format|
       format.html

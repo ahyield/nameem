@@ -22,7 +22,15 @@ class Article < ApplicationRecord
   end
 
   def publish
-    update(published: true, published_at: Time.zone.now)
+    update(published: true)
+  end
+
+  def draft
+    update(published: false)
+  end
+
+  def draft?
+    !published?
   end
 
   def pick

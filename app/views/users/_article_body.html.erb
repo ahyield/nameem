@@ -1,7 +1,7 @@
-<article class="relative my-6 pb-8 border-gray-200 border-b isolate gap-x-6 flex flex-1 flex-row">
+<article class="relative my-3 pb-4 isolate gap-x-6 flex flex-1 flex-row">
   <div class="grow max-h-42">
     <div class="flex items-center gap-x-4 text-xs">
-      <div class="flex  ">
+      <div class="flex">
         <div class="relative flex items-center gap-x-4">
           <% if article.user.avatar.attached? %>
             <%= image_tag article.user.avatar.url(:thumb), class: "h-9 w-9 rounded-full bg-gray-50" %>
@@ -38,6 +38,7 @@
       <% end %>
       <p class="hidden lg:block mt-2 text-sm leading-6 text-gray-600"><%= article.description&.truncate(320) %></p>
     </div>
+
   </div>
   <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false } do %>
     <div class="relative mt-4 aspect-[112/112] lg:aspect-square w-24 h-24 md:w-24 md:h-24 lg:w-32 lg:h-32">
@@ -50,3 +51,24 @@
     </div>
   <% end %>
 </article>
+<% if current_user == @user %>
+  <div class="flex border-gray-200 mb-4" data-controller="dropdown" data-action="click->dropdown#toggle click@window->dropdown#hide">
+    <button type="button" class="block text-gray-600 font-bold hover:text-gray-500" id="options-menu-2-button" aria-expanded="false"
+      aria-haspopup="true">
+      <span class="sr-only">Open options</span>
+      <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
+      </svg>
+    </button>
+    <div class="hidden ml-6 absolute z-50 w-16 mt-8 rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+      role="menu" aria-orientation="vertical" aria-labelledby="options-menu-2-button" tabindex="-1" data-dropdown-target="menu">
+      <%= link_to user_edit_article_path(slug: @user, uuid: article),
+        class: "block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900", role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0", data: { turbo: false }  do %>
+        تعديل
+        <span class="sr-only">, Reform</span>
+      <% end %>
+      <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900" role="menuitem" tabindex="-1" id="options-menu-2-item-0">حذف<span class="sr-only">, Reform</span></a>
+    </div>
+  </div>
+<% end %>
+<div class=" border-b border-gray-200"></div>
