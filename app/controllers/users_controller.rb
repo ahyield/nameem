@@ -42,4 +42,13 @@ class UsersController < ApplicationController
   end
 
   def update; end
+
+  def destroy
+    @user = User.friendly.find(params[:slug])
+    @article = @user.articles.find_by(uuid: params[:uuid])
+
+    @article.destroy
+
+    redirect_to user_path(@user)
+  end
 end
