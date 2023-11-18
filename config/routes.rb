@@ -5,15 +5,15 @@ Rails.application.routes.draw do
 
   scope(path: ':slug', as: :user, constraints: Constraints::RootNamespaceRoutesConstraint.new, controller: :users) do
     get '/', action: :show
+
     get ":uuid", action: :article, as: "article", constraints: Constraints::ArticleUuidConstraint.new
-
     put ":uuid", to: "articles#update", as: "update_article"
-
     get ":uuid/edit", to: "articles#edit", as: "edit_article"
 
     get 'publish_modal/:uuid', to: "articles#show_modal", as: "publish_modal"
-    get "articles", action: :articles, as: "articles"
 
+    get "articles", action: :articles, as: "articles"
+    get "drafts", action: :drafts, as: "drafts"
   end
 
   match "settings", to: "users#edit", via: [:get], as: "user_settings"
