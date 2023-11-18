@@ -1,24 +1,22 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  resources :articles, param: :uuid
   resources :feed
-  resources :users, param: :slug, only: [:show]
-
-  match "settings", to: "users#edit", via: [:get], as: "user_settings"
 
   scope(path: ':slug', as: :user, constraints: Constraints::RootNamespaceRoutesConstraint.new, controller: :users) do
     get '/', action: :show
+    get ":uuid", action: :article, as: "article", constraints: Constraints::ArticleUuidConstraint.new
+    get ":uuid/edit", to: "articles#edit", as: "edit_article"
 
+    get "articles", action: :articles, as: "articles"
   end
 
+  match "settings", to: "users#edit", via: [:get], as: "user_settings"
 
   get "latest_feed", to: "feed#latest_feed", as: "latest_feed"
   get "popular_feed", to: "feed#popular_feed", as: "popular_feed"
   get "featured_feed", to: "feed#featured_feed", as: "featured_feed"
   get "picked_feed", to: "feed#picked_feed", as: "picked_feed"
-
-  get "user_articles/:slug", to: "users#user_articles", as: "user_articles"
 
   get 'about-nameem', to: "static_pages#about_nameem"
   get 'policy', to: "static_pages#policy"

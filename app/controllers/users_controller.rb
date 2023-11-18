@@ -1,11 +1,21 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, except: %i[show user_articles]
+  before_action :authenticate_user!, except: %i[show articles article]
 
   def show
     @user = User.friendly.find(params[:slug])
   end
 
-  def user_articles
+  def article
+    user = User.friendly.find(params[:slug])
+    @article = user.articles.find_by(uuid: params[:uuid])
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @article }
+    end
+  end
+
+  def articles
     user = User.friendly.find(params[:slug])
     @pagy, @articles = pagy(user.articles.published.order(published_at: :desc))
 

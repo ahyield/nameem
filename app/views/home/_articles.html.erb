@@ -19,7 +19,7 @@
 
             </div>
 
-            <%= link_to article_path(article) do %>
+            <%= link_to user_article_path(uuid: article, slug: article.user) do %>
               <% if article.title.blank? %>
                 <h1 class="mt-1 truncate text-2xl text-black"><%= first_paragraph(article) %></h1>
               <% else %>
