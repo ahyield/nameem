@@ -4,7 +4,8 @@ class ArticlesController < ApplicationController
   def new; end
 
   def edit
-    @article = Article.find_by(uuid: params[:uuid])
+    @user = User.find_by(slug: params[:slug])
+    @article = @user.articles.find_by(uuid: params[:uuid])
 
     respond_to do |format|
       format.html
@@ -13,8 +14,10 @@ class ArticlesController < ApplicationController
   end
 
   def update
-    @article = Article.find_by(uuid: params[:uuid])
-    @article.published    = params[:publish] == true ? @article.publish : @article.draft
+    @user = User.find_by(slug: params[:slug])
+
+    @article = @user.articles.find_by(uuid: params[:uuid])
+    @article.published = params[:publish]
     @article.published_at = DateTime.now if @article.published_at.nil? && @article.published?
     @article.save!
 

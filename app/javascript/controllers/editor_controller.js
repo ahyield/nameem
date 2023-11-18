@@ -118,7 +118,8 @@ export default class extends Controller {
       publishButton.classList.remove("btn-publish-disabled")
 
       const uuid = this.articleUuid()
-      const article = await this.fetchArticle(uuid)
+      const slug = this.userSlug()
+      const article = await this.fetchArticle(uuid, slug)
       sidebar.style.display = "none"
       articleTitle.value = article.title
       editor.setContents(article.content)
@@ -147,19 +148,20 @@ export default class extends Controller {
           const data = await this.newArticle()
           this.drawUrl(data)
           this.activatePublishingButton(data.uuid)
-          await this.updateArticleContent(data.uuid)
+          await this.updateArticleContent(data.uuid, data.user.slug)
         } else {
           var uuid = this.articleUuid()
+          var slug = this.userSlug()
           this.activatePublishingButton(uuid)
-          await this.updateArticleContent(uuid)
+          await this.updateArticleContent(uuid, slug)
         }
         change = new Delta()
       }
     }, 2 * 1000)
   }
 
-  async fetchArticle(uuid) {
-    const response = await fetch(`/api/articles/${uuid}/edit`, { method: "GET" })
+  async fetchArticle(uuid, slug) {
+    const response = await fetch(`/api/${slug}/${uuid}/edit`, { method: "GET" })
 
     const data = await response.json()
     return data
@@ -190,19 +192,20 @@ export default class extends Controller {
     if (this.isNewArticle()) {
       const data = await this.newArticle()
       this.drawUrl(data)
-      this.activatePublishingButton(data.uuid)
-      await this.updateArticleTitle(data.uuid)
+      this.activatePublishingButton(data.article.uuid)
+      await this.updateArticleTitle(data.article.uuid, data.user.slug)
       } else {
         var uuid = this.articleUuid()
+        var slug = this.userSlug()
         this.activatePublishingButton(uuid)
-        await this.updateArticleTitle(uuid)
+        await this.updateArticleTitle(uuid, slug)
       }
   }
 
-  async updateArticleTitle(uuid) {
+  async updateArticleTitle(uuid, slug) {
     const articleTitle = document.getElementById("article-title").value
 
-    const response = await fetch(`/api/articles/${uuid}/edit`, {
+    const response = await fetch(`/api/${slug}/${uuid}/edit`, {
       method: "PUT",
       body: JSON.stringify({ article: { title: articleTitle, content: editor.getContents(), }}),
       headers: {
@@ -213,8 +216,8 @@ export default class extends Controller {
     return article
   }
 
-  async updateArticleContent(uuid) {
-    const response = await fetch(`/api/articles/${uuid}/edit`, {
+  async updateArticleContent(uuid, slug) {
+    const response = await fetch(`/api/${slug}/${uuid}/edit`, {
       method: "PUT",
       body: JSON.stringify({ article: { content: editor.getContents(), }}),
       headers: {
@@ -230,18 +233,24 @@ export default class extends Controller {
     return uuid
   }
 
+  userSlug() {
+    const slug = window.location.pathname.split("/")[1]
+    return slug
+  }
+
   drawUrl(data) {
-    const url = window.location.origin + `/articles/${data.uuid}/edit`
+    const url = window.location.origin + `/${data.user.slug}/${data.article.uuid}/edit`
     window.history.pushState(null, null, url)
   }
 
   activatePublishingButton(uuid) {
     const btn = document.querySelector(".btn-publish-disabled")
     if(btn) {
+      const slug = this.userSlug()
       btn.classList.remove("btn-publish-disabled")
 
       const form = document.getElementById("publish-form-btn")
-      form.action = `/publish_modal/${uuid}`
+      form.action = `/${slug}/publish_modal/${uuid}`
     }
   }
 

@@ -81,7 +81,7 @@
                   class="absolute hidden right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                   role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
                 <!-- Active: "bg-gray-100", Not Active: "" -->
-                <%= link_to "الصفحة الشخصية", user_path(Current.user), class: "block px-4 py-2 hover:transition-all hover:duration-300
+                <%= link_to "الصفحة الشخصية", user_path(Current.user), data: { turbo: false }, class: "block px-4 py-2 hover:transition-all hover:duration-300
                 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-0" %>
                 <a href="#" class="block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500" role="menuitem" tabindex="-1" id="user-menu-item-1">الإعدادات</a>
                 <%= link_to "تسجيل خروج", logout_path, class: "block px-4 py-2 hover:transition-all hover:duration-300
