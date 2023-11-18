@@ -24,7 +24,7 @@ Lint/StructNewOverride:
   Enabled: true
 
 Metrics/AbcSize:
-  Max: 20
+  Max: 25
   Severity: refactor
 
 Metrics/BlockLength:

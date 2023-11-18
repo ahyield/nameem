@@ -22,11 +22,11 @@ class Article < ApplicationRecord
   end
 
   def publish
-    update(published: true)
+    update_column(:published, true)
   end
 
-  def draft
-    update(published: false)
+  def unpublish
+    update_column(:published, false)
   end
 
   def draft?
