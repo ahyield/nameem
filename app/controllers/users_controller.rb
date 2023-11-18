@@ -25,6 +25,16 @@ class UsersController < ApplicationController
     end
   end
 
+  def drafts
+    @user = User.friendly.find(params[:slug])
+    @pagy, @articles = pagy(current_user.articles.drafts.order(updated_at: :desc))
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
+  end
+
   def new; end
 
   def edit

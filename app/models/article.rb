@@ -8,6 +8,7 @@ class Article < ApplicationRecord
   scope :published, -> { where(published: true) }
   scope :picked, -> { where(picked: true) }
   scope :featured, -> { where(featured: true) }
+  scope :drafts, -> { where(published: false) }
 
   attribute :uuid, MySQLBinUUID::Type.new
 

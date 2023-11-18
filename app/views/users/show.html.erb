@@ -38,11 +38,13 @@
             <div class="self-start sticky top-0 z-40 bg-white">
               <div class="hidden sm:block">
                 <div class="border-b border-gray-200">
-                  <nav class="-mb-px flex space-x-4 rtl:space-x-reverse" aria-label="Tabs">
-                    <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
-                    <span class="whitespace-nowrap border-b-2 border-black text-lg py-4 px-1 font-medium">
-                      المنشورات
-                    </span>
+                  <nav class="-mb-px flex space-x-4 rtl:space-x-reverse" data-controller="user-profile-active-link" data-turbo-frame="feed" aria-label="Tabs">
+                    <%= link_to "المنشورات", user_articles_path, data: { turbo_stream: "articles" },
+                      class: "whitespace-nowrap border-b-2 text-lg py-4 px-1 font-medium", "data-user-profile-active-link-target": "link" %>
+                    <% if Current.user == @user %>
+                      <%= link_to "المسودات", user_drafts_path, data: { turbo_stream: "articles" },
+                        class: "whitespace-nowrap border-b-2 text-lg py-4 px-1 font-medium", "data-user-profile-active-link-target": "link" %>
+                    <% end %>
                   </nav>
                 </div>
               </div>
