@@ -4,7 +4,8 @@ import { QuillDeltaToHtmlConverter } from "quill-delta-to-html"
 export default class extends Controller {
   async connect() {
     const uuid = this.articleUuid()
-    const article =  await this.fetchArticle(uuid)
+    const slug = this.userSlug()
+    const article =  await this.fetchArticle(uuid, slug)
     const deltaOps = article.content.ops
 
     const cfg = { customCssClasses: (op) => {
@@ -39,8 +40,13 @@ export default class extends Controller {
     return uuid
   }
 
-  async fetchArticle(uuid) {
-    const response = await fetch(`/api/articles/${uuid}`, { method: "GET" })
+  userSlug() {
+    const slug = window.location.pathname.split("/")[1]
+    return slug
+  }
+
+  async fetchArticle(uuid, slug) {
+    const response = await fetch(`/api/${slug}/${uuid}`, { method: "GET" })
 
     const data = await response.json()
     return data

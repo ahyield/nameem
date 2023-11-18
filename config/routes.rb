@@ -6,9 +6,14 @@ Rails.application.routes.draw do
   scope(path: ':slug', as: :user, constraints: Constraints::RootNamespaceRoutesConstraint.new, controller: :users) do
     get '/', action: :show
     get ":uuid", action: :article, as: "article", constraints: Constraints::ArticleUuidConstraint.new
+
+    put ":uuid", to: "articles#update", as: "update_article"
+
     get ":uuid/edit", to: "articles#edit", as: "edit_article"
 
+    get 'publish_modal/:uuid', to: "articles#show_modal", as: "publish_modal"
     get "articles", action: :articles, as: "articles"
+
   end
 
   match "settings", to: "users#edit", via: [:get], as: "user_settings"
@@ -21,14 +26,13 @@ Rails.application.routes.draw do
   get 'about-nameem', to: "static_pages#about_nameem"
   get 'policy', to: "static_pages#policy"
 
-  get 'publish_modal/:uuid', to: "articles#show_modal", as: "publish_modal"
 
   namespace :api do
     delete 'attachments/delete', to: 'attachments#delete'
 
     get 'articles/new', to: 'articles#new'
     get 'articles/:uuid/edit', to: 'articles#edit', as: 'articles_edit'
-    get 'articles/:uuid', to: 'articles#show', as: 'show_article'
+    get ':slug/:uuid', to: 'articles#show', as: 'show_article'
 
     put 'articles/:uuid/edit', to: 'articles#update', as: 'articles_update'
   end
