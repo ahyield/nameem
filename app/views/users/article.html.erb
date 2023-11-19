@@ -5,13 +5,100 @@
     <h1 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"><%= @article.title %></h1>
     <div class="flex space-x-4 text-sm text-gray-500">
       <div class="flex-none ml-3 py-10">
-        <img src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80" alt="" class="h-10 w-10 rounded-full bg-gray-100">
+        <%= link_to user_path(@article.user), data: { turbo: false } do %>
+          <% if @user.avatar.attached? %>
+            <%= image_tag @user.avatar.url(:thumb), class: "h-11 w-11 rounded-full bg-gray-50" %>
+          <% else %>
+            <span class="inline-block h-11 w-11 overflow-hidden rounded-full bg-gray-100">
+              <svg class="h-full w-full text-gray-300 hover:bg-gray-300 hover:bg-opacity-25" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </span>
+          <% end %>
+        <% end %>
       </div>
-      <div class="flex-1 py-10">
-        <h3 class="font-medium text-gray-900"><%= @article.user.name %></h3>
-          <p class="pt-2"><time datetime="2021-07-16"><%= short_date(@article.published_at || @article.created_at) %></time></p>
+      <div class="flex-1 py-11">
+        <h3 class="font-medium text-gray-900">
+          <%= link_to user_path(@article.user), data: { turbo: false }, class: "hover:underline hover:underline-offset-4" do %>
+            <%= @article.user.name %>
+          <% end %>
+        </h3>
+        <p class="text-xs"><time><%= short_date(@article.published_at || @article.created_at) %></time></p>
       </div>
     </div>
+
+    <div class="border-solid border-gray-200 h-12 relative items-center border-t border-b grid grid-cols-3">
+      <div class="col-start-3 absolute left-0">
+        <div class="grid grid-cols-2 gap-8">
+          <div class="" data-controller="dropdown">
+            <button type="button" class="block text-gray-600 font-bold hover:text-gray-500" id="options-menu-2-button" aria-expanded="false"
+              aria-haspopup="true" data-action="click->dropdown#toggle click@window->dropdown#hide">
+              <span class="sr-only">Share</span>
+              <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+              </svg>
+            </button>
+            <div class="hidden ml-6 absolute z-50 w-24 mt-8 rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+                 role="menu" aria-orientation="vertical" aria-labelledby="options-menu-2-button" tabindex="-1" data-dropdown-target="menu">
+              <div data-controller="clipboard" data-clipboard-success-content-value="تم نسخ الرابط">
+                <input type="text" value="<%= user_article_url(slug: @user, uuid: @article) %>" class="hidden" data-clipboard-target="source" autocomplete="off">
+
+                <button type="button" class="block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900"
+                data-action="clipboard#copy" data-clipboard-target="button">رابط المقال</button>
+              </div>
+            </div>
+          </div>
+
+          <% if current_user == @article.user %>
+            <div class="" data-controller="dropdown">
+              <button type="button" class="block text-gray-600 font-bold hover:text-gray-500" id="options-menu-2-button" aria-expanded="false"
+                aria-haspopup="true" data-action="click->dropdown#toggle click@window->dropdown#hide">
+                <span class="sr-only">Open options</span>
+                <svg class="h-5 w-5 flex" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
+                </svg>
+              </button>
+              <div class="hidden ml-6 absolute z-50 w-16 mt-8 rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+                  role="menu" aria-orientation="vertical" aria-labelledby="options-menu-2-button" tabindex="-1" data-dropdown-target="menu">
+                <%= link_to user_edit_article_path(slug: @user, uuid: @article),
+                  class: "block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900", role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0", data: { turbo: false }  do %>
+                  تعديل
+                  <span class="sr-only">, Reform</span>
+                <% end %>
+                <%= button_to user_destroy_article_path(slug: @user, uuid: @article), method: :delete,
+                  class: "block px-3 py-1 text-sm leading-6 text-red-500 hover:text-gray-900", role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0", data: { turbo: false }  do %>
+                  حذف
+                  <span class="sr-only">, Reform</span>
+                <% end %>
+              </div>
+            </div>
+          <% else %>
+            <svg class="h-5 w-5 opacity-40" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
+            </svg>
+          <% end %>
+        </div>
+      </div>
+      <div class="col-start-1 absolute right-0">
+        <div class="grid grid-cols-2 gap-8">
+          <div class="">
+            <span class="sr-only">Share</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 fill-gray-400 opacity-20">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+            </svg>
+          </div>
+
+          <div class="">
+            <span class="sr-only">Open options</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 fill-gray-400 opacity-20">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
     <div id="quill-renderer" class="mt-4" data-controller="editor-renderer">
     </div>
   </div>

@@ -11,3 +11,6 @@ application.register("dropdown", Dropdown)
 
 import Clipboard from "stimulus-clipboard"
 application.register("clipboard", Clipboard)
+
+import { Popover } from "tailwindcss-stimulus-components"
+application.register("popover", Popover)
