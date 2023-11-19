@@ -32,7 +32,7 @@
           <% if article.title.blank? %>
             <%= first_paragraph(article)&.truncate(150) %>
           <% else %>
-            <%= article.title.truncate(150) %>
+            <%= article.title&.truncate(150) %>
           <% end %>
         </h1>
       <% end %>
