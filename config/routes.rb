@@ -17,7 +17,19 @@ Rails.application.routes.draw do
     get "drafts", action: :drafts, as: "drafts"
   end
 
-  match "settings", to: "users#edit", via: [:get], as: "user_settings"
+  namespace :settings do
+    get "/", to: "profile#edit", as: "user_settings"
+
+    get "profile", to: "profile#edit", as: "profile"
+    put "profile", to: "profile#update", as: "update_profile"
+
+    get "security", to: "security#edit", as: "security"
+    put "security", to: "security#update", as: "update_security"
+
+    get "integrations", to: "integrations#edit", as: "integrations"
+    put "integrations", to: "integrations#update", as: "update_integrations"
+
+  end
 
   get "latest_feed", to: "feed#latest_feed", as: "latest_feed"
   get "popular_feed", to: "feed#popular_feed", as: "popular_feed"
