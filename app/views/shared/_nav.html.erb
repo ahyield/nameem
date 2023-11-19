@@ -83,7 +83,11 @@
                 <!-- Active: "bg-gray-100", Not Active: "" -->
                 <%= link_to "الصفحة الشخصية", user_path(Current.user), data: { turbo: false }, class: "block px-4 py-2 hover:transition-all hover:duration-300
                 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-0" %>
-                <a href="#" class="block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500" role="menuitem" tabindex="-1" id="user-menu-item-1">الإعدادات</a>
+                <%= link_to settings_user_settings_path, class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500",
+                  role: "menuitem", tabindex: "-1", id: "user-menu-item-1" do %>
+                  اعدادات الحساب
+                <% end %>
+
                 <%= link_to "تسجيل خروج", logout_path, class: "block px-4 py-2 hover:transition-all hover:duration-300
                                                                           hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr
                                                                           hover:from-cyan-300 hover:to-blue-500", role: "menuitem", method: :delete, 'data-turbo-method': :delete %>

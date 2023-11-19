@@ -15,6 +15,14 @@ module ApplicationHelper
     end
   end
 
+  def active_settings_sidebar(path)
+    if request.path == path
+      "bg-gray-50 text-blue-600"
+    else
+      "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+    end
+  end
+
   def first_paragraph(article)
     article.alternative_titles.first&.truncate(86)
   end

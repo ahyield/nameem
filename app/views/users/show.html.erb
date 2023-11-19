@@ -22,10 +22,13 @@
             <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
           </svg>
         </button>
-        <div class="hidden ml-6 absolute left-0 z-50 w-24 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+        <div class="hidden ml-6 absolute left-0 z-50 w-28 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
           role="menu" aria-orientation="vertical" aria-labelledby="options-menu-2-button" tabindex="-1" data-dropdown-target="menu">
           <% if Current.user == @user %>
-            <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900" role="menuitem" tabindex="-1" id="options-menu-2-item-0">تعديل الحساب<span class="sr-only">, Reform</span></a>
+            <%= link_to settings_user_settings_path, class: "block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900",
+            role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0" do %>
+            اعدادات الحساب<span class="sr-only">, Reform</span>
+            <% end %>
           <% end %>
           <div data-controller="clipboard" data-clipboard-success-content-value="تم نسخ الرابط">
             <input type="text" value="<%= user_url(@user) %>" class="hidden" data-clipboard-target="source" autocomplete="off">
@@ -89,7 +92,7 @@
 
               <% if Current.user == @user %>
                 <div class="mt-6 text-sm text-blue-400 hover:text-black">
-                  <%= link_to "تعديل الحساب", user_settings_path %>
+                  <%= link_to "اعدادات الحساب", settings_user_settings_path %>
                 </div>
               <% end %>
             </div>
