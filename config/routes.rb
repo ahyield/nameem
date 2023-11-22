@@ -18,9 +18,7 @@ Rails.application.routes.draw do
   end
 
   namespace :settings do
-    get "/", to: "profile#edit", as: "user_settings"
-
-    get "profile", to: "profile#edit", as: "profile"
+    get "profile", to: "profile#edit", as: "user_settings"
     put "profile", to: "profile#update", as: "update_profile"
 
     get "security", to: "security#edit", as: "security"
