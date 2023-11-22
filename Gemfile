@@ -47,6 +47,9 @@ gem "rails-i18n"
 gem "friendly_id"
 gem "name_of_person"
 
+gem "image_processing"
+gem "mini_magick"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri windows]
