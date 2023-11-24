@@ -16,8 +16,6 @@ class Article < ApplicationRecord
   validates :published, inclusion: { in: [true, false] }, allow_blank: true
   validates :picked, inclusion: { in: [true, false] }, allow_blank: true
 
-  after_update :create_description
-
   def to_param
     uuid
   end

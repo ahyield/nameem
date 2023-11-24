@@ -2,6 +2,8 @@ module Metable
   extend ActiveSupport::Concern
 
   included do
+    after_update :create_description
+
     def create_description
       ops ||= content.fetch("ops")
       description = ""

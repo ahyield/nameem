@@ -77,7 +77,7 @@
 
             <div class="flex items-center gap-x-4">
               <% if @user.avatar.attached? %>
-                <%= image_tag @user.avatar.variant(resize_to_limit: [600, 600]), class: "h-24 w-24 rounded-full bg-gray-50" %>
+                <%= image_tag @user.avatar.variant(resize_to_fill: [600, 600]), class: "h-24 w-24 rounded-full bg-gray-50" %>
               <% else %>
                 <span class="inline-block h-24 w-24 overflow-hidden rounded-full bg-gray-100">
                   <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">

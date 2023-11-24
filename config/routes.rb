@@ -75,5 +75,6 @@ Rails.application.routes.draw do
     root "feed#index", as: nil
   end
 
+  get "published_articles", to: "home#published_articles", as: "published_articles"
   root "home#index"
 end
