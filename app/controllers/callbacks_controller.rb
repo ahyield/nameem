@@ -6,7 +6,8 @@ class CallbacksController < ApplicationController
     @token = params[:token]
 
     @user = User.find_by_token_for(:magic_login, @token)
-    return unless !@user && !@user&.confirmed?
+
+    return unless @user.nil?
 
     flash[:error] = "لم نجد مستخدم"
     redirect_to root_path

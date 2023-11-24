@@ -16,7 +16,7 @@
 
         <div class="col-span-full flex items-center gap-x-8" data-controller="image-preview">
           <% if @user.avatar.attached? %>
-            <%= image_tag @user.avatar.variant(resize_to_limit: [100, 100]), class: "h-24 w-24 flex-none rounded-full bg-gray-800 object-cover", data: { target: "image-preview.output" } %>
+            <%= image_tag @user.avatar.variant(resize_to_limit: [600, 600]), class: "h-24 w-24 flex-none rounded-full bg-gray-800", data: { target: "image-preview.output" } %>
           <% else %>
             <span class="inline-block h-24 w-24 overflow-hidden rounded-full bg-gray-100">
               <svg class="image-preview-span h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
@@ -56,6 +56,7 @@
                       text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
                       focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
           </div>
+          <span class="text-base leading-6 text-gray-400">إسم المستخدم هو رابط صفحتك على نميم، يجب أن يكون غير محجوز من قبل مستخدم آخر ويجب ألا يقل عن أربعة أحرف، كما يجب أن يكون بالانجليزية</span>
         </div>
 
         <div>

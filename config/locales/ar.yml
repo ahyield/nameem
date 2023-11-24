@@ -3,3 +3,6 @@ ar:
     attributes:
       user:
         slug: "اسم المستخدم"
+  errors:
+    messages:
+      taken: "%{attribute} غير متاح"

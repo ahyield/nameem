@@ -48,7 +48,7 @@ Layout/LineLength:
 Metrics/MethodLength:
   Enabled: true
   CountComments: false # count full line comments?
-  Max: 10
+  Max: 18
   Severity: refactor
 
 ### Style / Layout
