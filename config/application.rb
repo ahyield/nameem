@@ -34,6 +34,8 @@ module X
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    config.i18n.default_locale = :ar
+
     if Rails.env.production?
       config.asset_host = ENV['CDN_HOST']
       config.action_mailer.asset_host = ENV['CDN_HOST']

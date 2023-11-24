@@ -6,24 +6,30 @@
   <ul role="list" class="grid mx-auto grid-cols-1 pt-8 relative gap-6 sm:grid-cols-2 lg:grid-cols-3">
     <% @articles.each do |article| %>
       <li class="col-span-1 flex rounded">
-        <div class="flex w-full items-center justify-between p-6">
-          <div class="flex-1 truncate">
-            <div class="flex items-center">
-
+        <div class="flex w-full justify-between p-6">
+          <div class="flex-1">
+            <div class="flex">
               <%= link_to user_path(article.user) do %>
-                <img class="shrink-0 h-6 w-6 rounded-full" src="<%= article.user.avatar %>" alt="">
+                <% if article.user.avatar.attached? %>
+                  <%= image_tag article.user.avatar, class: "shrink-0 h-6 w-6 rounded-full" %>
+                <% else %>
+                    <span class="shrink-0 inline-block h-6 w-6 overflow-hidden rounded-full bg-gray-100">
+                    <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                <% end %>
               <% end %>
               <%= link_to user_path(article.user) do %>
-                <h3 class="truncate text-sm mr-2 text-gray-900"><%= article.user.name %></h3>
+                <h3 class="truncate text-sm mr-2 mt-1 text-gray-900"><%= article.user.name %></h3>
               <% end %>
 
             </div>
 
             <%= link_to user_article_path(uuid: article, slug: article.user) do %>
               <% if article.title.blank? %>
-                <h1 class="mt-1 truncate text-2xl text-black"><%= first_paragraph(article) %></h1>
+                <h1 class="mt-1 text-xl text-black"><%= first_paragraph(article) %></h1>
               <% else %>
-                <h1 class="mt-1 truncate text-2xl text-black"><%= article.title %></h1>
+                <h1 class="mt-1 text-xl text-black"><%= article.title %></h1>
               <% end %>
 
             <% end %>

@@ -1,7 +1,7 @@
 class FeedController < ApplicationController
   def index
     @pagy, @articles = pagy(Article.published.order(published_at: :desc))
-    @users = User.last(6)
+    @users = User.last(10).sample(4)
 
     respond_to do |format|
       format.html
