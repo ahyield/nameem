@@ -7,7 +7,7 @@
       <div class="flex-none ml-3 py-10">
         <%= link_to user_path(@article.user), data: { turbo: false } do %>
           <% if @user.avatar.attached? %>
-            <%= image_tag @user.avatar.variant(resize_to_limit: [100, 100]), class: "h-11 w-11 rounded-full bg-gray-50" %>
+            <%= image_tag @user.avatar.variant(resize_to_limit: [600, 600]), class: "h-11 w-11 rounded-full bg-gray-50" %>
           <% else %>
             <span class="inline-block h-11 w-11 overflow-hidden rounded-full bg-gray-100">
               <svg class="h-full w-full text-gray-300 hover:bg-gray-300 hover:bg-opacity-25" fill="currentColor" viewBox="0 0 24 24">
