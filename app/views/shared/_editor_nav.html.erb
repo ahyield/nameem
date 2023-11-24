@@ -24,7 +24,14 @@
               tabindex="0" id="dropdown-button" aria-expanded="false" aria-haspopup="true">
               <span class="absolute -inset-1.5"></span>
               <span class="sr-only">Open user menu</span>
-              <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+              <% if Current.user.avatar.attached? %>
+                <%= image_tag Current.user.avatar, class: "h-8 w-8 rounded-full" %>
+              <% else %>
+                  <span class="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
+                  <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+              <% end %>
             </button>
           </div>
 
@@ -38,8 +45,12 @@
                class="absolute hidden right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
             <!-- Active: "bg-gray-100", Not Active: "" -->
-            <a href="#" class="block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500" role="menuitem" tabindex="-1" id="user-menu-item-0">الصفحة الشخصية</a>
-            <a href="#" class="block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500" role="menuitem" tabindex="-1" id="user-menu-item-1">الإعدادات</a>
+            <%= link_to current_user.slug, class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-1" do %>
+              الصفحة الشخصية
+            <% end %>
+            <%= link_to settings_user_settings_path, class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-1" do %>
+              الصفحة الشخصية
+            <% end %>
             <a href="#" class="block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500" role="menuitem" tabindex="-1" id="user-menu-item-2">خروج</a>
           </div>
         </div>

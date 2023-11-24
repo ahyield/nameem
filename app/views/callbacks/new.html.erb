@@ -1,7 +1,11 @@
 <%= render "shared/nav" %>
+<%= render "flashes/alert", alert: flash[:alert] if !flash[:alert].nil? %>
+<%= render "flashes/notice", notice: flash[:notice] if !flash[:notice].nil? %>
+<%= render "flashes/error", error: flash[:error] if !flash[:error].nil? %>
+
 <div class="email-form flex min-h-full flex-col justify-center py-12 text-right sm:px-6 lg:px-8 pt-20" dir="ltr">
   <div class="sm:mx-auto sm:w-full sm:max-w-md">
-    <img class="mx-auto h-10 w-auto" src="<%= asset_path("brand/logo.png") %>" alt="Your Company">
+    <img class="mx-auto h-10 w-auto" src="<%= asset_path("brand/logo.png") %>" alt="Nameem">
     <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">قم بانهاء تسجيل حسابك</h2>
   </div>
 
@@ -9,6 +13,25 @@
     <div class="bg-white px-6 space-y-4 py-12 shadow sm:rounded-lg sm:px-12">
 
       <%= form_with model: @user, url: callback_create_path, method: :post, html: { class: "space-y-6 font-montserrat" } do |form| %>
+
+        <div class="col-span-full flex items-center gap-x-8" data-controller="image-preview">
+          <% if @user.avatar.attached? %>
+            <%= image_tag @user.avatar.variant(resize_to_limit: [100, 100]), class: "h-24 w-24 flex-none rounded-full bg-gray-800 object-cover", data: { target: "image-preview.output" } %>
+          <% else %>
+            <span class="inline-block h-24 w-24 overflow-hidden rounded-full bg-gray-100">
+              <svg class="image-preview-span h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <%= image_tag "brand/logo.png", data: { target: "image-preview.output" }, class: "hidden h-24 w-24 flex-none rounded-full bg-gray-800 object-cover" %>
+            </span>
+          <% end %>
+          <div>
+            <%= form.file_field :avatar, class: " hidden", accept: "image/*", data: { target: "image-preview.input",  action: "image-preview#readURL" } %>
+            <label for="user_avatar" class=" custom-file-input rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900
+            shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"> تغيير الصورة الشخصية </label>
+          </div>
+        </div>
+
         <div class="text-left">
           <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
           <div class="mt-2">
@@ -23,6 +46,15 @@
               class: "block w-full rounded-md border-0 py-1.5
                       text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
                       focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6", dir: "rtl" %>
+          </div>
+        </div>
+        <div>
+          <label for="slug" class="block text-sm font-medium leading-6 text-gray-900">إسم المستخدم بالانجليزية</label>
+          <div class="mt-2" dir="ltr">
+            <%= form.text_field :slug, value: @user.slug, autocomplete: "username", required: true, minlength: "4",
+              class: "block w-full rounded-md border-0 py-1.5
+                      text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                      focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
           </div>
         </div>
 

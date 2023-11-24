@@ -10,8 +10,8 @@ module Settings
         flash[:notice] = "تم حفظ البيانات بنجاح"
         redirect_to settings_user_settings_path
       else
-        flash[:alert] = "Something went wrong"
-        render :edit
+        flash.now[:error] = @user.errors.full_messages.to_sentence
+        render :edit, status: :unprocessable_entity
       end
     end
 

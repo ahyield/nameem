@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   extend FriendlyId
-  friendly_id :name, use: :slugged
+  friendly_id :email, use: :slugged
 
   has_many :articles, dependent: :destroy
 
@@ -11,14 +11,9 @@ class User < ApplicationRecord
   normalizes :email, with: ->(email) { email.downcase.strip }
 
   validates :email, uniqueness: true
+  validates :slug, uniqueness: true, presence: true, allow_blank: false
 
   generates_token_for :magic_login, expires_in: 15.minutes do
     last_sign_in_at
-  end
-
-  after_validation :set_slug, on: :create
-
-  def set_slug
-    self.slug = email.split("@").first
   end
 end

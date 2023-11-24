@@ -15,11 +15,13 @@ class CallbacksController < ApplicationController
   def create
     @user = User.find_by(email: required_params[:email])
     @user.attributes = user_params
-    @user.confirmed = true unless @user.name.nil?
+    @user.confirmed = true unless @user.name.blank? || @user.slug.blank?
     if @user.save
       authenticate_user_after_sign_up(@user)
     else
-      render :new, notice: "الإسم مطلوب"
+      flash.now[:error] = @user.errors.full_messages.to_sentence
+      @user.avatar = nil
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -59,7 +61,7 @@ class CallbacksController < ApplicationController
 
   def user_params
     user_params = params[:user]
-    user_params ? user_params.permit(:email, :name, :confirmed) : {}
+    user_params ? user_params.permit(:email, :name, :avatar, :slug, :confirmed) : {}
   end
 
   def required_params
