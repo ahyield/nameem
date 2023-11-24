@@ -4,7 +4,7 @@
       <div class="flex">
         <div class="relative flex items-center gap-x-4">
           <% if article.user.avatar.attached? %>
-            <%= image_tag article.user.avatar.variant(resize_to_limit: [600, 600]), class: "h-9 w-9 rounded-full bg-gray-50" %>
+            <%= image_tag article.user.avatar.variant(resize_to_fill: [600, 600]), class: "h-9 w-9 rounded-full bg-gray-50" %>
           <% else %>
             <span class="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
               <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">

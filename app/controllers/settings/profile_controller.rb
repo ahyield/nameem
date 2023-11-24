@@ -29,7 +29,7 @@ module Settings
     end
 
     def user_params
-      params.require(:user).permit(:name, :email, :avatar, :slug)
+      params.require(:user).permit(:name, :email, :avatar, :slug, :bio)
     end
   end
 end

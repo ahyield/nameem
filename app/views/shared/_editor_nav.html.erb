@@ -25,7 +25,7 @@
               <span class="absolute -inset-1.5"></span>
               <span class="sr-only">Open user menu</span>
               <% if Current.user.avatar.attached? %>
-                <%= image_tag Current.user.avatar, class: "h-8 w-8 rounded-full" %>
+                <%= image_tag Current.user.avatar.variant(resize_to_fill: [100, 100]), class: "h-8 w-8 rounded-full" %>
               <% else %>
                   <span class="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
                   <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
