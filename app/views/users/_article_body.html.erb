@@ -44,8 +44,6 @@
     <div class="relative mt-4 aspect-[112/112] lg:aspect-square w-24 h-24 md:w-24 md:h-24 lg:w-32 lg:h-32">
       <% if article_cover(article) %>
         <%= image_tag article_cover(article), class: "absolute inset-0 h-full w-full bg-gray-50 object-cover" %>
-      <% else %>
-        <img src="https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3603&q=80" alt="" class="absolute inset-0 h-full w-full bg-gray-50 object-cover">
       <% end %>
       <div class="absolute inset-0 ring-1 ring-inset ring-gray-900/10"></div>
     </div>
