@@ -17,7 +17,17 @@ class User < ApplicationRecord
                    format:      { with:    /\A[a-zA-Z0-9_-]+\z/,
                                   message: "إسم المستخدم يجب أن يكون أحرف مع أرقام، شرطة، أو شرطة سفلية فقط" }
 
+  validate :slug_is_not_reserved
+
   generates_token_for :magic_login, expires_in: 15.minutes do
     last_sign_in_at
+  end
+
+  private
+
+  def slug_is_not_reserved
+    forbid = Constraints::ReservedSlugs::RESERVED_SLUGS.map(&:downcase)
+
+    errors.add(:slug, :exclusion) if forbid.find { |w| slug.include?(w) }
   end
 end
