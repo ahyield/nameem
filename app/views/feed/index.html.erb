@@ -1,4 +1,7 @@
 <%= render "shared/nav" %>
+<%= render "flashes/alert", alert: flash[:alert] if !flash[:alert].nil? %>
+<%= render "flashes/notice", notice: flash[:notice] if !flash[:notice].nil? %>
+<%= render "flashes/error", error: flash[:error] if !flash[:error].nil? %>
 
 <div class="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:max-w-7xl lg:px-8">
   <h1 class="sr-only">Page title</h1>

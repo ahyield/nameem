@@ -23,10 +23,6 @@ Rails.application.routes.draw do
 
     get "security", to: "security#edit", as: "security"
     put "security", to: "security#update", as: "update_security"
-
-    get "integrations", to: "integrations#edit", as: "integrations"
-    put "integrations", to: "integrations#update", as: "update_integrations"
-
   end
 
   get "latest_feed", to: "feed#latest_feed", as: "latest_feed"
@@ -58,6 +54,7 @@ Rails.application.routes.draw do
   delete 'logout', to: 'sessions#destroy', as: 'logout'
 
   get "auth/callback", to: "callbacks#new", as: 'callback'
+  get "auth/callback/confirm_email", to: "callbacks#confirm_email", as: 'callback_confirm_email'
   get "auth/callback/login", to: "callbacks#login", as: 'callback_login'
   post "auth/callback", to: "callbacks#create", as: 'callback_create'
 

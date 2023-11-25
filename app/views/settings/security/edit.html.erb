@@ -1,4 +1,8 @@
 <%= render "shared/nav" %>
+<%= render "flashes/alert", alert: flash[:alert] if !flash[:alert].nil? %>
+<%= render "flashes/notice", notice: flash[:notice] if !flash[:notice].nil? %>
+<%= render "flashes/error", error: flash[:error] if !flash[:error].nil? %>
+
 <div class="mx-auto max-w-7xl pt-16 lg:flex lg:gap-x-16 lg:px-8">
   <aside class="flex overflow-x-auto border-b border-gray-900/5 py-4 lg:block lg:w-64 lg:flex-none lg:border-0 lg:py-20">
     <%= render "settings/sidebar" %>
@@ -6,6 +10,30 @@
 
   <main class="px-4 py-16 sm:px-6 lg:flex-auto lg:px-0 lg:py-20">
     <div class="mx-auto max-w-2xl space-y-16 sm:space-y-20 lg:mx-0 lg:max-w-none">
+
+      <%= form_with model: @user, url: settings_update_security_path, html: { class: "md:col-span-2" }, method: :put do |form| %>
+          <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
+
+            <div class="col-span-full">
+              <label for="user_email" class="block text-sm font-medium leading-6">البريد الاليكتروني</label>
+              <div class="mt-2 font-montserrat">
+                <%= form.email_field :email, value: @user.email,
+                  class: "block w-full rounded-md border-0 py-1.5 shadow-sm ring-1
+                ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-500
+                sm:text-sm sm:leading-6", dir: "ltr", autocomplete: "email" %>
+              </div>
+            </div>
+            <% unless @user&.confirmed? %>
+              <span class="col-span-full text-gray-400">لم يتم تأكيد البريد الاليكتروني بعد.</span>
+            <% end %>
+
+          </div>
+
+          <div class="mt-8 flex">
+            <%= form.submit "حفظ", class: "rounded-md bg-blue-50 px-3.5 py-2.5 text-sm font-semibold text-blue-600 shadow-sm hover:bg-blue-100" %>
+          </div>
+        <% end %>
+
     </div>
   </main>
 </div>

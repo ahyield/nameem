@@ -9,7 +9,7 @@ class CallbacksController < ApplicationController
 
     return unless @user.nil?
 
-    flash[:error] = "لم نجد مستخدم"
+    flash.now[:error] = "لم نجد مستخدم"
     redirect_to root_path
   end
 
@@ -23,6 +23,20 @@ class CallbacksController < ApplicationController
       flash.now[:error] = @user.errors.full_messages.to_sentence
       @user.avatar = nil
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  def confirm_email
+    @token = params[:token]
+    @user = User.find_by_token_for(:magic_login, @token)
+    if @user.nil?
+      flash[:error] = "لم نجد مستخدم"
+      redirect_to root_path
+    else
+      @user.update(confirmed: true)
+
+      flash[:notice] = "تم تأكيد بريدك الإلكتروني"
+      authenticate_user_after_sign_up(@user)
     end
   end
 

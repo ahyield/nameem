@@ -1,7 +1,9 @@
 class ArticlesController < ApplicationController
   before_action :authenticate_user!
 
-  def new; end
+  def new
+    redirect_to settings_security_path unless current_user&.confirmed?
+  end
 
   def edit
     @user = User.find_by(slug: params[:slug])
