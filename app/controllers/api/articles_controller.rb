@@ -1,8 +1,5 @@
 module Api
-  class ArticlesController < ActionController::API
-    include ActionController::Helpers
-    include Authentication
-
+  class ArticlesController < ApiBaseController
     before_action :authenticate_user!, except: [:show]
 
     def show
