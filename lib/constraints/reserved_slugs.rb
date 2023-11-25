@@ -2,6 +2,8 @@ module Constraints
   class ReservedSlugs
     RESERVED_SLUGS = %w[
       -
+      _
+      health_check
       .well-known
       404.html
       422.html

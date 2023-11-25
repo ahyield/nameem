@@ -16,8 +16,10 @@ class User < ApplicationRecord
   validates :slug, uniqueness:  true,
                    presence:    true,
                    allow_blank: false,
-                   format:      { with:    /\A[a-zA-Z0-9_-]+\z/,
-                                  message: "إسم المستخدم يجب أن يكون أحرف مع أرقام، شرطة، أو شرطة سفلية فقط" }
+                   length:      { minimu: 4, maximum: 50 },
+                   format:      { with:    /\A(?![._-])(?=.*[a-zA-Z0-9])[-_a-zA-Z0-9]+(?<![._-])\z/,
+                                  message: "إسم المستخدم يجب أن يكون أحرف مع أرقام، شرطة، \
+  أو شرطة سفلية فقط، أيضًا، يجب ألا يبدأ أو ينتهي بعلامات" }
   validate :slug_is_not_reserved
 
   generates_token_for :magic_login, expires_in: 15.minutes do
