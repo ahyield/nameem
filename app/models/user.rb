@@ -33,6 +33,6 @@ class User < ApplicationRecord
   def slug_is_not_reserved
     forbid = Constraints::ReservedSlugs::RESERVED_SLUGS.map(&:downcase)
 
-    errors.add(:slug, :exclusion) if forbid.find { |w| slug.include?(w) }
+    errors.add(:slug, :exclusion) if forbid.find { |w| slug.eql?(w) }
   end
 end
