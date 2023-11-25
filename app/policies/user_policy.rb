@@ -6,4 +6,8 @@ class UserPolicy < ApplicationPolicy
   def update?
     user == record
   end
+
+  def drafts?
+    user == record
+  end
 end

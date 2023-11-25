@@ -49,7 +49,7 @@
     </div>
   <% end %>
 </article>
-<% if current_user == @user %>
+<% if policy(article).edit? %>
   <div class="flex border-gray-200 mb-4" data-controller="dropdown" data-action="click->dropdown#toggle click@window->dropdown#hide">
     <button type="button" class="block text-gray-600 font-bold hover:text-gray-500" id="options-menu-2-button" aria-expanded="false"
       aria-haspopup="true">
