@@ -33,6 +33,7 @@ gem "omniauth"
 gem "omniauth-facebook"
 gem "omniauth-rails_csrf_protection"
 
+gem "pundit"
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
