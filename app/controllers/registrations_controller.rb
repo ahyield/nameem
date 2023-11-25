@@ -11,6 +11,7 @@ class RegistrationsController < ApplicationController
       render :new, status: :unprocessable_entity
     else
       user = User.find_or_create_by(email: sign_up_params[:email])
+
       MagicSignUpLinkMailer.with(email: sign_up_params[:email],
                                  token: user.generate_token_for(:magic_login)).magic_sign_up_link.deliver_later
       redirect_to root_path, notice: "من فضلك راجع بريدك الإليكتروني"
