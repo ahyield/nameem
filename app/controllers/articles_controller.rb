@@ -8,6 +8,7 @@ class ArticlesController < ApplicationController
   def edit
     @user = User.find_by(slug: params[:slug])
     @article = @user.articles.find_by(uuid: params[:uuid])
+    authorize @article, :edit?
 
     respond_to do |format|
       format.html
@@ -19,6 +20,8 @@ class ArticlesController < ApplicationController
     @user = User.find_by(slug: params[:slug])
 
     @article = @user.articles.find_by(uuid: params[:uuid])
+    authorize @article, :update?
+
     @article.published = params[:publish]
     @article.published_at = DateTime.now if @article.published_at.nil? && @article.published?
     @article.save!
