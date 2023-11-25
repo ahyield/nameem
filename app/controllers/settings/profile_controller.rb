@@ -2,10 +2,12 @@ module Settings
   class ProfileController < ApplicationController
     def edit
       @user = current_user
+      authorize @user, :edit?
     end
 
     def update
       @user = current_user
+      authorize @user, :update?
 
       if @user.update(user_params)
         flash[:notice] = "تم حفظ البيانات بنجاح"

@@ -2,7 +2,7 @@ module Api
   class AttachmentsController < ApiBaseController
     def delete
       blob = ActiveStorage::Blob.find_signed(signed_id, purpose: :blob_id)
-      blob.purge
+      blob.purge_later
     end
 
     private

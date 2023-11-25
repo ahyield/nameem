@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_24_185209) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_25_192912) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -71,6 +71,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_24_185209) do
     t.boolean "confirmed"
     t.string "slug"
     t.boolean "featured"
+    t.boolean "editor"
+    t.boolean "admin"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["featured"], name: "index_users_on_featured"
     t.index ["slug"], name: "index_users_on_slug", unique: true
