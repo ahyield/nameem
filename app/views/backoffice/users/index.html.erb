@@ -1,0 +1,71 @@
+<%= render "shared/nav" %>
+<%= render "flashes/alert", alert: flash[:alert] if !flash[:alert].nil? %>
+<%= render "flashes/notice", notice: flash[:notice] if !flash[:notice].nil? %>
+<%= render "flashes/error", error: flash[:error] if !flash[:error].nil? %>
+
+<main class="font-montserrat">
+  <div class="pt-16">
+    <%= render "backoffice/nav" %>
+  </div>
+
+  <div class="space-y-16 py-16 xl:space-y-20" dir="ltr">
+    <!-- Recent activity table -->
+    <div class="px-4 sm:px-6 lg:px-8">
+      <div class="mt-8 flow-root">
+        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            <table class="min-w-full divide-y divide-gray-300">
+              <thead>
+                  <tr>
+                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Name</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Username</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Featured</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Picked</th>
+                    <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
+                      <span class="sr-only">Edit</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 bg-white">
+                <% @users.each do |user| %>
+                  <tr>
+                    <td class="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                      <div class="flex items-center">
+                        <div class="h-11 w-11 flex-shrink-0">
+                          <% if user.avatar.attached? %>
+                            <%= image_tag user.avatar.variant(resize_to_fill: [100, 100]), class: "h-11 w-11 rounded-full" %>
+                          <% else %>
+                            <span class="inline-block h-11 w-11 overflow-hidden rounded-full bg-gray-100">
+                              <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                              </svg>
+                            </span>
+                          <% end %>
+                        </div>
+                        <div class="ml-4">
+                          <div class="font-medium text-gray-900"><%= user.name %></div>
+                          <div class="mt-1 text-gray-500"><%= user.email %></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                      <div class="text-gray-900"><%= user.slug %></div>
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"><%= user.featured? %></td>
+                    <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"><%= user.picked? %></td>
+                    <td class="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                      <%= link_to "Edit", edit_backoffice_user_path(user), class: "text-indigo-600 hover:text-indigo-900" %>
+                    </td>
+                  </tr>
+
+                <% end %>
+              </tbody>
+            </table>
+            <%== pagy_nav(@pagy) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
