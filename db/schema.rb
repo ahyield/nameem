@@ -71,8 +71,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_25_192912) do
     t.boolean "confirmed"
     t.string "slug"
     t.boolean "featured"
-    t.boolean "editor"
-    t.boolean "admin"
+    t.boolean "editor", default: false, null: false
+    t.boolean "admin", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["featured"], name: "index_users_on_featured"
     t.index ["slug"], name: "index_users_on_slug", unique: true

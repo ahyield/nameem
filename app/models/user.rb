@@ -30,6 +30,22 @@ class User < ApplicationRecord
     update(featured: true)
   end
 
+  def admin?
+    admin
+  end
+
+  def editor?
+    editor
+  end
+
+  def make_admin
+    update(admin: true)
+  end
+
+  def make_editor
+    update(editor: true)
+  end
+
   private
 
   def slug_is_not_reserved
