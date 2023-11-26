@@ -45,6 +45,7 @@ module Constraints
       editors
       editing
       backdesk
+      backoffice
       backdesks
       search
       sitemap

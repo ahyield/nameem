@@ -58,6 +58,9 @@ Style/StringLiterals:
 Style/FrozenStringLiteralComment:
   EnforcedStyle: never
 
+Style/GuardClause:
+  Enabled: false
+
 Rails/I18nLocaleTexts:
   Enabled: false
 
