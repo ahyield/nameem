@@ -26,8 +26,8 @@
           role="menu" aria-orientation="vertical" aria-labelledby="options-menu-2-button" tabindex="-1" data-dropdown-target="menu">
           <% if policy(@user).edit? %>
             <%= link_to settings_user_settings_path, class: "block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900",
-            role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0" do %>
-            اعدادات الحساب<span class="sr-only">, Reform</span>
+              role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0" do %>
+              اعدادات الحساب<span class="sr-only">, Reform</span>
             <% end %>
           <% end %>
           <div data-controller="clipboard" data-clipboard-success-content-value="تم نسخ الرابط">
