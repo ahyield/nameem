@@ -27,7 +27,7 @@ class FeedController < ApplicationController
   end
 
   def popular_feed
-    @pagy, @articles = pagy(Article.published.order(published_at: :desc))
+    @pagy, @articles = pagy(Article.featured.order(published_at: :desc))
 
     respond_to do |format|
       format.html
