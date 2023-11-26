@@ -21,9 +21,8 @@
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Username</th>
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Featured</th>
                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Picked</th>
-                    <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                      <span class="sr-only">Edit</span>
-                    </th>
+                    <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0"></th>
+                    <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0"></th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white">
@@ -53,6 +52,9 @@
                     </td>
                     <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"><%= user.featured? %></td>
                     <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"><%= user.picked? %></td>
+                    <td class="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                      <%= link_to "View", user_path(user), class: "text-indigo-600 hover:text-indigo-900" %>
+                    </td>
                     <td class="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                       <%= link_to "Edit", edit_backoffice_user_path(user), class: "text-indigo-600 hover:text-indigo-900" %>
                     </td>
