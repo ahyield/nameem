@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include Pagy::Frontend
+
   def active?(path)
     if request.path == path
       "border-blue-500 text-gray-900"

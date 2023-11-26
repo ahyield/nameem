@@ -9,6 +9,10 @@ class User < ApplicationRecord
   has_person_name
 
   scope :featured, -> { where(featured: true) }
+  scope :confirmed, -> { where(confirmed: true) }
+  scope :picked, -> { where(picked: true) }
+  scope :editors, -> { where(editor: true) }
+  scope :admins, -> { where(admin: true) }
 
   normalizes :email, with: ->(email) { email.downcase.strip }
 
