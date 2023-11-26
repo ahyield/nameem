@@ -30,10 +30,10 @@
                     <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
                     <%= link_to "اختيارات المحررين", picked_feed_path, data: { turbo_stream: "feed" },
                       class: "text-lg whitespace-nowrap border-b-2 py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
-                    <%= link_to "الأحدث", latest_feed_path, data: { turbo_stream: "feed" },
-                      class: "whitespace-nowrap border-b-2 text-lg py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
                     <%= link_to "الشائع", popular_feed_path, data: { turbo_stream: "feed" },
                       class: "text-lg whitespace-nowrap border-b-2 py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
+                    <%= link_to "الأحدث", latest_feed_path, data: { turbo_stream: "feed" },
+                      class: "whitespace-nowrap border-b-2 text-lg py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
                   </nav>
                 </div>
               </div>
