@@ -7,7 +7,6 @@ image: ahmgeek/nameem
 # Deploy to these servers.
 servers:
   - 95.217.160.38
-  - 95.217.183.194
 
 # Credentials for your image host.
 registry:
