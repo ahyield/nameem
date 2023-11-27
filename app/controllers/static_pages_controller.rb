@@ -4,4 +4,6 @@ class StaticPagesController < ApplicationController
   def about_nameem; end
 
   def policy; end
+
+  def privacy; end
 end

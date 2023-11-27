@@ -33,6 +33,7 @@ Rails.application.routes.draw do
 
   get 'about-nameem', to: "static_pages#about_nameem"
   get 'policy', to: "static_pages#policy"
+  get 'privacy', to: "static_pages#privacy"
 
 
   namespace :api do
