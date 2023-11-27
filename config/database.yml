@@ -50,12 +50,14 @@ test:
 #
 staging:
   <<: *default
+  host: <%= ENV["DB_HOST"] %>
   database: nameem_staging
-  username: nameem
+  username: root
   password: <%= ENV["X_DATABASE_PASSWORD"] %>
 
 production:
   <<: *default
+  host: <%= ENV["DB_HOST"] %>
   database: nameem_production
-  username: nameem
+  username: root
   password: <%= ENV["X_DATABASE_PASSWORD"] %>
