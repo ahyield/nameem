@@ -19,7 +19,6 @@ module Constraints
       attachments
       settings
       about-nameem
-      nameem
       policy
       privacy
       explore

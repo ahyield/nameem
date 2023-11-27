@@ -57,7 +57,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_26_194646) do
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["user_id"], name: "index_articles_on_user_id"
-    t.index ["uuid"], name: "index_articles_on_uuid"
+    t.index ["uuid"], name: "index_articles_on_uuid", unique: true
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
