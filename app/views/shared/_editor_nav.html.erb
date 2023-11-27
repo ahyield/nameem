@@ -51,7 +51,9 @@
             <%= link_to settings_user_settings_path, class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-1" do %>
               اعدادات الحساب
             <% end %>
-            <a href="#" class="block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500" role="menuitem" tabindex="-1" id="user-menu-item-2">خروج</a>
+            <%= link_to logout_path, class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-2",  method: :delete, 'data-turbo-method': :delete do %>
+              خروج
+            <% end %>
           </div>
         </div>
       </div>
