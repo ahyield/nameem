@@ -54,16 +54,9 @@ accessories:
         - MYSQL_ROOT_PASSWORD
     files:
       # - config/mysql/production.cnf:/etc/mysql/my.cnf
-      - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
+      - db/staging.sql:/docker-entrypoint-initdb.d/setup.sql
     directories:
       - data:/var/lib/mysql
-  redis:
-    image: redis:7.0
-    host: 192.168.0.2
-    port: 6379
-    directories:
-      - data:/data
-
 # Configure custom arguments for Traefik
 # traefik:
 #   args:
