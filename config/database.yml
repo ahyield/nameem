@@ -53,11 +53,11 @@ staging:
   host: <%= ENV["DB_HOST"] %>
   database: nameem_staging
   username: root
-  password: <%= ENV["X_DATABASE_PASSWORD"] %>
+  password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
 
 production:
   <<: *default
   host: <%= ENV["DB_HOST"] %>
   database: nameem_production
   username: root
-  password: <%= ENV["X_DATABASE_PASSWORD"] %>
+  password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
