@@ -35,7 +35,7 @@ class ImageBlot extends BlockEmbed {
   static create(value) {
     const node = super.create()
     node.setAttribute("src", value.url)
-    node.setAttribute("class", "p-4")
+    node.setAttribute("class", "py-4")
     return node
   }
 
@@ -54,11 +54,6 @@ Quill.register("modules/clipboard", PlainClipboard, true)
 
 let editor = null
 let change = new Delta()
-
-//helper shit
-function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-}
 
 export default class extends Controller {
   async connect() {
@@ -188,8 +183,6 @@ export default class extends Controller {
     const articleTitle = document.getElementById("article-title").value
     if (articleTitle === null) return
 
-    await timeout("2000")
-
     if (this.isNewArticle()) {
       const data = await this.newArticle()
       this.drawUrl(data)
@@ -248,10 +241,10 @@ export default class extends Controller {
     const btn = document.querySelector(".btn-publish-disabled")
     if(btn) {
       btn.classList.remove("btn-publish-disabled")
-
-      const form = document.getElementById("publish-form-btn")
-      form.action = `/${slug}/publish_modal/${uuid}`
     }
+
+    const form = document.getElementById("publish-form-btn")
+    form.action = `/${slug}/publish_modal/${uuid}`
   }
 
   getImgUrls(delta) {

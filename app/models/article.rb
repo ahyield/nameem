@@ -15,6 +15,7 @@ class Article < ApplicationRecord
   validates :featured, inclusion: { in: [true, false] }, allow_blank: true
   validates :published, inclusion: { in: [true, false] }, allow_blank: true
   validates :picked, inclusion: { in: [true, false] }, allow_blank: true
+  validates :uuid, uniqueness: true
 
   def to_param
     uuid

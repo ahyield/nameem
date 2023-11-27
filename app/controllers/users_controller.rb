@@ -27,7 +27,7 @@ class UsersController < ApplicationController
 
   def drafts
     @user = User.friendly.find(params[:slug])
-    @pagy, @articles = pagy(current_user.articles.drafts.order(updated_at: :desc))
+    @pagy, @articles = pagy(@user.articles.drafts.order(updated_at: :desc))
 
     respond_to do |format|
       format.html
