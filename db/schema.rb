@@ -48,9 +48,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_26_194646) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.binary "uuid", limit: 16
-    t.boolean "featured"
-    t.boolean "published"
-    t.boolean "picked"
+    t.boolean "featured", default: false, null: false
+    t.boolean "published", default: false, null: false
+    t.boolean "picked", default: false, null: false
     t.text "description"
     t.index ["featured"], name: "index_articles_on_featured"
     t.index ["picked"], name: "index_articles_on_picked"
@@ -70,7 +70,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_26_194646) do
     t.datetime "last_sign_in_at"
     t.boolean "confirmed"
     t.string "slug"
-    t.boolean "featured"
+    t.boolean "featured", default: false, null: false
     t.boolean "editor", default: false, null: false
     t.boolean "admin", default: false, null: false
     t.boolean "picked", default: false, null: false
