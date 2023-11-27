@@ -52,10 +52,13 @@ gem "name_of_person"
 gem "image_processing"
 gem "mini_magick"
 
+gem "mailgun-ruby"
+
+gem "dotenv-rails"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri windows]
-  gem "dotenv-rails"
   gem "rspec-rails"
 end
 
