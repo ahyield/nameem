@@ -85,6 +85,6 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :mailgun
   config.action_mailer.mailgun_settings = {
     api_key: Rails.application.credentials.dig(:mailgun, :api_key),
-    domain: 'nameem.com',
+    domain: 'sandbox7dab7bdaf36b433dad1dd6cafc796c6e.mailgun.org',
   }
 end
