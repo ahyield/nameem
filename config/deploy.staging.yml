@@ -5,7 +5,6 @@ image: ahmgeek/nameem-staging
 servers:
   web:
     - 95.217.160.38
-    - 95.217.183.194
 
 # Inject ENV variables into containers (secrets come from .env).
 # Remember to run `kamal env push` after making changes!
