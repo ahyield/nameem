@@ -5,7 +5,7 @@ class ConfirmEmailMailer < ApplicationMailer
 
     mail(
       to:      @email,
-      subject: "Nameem Magic Signup Link"
+      subject: "نميم - رابط تأكيد البريد الإلكتروني"
     )
   end
 end
