@@ -15,8 +15,6 @@ env:
   secret:
     - RAILS_MASTER_KEY
     - MYSQL_ROOT_PASSWORD
-    - FACEBOOK_APP_SECRET
-    - FACEBOOK_APP_ID
 
 builder:
   dockerfile: Dockerfile.staging
