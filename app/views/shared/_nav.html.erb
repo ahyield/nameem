@@ -38,7 +38,7 @@
           <% if !user_signed_in? %>
             <a href="/login" class="inline-flex items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active?("/login") %>">دخول</a>
           <% end %>
-          <a href="/policy" class="inline-flex items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active?("/policy") %>">الشروط</a>
+          <a href="/terms" class="inline-flex items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active?("/terms") %>">الشروط</a>
         </div>
       </div>
       <div class="flex items-center">
@@ -118,7 +118,7 @@
       <% if !user_signed_in? %>
         <a href="/login" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active?("/login") %> sm:pl-5 sm:pr-6">دخول</a>
       <% end %>
-      <a href="/policy" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active?("/policy") %> sm:pl-5 sm:pr-6">الشروط</a>
+      <a href="/terms" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active?("/terms") %> sm:pl-5 sm:pr-6">الشروط</a>
     </div>
     <div class="border-t border-gray-200 pb-3 pt-4">
       <% if user_signed_in? %>

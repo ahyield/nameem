@@ -21,6 +21,7 @@ module Constraints
       about-nameem
       policy
       privacy
+      terms
       explore
       favicon.ico
       favicon.png
