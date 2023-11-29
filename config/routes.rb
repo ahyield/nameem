@@ -59,9 +59,6 @@ Rails.application.routes.draw do
   get "auth/callback/confirm_email", to: "callbacks#confirm_email", as: 'callback_confirm_email'
   get "auth/callback/login", to: "callbacks#login", as: 'callback_login'
   post "auth/callback", to: "callbacks#create", as: 'callback_create'
-
-  get 'auth/facebook/callback', to: 'callbacks#facebook'
-  get '/auth/failure', to: "home#index"
   ##################################################################
 
   get 'new-story', to: 'articles#new', as: 'new-story'

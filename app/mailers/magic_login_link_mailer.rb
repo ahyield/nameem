@@ -5,7 +5,7 @@ class MagicLoginLinkMailer < ApplicationMailer
 
     mail(
       to:      @user.email,
-      subject: "Nameem Magic Login Link"
+      subject: "نمين - رابط تسيجل الدخول"
     )
   end
 end
