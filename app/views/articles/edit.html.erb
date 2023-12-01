@@ -1,3 +1,3 @@
-<%= content_for :title, "نميم - تعديل #{@article.title || @article.alternative_titles.first&.truncate(20)}" %>
+<% title "نميم - تعديل #{@article.title || @article.alternative_titles.first&.truncate(20)}" %>
 
 <%= render "editor/editor" %>
