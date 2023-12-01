@@ -9,6 +9,8 @@ class UsersController < ApplicationController
     @user = User.friendly.find(params[:slug])
     @article = @user.articles.find_by(uuid: params[:uuid])
 
+    authorize @article, :show?
+
     respond_to do |format|
       format.html
       format.json { render json: @article }
