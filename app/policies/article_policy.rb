@@ -6,4 +6,12 @@ class ArticlePolicy < ApplicationPolicy
   def edit?
     update?
   end
+
+  def show?
+    if record.draft?
+      user.present? && record.user == user
+    else
+      true
+    end
+  end
 end
