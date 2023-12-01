@@ -1,4 +1,4 @@
-<%= content_for :title, "نميم - #{@user.name} - تعديل الحساب" %>
+<% title "نميم - #{@user.name} - تعديل الحساب" %>
 
 <%= render "shared/nav" %>
 <%= render "flashes/alert", alert: flash[:alert] if !flash[:alert].nil? %>

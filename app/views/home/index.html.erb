@@ -1,4 +1,14 @@
-<%= content_for :title, "نميم" %>
+<% title "نميم" %>
+<% description "نميم، منصة نشر وكتابة باللغة العربية، اسم عربي صوت حركة خفية، صوت الخطوة في الظلام، وصوت الكتابة. وهو الكلام الذي يثير الفِتَنْ، أحيانًا." %>
+<% keywords "كتابة، نشر، لغى عربية" %>
+
+<% set_meta_tags og: { title: "نميم" } %>
+<% set_meta_tags og: { description: "نميم، منصة نشر وكتابة باللغة العربية، اسم عربي صوت حركة خفية، صوت الخطوة في الظلام، وصوت الكتابة. وهو الكلام الذي يثير الفِتَنْ، أحيانًا." } %>
+<% set_meta_tags og: { image: "#{ asset_path("brand/logo.png") }" } %>
+
+<% set_meta_tags twitter: { site: "@nameemofficial" } %>
+<% set_meta_tags twitter: { card: "نميم، منصة نشر وكتابة باللغة العربية، اسم عربي صوت حركة خفية، صوت الخطوة في الظلام، وصوت الكتابة. وهو الكلام الذي يثير الفِتَنْ، أحيانًا." } %>
+<% set_meta_tags twitter: { image:  { _: "#{ asset_path("brand/logo.png")}", width: 100, height: 100 } } %>
 
 <%= render "shared/nav" %>
 <%= render "hero" %>

@@ -1,4 +1,13 @@
-<%= content_for :title, "نميم - #{@article.title || @article.alternative_titles.first&.truncate(20) } بقلم #{@user.name}" %>
+<% title "نميم - #{@article.title || @article.alternative_titles.first&.truncate(20) } بقلم #{@user.name}" %>
+<% description "#{@article.description&.truncate(100)}" %>
+
+<% set_meta_tags og: { title: "#{@article.title}" } %>
+<% set_meta_tags og: { description: "#{@article.description&.truncate(100)}" } %>
+<% set_meta_tags og: { image: "#{article_cover(@article) ||  asset_path("brand/logo.png") }" } %>
+
+<% set_meta_tags twitter: { site: "@nameemofficial" } %>
+<% set_meta_tags twitter: { card: "#{@article.description&.truncate(100)}" } %>
+<% set_meta_tags twitter: { image:  { _: "#{article_cover(@article) ||  asset_path("brand/logo.png") }", width: 100, height: 100 } } %>
 
 <%= render "shared/nav" %>
 
