@@ -37,6 +37,7 @@ module Nameem
     # config.eager_load_paths << Rails.root.join("extras")
     config.i18n.default_locale = :ar
 
+    config.active_storage.resolve_model_to_route = :rails_storage_proxy
     if Rails.env.production? || Rails.env.staging?
       config.asset_host = ENV['CDN_HOST']
       config.action_mailer.asset_host = ENV['CDN_HOST']

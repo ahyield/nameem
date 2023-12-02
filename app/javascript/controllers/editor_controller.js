@@ -392,7 +392,7 @@ export default class extends Controller {
           alert("Uploading failed!")
         } else {
           editor.insertEmbed(range.index, "customImage", {
-            url: `${baseURL}/rails/active_storage/blobs/${blob.signed_id}/${blob.filename}`,
+            url: `${baseURL}/rails/active_storage/blobs/proxy/${blob.signed_id}/${blob.filename}`,
           }, Quill.sources.USER)
           editor.setSelection(range.index + 1, Quill.sources.SILENT)
           const sidebar = document.querySelector(".sidebar-controls")
