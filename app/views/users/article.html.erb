@@ -4,6 +4,8 @@
 <% set_meta_tags og: { title: "#{@article.title}" } %>
 <% set_meta_tags og: { description: "#{@article.description&.truncate(100)}" } %>
 <% set_meta_tags og: { image: "#{article_cover(@article) ||  asset_path("brand/logo.png") }" } %>
+<% set_meta_tags og: { url: "#{user_article_url(slug: @article.user, uuid: @article)}" } %>
+<% set_meta_tags og: { type: "article" } %>
 
 <% set_meta_tags twitter: { site: "@nameemofficial" } %>
 <% set_meta_tags twitter: { card: "#{@article.description&.truncate(100)}" } %>
