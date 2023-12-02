@@ -38,6 +38,7 @@ module Nameem
     config.i18n.default_locale = :ar
 
     config.active_storage.resolve_model_to_route = :rails_storage_proxy
+
     if Rails.env.production?
       config.asset_host = "https://nameem.com"
       config.action_mailer.asset_host = "https://nameem.com"
