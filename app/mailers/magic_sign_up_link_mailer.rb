@@ -5,7 +5,7 @@ class MagicSignUpLinkMailer < ApplicationMailer
 
     mail(
       to:      @email,
-      subject: "نمين - رابط تسيجل الحساب"
+      subject: "نميم - رابط تسيجل الحساب"
     )
   end
 end
