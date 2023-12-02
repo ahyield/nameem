@@ -377,6 +377,10 @@ GEM
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)
       railties (>= 6.0.0)
+    turnstile-captcha (0.1.5)
+      faraday
+      hashie
+      rails (>= 6.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
@@ -434,6 +438,7 @@ DEPENDENCIES
   stimulus-rails
   tailwindcss-rails
   turbo-rails
+  turnstile-captcha
   web-console
 
 RUBY VERSION

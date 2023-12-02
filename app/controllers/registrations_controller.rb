@@ -6,15 +6,21 @@ class RegistrationsController < ApplicationController
 
   def create
     @user = User.find_by(email: sign_up_params[:email])
-    if @user&.confirmed?
-      flash.now[:error] = "هذا المستخدم موجود بالفعل"
-      render :new, status: :unprocessable_entity
-    else
-      user = User.find_or_create_by(email: sign_up_params[:email])
 
-      MagicSignUpLinkMailer.with(email: sign_up_params[:email],
-                                 token: user.generate_token_for(:magic_login)).magic_sign_up_link.deliver_later
-      redirect_to root_path, notice: "من فضلك راجع بريدك الإليكتروني"
+    if valid_captcha?(model: @user)
+      if @user&.confirmed?
+        flash.now[:error] = "هذا المستخدم موجود بالفعل"
+        render :new, status: :unprocessable_entity
+      else
+        user = User.find_or_create_by(email: sign_up_params[:email])
+
+        MagicSignUpLinkMailer.with(email: sign_up_params[:email],
+                                   token: user.generate_token_for(:magic_login)).magic_sign_up_link.deliver_later
+        redirect_to root_path, notice: "من فضلك راجع بريدك الإليكتروني"
+      end
+    else
+      flash.now[:error] = "عفوًا فشل التحقق من الكابتشا"
+      render :new, status: :unprocessable_entity
     end
   end
 
