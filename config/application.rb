@@ -43,7 +43,7 @@ module Nameem
       config.action_mailer.asset_host = "https://nameem.com"
     elsif Rails.env.staging?
       config.asset_host = "https://staging.nameem.com"
-      config.action_mailer.asset_host = "https://nameem.com"
+      config.action_mailer.asset_host = "https://staging.nameem.com"
     else
       config.asset_host = "http://localhost:3000"
       config.action_mailer.asset_host = "http://localhost:3000"
