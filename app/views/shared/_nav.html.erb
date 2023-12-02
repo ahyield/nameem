@@ -36,7 +36,7 @@
         <div class="hidden md:ml-6 md:flex md:space-x-8">
           <a href="/about-nameem" class="inline-flex rtl:ml-6 mr-4 items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active?("/about-nameem") %>">عن نميم</a>
           <% if !user_signed_in? %>
-            <a href="/login" class="inline-flex items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active?("/login") %>">دخول</a>
+            <a href="/login" class="inline-flex items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active?("/login") %>" data-turbo="false">دخول</a>
           <% end %>
           <a href="/terms" class="inline-flex items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active?("/terms") %>">الشروط</a>
         </div>
@@ -44,7 +44,7 @@
       <div class="flex items-center">
         <div class="flex-shrink-0">
           <% if !user_signed_in? %>
-            <%= link_to signup_path, class: "relative rounded-full flex focus:outline-none focus:ring-0 gap-x-1.5 px-3 py-2 opacity-70 hover:opacity-100" do %>
+            <%= link_to signup_path, class: "relative rounded-full flex focus:outline-none focus:ring-0 gap-x-1.5 px-3 py-2 opacity-70 hover:opacity-100", data: { turbo: false } do %>
               <span class="absolute -inset-1.5"></span>
               <%= heroicon "pencil-square" %>
               <span class="rtl:mr-1 font-bold mt-1">أكــتــب</span>
@@ -101,7 +101,7 @@
               </div>
             </div>
           <% else %>
-            <%= button_to signup_path, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", method: :get do %>
+            <%= button_to signup_path, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", method: :get, data: { turbo: false } do %>
               <span class="absolute -inset-1.5"></span>
               <span class="btn-publish-text">حساب جديد</span>
             <% end %>
@@ -116,7 +116,7 @@
     <div class="space-y-1 pb-3 pt-2">
       <a href="/about-nameem" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active?("/about-nameem") %> sm:pl-5 sm:pr-6">عن نميم</a>
       <% if !user_signed_in? %>
-        <a href="/login" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active?("/login") %> sm:pl-5 sm:pr-6">دخول</a>
+        <a href="/login" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active?("/login") %> sm:pl-5 sm:pr-6" data-turbo="false">دخول</a>
       <% end %>
       <a href="/terms" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active?("/terms") %> sm:pl-5 sm:pr-6">الشروط</a>
     </div>
@@ -143,7 +143,7 @@
           <%= link_to "تسجيل الخروج", logout_path, class: "block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6", method: :delete, 'data-turbo-method': :delete %>
         </div>
       <% else %>
-        <%= button_to signup_path, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", method: :get do %>
+        <%= button_to signup_path, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", method: :get, data: { turbo: false } do %>
           <span class="absolute -inset-1.5"></span>
           <span class="btn-publish-text">حساب جديد</span>
         <% end %>

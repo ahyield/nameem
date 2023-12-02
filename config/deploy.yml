@@ -26,6 +26,8 @@ env:
   secret:
     - RAILS_MASTER_KEY
     - MYSQL_ROOT_PASSWORD
+    - TURNSTILE_SITE_KEY
+    - TURNSTILE_SECRET_KEY
 
 # Use a different ssh user than root
 # ssh:
