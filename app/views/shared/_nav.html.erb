@@ -1,4 +1,4 @@
-<nav class="bg-transparent inset-x-0 top-0 z-10 absolute shadow">
+<nav class="bg-transparent inset-x-0 top-0 z-30 absolute shadow">
   <div class="mx-auto lg:w-3/5 sm:w-2/3 px-4 sm:px-6 lg:px-8">
     <div class="flex h-16 justify-between">
       <div class="flex">
@@ -34,7 +34,7 @@
           </a>
         </div>
         <div class="hidden md:ml-6 md:flex md:space-x-8">
-          <a href="/about-nameem" class="inline-flex rtl:ml-6 items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active?("/about-nameem") %>">عن نميم</a>
+          <a href="/about-nameem" class="inline-flex rtl:ml-6 mr-4 items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active?("/about-nameem") %>">عن نميم</a>
           <% if !user_signed_in? %>
             <a href="/login" class="inline-flex items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active?("/login") %>">دخول</a>
           <% end %>
