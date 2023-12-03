@@ -6,7 +6,7 @@ image: ahmgeek/nameem
 
 # Deploy to these servers.
 servers:
-  - 203.0.113.10
+  -
 
 # Credentials for your image host.
 registry:
@@ -21,7 +21,7 @@ registry:
 # Remember to run `kamal env push` after making changes!
 env:
   clear:
-    DB_HOST: 203.0.113.20
+    DB_HOST:
   secret:
     - RAILS_MASTER_KEY
     - MYSQL_ROOT_PASSWORD
@@ -46,7 +46,7 @@ env:
 accessories:
   db:
     image: mysql:8.0
-    host: 203.0.113.20
+    host:
     port: 3306
     env:
       clear:

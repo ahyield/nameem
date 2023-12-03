@@ -1,0 +1,26 @@
+# Name of the container image.
+image: ahmgeek/nameem-staging
+
+# Deploy to these servers.
+servers:
+  - 203.0.113.10
+
+# Inject ENV variables into containers (secrets come from .env).
+# Remember to run `kamal env push` after making changes!
+env:
+  clear:
+    DB_HOST: 203.0.113.20
+  secret:
+    - RAILS_MASTER_KEY
+    - MYSQL_ROOT_PASSWORD
+    - TURNSTILE_SITE_KEY
+    - TURNSTILE_SECRET_KEY
+
+builder:
+  dockerfile: Dockerfile
+
+accessories:
+  db:
+    host: 203.0.113.20
+    files:
+      - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
