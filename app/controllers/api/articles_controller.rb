@@ -22,11 +22,12 @@ module Api
     end
 
     def update
-      @article = Current.user.articles.find_or_create_by(uuid: params[:uuid])
+      @user = User.find_by(slug: params[:slug])
+      @article = @user.articles.find_or_create_by(uuid: params[:uuid])
       authorize @article, :update?
 
       @article.attributes = article_params
-      @article.user = Current.user unless @article.user
+      @article.user = @user unless @article.user
       @article.save!
       render json: @article
     end
