@@ -26,7 +26,7 @@ class ArticlesController < ApplicationController
     @article.published_at = DateTime.now if @article.published_at.nil? && @article.published?
     @article.save!
 
-    redirect_to user_article_path(uuid: @article.uuid, slug: Current.user.slug)
+    redirect_to user_article_path(uuid: @article.uuid, slug: @user.slug)
   end
 
   def show_modal
