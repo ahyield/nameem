@@ -43,7 +43,7 @@
                             publish-btn hover:from-cyan-500 hover:to-blue-600 focus-visible:outline
                             focus-visible:outline-2 focus-visible:outline-offset-2 text-lg w-24", method: :put, data: { turbo: false } %>
 
-              <%= button_to "حفظ كمسودة", user_update_article_path(uuid: params[:uuid], slug: params[:slug], publish: false), class: "flex-1 rounded-md bg-gray-500 px-3 py-2 text-sm font-semibold
+              <%= button_to "حفظ كمسودة", user_update_article_path(uuid: params[:uuid], slug: params[:slug], publish: false), class: "flex-1 rounded-md bg-gray-500 px-3 w-24 py-2 text-sm font-semibold
                             text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2
                             focus-visible:outline-offset-2 focus-visible:outline-indigo-600", method: :put, data: { turbo: false } %>
             </div>
