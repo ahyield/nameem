@@ -4,13 +4,22 @@
 
 <% set_meta_tags og: { title: "#{@user.name}" } %>
 <% set_meta_tags og: { description: "#{@user.bio}" } %>
-<% set_meta_tags og: { image: "#{rails_blob_url @user.avatar ||  asset_path("brand/logo.png") }" } %>
+<% if @user.avatar.attached? %>
+  <% set_meta_tags og: { image: "#{rails_blob_url @user.avatar}" } %>
+<% else %>
+  <% set_meta_tags og: { image: "#{asset_path("brand/logo.png")}" } %>
+<% end %>
 <% set_meta_tags og: { url: "#{user_url(slug: @user.slug)}" } %>
 <% set_meta_tags og: { type: "article" } %>
 
 <% set_meta_tags twitter: { site: "@nameemofficial" } %>
 <% set_meta_tags twitter: { card: "#{@user.name}" } %>
-<% set_meta_tags twitter: { image:  { _: "#{rails_blob_url @user.avatar ||  asset_path("brand/logo.png") }", width: 100, height: 100 } } %>
+
+<% if @user.avatar.attached? %>
+  <% set_meta_tags twitter: { image:  { _: "#{rails_blob_url @user.avatar}", width: 100, height: 100 } } %>
+<% else %>
+  <% set_meta_tags twitter: { image:  { _: "#{asset_path("brand/logo.png")}", width: 100, height: 100 } } %>
+<% end %>
 
 <%= render "shared/nav" %>
 
