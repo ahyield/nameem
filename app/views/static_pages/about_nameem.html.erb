@@ -12,11 +12,11 @@
       </div>
       <% if !user_signed_in? %>
         <div class="flex flex-1 justify-end">
-          <%= button_to signup_path, class: "h-8 relative px-6 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", method: :get, data: { turbo: false }  do %>
+          <%= button_to signup_path, class: "h-8 relative px-6 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", method: :get do %>
             <span class="absolute -inset-1.5"></span>
             <span class="btn-publish-text">حساب جديد</span>
           <% end %>
-          <a href="/login" class="mt-1 mr-3 text-sm font-semibold leading-6 text-gray-900" data-turbo="false">دخول <span aria-hidden="true">&larr;</span></a>
+          <a href="/login" class="mt-1 mr-3 text-sm font-semibold leading-6 text-gray-900">دخول <span aria-hidden="true">&larr;</span></a>
         </div>
       <% end %>
     </nav>
