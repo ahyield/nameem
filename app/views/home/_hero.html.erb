@@ -13,7 +13,7 @@
         <p class="mt-6 text-lg leading-8 text-gray-600 opacity-50">اسم  عربي صوت حركة خفية، صوت الخطوة في الظلام، وصوت الكتابة.</p>
         <p class="text-lg text-gray-600 opacity-50">وهو الكلام الذي يثير الفِتَنْ، أحيانًا.</p>
         <div class="mt-3 flex items-center justify-right gap-x-6">
-          <%= button_to signup_path, method: :get, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0" do %>
+          <%= button_to signup_path, method: :get, data: { turbo: false }, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0" do %>
             <span class="absolute -inset-1.5"></span>
             <span class="btn-publish-text">ابدأ القراءة</span>
           <% end %>
