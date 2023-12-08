@@ -11,17 +11,26 @@
   <input type="text" autocomplete="off" placeholder="Paste or write link.." dir="ltr" id="link"
         data-action="click@window->editor#hideLinkTip keydown.enter->editor#enterLinkTip keydown.esc->editor#closeTips"
         class="link-tip hidden shaddow-none focus:ring-0 border-0 placeholder:italic placeholder:text-slate-200 bg-gradient-to-r from-cyan-500 text-slate-50 to-blue-500 rounded-lg" name="link">
-  <div class="hidden sidebar-controls h-7 space-x-3 bg-gradient-to-r from-cyan-300 to-blue-500 rounded-full text-slate-50">
-    <button id="image-button" data-action="click->editor#imageUpload">
-      <i class="fa-solid fa-image"></i>
-      <div class="absolute inset-0 ring-inset"></div>
-    </button>
-      <!--
+  <div class="hidden sidebar-controls bg-gradient-to-r from-cyan-300 to-blue-500 rounded-lg text-slate-50">
+    <ul>
+      <li>
+        <button id="image-button" data-action="click->editor#imageUpload">
+          <i class="fa-solid fa-image"></i>
+        </button>
+      </li>
       <hr class="h-px bg-slate-200 border-0">
-      <li><button id="video-button"><i class="fa-brands fa-youtube"></i></button></li>
+      <li>
+        <button id="video-button" data-action="click->editor#videoInsert">
+          <i class="fa-brands fa-youtube"></i>
+        </button>
+      </li>
       <hr class="h-px bg-slate-200 border-0">
-      <li><button id="tweet-button"><i class="fa-brands fa-twitter" aria-hidden="true"></i></button></li>
-      -->
+      <li>
+        <button id="tweet-button" data-action="click->editor#tweetInsert">
+          <i class="fa-brands fa-twitter" aria-hidden="true"></i>
+        </button>
+      </li>
+    </ul>
   </div>
 
   <div class="h-full mt-20 title">
