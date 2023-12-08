@@ -131,7 +131,7 @@ export default class extends Controller {
         change = change.compose(delta)
         if(deleted.length >= 1) {
           const imageURL = deleted[0].url
-          const signed_id = imageURL.split("/")[6]
+          const signed_id = imageURL.split("/")[7]
           fetch(`/api/attachments/delete?image_url=${signed_id}`, { method: "DELETE" })
         }
       }
