@@ -49,7 +49,65 @@ class ImageBlot extends BlockEmbed {
 ImageBlot.blotName = "customImage"
 ImageBlot.tagName = "img"
 
+class VideoBlot extends BlockEmbed {
+  static create(url) {
+    const node = super.create()
+    node.setAttribute("src", url)
+    node.setAttribute("frameborder", "0")
+    node.setAttribute("allowfullscreen", true)
+    return node
+  }
+
+  static formats(node) {
+    const format = {}
+    if (node.hasAttribute("height")) {
+      format.height = node.getAttribute("height")
+    }
+    if (node.hasAttribute("width")) {
+      format.width = node.getAttribute("width")
+    }
+    return format
+  }
+
+  static value(node) {
+    return node.getAttribute("src")
+  }
+
+  format(name, value) {
+    if (name === "height" || name === "width") {
+      if (value) {
+        this.domNode.setAttribute(name, value)
+      } else {
+        this.domNode.removeAttribute(name, value)
+      }
+    } else {
+      super.format(name, value)
+    }
+  }
+}
+
+VideoBlot.blotName = "video"
+VideoBlot.tagName = "iframe"
+
+class TweetBlot extends BlockEmbed {
+  static create(id) {
+    const node = super.create()
+    node.dataset.id = id
+    // twttr.widgets.createTweet(id, node)
+    return node
+  }
+
+  static value(domNode) {
+    return domNode.dataset.id
+  }
+}
+TweetBlot.blotName = "tweet"
+TweetBlot.tagName = "div"
+TweetBlot.className = "tweet"
+
 Quill.register(ImageBlot)
+Quill.register(TweetBlot)
+Quill.register(VideoBlot)
 Quill.register("modules/clipboard", PlainClipboard, true)
 
 let editor = null
@@ -75,7 +133,7 @@ export default class extends Controller {
     const rangeBounds = editor.getBounds(range)
 
     sidebar.style.display = "block"
-    sidebar.style.marginTop = `${rangeBounds.top + 139}px`
+    sidebar.style.marginTop = `${rangeBounds.top + 115}px`
     sidebar.style.left = `${ 8 + rangeBounds.left}px`
 
     editor.on(Quill.events.EDITOR_CHANGE, function(event, range) {
@@ -89,7 +147,7 @@ export default class extends Controller {
 
        if (block != null && block.domNode.firstChild instanceof HTMLBRElement) {
          sidebar.style.display = "block"
-         sidebar.style.marginTop = `${rangeBounds.top + 139}px`
+         sidebar.style.marginTop = `${rangeBounds.top + 115}px`
          sidebar.style.left = `${ 8 + rangeBounds.left}px`
        } else {
          sidebar.style.display = "none"
@@ -401,5 +459,16 @@ export default class extends Controller {
       })
     }
     input.click()
+  }
+
+  videoInsert() {
+    const range = editor.getSelection(true)
+    const url = "https://www.youtube.com/embed/QHH3iSeDBLo?showinfo=0"
+    editor.insertEmbed(range.index, "video", url, Quill.sources.USER)
+    editor.formatText(range.index, 1, { height: "380", width: "680" })
+    editor.setSelection(range.index + 1, Quill.sources.SILENT)
+  }
+
+  tweetInsert(event) {
   }
 }
