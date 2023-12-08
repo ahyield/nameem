@@ -14,7 +14,7 @@ export default class extends Controller {
       }
 
       if (op.attributes.blockquote){
-        return ["text-xl italic content-center grid font-semibold text-gray-900 pr-3"]
+        return ["text-xl italic font-semibold text-gray-900 pr-3"]
       }
     }}
     var converter = new QuillDeltaToHtmlConverter(deltaOps, cfg)
