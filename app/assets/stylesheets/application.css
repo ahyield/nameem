@@ -17,6 +17,40 @@
   text-align: right;
 }
 
+.ql-video {
+  width: 740px;
+  height: 360px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+@media ( 410px <= width <= 640px) {
+  .ql-video {
+    width: 380px;
+    height: 160px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+}
+
+@media ( 550px <= width <= 768px) {
+  .ql-video {
+    width: 530px;
+    height: 260px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+}
+
+@media ( 1px <= width <= 410px) {
+  .ql-video {
+    width: 320px;
+    height: 180px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+}
+
 .editor-container h1 + p,
 .editor-container h2 + p {
   margin-top: 0.5em;
