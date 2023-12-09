@@ -94,7 +94,7 @@ class TweetBlot extends BlockEmbed {
   static create(id) {
     const node = super.create()
     node.dataset.id = id
-    // twttr.widgets.createTweet(id, node)
+    twttr.widgets.createTweet(id, node) // eslint-disable-line
     return node
   }
 
@@ -102,6 +102,7 @@ class TweetBlot extends BlockEmbed {
     return domNode.dataset.id
   }
 }
+
 TweetBlot.blotName = "tweet"
 TweetBlot.tagName = "div"
 TweetBlot.className = "tweet"
@@ -385,12 +386,17 @@ export default class extends Controller {
     const linkTip = document.querySelector(".link-tip")
     const videoTip = document.querySelector(".video-input")
     const toolTip = document.querySelector(".tooltip-controls")
+    const tweetTip = document.querySelector(".tweet-input")
+
     document.getElementById("link").value = ""
     document.getElementById("video").value = ""
+    document.getElementById("tweet").value = ""
 
     linkTip.style.display = "none"
     toolTip.style.display = "none"
     videoTip.style.display = "none"
+    tweetTip.style.display = "none"
+
 
     editor.focus()
   }
@@ -507,6 +513,7 @@ export default class extends Controller {
       document.getElementById("video").value = ""
       videoTip.style.display = "none"
     }
+    videoTip.style.display = "none"
   }
 
   enterVideoTip(event) {
@@ -545,6 +552,10 @@ export default class extends Controller {
       }
     }
   }
-  tweetInsert(event) {
+
+  tweetInsert(id) {
+    const range = editor.getSelection(true)
+    editor.insertEmbed(range.index, "tweet", id, Quill.sources.USER)
+    editor.setSelection(range.index + 1, Quill.sources.SILENT)
   }
 }
