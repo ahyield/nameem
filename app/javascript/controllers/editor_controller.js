@@ -321,7 +321,7 @@ export default class extends Controller {
       toolTip.style.display = "none"
       linkTip.style.display = "block"
       linkTip.style.left = "0px"
-      linkTip.style.width = "22%"
+      linkTip.style.width = "32%"
       linkTip.style.marginLeft = `${rangeBounds.left - 100}px`
       linkTip.style.marginTop = `${rangeBounds.top + 90}px`
       document.getElementById("link").focus()
@@ -481,7 +481,7 @@ export default class extends Controller {
       videoInput.style.display = "block"
       videoInput.style.position = "absolute"
       videoInput.style.left = "0px"
-      videoInput.style.width = "28%"
+      videoInput.style.width = "30%"
       videoInput.style.marginLeft = `${rangeBounds.left - 250}px`
       videoInput.style.top = `${rangeBounds.top + 140}px`
       sidebar.style.display = "none"
@@ -492,6 +492,7 @@ export default class extends Controller {
   hideVideoTip(event) {
     const videoTip = document.querySelector(".video-input")
     var videoLink = document.getElementById("video").value
+    const validUrl = this.validateVideoUrl(videoLink)
 
     const range = editor.getSelection()
 
@@ -501,12 +502,11 @@ export default class extends Controller {
 
     // no clue how this works
     if(this.element === event.target || this.element.contains(event.target)) return
-    if(videoLink) {
-      this.videoInsert(videoLink)
+    if (validUrl) {
+      this.videoInsert(validUrl)
       document.getElementById("video").value = ""
+      videoTip.style.display = "none"
     }
-
-    videoTip.style.display = "none"
   }
 
   enterVideoTip(event) {
