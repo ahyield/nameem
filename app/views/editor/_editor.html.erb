@@ -14,6 +14,9 @@
   <input type="text" autocomplete="off" placeholder="Paste link and hit enter..." dir="ltr" id="video"
         data-action="click@window->editor#hideVideoTip keydown.enter->editor#enterVideoTip keydown.esc->editor#closeTips"
         class="video-input hidden shaddow-none focus:ring-0 border-0 placeholder:italic placeholder:text-slate-200 bg-gradient-to-r from-cyan-500 text-slate-50 to-blue-500 rounded-lg" name="video">
+  <input type="text" autocomplete="off" placeholder="Paste link and hit enter..." dir="ltr" id="tweet"
+        data-action="click@window->editor#hideVideoTip keydown.enter->editor#enterVideoTip keydown.esc->editor#closeTips"
+        class="tweet-input hidden shaddow-none focus:ring-0 border-0 placeholder:italic placeholder:text-slate-200 bg-gradient-to-r from-cyan-500 text-slate-50 to-blue-500 rounded-lg" name="tweet">
   <div class="hidden sidebar-controls bg-gradient-to-r from-cyan-300 to-blue-500 rounded-lg text-slate-50">
     <ul>
       <li>
@@ -29,7 +32,7 @@
       </li>
       <hr class="h-px bg-slate-200 border-0">
       <li>
-        <button id="tweet-button" data-action="click->editor#tweetInsert">
+        <button id="tweet-button" data-action="click->editor#toggleTweetInput">
           <i class="fa-brands fa-twitter" aria-hidden="true"></i>
         </button>
       </li>
