@@ -8,10 +8,10 @@
     <button id="header-1-button" data-action="click->editor#toggleHead1"><i class="fa-solid fa-t head1"></i></button>
     <button id="header-2-button" data-action="click->editor#toggleHead2"><i class="fa-solid fa-t head2"></i></button>
   </div>
-  <input type="text" autocomplete="off" placeholder="Paste or write link.." dir="ltr" id="link"
+  <input type="text" autocomplete="off" placeholder="Paste link and hit enter..." dir="ltr" id="link"
         data-action="click@window->editor#hideLinkTip keydown.enter->editor#enterLinkTip keydown.esc->editor#closeTips"
         class="link-tip hidden shaddow-none focus:ring-0 border-0 placeholder:italic placeholder:text-slate-200 bg-gradient-to-r from-cyan-500 text-slate-50 to-blue-500 rounded-lg" name="link">
-  <input type="text" autocomplete="off" placeholder="Paste link to video.." dir="ltr" id="video"
+  <input type="text" autocomplete="off" placeholder="Paste link and hit enter..." dir="ltr" id="video"
         data-action="click@window->editor#hideVideoTip keydown.enter->editor#enterVideoTip keydown.esc->editor#closeTips"
         class="video-input hidden shaddow-none focus:ring-0 border-0 placeholder:italic placeholder:text-slate-200 bg-gradient-to-r from-cyan-500 text-slate-50 to-blue-500 rounded-lg" name="video">
   <div class="hidden sidebar-controls bg-gradient-to-r from-cyan-300 to-blue-500 rounded-lg text-slate-50">
