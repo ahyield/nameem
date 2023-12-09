@@ -53,6 +53,7 @@ class VideoBlot extends BlockEmbed {
   static create(url) {
     const node = super.create()
     node.setAttribute("src", url)
+    node.setAttribute("class", "py-4")
     node.setAttribute("frameborder", "0")
     node.setAttribute("allowfullscreen", true)
     return node
@@ -382,11 +383,16 @@ export default class extends Controller {
 
   closeTips(event) {
     const linkTip = document.querySelector(".link-tip")
+    const videoTip = document.querySelector(".video-input")
     const toolTip = document.querySelector(".tooltip-controls")
     document.getElementById("link").value = ""
+    document.getElementById("video").value = ""
 
     linkTip.style.display = "none"
     toolTip.style.display = "none"
+    videoTip.style.display = "none"
+
+    editor.focus()
   }
 
   enterLinkTip(event) {
@@ -461,14 +467,84 @@ export default class extends Controller {
     input.click()
   }
 
-  videoInsert() {
+  toggleVideoInput(){
+    const videoInput = document.querySelector(".video-input")
+
+    const range = editor.getSelection(editor.getLength() - 1)
+
+    const rangeBounds = editor.getBounds(range.index, range.length)
+    const sidebar = document.querySelector(".sidebar-controls")
+
+    if(videoInput.style.display === "block") {
+      videoInput.style.display = "none"
+    } else {
+      videoInput.style.display = "block"
+      videoInput.style.position = "absolute"
+      videoInput.style.left = "0px"
+      videoInput.style.width = "28%"
+      videoInput.style.marginLeft = `${rangeBounds.left - 250}px`
+      videoInput.style.top = `${rangeBounds.top + 140}px`
+      sidebar.style.display = "none"
+      document.getElementById("video").focus()
+    }
+  }
+
+  hideVideoTip(event) {
+    const videoTip = document.querySelector(".video-input")
+    var videoLink = document.getElementById("video").value
+
+    const range = editor.getSelection()
+
+    if (range && range.length === 0) {
+      videoTip.style.display = "none"
+    }
+
+    // no clue how this works
+    if(this.element === event.target || this.element.contains(event.target)) return
+    if(videoLink) {
+      this.videoInsert(videoLink)
+      document.getElementById("video").value = ""
+    }
+
+    videoTip.style.display = "none"
+  }
+
+  enterVideoTip(event) {
+    const videoTip = document.querySelector(".video-input")
+    var videoLink = document.getElementById("video").value
+    const validUrl = this.validateVideoUrl(videoLink)
+
+    if (validUrl) {
+      this.videoInsert(validUrl)
+      document.getElementById("video").value = ""
+
+      videoTip.style.display = "none"
+    } else {
+      alert("Invalid video link!, please use full youtube or vimeo link")
+    }
+  }
+
+  videoInsert(url) {
     const range = editor.getSelection(true)
-    const url = "https://www.youtube.com/embed/QHH3iSeDBLo?showinfo=0"
     editor.insertEmbed(range.index, "video", url, Quill.sources.USER)
-    editor.formatText(range.index, 1, { height: "380", width: "680" })
+    editor.formatText(range.index, 1, { height: "360", width: "740" })
     editor.setSelection(range.index + 1, Quill.sources.SILENT)
   }
 
+  validateVideoUrl(url) {
+    const youtubePattern = /^(https?:\/\/)(www\.)?(youtube\.com\/(.*\/)?(v\/|e\/|u\/\w+\/|embed\/|v=|vi=|t=|\?v=|\?vi=|\?u=|\?e=|\?t=)?([^#]*))(#[\w]*)?$/
+    const vimeoPattern = /^(https?:\/\/)(www\.)?(vimeo\.com\/|player\.vimeo\.com\/video\/)?([0-9]+)(\?h=[\w]+)?(\/)?([^#]*)(#[\w]*)?$/
+
+    if (youtubePattern.test(url)) {
+      return url.replace("watch?v=", "embed/")
+    } else if (vimeoPattern.test(url)) {
+      if (url.includes("player.vimeo.com/video")) {
+        return url
+      } else if (url.includes("vimeo.com")) {
+        return url.replace("vimeo.com", "player.vimeo.com/video")
+      }
+    }
+  }
   tweetInsert(event) {
   }
 }
