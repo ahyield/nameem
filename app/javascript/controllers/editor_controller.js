@@ -139,6 +139,7 @@ export default class extends Controller {
     controls.style.marginTop = `${rangeBounds.top + 139}px`
     controls.style.left = `${ 8 + rangeBounds.left}px`
 
+    sidebar.style.display = "none"
     sidebar.style.marginTop = `${rangeBounds.top + 115}px`
     sidebar.style.left = `${ 8 + rangeBounds.left}px`
 
@@ -156,10 +157,12 @@ export default class extends Controller {
          controls.style.marginTop = `${rangeBounds.top + 139}px`
          controls.style.left = `${ 8 + rangeBounds.left}px`
 
+         sidebar.style.display = "none"
          sidebar.style.marginTop = `${rangeBounds.top + 115}px`
          sidebar.style.left = `${ 8 + rangeBounds.left}px`
        } else {
          controls.style.display = "none"
+         sidebar.style.display = "none"
        }
      } else if (range.length > 0 ) {
        toolTip.style.display = "block"
