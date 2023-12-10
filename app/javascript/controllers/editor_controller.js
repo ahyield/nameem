@@ -127,6 +127,7 @@ export default class extends Controller {
 
     const toolTip = document.querySelector(".tooltip-controls")
     const sidebar = document.querySelector(".sidebar-controls")
+    const controls = document.querySelector(".show-controls")
 
     editor.format("direction", "rtl")
     editor.format("align", "right")
@@ -134,7 +135,10 @@ export default class extends Controller {
     const range = editor.getSelection()
     const rangeBounds = editor.getBounds(range)
 
-    sidebar.style.display = "block"
+    controls.style.display = "block"
+    controls.style.marginTop = `${rangeBounds.top + 136}px`
+    controls.style.left = `${ 8 + rangeBounds.left}px`
+
     sidebar.style.marginTop = `${rangeBounds.top + 115}px`
     sidebar.style.left = `${ 8 + rangeBounds.left}px`
 
@@ -148,11 +152,14 @@ export default class extends Controller {
        const [block] = editor.scroll.descendant(Block, range.index)
 
        if (block != null && block.domNode.firstChild instanceof HTMLBRElement) {
-         sidebar.style.display = "block"
+         controls.style.display = "block"
+         controls.style.marginTop = `${rangeBounds.top + 136}px`
+         controls.style.left = `${ 8 + rangeBounds.left}px`
+
          sidebar.style.marginTop = `${rangeBounds.top + 115}px`
          sidebar.style.left = `${ 8 + rangeBounds.left}px`
        } else {
-         sidebar.style.display = "none"
+         controls.style.display = "none"
        }
      } else if (range.length > 0 ) {
        toolTip.style.display = "block"
@@ -175,7 +182,7 @@ export default class extends Controller {
       const uuid = this.articleUuid()
       const slug = this.userSlug()
       const article = await this.fetchArticle(uuid, slug)
-      sidebar.style.display = "none"
+      controls.style.display = "none"
       articleTitle.value = article.title
       editor.setContents(article.content)
     }
@@ -214,6 +221,19 @@ export default class extends Controller {
         change = new Delta()
       }
     }, 2 * 1000)
+  }
+
+  toggleControls(event) {
+    const controls = document.querySelector(".show-controls")
+    const sidebar = document.querySelector(".sidebar-controls")
+
+    if (controls.style.display === "block") {
+      controls.style.display = "none"
+      sidebar.style.display = "block"
+    } else {
+      controls.style.display = "block"
+      sidebar.style.display = "none"
+    }
   }
 
   async fetchArticle(uuid, slug) {
@@ -467,6 +487,9 @@ export default class extends Controller {
           editor.setSelection(range.index + 1, Quill.sources.SILENT)
           const sidebar = document.querySelector(".sidebar-controls")
           sidebar.style.display = "none"
+
+          const controls = document.querySelector(".show-controls")
+          controls.style.display = "none"
         }
       })
     }
@@ -483,6 +506,7 @@ export default class extends Controller {
     }
     const rangeBounds = editor.getBounds(range.index, range.length)
     const sidebar = document.querySelector(".sidebar-controls")
+    const controls = document.querySelector(".show-controls")
 
     if(videoInput.style.display === "block") {
       videoInput.style.display = "none"
@@ -494,6 +518,7 @@ export default class extends Controller {
       videoInput.style.marginLeft = `${rangeBounds.left - 250}px`
       videoInput.style.top = `${rangeBounds.top + 140}px`
       sidebar.style.display = "none"
+      controls.style.display = "none"
       document.getElementById("video").focus()
     }
   }
@@ -566,6 +591,7 @@ export default class extends Controller {
     }
     const rangeBounds = editor.getBounds(range.index, range.length)
     const sidebar = document.querySelector(".sidebar-controls")
+    const controls = document.querySelector(".show-controls")
 
     if(tweetInput.style.display === "block") {
       tweetInput.style.display = "none"
@@ -577,6 +603,7 @@ export default class extends Controller {
       tweetInput.style.marginLeft = `${rangeBounds.left - 250}px`
       tweetInput.style.top = `${rangeBounds.top + 140}px`
       sidebar.style.display = "none"
+      controls.style.display = "none"
       document.getElementById("tweet").focus()
     }
   }
@@ -586,6 +613,7 @@ export default class extends Controller {
     var tweetLink = document.getElementById("tweet").value
     const validUrl = this.validateTweetUrl(tweetLink)
     const sidebar = document.querySelector(".sidebar-controls")
+    const controls = document.querySelector(".show-controls")
 
     const range = editor.getSelection()
 
@@ -602,6 +630,7 @@ export default class extends Controller {
     }
     tweetTip.style.display = "none"
     sidebar.style.display = "none"
+    controls.style.display = "none"
   }
 
   enterTweetTip(event) {
@@ -610,6 +639,7 @@ export default class extends Controller {
     var tweetLink = document.getElementById("tweet").value
     const validUrl = this.validateTweetUrl(tweetLink)
     const sidebar = document.querySelector(".sidebar-controls")
+    const controls = document.querySelector(".show-controls")
 
     if (validUrl) {
       this.tweetInsert(validUrl)
@@ -617,6 +647,7 @@ export default class extends Controller {
 
       tweetTip.style.display = "none"
       sidebar.style.display = "none"
+      controls.style.display = "none"
     } else {
       alert("Invalid tweet link!, please use full tweet link")
     }

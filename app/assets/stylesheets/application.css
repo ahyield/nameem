@@ -110,6 +110,12 @@ blockquote {
   font-weight: normal;
 }
 
+.show-controls {
+  padding: 5px 15px;
+  position: absolute;
+  font-weight: normal;
+}
+
 .ql-editor.ql-blank::before {
    content: attr(data-placeholder);
    color: grey;

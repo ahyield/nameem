@@ -17,7 +17,16 @@
   <input type="text" autocomplete="off" placeholder="Paste link and hit enter..." dir="ltr" id="tweet"
         data-action="click@window->editor#hideTweetTip keydown.enter->editor#enterTweetTip keydown.esc->editor#closeTips"
         class="tweet-input hidden shaddow-none focus:ring-0 border-0 placeholder:italic placeholder:text-slate-200 bg-gradient-to-r from-cyan-500 text-slate-50 to-blue-500 rounded-lg" name="tweet">
-  <div class="hidden sidebar-controls bg-gradient-to-r from-cyan-300 to-blue-500 rounded-lg text-slate-50">
+  <div class="show-controls bg-gradient-to-r from-cyan-300 to-blue-500 rounded-lg text-slate-50">
+    <ul>
+      <li>
+        <button id="image-button" data-action="click->editor#toggleControls">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </li>
+    </ul>
+  </div>
+  <div class="hidden sidebar-controls ease-in duration-300 transition-all bg-gradient-to-r from-cyan-300 to-blue-500 rounded-lg text-slate-50">
     <ul>
       <li>
         <button id="image-button" data-action="click->editor#imageUpload">
@@ -34,6 +43,12 @@
       <li>
         <button id="tweet-button" data-action="click->editor#toggleTweetInput">
           <i class="fa-brands fa-twitter"></i>
+        </button>
+      </li>
+      <hr class="h-px bg-slate-200 border-0">
+      <li>
+        <button id="close-controls" data-action="click->editor#toggleControls">
+          <i class="fa-regular fa-circle-xmark pt-1"></i>
         </button>
       </li>
     </ul>
