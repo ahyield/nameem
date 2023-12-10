@@ -136,7 +136,7 @@ export default class extends Controller {
     const rangeBounds = editor.getBounds(range)
 
     controls.style.display = "block"
-    controls.style.marginTop = `${rangeBounds.top + 136}px`
+    controls.style.marginTop = `${rangeBounds.top + 139}px`
     controls.style.left = `${ 8 + rangeBounds.left}px`
 
     sidebar.style.marginTop = `${rangeBounds.top + 115}px`
@@ -153,7 +153,7 @@ export default class extends Controller {
 
        if (block != null && block.domNode.firstChild instanceof HTMLBRElement) {
          controls.style.display = "block"
-         controls.style.marginTop = `${rangeBounds.top + 136}px`
+         controls.style.marginTop = `${rangeBounds.top + 139}px`
          controls.style.left = `${ 8 + rangeBounds.left}px`
 
          sidebar.style.marginTop = `${rangeBounds.top + 115}px`
