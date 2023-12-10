@@ -476,8 +476,11 @@ export default class extends Controller {
   toggleVideoInput(){
     const videoInput = document.querySelector(".video-input")
 
-    const range = editor.getSelection(editor.getLength() - 1)
+    let range = editor.getSelection(editor.getLength() - 1)
 
+    if (range === null) {
+      range = { index: 1, length: 1 }
+    }
     const rangeBounds = editor.getBounds(range.index, range.length)
     const sidebar = document.querySelector(".sidebar-controls")
 
@@ -553,9 +556,83 @@ export default class extends Controller {
     }
   }
 
+  toggleTweetInput(){
+    const tweetInput = document.querySelector(".tweet-input")
+
+    let range = editor.getSelection(editor.getLength() - 1)
+
+    if (range === null) {
+      range = { index: 1, length: 1 }
+    }
+    const rangeBounds = editor.getBounds(range.index, range.length)
+    const sidebar = document.querySelector(".sidebar-controls")
+
+    if(tweetInput.style.display === "block") {
+      tweetInput.style.display = "none"
+    } else {
+      tweetInput.style.display = "block"
+      tweetInput.style.position = "absolute"
+      tweetInput.style.left = "0px"
+      tweetInput.style.width = "30%"
+      tweetInput.style.marginLeft = `${rangeBounds.left - 250}px`
+      tweetInput.style.top = `${rangeBounds.top + 140}px`
+      sidebar.style.display = "none"
+      document.getElementById("tweet").focus()
+    }
+  }
+
+  hideTweetTip(event) {
+    const tweetTip = document.querySelector(".tweet-input")
+    var tweetLink = document.getElementById("tweet").value
+    const validUrl = this.validateTweetUrl(tweetLink)
+    const sidebar = document.querySelector(".sidebar-controls")
+
+    const range = editor.getSelection()
+
+    if (range && range.length === 0) {
+      tweetTip.style.display = "none"
+    }
+
+    // no clue how this works
+    if(this.element === event.target || this.element.contains(event.target)) return
+    if (validUrl) {
+      this.tweetInsert(validUrl)
+      document.getElementById("tweet").value = ""
+      tweetTip.style.display = "none"
+    }
+    tweetTip.style.display = "none"
+    sidebar.style.display = "none"
+  }
+
+  enterTweetTip(event) {
+    event.preventDefault()
+    const tweetTip = document.querySelector(".tweet-input")
+    var tweetLink = document.getElementById("tweet").value
+    const validUrl = this.validateTweetUrl(tweetLink)
+    const sidebar = document.querySelector(".sidebar-controls")
+
+    if (validUrl) {
+      this.tweetInsert(validUrl)
+      document.getElementById("tweet").value = ""
+
+      tweetTip.style.display = "none"
+      sidebar.style.display = "none"
+    } else {
+      alert("Invalid tweet link!, please use full tweet link")
+    }
+  }
+
+  validateTweetUrl(url) {
+    const tweetPattern = /^(https?:\/\/)(www\.)?(twitter\.com\/(.*\/)?(status\/)?([^#]*))(#[\w]*)?$/
+
+    if (tweetPattern.test(url)) {
+      return url.split("/")[5]
+    }
+  }
+
   tweetInsert(id) {
     const range = editor.getSelection(true)
     editor.insertEmbed(range.index, "tweet", id, Quill.sources.USER)
-    editor.setSelection(range.index + 1, Quill.sources.SILENT)
+    editor.setSelection(range.index + 1, Quill.sources.API)
   }
 }
