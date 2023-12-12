@@ -25,7 +25,7 @@
       <span>.</span>
       <time class="text-gray-500"><%= short_date(article.published_at) %> </time>
     </div>
-    <div class="group relative max-w-xl">
+    <div class="group relative">
       <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false } do %>
         <h1 class="mt-2 text-2xl font-semibold text-gray-900">
           <span class="absolute inset-0"></span>
@@ -39,12 +39,12 @@
       <p class="hidden lg:block mt-2 text-sm leading-6 text-gray-600"><%= article.description&.truncate(320) %></p>
     </div>
   </div>
-  <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false } do %>
-    <div class="relative mt-4 aspect-[112/112] lg:aspect-square w-24 h-24 md:w-24 md:h-24 lg:w-32 lg:h-32">
-      <% if article_cover(article) %>
+  <% if article_cover(article) %>
+    <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false } do %>
+      <div class="relative mt-4 aspect-[112/112] lg:aspect-square w-24 h-24 md:w-24 md:h-24 lg:w-32 lg:h-32">
         <%= image_tag article_cover(article), class: "absolute inset-0 h-full w-full bg-gray-50 object-cover" %>
-      <% end %>
-      <div class="absolute inset-0 ring-inset ring-gray-900/10"></div>
-    </div>
+        <div class="absolute inset-0 ring-inset ring-gray-900/10"></div>
+      </div>
+    <% end %>
   <% end %>
 </article>
