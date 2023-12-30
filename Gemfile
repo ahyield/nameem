@@ -71,13 +71,12 @@ group :development do
   gem "web-console"
 
   gem "erb_lint", require: false
+  gem "rack-mini-profiler"
   gem "rubocop"
   gem "rubocop-rails", require: false
   gem "rubocop-rspec", require: false
 
   gem "rubocop-performance", require: false
-  # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
-  gem "rack-mini-profiler"
 
   gem "letter_opener"
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
@@ -85,7 +84,6 @@ group :development do
 end
 
 group :test do
-  # Adds support for Capybara system testing and selenium driver [
   gem "capybara"
   gem "database_cleaner"
   gem "factory_bot_rails"
