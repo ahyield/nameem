@@ -83,3 +83,17 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
+
+group :test do
+  # Adds support for Capybara system testing and selenium driver [
+  gem "capybara"
+  gem "database_cleaner"
+  gem "factory_bot_rails"
+  gem "faker"
+  gem "selenium-webdriver"
+  gem "shoulda-matchers"
+  gem "simplecov", require: false
+  gem "simplecov-console", require: false
+  gem "timecop"
+  gem "webdrivers"
+end
