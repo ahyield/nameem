@@ -47,3 +47,5 @@ package.json
 .env.local
 .env.staging
 .env
+
+/config/credentials/development.key
