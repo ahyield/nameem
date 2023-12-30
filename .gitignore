@@ -49,3 +49,6 @@ package.json
 .env
 
 /config/credentials/development.key
+
+# ignore coverage
+./coverage
