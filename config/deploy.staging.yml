@@ -14,6 +14,7 @@ env:
   secret:
     - RAILS_MASTER_KEY
     - MYSQL_ROOT_PASSWORD
+    - DISALLOW_ALL_WEB_CRAWLERS
 
 builder:
   dockerfile: Dockerfile.staging
