@@ -24,17 +24,13 @@
 <%= render "shared/nav" %>
 
 <div class="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:max-w-7xl lg:px-8">
-  <h1 class="sr-only">Page title</h1>
   <!-- Main 3 column grid -->
   <div class="grid grid-cols-1 items-start gap-1 lg:grid-cols-3">
     <!-- Right column -->
     <div class="mt-9 grid grid-cols-2 lg:col-span-2">
       <section aria-labelledby="section-1-title">
-        <h2 class="sr-only" id="section-1-title">Section title</h2>
-        <div class="rounded-lg bg-white">
-          <div class="p-6">
-            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight"><%= @user.name %></h2>
-          </div>
+        <div class="p-6">
+          <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:tracking-tight"><%= @user.name %></h2>
         </div>
       </section>
       <div class="relative ml-auto col-end-4" data-controller="dropdown" data-action="click->dropdown#toggle click@window->dropdown#hide">
@@ -63,7 +59,6 @@
       </div>
 
       <section aria-labelledby="section-2-title" class="col-span-3">
-        <h2 class="sr-only" id="section-2-title">Section title</h2>
         <div class="rounded-lg bg-white">
           <div class="p-6">
             <div class="self-start sticky top-0 z-20 bg-white">
