@@ -34,5 +34,33 @@ RSpec.describe User do
       user = described_class.create(email: "test@test.com", slug: "test")
       expect(user.slug).to eq("test")
     end
+
+    it "is created with normalized email" do
+      user = described_class.create(email: "TEST@TEST.com")
+      expect(user.email).to eq("test@test.com")
+    end
+
+    it "has attaced avatar" do
+      user = described_class.create(
+        email:  "test@test.com",
+        avatar: Rack::Test::UploadedFile.new("spec/fixtures/files/avatar.png", "image/png")
+      )
+      expect(user.avatar).to be_attached
+    end
+
+    it "has default avatar as nil" do
+      user = described_class.create(email: "test@test.com", avatar: nil)
+      expect(user.avatar).not_to be_attached
+    end
+
+    it "has many articles" do
+      user = described_class.create(email: "test@test.com")
+      expect(user.articles).to eq([])
+
+      a1 = user.articles.create(title: "Article 1", content: "Content 1")
+      a2 = user.articles.create(title: "Article 2", content: "Content 2")
+      expect(user.articles).to include(a1)
+      expect(user.articles).to include(a2)
+    end
   end
 end
