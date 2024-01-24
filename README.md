@@ -17,5 +17,5 @@ You need ruby, you can use `mise install ruby 3.2.2`
 - clone it
 - `gem install bundler`
 - `bundle install`
-- rails db:create && rails db:migrate
+- `rails db:create && rails db:migrate`
 - You need Proc runner, I use [Overmind](https://github.com/DarthSim/overmind), `overmind start Procfile.dev`
