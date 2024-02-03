@@ -29,9 +29,6 @@ gem "rails_heroicon"
 gem "tailwindcss-rails"
 
 gem "bcrypt"
-gem "omniauth"
-gem "omniauth-facebook"
-gem "omniauth-rails_csrf_protection"
 
 gem "pundit"
 
