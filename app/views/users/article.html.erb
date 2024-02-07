@@ -9,7 +9,7 @@
 
 <% set_meta_tags twitter: { site: "@nameemofficial" } %>
 <% set_meta_tags twitter: { card: "summary_large_image" } %>
-<% set_meta_tags twitter: { image:  { content: "#{article_cover(@article) ||  asset_path("brand/logo.png") }", width: 100, height: 100 } } %>
+<% set_meta_tags twitter: { image:  { _: "#{article_cover(@article) ||  asset_path("brand/logo.png") }", width: 100, height: 100 } } %>
 
 <%= render "shared/nav" %>
 
