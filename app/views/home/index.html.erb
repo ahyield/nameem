@@ -7,8 +7,10 @@
 <% set_meta_tags og: { image: "#{ asset_path("brand/logo.png") }" } %>
 
 <% set_meta_tags twitter: { site: "@nameemofficial" } %>
-<% set_meta_tags twitter: { card: "نميم، منصة نشر وكتابة باللغة العربية، اسم عربي صوت حركة خفية، صوت الخطوة في الظلام، وصوت الكتابة. وهو الكلام الذي يثير الفِتَنْ، أحيانًا." } %>
-<% set_meta_tags twitter: { image:  { _: "#{ asset_path("brand/logo.png")}", width: 100, height: 100 } } %>
+<% set_meta_tags twitter: { card: "summary_large_image" } %>
+<% set_meta_tags twitter: { title: "نميم" } %>
+<% set_meta_tags twitter: { image:  { content: "#{ asset_path("brand/logo.png")}", width: 1200, height: 630 } } %>
+<% set_meta_tags twitter: { description: "نميم، منصة نشر وكتابة باللغة العربية، اسم عربي صوت حركة خفية، صوت الخطوة في الظلام، وصوت الكتابة. وهو الكلام الذي يثير الفِتَنْ، أحيانًا." } %>
 
 <%= render "shared/nav" %>
 <%= render "hero" %>
