@@ -118,6 +118,16 @@ let change = new Delta()
 export default class extends Controller {
   async connect() {
     var editorOptions = {
+      // This ignores the bullet/list keystroke.
+      modules: {
+        keyboard: {
+          bindings: {
+            "list autofill": {
+              prefix: /^\s*()$/
+            }
+          }
+        }
+      },
       debug: "error",
       placeholder: "إبدأ بالكتابة...",
       scrollingContainer: "html",
