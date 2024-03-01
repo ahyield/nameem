@@ -68,15 +68,27 @@ group :development do
   gem "web-console"
 
   gem "erb_lint", require: false
+  gem "rack-mini-profiler"
   gem "rubocop"
   gem "rubocop-rails", require: false
   gem "rubocop-rspec", require: false
 
   gem "rubocop-performance", require: false
-  # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
-  gem "rack-mini-profiler"
 
   gem "letter_opener"
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
+end
+
+group :test do
+  gem "capybara"
+  gem "database_cleaner"
+  gem "factory_bot_rails"
+  gem "faker"
+  gem "selenium-webdriver"
+  gem "shoulda-matchers"
+  gem "simplecov", require: false
+  gem "simplecov-console", require: false
+  gem "timecop"
+  gem "webdrivers"
 end
