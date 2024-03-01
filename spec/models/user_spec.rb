@@ -40,7 +40,7 @@ RSpec.describe User do
       expect(user.email).to eq("test@test.com")
     end
 
-    it "has attaced avatar" do
+    it "has attached avatar" do
       user = described_class.create(
         email:  "test@test.com",
         avatar: Rack::Test::UploadedFile.new("spec/fixtures/files/avatar.png", "image/png")
@@ -61,6 +61,29 @@ RSpec.describe User do
       a2 = user.articles.create(title: "Article 2", content: "Content 2")
       expect(user.articles).to include(a1)
       expect(user.articles).to include(a2)
+    end
+
+    it "can be featured" do
+      user = described_class.create(email: "test@test.com", avatar: nil)
+      user.feature
+
+      expect(user.featured).to be_truthy
+    end
+
+    it "can be admin" do
+      user = described_class.create(email: "test@test.com", avatar: nil)
+
+      user.make_admin
+
+      expect(user).to be_admin
+    end
+
+    it "can be editor" do
+      user = described_class.create(email: "test@test.com", avatar: nil)
+
+      user.make_editor
+
+      expect(user).to be_editor
     end
   end
 end
