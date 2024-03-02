@@ -194,7 +194,7 @@ GEM
       net-smtp
     mailgun-ruby (1.2.14)
       rest-client (>= 2.0.2)
-    marcel (1.0.3)
+    marcel (1.0.4)
     matrix (0.4.2)
     meta-tags (2.20.0)
       actionpack (>= 6.0.0, < 7.2)

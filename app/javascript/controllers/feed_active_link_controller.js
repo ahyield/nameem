@@ -11,13 +11,13 @@ export default class extends Controller{
   }
 
   connect(){
-    this.element.addEventListener("turbo:click", this.handleTurboClick)
+    this.element.addEventListener("click", this.handleTurboClick)
     this.clearFeed()
     this.clearFeedPagination()
   }
 
   disconnect(){
-    this.element.removeEventListener("turbo:click", this.handleTurboClick)
+    this.element.removeEventListener("click", this.handleTurboClick)
     this.clearFeed()
     this.clearFeedPagination()
   }
