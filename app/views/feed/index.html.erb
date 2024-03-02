@@ -33,8 +33,7 @@
             </div>
 
             <div class="my-6 content-center space-y-14 lg:space-y-10">
-              <%= turbo_frame_tag "feed", src: picked_feed_path(format: :turbo_stream, page: params[:page]), loading: "lazy" do %>
-              <% end %>
+              <%= turbo_frame_tag "feed", src: picked_feed_path(format: :turbo_stream, page: params[:page]), loading: "lazy" %>
 
               <%= turbo_frame_tag "feed_pagination" %>
             </div>
