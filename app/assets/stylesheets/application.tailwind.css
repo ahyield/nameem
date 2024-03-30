@@ -16,31 +16,64 @@
     padding-left: 1em;
   }
 
-  .pagy-nav.pagination {
-    @apply isolate inline-flex -space-x-px rounded-md shadow-sm;
+  .pagy {
+    display: flex;
   }
 
-  .page a, .page.gap {
-    @apply bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center border px-4 py-2 text-sm font-medium focus:z-20;
+  .pagy > :not([hidden]) ~ :not([hidden]) {
+    --space-reverse: 0;
+    margin-right: calc(0.25rem * var(--space-reverse));
+    margin-left: calc(0.25rem * calc(1 - var(--space-reverse)));
   }
 
-  .page.next a {
-    @apply relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20;
+  .pagy {
+    font-family: sans-serif;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    color: rgb(107 114 128);
   }
 
-  .page.prev a {
-    @apply relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20;
+  .pagy .page.gap {
+    /* if you need to customize it */
   }
 
-  .page.next.disabled {
-    @apply relative inline-flex items-center rounded-r-md border border-gray-300 bg-slate-100 px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20;
+  .pagy .page a {
+    text-decoration: none;
+    border-radius: 0.5rem;
+    background-color: rgb(229 231 235);
+    padding: 0.25rem 0.75rem;
+    color: inherit;
   }
 
-  .page.prev.disabled {
-    @apply relative inline-flex items-center rounded-l-md border border-gray-300 bg-slate-100 px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20;
+  .pagy .page a:hover {
+    background-color: rgb(209 213 219);
   }
 
-  .page.active {
-    @apply z-10 border-indigo-500 bg-indigo-50 text-indigo-600 relative inline-flex items-center border px-4 py-2 text-sm font-medium focus:z-20;
+  .pagy .page.active a {
+    cursor: default;
+    background-color: rgb(156 163 175);
+    color: rgb(255 255 255);
+  }
+
+  .pagy .page.disabled a {
+    cursor: default;
+    background-color: rgb(243 244 246);
+    color: rgb(209 213 219);
+  }
+
+  .pagy .pagy-combo-input, .pagy.pagy-items-selector-js {
+    white-space: nowrap;
+    display: inline-block;
+    border-radius: 0.5rem;
+    background-color: rgb(229 231 235);
+    padding: 0.125rem 0.75rem;
+  }
+
+  .pagy .pagy-combo-input input, .pagy.pagy-items-selector-js input {
+    line-height: 1.5rem;
+    border-radius: 0.375rem;
+    border-style: none;
+    background-color: rgb(243 244 246);
   }
 }

@@ -6,27 +6,21 @@
 <main class="font-montserrat">
   <div class="pt-16">
     <%= render "backoffice/nav" %>
-    <!--
-    <div class="border-b border-b-gray-900/10 lg:border-t lg:border-t-gray-900/5">
-      <dl class="mx-auto grid max-w-7xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:px-2 xl:px-0">
-        <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-4 py-10 sm:px-6 lg:border-t-0 xl:px-8">
-          <dt class="text-sm font-medium leading-6 text-gray-500">Revenue</dt>
-          <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">$405,091.00</dd>
+    <div>
+      <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+        <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+          <%= link_to backoffice_users_path, class: "text-sm font-medium text-gray-500" do %>
+            <dt class="truncate text-sm font-medium text-gray-500">المستخدمين</dt>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= User.all.size %></dd>
+          <% end %>
         </div>
-        <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-4 py-10 sm:px-6 lg:border-t-0 xl:px-8 sm:border-l">
-          <dt class="text-sm font-medium leading-6 text-gray-500">Overdue invoices</dt>
-          <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">$12,787.00</dd>
-        </div>
-        <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-4 py-10 sm:px-6 lg:border-t-0 xl:px-8 lg:border-l">
-          <dt class="text-sm font-medium leading-6 text-gray-500">Outstanding invoices</dt>
-          <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">$245,988.00</dd>
-        </div>
-        <div class="flex items-baseline flex-wrap justify-between gap-y-2 gap-x-4 border-t border-gray-900/5 px-4 py-10 sm:px-6 lg:border-t-0 xl:px-8 sm:border-l">
-          <dt class="text-sm font-medium leading-6 text-gray-500">Expenses</dt>
-          <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">$30,156.00</dd>
+        <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+          <%= link_to backoffice_articles_path, class: "text-sm font-medium text-gray-500" do %>
+            <dt class="truncate text-sm font-medium text-gray-500">المقالات المنشورة</dt>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= Article.published.size %></dd>
+          <% end %>
         </div>
       </dl>
-      </div>
-    -->
+    </div>
   </div>
 </main>
