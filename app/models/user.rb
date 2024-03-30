@@ -26,6 +26,7 @@ class User < ApplicationRecord
                                   message: "إسم المستخدم يجب أن يكون أحرف مع أرقام، شرطة، \
   أو شرطة سفلية فقط، أيضًا، يجب ألا يبدأ أو ينتهي بعلامات" }
   validate :slug_is_not_reserved
+  validate :correct_avatar_mime_type
 
   generates_token_for :magic_login, expires_in: 15.minutes do
     last_sign_in_at
@@ -52,6 +53,12 @@ class User < ApplicationRecord
   end
 
   private
+
+  def correct_avatar_mime_type
+    return unless avatar.attached?
+
+    errors.add(:avatar, "يرجى ارفاق صورة فقط!") unless avatar.content_type.in?(%w[image/jpeg image/png image/*])
+  end
 
   def slug_is_not_reserved
     forbid = Constraints::ReservedSlugs::RESERVED_SLUGS.map(&:downcase)
