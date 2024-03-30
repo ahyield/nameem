@@ -9,7 +9,7 @@ class ArticlePolicy < ApplicationPolicy
 
   def show?
     if record.draft?
-      user.present? && record.user == user
+      edit?
     else
       true
     end
