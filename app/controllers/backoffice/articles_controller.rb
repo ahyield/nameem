@@ -1,7 +1,7 @@
 module Backoffice
   class ArticlesController < BaseController
     def index
-      @pagy, @articles = pagy(Article.published.order(created_at: :asc))
+      @pagy, @articles = pagy(Article.published.order(published_at: :desc))
     end
 
     def edit
