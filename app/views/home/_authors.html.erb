@@ -9,7 +9,7 @@
       <% @users.each do |user| %>
         <div class="group aspect-h-1 aspect-w-2 overflow-hidden rounded-lg sm:aspect-h-1 sm:aspect-w-1 sm:row-span-2">
           <% if user.avatar.attached? %>
-            <%= image_tag user.avatar, class: "object-cover object-center group-hover:opacity-75" %>
+            <%= image_tag user.avatar.variant(resize_to_fill: [600, 600]), class: "object-cover object-center group-hover:opacity-75" %>
           <% else %>
             <%= image_tag asset_path("brand/logo.png"), class: "object-cover object-center group-hover:opacity-75" %>
           <% end %>
