@@ -11,20 +11,20 @@ RSpec.describe Article do
 
     it "has a body" do
       content = File.read("spec/fixtures/article.json")
-      article = described_class.new(content: content)
+      article = described_class.new(content:)
 
       expect(article.content).to eq(content)
     end
 
     it "can be published" do
-      article = described_class.create!(title: "New Article", content: "Article Content", user: user)
+      article = described_class.create!(title: "New Article", content: "Article Content", user:)
 
       article.publish
       expect(article.published).to be true
     end
 
     it "can be unpublished" do
-      article = described_class.create!(title: "New Article", content: "Article Content", published: true, user: user)
+      article = described_class.create!(title: "New Article", content: "Article Content", published: true, user:)
       article.unpublish
       expect(article.published).to be false
     end
