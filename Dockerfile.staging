@@ -1,7 +1,5 @@
 # syntax = docker/dockerfile:1
 
-LABEL org.opencontainers.image.source https://github.com/nameemHQ/nameem
-
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
 ARG RUBY_VERSION=3.3.4
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim AS base
@@ -41,6 +39,8 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # Final stage for app image
 FROM base
+
+LABEL org.opencontainers.image.source "https://github.com/nameemhq/nameem"
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
