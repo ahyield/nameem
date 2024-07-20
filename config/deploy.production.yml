@@ -1,5 +1,5 @@
 # Name of the container image.
-image: nameemHQ/nameem-production
+image: nameemhq/nameem-production
 
 # Deploy to these servers.
 servers:
