@@ -24,6 +24,7 @@ env:
     DB_HOST:
   secret:
     - RAILS_MASTER_KEY
+    - MYSQL_USERNAME
     - MYSQL_ROOT_PASSWORD
 
 # Use a different ssh user than root
@@ -50,6 +51,7 @@ accessories:
       clear:
         MYSQL_ROOT_HOST: '%'
       secret:
+        - MYSQL_USERNAME
         - MYSQL_ROOT_PASSWORD
     files:
       # - config/mysql/production.cnf:/etc/mysql/my.cnf

@@ -1,0 +1,21 @@
+# build-deploy/action.yml
+name: Build & Deploy
+
+inputs:
+  environment:
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - name: Kamal Deploy
+      shell: bash
+      id: kamal-deploy
+      run: |
+        ./bin/kamal deploy --destination=${{ inputs.environment }}
+
+    - name: Kamal Release
+      shell: bash
+      if: ${{ cancelled() }}
+      run: |
+        ./bin/kamal lock release --destination=${{ inputs.environment }}

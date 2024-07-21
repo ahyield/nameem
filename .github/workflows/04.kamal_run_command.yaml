@@ -1,0 +1,52 @@
+name: 06. Kamal run command
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'Commands'
+        required: true
+        type: choice
+        options:
+          - traefik reboot --rolling
+          - accessory reboot pg_hero
+      environment:
+        description: 'Environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  kamal_run_command:
+    name: Kamal run command
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: ${{ github.event.inputs.environment }}_environment
+      cancel-in-progress: false
+    environment:
+      name: ${{ github.event.inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - uses: ./.github/workflows/pre-build
+        name: Pre Build
+        with:
+          database-url: ${{ github.event.inputs.environment == 'production' && secrets.DATABASE_URL_PRODUCTION || secrets.DATABASE_URL_STAGING }}
+          redis-url: ${{ github.event.inputs.environment == 'production' && secrets.REDIS_URL_PRODUCTION || secrets.REDIS_URL_STAGING }}
+          rails-master-key: ${{ secrets.RAILS_MASTER_KEY }}
+          aws-role-access: ${{ secrets.AWS_ROLE_ACCESS }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          environment: ${{ github.event.inputs.environment }}
+
+      - name: kamal ${{ github.event.inputs.command }} --destination=${{ github.event.inputs.environment }}
+        run: |
+          ./bin/kamal ${{ github.event.inputs.command }} --destination=${{ github.event.inputs.environment }}

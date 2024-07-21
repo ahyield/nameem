@@ -12,6 +12,7 @@ env:
     DB_HOST: 203.0.113.20
   secret:
     - RAILS_MASTER_KEY
+    - MYSQL_USERNAME
     - MYSQL_ROOT_PASSWORD
 
 builder:

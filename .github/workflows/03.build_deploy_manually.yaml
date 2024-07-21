@@ -1,0 +1,79 @@
+# 04.build_deploy_manually.yaml
+name: 04. Deploy Manually
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - production
+          - staging
+
+jobs:
+  build-production:
+    name: deploy-production
+    concurrency:
+      group: production_environment
+      cancel-in-progress: true
+    environment:
+      name: production
+      url: https://nameem.com
+    if: ${{ github.event.inputs.environment == 'production' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Pre Build
+        uses: ./.github/workflows/pre-build
+        with:
+          rails-master-key: ${{ secrets.RAILS_MASTER_KEY }}
+          kamal-registry-password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          my-sql-root-password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          environment: production
+
+      - name: Build and Deploy
+        uses: ./.github/workflows/build-deploy
+        with:
+          environment: production
+
+  build-staging:
+    name: deploy-staging
+    concurrency:
+      group: staging_environment
+      cancel-in-progress: true
+    environment:
+      name: staging
+      url: https://staging.nameem.com
+    if: ${{ github.event.inputs.environment == 'staging' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Pre Build
+        uses: ./.github/workflows/pre-build
+        with:
+          rails-master-key: ${{ secrets.RAILS_MASTER_KEY }}
+          kamal-registry-password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          my-sql-root-password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          environment: staging
+
+      - name: Build and Deploy
+        uses: ./.github/workflows/build-deploy
+        with:
+          environment: staging
