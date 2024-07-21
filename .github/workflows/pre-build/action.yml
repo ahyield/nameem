@@ -1,0 +1,43 @@
+# pre-build/action.yml
+
+name: Pre-Build
+
+inputs:
+  rails-master-key:
+    type: string
+  kamal-registry-password:
+    type: string
+  ssh_private_key:
+    type: string
+  my-sql-root-password:
+    type: string
+  environment:
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ inputs.ssh-private-key }}
+
+    - uses: ruby/setup-ruby@v1
+      env:
+        BUNDLE_GEMFILE: ./Gemfile
+      with:
+        ruby-version: .ruby-version
+        bundler-cache: true
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Kamal Envify
+      shell: bash
+      id  : kamal-envify
+      env :
+        KAMAL_REGISTRY_PASSWORD: ${{ inputs.kamal-registry-password }}
+        MYSQL_ROOT_PASSWORD: ${{ inputs.my-sql-root-password }}
+        RAILS_MASTER_KEY: ${{ inputs.rails-master-key }}
+        DOCKER_BUILDKIT: 1
+      run: |
+        ./bin/kamal envify --destination=${{ inputs.environment }}

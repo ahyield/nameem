@@ -1,0 +1,65 @@
+name: Specs
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_USERNAME: root
+          MYSQL_ROOT_PASSWORD: ${{ secrets.SPECS_MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: nameem_test
+
+    env:
+      RAILS_ENV: test
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: ${{ secrets.SPECS_MYSQL_ROOT_PASSWORD }}
+      DATABASE_HOST: 127.0.0.1
+      DB_PORT: 3306
+
+    steps:
+      - name: Install packages
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl libjemalloc2 libvips libpq-dev default-libmysqlclient-dev default-mysql-client
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Wait for MySQL to be ready
+        run: |
+          while ! mysqladmin ping -h 127.0.0.1 --silent; do
+            echo "Waiting for database connection..."
+            sleep 5
+          done
+
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+          MYSQL_USERNAME: root
+          MYSQL_ROOT_PASSWORD: ${{ secrets.SPECS_MYSQL_ROOT_PASSWORD }}
+          DATABASE_HOST: 127.0.0.1
+          DB_PORT: 3306
+        run: |
+          bin/rails db:setup && bin/bundle exec rspec
+
+      - name: Keep screenshots from failed system tests
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: screenshots
+          path: ${{ github.workspace }}/tmp/capybara
+          if-no-files-found: ignore

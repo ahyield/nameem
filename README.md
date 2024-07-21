@@ -1,6 +1,9 @@
-# X
+[![Specs](https://github.com/nameemhq/nameem/actions/workflows/_specs.yml/badge.svg)](https://github.com/nameemhq/nameem/actions/workflows/_specs.yml)
+
+# X 
 
 Writing platform, sorta like medium, but for Arabic.
+
 
 # Components
 

@@ -13,12 +13,12 @@ default: &default
   adapter: mysql2
   encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: root
-  password:
-  socket: /tmp/mysql.sock
+  username: <%= ENV["MYSQL_USERNAME"] %>
+  password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
 
 development:
   <<: *default
+  socket: /tmp/mysql.sock
   database: nameem_development
 
 # Warning: The database defined as "test" will be erased and
@@ -26,6 +26,8 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
+  host: <%= ENV['DATABASE_HOST'] %>
+  port: <%= ENV['DB_PORT'] %>
   database: nameem_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
@@ -50,14 +52,16 @@ test:
 #
 staging:
   <<: *default
+  socket: /tmp/mysql.sock
   host: <%= ENV["DB_HOST"] %>
   database: nameem_staging
-  username: root
+  username: <%= ENV["MYSQL_USERNAME"] %>
   password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
 
 production:
   <<: *default
+  socket: /tmp/mysql.sock
   host: <%= ENV["DB_HOST"] %>
   database: nameem_production
-  username: root
+  username: <%= ENV["MYSQL_USERNAME"] %>
   password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>

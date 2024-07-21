@@ -1,0 +1,52 @@
+# 02.build_deploy_staging.yaml
+name: 02. Build Staging
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  spec:
+    uses: ./.github/workflows/_specs.yaml
+    secrets: inherit
+
+  lint:
+    uses: ./.github/workflows/_lint_code.yaml
+    secrets: inherit
+
+  build_and_deploy:
+    name: build-deploy-production
+    concurrency:
+      group: production_environment
+      cancel-in-progress: true
+    environment:
+      name: staging
+      url: https://staging.nameem.com
+    needs:
+      - spec
+      - lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Pre Build
+        uses: ./.github/workflows/pre-build
+        with:
+          rails-master-key: ${{ secrets.RAILS_MASTER_KEY }}
+          kamal-registry-password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          my-sql-root-password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          environment: production
+
+      - name: Build & Deploy
+        uses: ./.github/workflows/build-deploy
+        with:
+          environment: staging
