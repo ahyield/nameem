@@ -36,7 +36,6 @@ runs:
       run: gem install bundler && bundle install && gem install kamal
 
     - name: Kamal Envify
-      shell: bash
       id  : kamal-envify
       env :
         KAMAL_REGISTRY_PASSWORD: ${{ inputs.kamal-registry-password }}
