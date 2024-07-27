@@ -131,9 +131,10 @@ RSpec/ExampleWording:
   CustomTransform:
     have: has
 
-RSpec/FilePath:
+Rails/FilePath:
   Exclude:
     - spec/**/*
+    - vendor/**/*
 
 RSpec/MessageExpectation:
   Enabled: false
