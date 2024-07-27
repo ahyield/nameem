@@ -7,7 +7,7 @@ inputs:
     type: string
   kamal-registry-password:
     type: string
-  ssh_private_key:
+  ssh-private-key:
     type: string
   my-sql-root-password:
     type: string
@@ -30,6 +30,10 @@ runs:
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
+
+    - name: Install dependencies
+      shell: bash
+      run: gem install bundler && bundle install && gem install kamal
 
     - name: Kamal Envify
       shell: bash
