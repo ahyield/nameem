@@ -1,8 +1,9 @@
 [![Specs](https://github.com/nameemhq/nameem/actions/workflows/_specs.yml/badge.svg)](https://github.com/nameemhq/nameem/actions/workflows/_specs.yml)
+[![Lint](https://github.com/nameemhq/nameem/actions/workflows/_lint.yml/badge.svg)](https://github.com/nameemhq/nameem/actions/workflows/_lint.yml)
 
-# X 
+# Nameem
 
-Writing platform, sorta like medium, but for Arabic.
+A minor wound on the arm of the absurd present.
 
 
 # Components
