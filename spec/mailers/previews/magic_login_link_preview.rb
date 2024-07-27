@@ -2,6 +2,6 @@
 class MagicLoginLinkPreview < ActionMailer::Preview
   def magic_login_link
     user = User.new(name: "أحمد طلبة", email: "tolpa1@gmail.com", confirmed: true)
-    MagicLoginLinkMailer.with(user: user, token: "").magic_login_link
+    MagicLoginLinkMailer.with(user:, token: "").magic_login_link
   end
 end

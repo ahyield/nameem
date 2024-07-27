@@ -8,6 +8,7 @@ AllCops:
   DisplayCopNames: true
   CacheRootDirectory: '.git'
   NewCops: enable
+  SuggestExtensions: false
   Exclude:
     - frontend/**/**
     - node_modules/**/**
@@ -15,6 +16,7 @@ AllCops:
     - config/**/**
     - bin/**
     - vendor/**/**
+
 
 Style/Documentation:
   Enabled: false
@@ -90,7 +92,6 @@ Style/HashTransformValues:
 Layout/MultilineOperationIndentation:
   Description: Checks indentation of binary operations that span more than one line.
   EnforcedStyle: indented
-
 Style/DoubleNegation:
   Enabled: false
 

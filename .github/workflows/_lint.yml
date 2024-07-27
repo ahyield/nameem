@@ -26,8 +26,17 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Run RuboCop
+        run: bundle exec rubocop --format json --out rubocop.json || true
+
       - uses: reviewdog/action-rubocop@v2
         with:
-          reporter: github-pr-review # Default is github-pr-check
+          reporter: github-pr-checl
           skip_install: true
           use_bundler: true
+          level: error
+          fail_on_error: true
+          rubocop_flags: --config .rubocop.yml
