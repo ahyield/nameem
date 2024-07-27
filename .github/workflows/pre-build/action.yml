@@ -44,4 +44,4 @@ runs:
         RAILS_MASTER_KEY: ${{ inputs.rails-master-key }}
         DOCKER_BUILDKIT: 1
       run: |
-        ./bin/kamal envify --destination=${{ inputs.environment }}
+        kamal envify --destination=${{ inputs.environment }}
