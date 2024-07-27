@@ -12,10 +12,10 @@ runs:
       shell: bash
       id: kamal-deploy
       run: |
-        ./bin/kamal deploy --destination=${{ inputs.environment }}
+        kamal deploy --destination=${{ inputs.environment }}
 
     - name: Kamal Release
       shell: bash
       if: ${{ cancelled() }}
       run: |
-        ./bin/kamal lock release --destination=${{ inputs.environment }}
+        kamal lock release --destination=${{ inputs.environment }}
