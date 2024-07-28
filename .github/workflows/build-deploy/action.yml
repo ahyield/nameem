@@ -2,6 +2,8 @@
 name: Build & Deploy
 
 inputs:
+  kamal-registry-password:
+    type: string
   environment:
     type: string
 
@@ -11,11 +13,8 @@ runs:
     - name: Kamal Deploy
       shell: bash
       id: kamal-deploy
-      env :
-        KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
-        MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
-        MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-        RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+      env:
+        KAMAL_REGISTRY_PASSWORD: ${{ inputs.kamal-registry-password }}
       run: |
         kamal deploy --destination=${{ inputs.environment }}
 
