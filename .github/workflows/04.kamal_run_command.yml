@@ -1,4 +1,4 @@
-name: 06. Kamal run command
+name: 04. Kamal run command
 
 permissions:
   id-token: write
