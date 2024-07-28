@@ -12,8 +12,8 @@ runs:
   using: composite
   steps:
     - uses: webfactory/ssh-agent@v0.8.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - uses: ruby/setup-ruby@v1
       env:
