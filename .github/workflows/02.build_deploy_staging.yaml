@@ -1,5 +1,5 @@
 # 02.build_deploy_staging.yaml
-name: 02. Build Staging
+name: 02. Build & deploy Staging
 
 permissions:
   id-token: write
