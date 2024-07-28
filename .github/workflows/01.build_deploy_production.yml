@@ -38,12 +38,6 @@ jobs:
 
       - name: Pre Build
         uses: ./.github/workflows/pre-build
-        with:
-          rails-master-key: ${{ secrets.RAILS_MASTER_KEY }}
-          kamal-registry-password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
-          my-sql-root-password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          environment: production
 
       - name: Build & Deploy
         uses: ./.github/workflows/build-deploy
