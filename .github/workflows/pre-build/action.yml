@@ -34,13 +34,3 @@ runs:
     - name: Install dependencies
       shell: bash
       run: gem install bundler && bundle install && gem install kamal
-
-    - name: Kamal Envify
-      id  : kamal-envify
-      env :
-        KAMAL_REGISTRY_PASSWORD: ${{ inputs.kamal-registry-password }}
-        MYSQL_ROOT_PASSWORD: ${{ inputs.my-sql-root-password }}
-        RAILS_MASTER_KEY: ${{ inputs.rails-master-key }}
-        DOCKER_BUILDKIT: 1
-      run: |
-        kamal envify --destination=${{ inputs.environment }}
