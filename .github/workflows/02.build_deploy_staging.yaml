@@ -20,9 +20,9 @@ jobs:
     secrets: inherit
 
   build_and_deploy:
-    name: build-deploy-production
+    name: build-deploy-staging
     concurrency:
-      group: production_environment
+      group: staging_environment
       cancel-in-progress: true
     environment:
       name: staging
@@ -31,7 +31,7 @@ jobs:
       - spec
       - lint
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,7 +44,7 @@ jobs:
           kamal-registry-password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           my-sql-root-password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          environment: production
+          environment: staging
 
       - name: Build & Deploy
         uses: ./.github/workflows/build-deploy
