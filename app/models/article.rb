@@ -40,4 +40,9 @@ class Article < ApplicationRecord
   def feature
     update(featured: true)
   end
+
+  def ops
+    @ops ||= content.fetch("ops")
+    @ops
+  end
 end
