@@ -3,26 +3,15 @@
     <div class="flex h-16 justify-between">
       <div class="flex">
         <div class="sm:ml-1 mr-2 flex items-center md:hidden">
-          <!-- Mobile menu button -->
           <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400
                                        hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2
                                        focus:ring-inset focus:ring-indigo-500" aria-controls="mobile-menu" aria-expanded="false"
                                        data-controller="navigation--nav-bar-mobile" data-action="click->navigation--nav-bar-mobile#toggleMenu">
             <span class="absolute -inset-0.5"></span>
             <span class="sr-only">Open main menu</span>
-            <!--
-              Icon when menu is closed.
-
-              Menu open: "hidden", Menu closed: "block"
-            -->
             <svg class="block h-6 w-6 icon-menu-open" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
-            <!--
-              Icon when menu is open.
-
-              Menu open: "block", Menu closed: "hidden"
-            -->
             <svg class="hidden h-6 w-6 icon-menu-closed" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -34,11 +23,11 @@
           </a>
         </div>
         <div class="hidden md:ml-6 md:flex md:space-x-8">
-          <a href="/about-nameem" class="inline-flex rtl:ml-6 mr-4 items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active?("/about-nameem") %>">عن نميم</a>
+          <a href="/about-nameem" class="inline-flex rtl:ml-6 mr-4 items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active_nav_path?("/about-nameem") %>">عن نميم</a>
           <% if !user_signed_in? %>
-            <a href="/login" class="inline-flex items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active?("/login") %>">دخول</a>
+            <a href="/login" class="inline-flex items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active_nav_path?("/login") %>">دخول</a>
           <% end %>
-          <a href="/terms" class="inline-flex items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active?("/terms") %>" data-turbo="false">الشروط</a>
+          <a href="/terms" class="inline-flex items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active_nav_path?("/terms") %>" data-turbo="false">الشروط</a>
         </div>
       </div>
       <div class="flex items-center">
@@ -87,7 +76,6 @@
                   data-transition-leave-to="opacity-0 translate-y-1"
                   class="absolute hidden right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                   role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
-                <!-- Active: "bg-gray-100", Not Active: "" -->
                 <%= link_to "الصفحة الشخصية", user_path(Current.user), data: { turbo: false }, class: "block px-4 py-2 hover:transition-all hover:duration-300
                 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-0" %>
                 <%= link_to settings_user_settings_path, class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500",
@@ -114,11 +102,11 @@
   <!-- Mobile menu, show/hide based on menu state. -->
   <div class="hidden lg:hidden bg-white mobile-menu" id="mobile-menu">
     <div class="space-y-1 pb-3 pt-2">
-      <a href="/about-nameem" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active?("/about-nameem") %> sm:pl-5 sm:pr-6">عن نميم</a>
+      <a href="/about-nameem" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active_nav_path?("/about-nameem") %> sm:pl-5 sm:pr-6">عن نميم</a>
       <% if !user_signed_in? %>
-        <a href="/login" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active?("/login") %> sm:pl-5 sm:pr-6">دخول</a>
+        <a href="/login" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active_nav_path?("/login") %> sm:pl-5 sm:pr-6">دخول</a>
       <% end %>
-      <a href="/terms" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active?("/terms") %> sm:pl-5 sm:pr-6">الشروط</a>
+      <a href="/terms" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active_nav_path?("/terms") %> sm:pl-5 sm:pr-6">الشروط</a>
     </div>
     <div class="border-t border-gray-200 pb-3 pt-4">
       <% if user_signed_in? %>
