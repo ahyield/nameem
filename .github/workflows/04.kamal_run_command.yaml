@@ -19,8 +19,8 @@ on:
         required: true
         type: choice
         options:
-          - staging
           - production
+          - staging
 
 jobs:
   kamal_run_command:

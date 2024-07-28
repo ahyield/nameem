@@ -30,13 +30,19 @@ jobs:
       - spec
       - lint
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
 
       - name: Pre Build
+        with:
+          rails-master-key: ${{ secrets.RAILS_MASTER_KEY }}
+          kamal-registry-password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          my-sql-root-password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          environment: production
         uses: ./.github/workflows/pre-build
 
       - name: Build & Deploy
