@@ -11,6 +11,11 @@ runs:
     - name: Kamal Deploy
       shell: bash
       id: kamal-deploy
+      env :
+        KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+        MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
+        MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+        RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
       run: |
         kamal deploy --destination=${{ inputs.environment }}
 
