@@ -1,4 +1,3 @@
-# build-deploy/action.yml
 name: Build & Deploy
 
 inputs:
