@@ -1,19 +1,11 @@
 module ApplicationHelper
   include Pagy::Frontend
 
-  def active?(path)
+  def active_nav_path?(path)
     if request.path == path
       "border-blue-500 text-gray-900"
     else
       "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-    end
-  end
-
-  def active_mobile?(path)
-    if request.path == path
-      "bg-indigo-50 border-indigo-500 text-indigo-700"
-    else
-      "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"
     end
   end
 

@@ -5,7 +5,6 @@ module Metable
     after_update :create_description
 
     def create_description
-      ops ||= content.fetch("ops")
       description = ""
 
       ops.each do |element|
@@ -22,7 +21,6 @@ module Metable
     end
 
     def alternative_titles
-      ops ||= content.fetch("ops")
       titles = []
 
       ops.each do |element|
@@ -33,7 +31,6 @@ module Metable
     end
 
     def article_images
-      ops ||= content.fetch("ops")
       urls = []
 
       ops.each do |element|
