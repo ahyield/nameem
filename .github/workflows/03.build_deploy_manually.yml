@@ -1,4 +1,4 @@
-name: 04. Deploy Manually
+name: 03. Deploy Manually
 
 permissions:
   id-token: write
