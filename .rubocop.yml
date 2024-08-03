@@ -44,7 +44,7 @@ Metrics/CyclomaticComplexity:
   Severity: refactor
 
 Layout/LineLength:
-  Max: 119
+  Max: 130
   Exclude:
     - Gemfile
   IgnoreCopDirectives: true
