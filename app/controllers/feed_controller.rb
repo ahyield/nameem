@@ -12,7 +12,6 @@ class FeedController < ApplicationController
     @pagy, @articles = pagy(Article.published.order(published_at: :desc))
 
     respond_to do |format|
-      format.html
       format.turbo_stream
     end
   end
@@ -21,7 +20,6 @@ class FeedController < ApplicationController
     @pagy, @articles = pagy(Article.picked.order(published_at: :desc))
 
     respond_to do |format|
-      format.html
       format.turbo_stream
     end
   end
@@ -30,7 +28,6 @@ class FeedController < ApplicationController
     @pagy, @articles = pagy(Article.featured.order(published_at: :desc))
 
     respond_to do |format|
-      format.html
       format.turbo_stream
     end
   end
