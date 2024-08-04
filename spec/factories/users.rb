@@ -1,0 +1,58 @@
+# Create factory for users
+
+FactoryBot.define do
+  factory :user do
+    email { Faker::Internet.email }
+    first_name { Faker::Name.first_name }
+    last_name { Faker::Name.last_name }
+    bio { Faker::Lorem.paragraph }
+    confirmed { true }
+    featured { false }
+    last_sign_in_at { Time.zone.now }
+    slug { Faker::Internet.slug }
+
+    trait :unconfirmed do
+      confirmed { false }
+    end
+
+    trait :featured do
+      featured { true }
+    end
+
+    trait :with_articles do
+      transient do
+        articles_count { 5 }
+      end
+
+      after(:create) do |user, evaluator|
+        create_list(:article, evaluator.articles_count, user:)
+      end
+    end
+
+    trait :with_avatar do
+      after(:create) do |user|
+        user.avatar.attach(io:           Rails.root.join("spec", "fixtures", "files", "avatar.png").open,
+                           filename:     "avatar.jpg",
+                           content_type: "image/jpg")
+      end
+    end
+
+    trait :picked do
+      picked { true }
+    end
+
+    trait :admin do
+      admin { true }
+    end
+
+    trait :editor do
+      editor { true }
+    end
+
+    factory :user_with_articles, traits: [:with_articles]
+    factory :user_with_avatar, traits: [:with_avatar]
+
+    factory :admin, traits: [:admin]
+    factory :editor, traits: [:editor]
+  end
+end
