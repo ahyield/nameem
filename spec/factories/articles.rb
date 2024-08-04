@@ -34,9 +34,8 @@ FactoryBot.define do
       end
     end
 
-    factory :published_article, traits: [:published]
-    factory :featured_article, traits: [:featured]
-    factory :picked_article, traits: [:picked]
-    factory :article_with_images, traits: [:with_images]
+    trait :draft do
+      published { false }
+    end
   end
 end

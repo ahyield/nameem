@@ -85,6 +85,7 @@ group :test do
   gem "capybara"
   gem "database_cleaner"
   gem "faker"
+  gem "rails-controller-testing"
   gem "selenium-webdriver"
   gem "shoulda-matchers"
   gem "simplecov", require: false
