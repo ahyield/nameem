@@ -37,14 +37,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def new; end
-
-  def edit
-    @user = current_user
-  end
-
-  def update; end
-
   def destroy
     @user = User.friendly.find(params[:slug])
     @article = @user.articles.find_by(uuid: params[:uuid])

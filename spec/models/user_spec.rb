@@ -1,88 +1,108 @@
 require "rails_helper"
 
 RSpec.describe User do
-  context "when user is created" do
-    it "is invalid with invalid email" do
-      expect(described_class.new(email: "")).not_to be_valid
-      expect(described_class.new(email: "test")).not_to be_valid
-      expect(described_class.new(email: "test@")).not_to be_valid
-      expect(described_class.new(email: "test@test.")).not_to be_valid
+  describe "validations" do
+    context "when email is invalid" do
+      it "is invalid with empty email" do
+        expect(described_class.new(email: "")).not_to be_valid
+      end
+
+      it "is invalid with malformed emails" do
+        invalid_emails = ["test", "test@", "test@test."]
+        invalid_emails.each do |invalid_email|
+          expect(described_class.new(email: invalid_email)).not_to be_valid
+        end
+      end
     end
 
-    it "is valid with valid email" do
-      expect(described_class.new(email: "test@test.com")).to be_valid
-      expect(described_class.new(email: "TEST@TEST.com")).to be_valid
+    context "when email is valid" do
+      it "is valid with proper email formats" do
+        valid_emails = ["test@test.com", "TEST@TEST.com"]
+        valid_emails.each do |valid_email|
+          expect(described_class.new(email: valid_email)).to be_valid
+        end
+      end
     end
 
-    it "is invalid with invalid slug" do
-      expect(described_class.new(email: "test@test.com", slug: "")).not_to be_valid
-      expect(described_class.new(email: "test@test.com", slug: "backoffice")).not_to be_valid
+    context "when slug is invalid" do
+      let(:valid_email) { "test@test.com" }
+
+      it "is invalid with empty slug" do
+        expect(described_class.new(email: valid_email, slug: "")).not_to be_valid
+      end
+
+      it "is invalid with reserved slug names" do
+        expect(described_class.new(email: valid_email, slug: "backoffice")).not_to be_valid
+      end
     end
 
-    it "is valid with valid slug" do
-      expect(described_class.new(email: "test@test.com", slug: "test")).to be_valid
-      expect(described_class.new(email: "test@test.com", slug: "test-1")).to be_valid
-      expect(described_class.new(email: "test@test.com", slug: "test_1")).to be_valid
-    end
+    context "when slug is valid" do
+      let(:valid_email) { "test@test.com" }
 
-    it "is created with default slug" do
-      user = described_class.create(email: "test@test.com")
+      it "is valid with proper slug formats" do
+        valid_slugs = %w[test test-1 test_1]
+        valid_slugs.each do |valid_slug|
+          expect(described_class.new(email: valid_email, slug: valid_slug)).to be_valid
+        end
+      end
+    end
+  end
+
+  describe "callbacks" do
+    it "creates a user with default slug if none is provided" do
+      user = create(:user, email: "test@test.com", slug: nil)
       expect(user.slug).to eq("test-test-com")
     end
 
-    it "is created with custom slug" do
-      user = described_class.create(email: "test@test.com", slug: "test")
+    it "creates a user with custom slug" do
+      user = create(:user, email: "test@test.com", slug: "test")
       expect(user.slug).to eq("test")
     end
 
-    it "is created with normalized email" do
-      user = described_class.create(email: "TEST@TEST.com")
+    it "normalizes the email to lowercase" do
+      user = create(:user, email: "TEST@TEST.com")
       expect(user.email).to eq("test@test.com")
     end
+  end
 
-    it "has attached avatar" do
-      user = described_class.create(
-        email:  "test@test.com",
-        avatar: Rack::Test::UploadedFile.new("spec/fixtures/files/avatar.png", "image/png")
-      )
-      expect(user.avatar).to be_attached
+  describe "attachments" do
+    context "when avatar is attached" do
+      it "has an attached avatar" do
+        user = create(:user, :with_avatar)
+        expect(user.avatar).to be_attached
+      end
     end
 
-    it "has default avatar as nil" do
-      user = described_class.create(email: "test@test.com", avatar: nil)
-      expect(user.avatar).not_to be_attached
+    context "when avatar is not attached" do
+      it "has no avatar by default" do
+        user = create(:user, email: "test@test.com", avatar: nil)
+        expect(user.avatar).not_to be_attached
+      end
     end
+  end
 
+  describe "associations" do
     it "has many articles" do
-      user = described_class.create(email: "test@test.com")
-      expect(user.articles).to eq([])
-
-      a1 = user.articles.create(title: "Article 1", content: "Content 1")
-      a2 = user.articles.create(title: "Article 2", content: "Content 2")
-      expect(user.articles).to include(a1)
-      expect(user.articles).to include(a2)
+      user = create(:user, :with_articles)
+      expect(user.articles.size).to eq(5)
     end
+  end
+
+  describe "features" do
+    let(:user) { create(:user, email: "test@test.com", avatar: nil) }
 
     it "can be featured" do
-      user = described_class.create(email: "test@test.com", avatar: nil)
       user.feature
-
       expect(user.featured).to be_truthy
     end
 
     it "can be admin" do
-      user = described_class.create(email: "test@test.com", avatar: nil)
-
       user.make_admin
-
       expect(user).to be_admin
     end
 
     it "can be editor" do
-      user = described_class.create(email: "test@test.com", avatar: nil)
-
       user.make_editor
-
       expect(user).to be_editor
     end
   end
