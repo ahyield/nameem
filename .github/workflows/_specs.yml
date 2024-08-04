@@ -39,13 +39,6 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Wait for MySQL to be ready
-        run: |
-          while ! mysqladmin ping -h 127.0.0.1 --silent; do
-            echo "Waiting for database connection..."
-            sleep 5
-          done
-
       - name: Run tests
         env:
           RAILS_ENV: test
