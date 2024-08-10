@@ -12,9 +12,9 @@ class Article < ApplicationRecord
 
   attribute :uuid, MySQLBinUUID::Type.new
 
-  validates :featured, inclusion: { in: [true, false] }, allow_blank: true
-  validates :published, inclusion: { in: [true, false] }, allow_blank: true
-  validates :picked, inclusion: { in: [true, false] }, allow_blank: true
+  validates :featured, inclusion: { in: [true, false] }, allow_nil: false
+  validates :published, inclusion: { in: [true, false] }, allow_nil: false
+  validates :picked, inclusion: { in: [true, false] }, allow_nil: false
   validates :uuid, uniqueness: true
 
   def to_param
