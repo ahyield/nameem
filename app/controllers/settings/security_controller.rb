@@ -6,7 +6,7 @@ module Settings
 
     def update
       @user = current_user
-      return if @user.email == user_params[:email] && @user.confirmed?
+      return head :ok if @user.email == user_params[:email] && @user.confirmed?
 
       user_by_email = User.find_by(email: user_params[:email])
 

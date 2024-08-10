@@ -25,6 +25,10 @@ class User < ApplicationRecord
                    format:      { with:    /\A(?![._-])(?=.*[a-zA-Z0-9])[-_a-zA-Z0-9]+(?<![._-])\z/,
                                   message: "إسم المستخدم يجب أن يكون أحرف مع أرقام، شرطة، \
   أو شرطة سفلية فقط، أيضًا، يجب ألا يبدأ أو ينتهي بعلامات" }
+  validates :name, presence: true,
+    allow_blank: false,
+    length: { minimum: 3 }, on: :update
+
   validate :slug_is_not_reserved
   validate :correct_avatar_mime_type
 

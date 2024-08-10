@@ -3,6 +3,9 @@ ar:
     attributes:
       user:
         slug: "اسم المستخدم"
+        name: "الاسم"
   errors:
     messages:
       taken: "%{attribute} غير متاح"
+      allow_blank: "يجب ألا يكون فارغًا"
+      present: "يجب أن يكون موجودًا"
