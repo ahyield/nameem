@@ -29,6 +29,8 @@ class User < ApplicationRecord
     allow_blank: false,
     length: { minimum: 3 }, on: :update
 
+  validates :featured, inclusion: { in: [true, false] }, allow_nil: false
+
   validate :slug_is_not_reserved
   validate :correct_avatar_mime_type
 

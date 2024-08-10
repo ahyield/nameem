@@ -4,6 +4,8 @@ ar:
       user:
         slug: "اسم المستخدم"
         name: "الاسم"
+      article:
+        featured: "مميز"
   errors:
     messages:
       taken: "%{attribute} غير متاح"
