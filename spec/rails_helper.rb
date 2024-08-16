@@ -10,6 +10,15 @@ require "support/database_cleaner"
 require "support/factory_bot"
 require "pundit/rspec"
 
+def json
+  JSON.parse(response.body)
+end
+
+# Used in requests specs to authenticate a user.
+def authenticate_user(user)
+  allow(Current).to receive(:user).and_return(user)
+end
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in

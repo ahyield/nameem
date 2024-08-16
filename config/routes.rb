@@ -39,10 +39,10 @@ Rails.application.routes.draw do
     delete 'attachments/delete', to: 'attachments#delete'
 
     get 'articles/new', to: 'articles#new'
-    get ':slug/:uuid/edit', to: 'articles#edit', as: 'articles_edit'
-    get ':slug/:uuid', to: 'articles#show', as: 'show_article'
+    get 'articles/:slug/:uuid/edit', to: 'articles#edit', as: 'articles_edit'
+    get 'articles/:slug/:uuid', to: 'articles#show', as: 'show_article'
 
-    put ':slug/:uuid/edit', to: 'articles#update', as: 'articles_update'
+    put 'articles/:slug/:uuid', to: 'articles#update', as: 'articles_update'
   end
 
   ################### Since auth is from scratch ####################
