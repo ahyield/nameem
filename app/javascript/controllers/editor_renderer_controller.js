@@ -53,7 +53,7 @@ export default class extends Controller {
   }
 
   async fetchArticle(uuid, slug) {
-    const response = await fetch(`/api/${slug}/${uuid}`, { method: "GET" })
+    const response = await fetch(`/api/articles/${slug}/${uuid}`, { method: "GET" })
 
     const data = await response.json()
     return data
