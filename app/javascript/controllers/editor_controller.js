@@ -250,7 +250,7 @@ export default class extends Controller {
   }
 
   async fetchArticle(uuid, slug) {
-    const response = await fetch(`/api/${slug}/${uuid}/edit`, { method: "GET" })
+    const response = await fetch(`/api/articles/${slug}/${uuid}/edit`, { method: "GET" })
 
     const data = await response.json()
     return data
@@ -292,7 +292,7 @@ export default class extends Controller {
   async updateArticleTitle(uuid, slug) {
     const articleTitle = document.getElementById("article-title").value
 
-    const response = await fetch(`/api/${slug}/${uuid}/edit`, {
+    const response = await fetch(`/api/articles/${slug}/${uuid}`, {
       method: "PUT",
       body: JSON.stringify({ article: { title: articleTitle, content: editor.getContents(), }}),
       headers: {
@@ -304,7 +304,7 @@ export default class extends Controller {
   }
 
   async updateArticleContent(uuid, slug) {
-    const response = await fetch(`/api/${slug}/${uuid}/edit`, {
+    const response = await fetch(`/api/articles/${slug}/${uuid}`, {
       method: "PUT",
       body: JSON.stringify({ article: { content: editor.getContents(), }}),
       headers: {
