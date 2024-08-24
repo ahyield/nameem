@@ -18,6 +18,7 @@ RSpec.describe "UserWritingArticle" do
       fill_in "article-title", with: "My first article"
       find(".ql-editor").click
       find(".ql-editor").set("This is my first article")
+      sleep 2 # So the article can catch up with saving
 
       click_button "نشر"
 
