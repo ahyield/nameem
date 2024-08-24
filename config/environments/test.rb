@@ -59,6 +59,7 @@ Rails.application.configure do
 
   config.public_file_server.enabled = true
   config.assets.compile = true
+  config.assets.debug = false
 
   # Capybara email open
   config.action_mailer.delivery_method = :test

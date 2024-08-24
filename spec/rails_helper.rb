@@ -59,13 +59,26 @@ begin
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
+
 RSpec.configure do |config|
   config.before(:each, type: :system) do
+    `bundle exec rake assets:precompile`
+
     ActiveJob::Base.queue_adapter = :inline
-    driven_by(:rack_test)
 
     Capybara.server_port = 3001
     Capybara.app_host = "http://localhost:3001"
+    Capybara.asset_host = "http://localhost:3000"
+
+    driven_by :selenium, using: :chrome do |options|
+      options.add_argument("disable-search-engine-choice-screen")
+      options.add_argument("disable-gpu")
+      options.add_argument("no-sandbox")
+      options.add_argument("allow-insecure-localhost")
+      options.add_argument("allow-running-insecure-content")
+      options.add_argument("ignore-certificate-errors")
+      options.add_argument("disable-web-security")
+    end
   end
 
   config.include ActiveJob::TestHelper, type: :system
