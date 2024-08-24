@@ -23,17 +23,6 @@ def authenticate_user(user)
   allow(Current).to receive(:user).and_return(user)
 end
 
-Capybara.register_driver :selenium_chrome_headless do |app|
-  options = Selenium::WebDriver::Chrome::Options.new(
-    args: %w[headless disable-gpu no-sandbox]
-  )
-
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options:)
-end
-
-Capybara.javascript_driver = :selenium_chrome_headless
-Capybara.server = :puma, { Silent: true }
-
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -68,7 +57,7 @@ RSpec.configure do |config|
     Capybara.server_port = 3001
     Capybara.app_host = "http://localhost:3001"
 
-    driven_by :selenium_chrome_headless, using: :chrome do |options|
+    driven_by :selenium, using: :chrome do |options|
       options.add_argument("disable-search-engine-choice-screen")
       options.add_argument("disable-gpu")
       options.add_argument("no-sandbox")
