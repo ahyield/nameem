@@ -68,7 +68,7 @@ RSpec.configure do |config|
     Capybara.server_port = 3001
     Capybara.app_host = "http://localhost:3001"
 
-    driven_by :selenium, using: :chrome do |options|
+    driven_by :selenium_chrome_headless, using: :chrome do |options|
       options.add_argument("disable-search-engine-choice-screen")
       options.add_argument("disable-gpu")
       options.add_argument("no-sandbox")
