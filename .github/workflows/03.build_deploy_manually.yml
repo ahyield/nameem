@@ -27,7 +27,7 @@ jobs:
       url: https://nameem.com
     if: ${{ github.event.inputs.environment == 'production' }}
 
-    runs-on: ubuntu-latest
+    runs-on: buildjet-4vcpu-ubuntu-2204
     timeout-minutes: 40
 
     steps:
@@ -59,7 +59,7 @@ jobs:
       name: staging
       url: https://staging.nameem.com
     if: ${{ github.event.inputs.environment == 'staging' }}
-    runs-on: ubuntu-latest
+    runs-on: buildjet-4vcpu-ubuntu-2204
     timeout-minutes: 40
 
     steps:
