@@ -30,7 +30,7 @@ RSpec.describe "UserLogin" do
 
       current_email.click_link "تسجيل الدخول"
 
-      find_by_id("#user-menu-button").click
+      find_by_id("user-menu-button").click
 
       within('[data-controller="dropdown"]') do
         expect(page).to have_link("الصفحة الشخصية", href: user_path(user))
