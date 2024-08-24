@@ -9,6 +9,11 @@ require "support/auth_helpers"
 require "support/database_cleaner"
 require "support/factory_bot"
 require "pundit/rspec"
+require "capybara/rspec"
+require "capybara-screenshot/rspec"
+require "capybara/email/rspec"
+require "webdrivers"
+require "selenium/webdriver"
 
 def json
   JSON.parse(response.body)
@@ -18,6 +23,17 @@ end
 def authenticate_user(user)
   allow(Current).to receive(:user).and_return(user)
 end
+
+Capybara.register_driver :selenium_chrome_headless do |app|
+  options = Selenium::WebDriver::Chrome::Options.new(
+    args: %w[headless disable-gpu no-sandbox]
+  )
+
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options:)
+end
+
+Capybara.javascript_driver = :selenium_chrome_headless
+Capybara.server = :puma, { Silent: true }
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -44,6 +60,16 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 RSpec.configure do |config|
+  config.before(:each, type: :system) do
+    ActiveJob::Base.queue_adapter = :inline
+    driven_by(:rack_test)
+
+    Capybara.server_port = 3001
+    Capybara.app_host = "http://localhost:3001"
+  end
+
+  config.include ActiveJob::TestHelper, type: :system
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = Rails.root.join("spec/fixtures").to_s
 

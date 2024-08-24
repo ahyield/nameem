@@ -114,6 +114,15 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
+    capybara-email (3.0.2)
+      capybara (>= 2.4, < 4.0)
+      mail
+    capybara-screenshot (1.0.26)
+      capybara (>= 1.0, < 4)
+      launchy
+    capybara-selenium (0.0.6)
+      capybara
+      selenium-webdriver
     childprocess (5.1.0)
       logger (~> 1.5)
     concurrent-ruby (1.3.4)
@@ -442,6 +451,9 @@ DEPENDENCIES
   bcrypt
   bootsnap
   capybara
+  capybara-email
+  capybara-screenshot
+  capybara-selenium
   database_cleaner
   debug
   dotenv-rails
