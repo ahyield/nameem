@@ -8,17 +8,26 @@ RSpec.describe "UserWritingArticle" do
   end
 
   describe "writing article" do
-    it "user login with magiclink" do
+    it "writes article and publishes it" do
       visit root_path
-      expect(page).to have_content("الصفحة الشخصية")
 
       within("nav") do
         click_link(href: "/new-story")
       end
 
       fill_in "article-title", with: "My first article"
-      fill_in ".ql-editor", with: "This is my first article"
+      find(".ql-editor").click
+      find(".ql-editor").set("This is my first article")
+
       click_button "نشر"
+
+      expect(page).to have_content("معاينة الموضوع")
+
+      within("turbo-frame#modal") do
+        click_button "نشر"
+      end
+
+      expect(page).to have_content("This is my first article")
     end
   end
 end

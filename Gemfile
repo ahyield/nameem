@@ -87,7 +87,6 @@ group :test do
   gem "capybara-screenshot"
   gem "capybara-selenium"
 
-  gem "database_cleaner"
   gem "faker"
   gem "rails-controller-testing"
   gem "selenium-webdriver"
