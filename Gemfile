@@ -83,7 +83,10 @@ end
 
 group :test do
   gem "capybara"
-  gem "database_cleaner"
+  gem "capybara-email"
+  gem "capybara-screenshot"
+  gem "capybara-selenium"
+
   gem "faker"
   gem "rails-controller-testing"
   gem "selenium-webdriver"

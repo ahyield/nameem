@@ -52,3 +52,5 @@ package.json
 
 # ignore coverage
 /coverage
+
+/public/assets_test
