@@ -49,26 +49,31 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 
 RSpec.configure do |config|
-  config.before(:each, type: :system) do
+  config.before(:suite) do
     `bundle exec rake assets:precompile`
 
     ActiveJob::Base.queue_adapter = :inline
+    config.include ActiveJob::TestHelper
 
     Capybara.server_port = 3001
     Capybara.app_host = "http://localhost:3001"
+  end
 
-    driven_by :selenium_chrome_headless, using: :chrome do |options|
+  config.before(:each, type: :system) do
+    driven_by :selenium do |options|
       options.add_argument("disable-search-engine-choice-screen")
-      options.add_argument("disable-gpu")
       options.add_argument("no-sandbox")
-      options.add_argument("allow-insecure-localhost")
-      options.add_argument("allow-running-insecure-content")
+      options.add_argument("headless")
+      options.add_argument("disable-dev-shm-usage")
       options.add_argument("ignore-certificate-errors")
       options.add_argument("disable-web-security")
     end
   end
 
-  config.include ActiveJob::TestHelper, type: :system
+  config.after(:each, type: :system) do
+    Capybara.reset_sessions!
+    Capybara.use_default_driver
+  end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = Rails.root.join("spec/fixtures").to_s
