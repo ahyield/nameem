@@ -45,9 +45,12 @@ module Nameem
     elsif Rails.env.staging?
       config.asset_host = "https://staging.nameem.com"
       config.action_mailer.asset_host = "https://staging.nameem.com"
-    else
+    elsif Rails.env.development?
       config.asset_host = "http://localhost:3000"
       config.action_mailer.asset_host = "http://localhost:3000"
+    elsif Rails.env.test?
+      config.asset_host = "http://localhost:3001"
+      config.action_mailer.asset_host = "http://localhost:3001"
     end
 
     # Don't generate system test files.

@@ -22,7 +22,7 @@
             <img class="h-8 w-auto" src="<%= asset_path("brand/logo.png") %>" alt="نميم">
           </a>
         </div>
-        <div class="hidden md:ml-6 md:flex md:space-x-8">
+        <div class="hidden menu md:ml-6 md:flex md:space-x-8">
           <a href="/about-nameem" class="inline-flex rtl:ml-6 mr-4 items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active_nav_path?("/about-nameem") %>">عن نميم</a>
           <% if !user_signed_in? %>
             <a href="/login" class="inline-flex items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active_nav_path?("/login") %>">دخول</a>

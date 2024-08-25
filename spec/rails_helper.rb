@@ -6,9 +6,13 @@ require_relative "../config/environment"
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require "rspec/rails"
 require "support/auth_helpers"
-require "support/database_cleaner"
 require "support/factory_bot"
 require "pundit/rspec"
+require "capybara/rspec"
+require "capybara-screenshot/rspec"
+require "capybara/email/rspec"
+require "webdrivers"
+require "selenium/webdriver"
 
 def json
   JSON.parse(response.body)
@@ -43,14 +47,41 @@ begin
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
+
 RSpec.configure do |config|
+  config.before(:suite) do
+    `bundle exec rake assets:precompile`
+
+    ActiveJob::Base.queue_adapter = :inline
+    config.include ActiveJob::TestHelper
+
+    Capybara.server_port = 3001
+    Capybara.app_host = "http://localhost:3001"
+  end
+
+  config.before(:each, type: :system) do
+    driven_by :selenium do |options|
+      options.add_argument("disable-search-engine-choice-screen")
+      options.add_argument("no-sandbox")
+      options.add_argument("headless")
+      options.add_argument("disable-dev-shm-usage")
+      options.add_argument("ignore-certificate-errors")
+      options.add_argument("disable-web-security")
+    end
+  end
+
+  config.after(:each, type: :system) do
+    Capybara.reset_sessions!
+    Capybara.use_default_driver
+  end
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = Rails.root.join("spec/fixtures").to_s
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = false
+  config.use_transactional_fixtures = true
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
