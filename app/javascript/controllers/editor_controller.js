@@ -10,27 +10,6 @@ const BlockEmbed = Quill.import("blots/block/embed")
 
 const Delta = Quill.import("delta")
 
-var Clipboard = Quill.import("modules/clipboard")
-
-class PlainClipboard extends Clipboard {
-  // This is to prevent quill from styling the pasted text
-  // with the same style as the editor.
-  onPaste (e) {
-    e.preventDefault()
-    const range = this.quill.getSelection()
-    const text = e.clipboardData.getData("text/plain")
-    const delta = new Delta()
-    .retain(range.index)
-    .delete(range.length)
-    .insert(text)
-    const index = text.length + range.index
-    const length = 0
-    this.quill.updateContents(delta, "silent")
-    this.quill.setSelection(index, length, "silent")
-    this.quill.scrollIntoView()
-  }
-}
-
 class ImageBlot extends BlockEmbed {
   static create(value) {
     const node = super.create()
@@ -107,10 +86,15 @@ TweetBlot.blotName = "tweet"
 TweetBlot.tagName = "div"
 TweetBlot.className = "tweet"
 
+class DividerBlot extends BlockEmbed { }
+DividerBlot.blotName = "divider"
+DividerBlot.tagName = "hr"
+
+
 Quill.register(ImageBlot)
 Quill.register(TweetBlot)
 Quill.register(VideoBlot)
-Quill.register("modules/clipboard", PlainClipboard, true)
+Quill.register(DividerBlot)
 
 let editor = null
 let change = new Delta()
@@ -681,5 +665,17 @@ export default class extends Controller {
     const range = editor.getSelection(true)
     editor.insertEmbed(range.index, "tweet", id, Quill.sources.USER)
     editor.setSelection(range.index + 1, Quill.sources.API)
+  }
+
+  toggleDivder(event) {
+    const range = editor.getSelection()
+
+    if (range === null) {
+      return
+    } else {
+      editor.insertText(range.index, "\n", Quill.sources.USER)
+      editor.insertEmbed(range.index + 1, "divider", true, Quill.sources.USER)
+      editor.setSelection(range.index + 3, Quill.sources.SILENT)
+    }
   }
 }
