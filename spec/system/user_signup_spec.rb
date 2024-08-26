@@ -34,10 +34,13 @@ RSpec.describe "UserLogin" do
 
       click_button "تسجيل"
 
+      sleep 2
       # Get the user from the database
       confirmed_user = User.find_by(email: user.email)
 
       find_by_id("user-menu-button").click
+
+      sleep 2
 
       within('[data-controller="dropdown"]') do
         expect(page).to have_link("الصفحة الشخصية", href: user_path(confirmed_user))

@@ -18,7 +18,7 @@
         data-action="click@window->editor#hideTweetTip keydown.enter->editor#enterTweetTip keydown.esc->editor#closeTips"
         class="tweet-input hidden shaddow-none focus:ring-0 border-0 placeholder:italic placeholder:text-slate-200 bg-gradient-to-r from-cyan-500 text-slate-50 to-blue-500 rounded-lg" name="tweet">
   <div class="show-controls bg-transparent border-2 border-solid border-gray-500 rounded-full text-gray-500 h-8 w-12">
-    <button id="image-button" data-action="click->editor#toggleControls" class="">
+    <button id="show-controls" data-action="click->editor#toggleControls" class="">
       <i class="fa-solid fa-plus"></i>
     </button>
   </div>
@@ -39,6 +39,12 @@
       <li>
         <button id="tweet-button" data-action="click->editor#toggleTweetInput">
           <i class="fa-brands fa-twitter pt-1"></i>
+        </button>
+      </li>
+      <hr class="h-px bg-slate-200 border-0">
+      <li>
+        <button id="divider-button" data-action="click->editor#toggleDivder">
+          <i class="fa-solid fa-minus pt-1"></i>
         </button>
       </li>
       <hr class="h-px bg-slate-200 border-0">

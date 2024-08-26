@@ -27,6 +27,8 @@ export default class extends Controller {
         return `<img src="${url}", class="py-4">`
       } else if (customOp.insert.type === "tweet") {
         return `<div id="${customOp.insert.value}" class="tweet-block"></div>`
+      } else if (customOp.insert.type === "divider") {
+        return "<hr class=\"my-1\">"
       }
     })
 
