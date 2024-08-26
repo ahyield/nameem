@@ -15,11 +15,14 @@ RSpec.describe "UserWritingArticle" do
         click_link(href: "/new-story")
       end
 
+      sleep 2 # So the article can catch up with saving
       fill_in "article-title", with: "My first article"
+      sleep 2 # So the article can catch up with saving
       find(".ql-editor").click
+      sleep 2 # So the article can catch up with saving
       find(".ql-editor").set("This is my first article ")
 
-      sleep 4 # So the article can catch up with saving
+      sleep 2 # So the article can catch up with saving
 
       click_button "نشر"
 
