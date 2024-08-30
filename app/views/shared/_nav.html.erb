@@ -1,5 +1,5 @@
-<nav class="bg-transparent -inset-x-1 top-0 z-30 absolute shadow">
-  <div class="mx-auto md:w-full sm:w-full lg:3/5 2xl:w-3/4 px-4 sm:px-6 lg:px-8">
+<nav class="bg-transparent inset-x-0 top-0 z-30 absolute shadow">
+  <div class="mx-auto w-full px-4 sm:px-6 lg:w-3/4 lg:px-8">
     <div class="flex h-16 justify-between">
       <div class="flex">
         <div class="sm:ml-1 mr-2 flex items-center md:hidden">
@@ -19,7 +19,7 @@
         </div>
         <div class="flex flex-shrink-0 items-center">
           <a href="/">
-            <img class="h-8 w-auto" src="<%= asset_path("brand/logo.png") %>" alt="نميم">
+            <img class="h-8 w-auto max-w-full" src="<%= asset_path("brand/logo.png") %>" alt="نميم">
           </a>
         </div>
         <div class="hidden menu md:ml-6 md:flex md:space-x-8">
@@ -100,7 +100,7 @@
   </div>
 
   <!-- Mobile menu, show/hide based on menu state. -->
-  <div class="hidden lg:hidden bg-white mobile-menu" id="mobile-menu">
+  <div class="hidden lg:hidden bg-white mobile-menu overflow-x-hidden" id="mobile-menu">
     <div class="space-y-1 pb-3 pt-2">
       <a href="/about-nameem" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active_nav_path?("/about-nameem") %> sm:pl-5 sm:pr-6">عن نميم</a>
       <% if !user_signed_in? %>
