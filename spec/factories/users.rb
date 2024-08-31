@@ -1,5 +1,4 @@
 # Create factory for users
-
 FactoryBot.define do
   factory :user do
     email { Faker::Internet.email }
@@ -10,6 +9,14 @@ FactoryBot.define do
     featured { false }
     last_sign_in_at { Time.zone.now }
     slug { Faker::Internet.slug }
+
+    after(:create) do |user|
+      url = Faker::Avatar.image(slug: Faker::Internet.slug, size: "50x50", format: "jpg")
+      file = URI.parse(url).open
+      filename = File.basename(URI.parse(url).path)
+
+      user.avatar.attach(io: file, filename:)
+    end
 
     trait :unconfirmed do
       confirmed { false }
@@ -26,14 +33,6 @@ FactoryBot.define do
 
       after(:create) do |user, evaluator|
         create_list(:article, evaluator.articles_count, user:)
-      end
-    end
-
-    trait :with_avatar do
-      after(:create) do |user|
-        user.avatar.attach(io:           Rails.root.join("spec", "fixtures", "files", "avatar.png").open,
-                           filename:     "avatar.jpg",
-                           content_type: "image/jpg")
       end
     end
 
