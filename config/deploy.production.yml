@@ -3,7 +3,13 @@ image: nameemhq/nameem-production
 
 # Deploy to these servers.
 servers:
-  - 203.0.113.10
+  web:
+    hosts:
+      - 203.0.113.10
+  job:
+    hosts:
+      - 203.0.113.10
+    cmd: bundle exec rake solid_queue:start
 
 # Inject ENV variables into containers (secrets come from .env).
 # Remember to run `kamal env push` after making changes!
