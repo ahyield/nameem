@@ -2,6 +2,8 @@
 
 # Create some users and asooociated articles
 
+return if Rails.env.production?
+
 require "faker"
 
 Faker::Config.default_locale = "ar"
