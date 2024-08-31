@@ -2,7 +2,8 @@
 FactoryBot.define do
   factory :user do
     email { Faker::Internet.email }
-    name { Faker::Name.name }
+    first_name { Faker::Name.first_name }
+    last_name { Faker::Name.last_name }
     bio { Faker::Lorem.paragraph }
     confirmed { true }
     featured { false }
