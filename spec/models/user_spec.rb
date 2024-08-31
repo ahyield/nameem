@@ -68,14 +68,15 @@ RSpec.describe User do
   describe "attachments" do
     context "when avatar is attached" do
       it "has an attached avatar" do
-        user = create(:user, :with_avatar)
+        user = create(:user)
         expect(user.avatar).to be_attached
       end
     end
 
     context "when avatar is not attached" do
       it "has no avatar by default" do
-        user = create(:user, email: "test@test.com", avatar: nil)
+        user = create(:user, email: "test@test.com")
+        user.avatar = nil
         expect(user.avatar).not_to be_attached
       end
     end
