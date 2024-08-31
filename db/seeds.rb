@@ -2,7 +2,7 @@
 
 # Create some users and asooociated articles
 
-return if Rails.env.production?
+return unless Rails.env.development?
 
 require "faker"
 
