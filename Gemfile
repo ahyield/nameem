@@ -59,6 +59,9 @@ gem "dotenv-rails"
 
 gem "meta-tags"
 
+# Background with solid queue
+gem "solid_queue"
+
 group :development, :test do
   gem "debug", platforms: %i[mri windows]
   gem "rspec-rails"
