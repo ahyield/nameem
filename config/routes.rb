@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  constraints(Constraints::AdminConstraint.new) do
+    mount MissionControl::Jobs::Engine, at: "/backoffice/jobs"
+  end
+
   draw :backoffice
   resources :feed, only: [:index]
-
   scope(path: ':slug', as: :user, constraints: Constraints::RootNamespaceRoutesConstraint.new, controller: :users) do
     get '/', action: :show
 

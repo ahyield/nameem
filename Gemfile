@@ -60,6 +60,7 @@ gem "dotenv-rails"
 gem "meta-tags"
 
 # Background with solid queue
+gem "mission_control-jobs"
 gem "solid_queue"
 
 group :development, :test do
