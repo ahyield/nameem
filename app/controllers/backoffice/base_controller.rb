@@ -3,7 +3,7 @@ module Backoffice
     before_action :authenticate_admin!
 
     def authenticate_admin!
-      unless user_signed_in? && current_user.editor?
+      unless user_signed_in? && (current_user.editor? || current_user.admin?)
         flash[:error] = "غير مسموح لك بالدخول إلى هذه الصفحة"
         redirect_to "/"
       end
