@@ -43,7 +43,7 @@ Rails.application.configure do
   config.force_ssl = true
 
   config.active_job.queue_adapter = :solid_queue
-  config.active_job.queue_name_prefix = "nameem_development"
+  config.active_job.queue_name_prefix = "nameem_staging"
 
   # Log to STDOUT by default
   config.logger = ActiveSupport::Logger.new($stdout)
