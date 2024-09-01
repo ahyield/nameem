@@ -43,7 +43,7 @@ jobs:
           kamal-registry-password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           my-sql-root-password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          rails-max-threads: ${{ secrets.RAILS_MAX_THREADS }}
+          rails-max-threads: ${{ env.RAILS_MAX_THREADS }}
           environment: staging
 
       - name: Build & Deploy
