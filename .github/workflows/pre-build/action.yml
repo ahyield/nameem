@@ -9,6 +9,8 @@ inputs:
     type: string
   my-sql-root-password:
     type: string
+  my-sql-username:
+    type: string
   rails-max-threads:
     type: string
   environment:
