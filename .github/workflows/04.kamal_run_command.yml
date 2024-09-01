@@ -13,7 +13,7 @@ on:
         type: choice
         options:
           - traefik reboot --rolling
-          - accessory reboot pg_hero
+          - env push
       environment:
         description: 'Environment'
         required: true
@@ -40,12 +40,11 @@ jobs:
       - uses: ./.github/workflows/pre-build
         name: Pre Build
         with:
-          database-url: ${{ github.event.inputs.environment == 'production' && secrets.DATABASE_URL_PRODUCTION || secrets.DATABASE_URL_STAGING }}
-          redis-url: ${{ github.event.inputs.environment == 'production' && secrets.REDIS_URL_PRODUCTION || secrets.REDIS_URL_STAGING }}
           rails-master-key: ${{ secrets.RAILS_MASTER_KEY }}
-          aws-role-access: ${{ secrets.AWS_ROLE_ACCESS }}
+          kamal-registry-password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          my-sql-root-password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          environment: ${{ github.event.inputs.environment }}
+          environment: production
 
       - name: kamal ${{ github.event.inputs.command }} --destination=${{ github.event.inputs.environment }}
         run: |
