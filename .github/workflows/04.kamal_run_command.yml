@@ -48,4 +48,4 @@ jobs:
 
       - name: kamal ${{ github.event.inputs.command }} --destination=${{ github.event.inputs.environment }}
         run: |
-          ./bin/kamal ${{ github.event.inputs.command }} --destination=${{ github.event.inputs.environment }}
+          kamal ${{ github.event.inputs.command }} --destination=${{ github.event.inputs.environment }}
