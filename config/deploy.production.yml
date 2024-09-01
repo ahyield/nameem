@@ -16,6 +16,7 @@ servers:
 env:
   clear:
     DB_HOST: 65.109.14.124
+    RAILS_MAX_THREADS: 10
   secret:
     - RAILS_MASTER_KEY
     - MYSQL_USERNAME
