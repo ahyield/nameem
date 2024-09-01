@@ -39,8 +39,6 @@ gem "aws-sdk-s3"
 
 gem "rexml"
 
-# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
 gem "mysql-binuuid-rails"
 
 gem "pagy"
@@ -58,6 +56,9 @@ gem "mailgun-ruby"
 gem "dotenv-rails"
 
 gem "meta-tags"
+
+gem "flipper"
+gem "flipper-active_record"
 
 # Background with solid queue
 gem "mission_control-jobs"
