@@ -44,8 +44,15 @@ jobs:
           kamal-registry-password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           my-sql-root-password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          rails-max-threads: ${{ secrets.RAILS_MAX_THREADS }}
           environment: production
 
       - name: kamal ${{ github.event.inputs.command }} --destination=${{ github.event.inputs.environment }}
+        env:
+          KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          RAILS_MAX_THREADS: ${{ secrets.RAILS_MAX_THREADS }}
         run: |
           kamal ${{ github.event.inputs.command }} --destination=${{ github.event.inputs.environment }}
