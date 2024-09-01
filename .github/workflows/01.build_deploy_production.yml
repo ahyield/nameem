@@ -40,8 +40,9 @@ jobs:
           rails-master-key: ${{ secrets.RAILS_MASTER_KEY }}
           kamal-registry-password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           my-sql-root-password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          my-sql-username: ${{ secrets.MYSQL_USERNAME }}
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          rails-max-threads: ${{ secrets.RAILS_MAX_THREADS }}
+          rails-max-threads: ${{ env.RAILS_MAX_THREADS }}
           environment: production
         uses: ./.github/workflows/pre-build
 

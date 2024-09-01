@@ -44,6 +44,7 @@ jobs:
           kamal-registry-password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           my-sql-root-password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          my-sql-username: ${{ secrets.MYSQL_USERNAME }}
           rails-max-threads: ${{ env.RAILS_MAX_THREADS }}
           environment: production
 
@@ -52,6 +53,7 @@ jobs:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           RAILS_MAX_THREADS: ${{ env.RAILS_MAX_THREADS }}
         run: |
