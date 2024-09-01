@@ -2,6 +2,8 @@ name: Specs
 
 on:
   pull_request:
+    paths:
+      - '**/.rb'
   push:
     branches: [ main ]
 
