@@ -13,6 +13,8 @@ inputs:
     type: string
   rails-max-threads:
     type: string
+  sentry-dsn:
+    type: string
   environment:
     type: string
 

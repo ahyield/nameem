@@ -64,6 +64,9 @@ gem "flipper-active_record"
 gem "mission_control-jobs"
 gem "solid_queue"
 
+gem "sentry-rails"
+gem "sentry-ruby"
+
 group :development, :test do
   gem "debug", platforms: %i[mri windows]
   gem "rspec-rails"

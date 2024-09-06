@@ -44,6 +44,7 @@ jobs:
           my-sql-username: ${{ secrets.MYSQL_USERNAME }}
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           rails-max-threads: ${{ env.RAILS_MAX_THREADS }}
+          sentry-dsn: ${{ env.SENTRY_DSN }}
           environment: production
 
       - name: Build and Deploy
@@ -78,6 +79,7 @@ jobs:
           my-sql-username: ${{ secrets.MYSQL_USERNAME }}
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           rails-max-threads: ${{ env.RAILS_MAX_THREADS }}
+          sentry-dsn: ${{ env.SENTRY_DSN }}
           environment: staging
 
       - name: Build and Deploy
