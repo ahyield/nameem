@@ -16,17 +16,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Check if Ruby files changed
-        id: changes
-        run: |
-          git fetch --depth=2
-          if git diff --name-only HEAD^ HEAD | grep -q ".rb"; then echo "ruby_files_changed=true" >> $GITHUB_ENV; else echo "ruby_files_changed=false" >> $GITHUB_ENV; fi
-
   test:
     name: runner / specs
     runs-on: buildjet-4vcpu-ubuntu-2204
-    needs: detect-changes
-    if: jobs.detect-changes.outputs.ruby_files_changed == 'true'
 
     services:
       mysql:
@@ -75,10 +67,3 @@ jobs:
           name: screenshots
           path: ${{ github.workspace }}/tmp/capybara
           if-no-files-found: ignore
-  no-op:
-    runs-on: buildjet-4vcpu-ubuntu-2204
-    needs: detect-changes
-    if: env.ruby_files_changed == 'false'
-    steps:
-      - name: No-op status check
-        run: echo "No Ruby files changed, skipping tests."
