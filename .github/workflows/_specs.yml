@@ -26,7 +26,7 @@ jobs:
     name: runner / specs
     runs-on: buildjet-4vcpu-ubuntu-2204
     needs: detect-changes
-    if: env.ruby_files_changed == 'true'
+    if: jobs.detect-changes.outputs.ruby_files_changed == 'true'
 
     services:
       mysql:
