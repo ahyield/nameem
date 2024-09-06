@@ -2,8 +2,8 @@ source "https://rubygems.org"
 
 ruby "3.3.4"
 
-# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails"
+# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main" # YOLO
+gem "rails", github: "rails/rails", branch: "main"
 
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
@@ -48,7 +48,7 @@ gem "rails-i18n"
 gem "friendly_id"
 gem "name_of_person"
 
-gem "image_processing"
+gem "image_processing", ">= 1.13"
 gem "mini_magick"
 
 gem "mailgun-ruby"
