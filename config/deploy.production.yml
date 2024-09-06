@@ -21,6 +21,7 @@ env:
     - RAILS_MASTER_KEY
     - MYSQL_USERNAME
     - MYSQL_ROOT_PASSWORD
+    - SENTRY_DSN
 
 builder:
   dockerfile: Dockerfile
