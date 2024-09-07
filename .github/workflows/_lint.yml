@@ -1,7 +1,11 @@
 name: Lint
 on:
   pull_request:
+    paths:
+      - '**/.rb'
   push:
+    paths:
+      - '**/.rb'
     branches: [ main ]
 
 permissions:
