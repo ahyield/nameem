@@ -67,6 +67,8 @@ gem "solid_queue"
 gem "sentry-rails"
 gem "sentry-ruby"
 
+gem "honeybadger"
+
 group :development, :test do
   gem "debug", platforms: %i[mri windows]
   gem "rspec-rails"
