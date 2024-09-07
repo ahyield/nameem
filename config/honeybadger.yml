@@ -27,4 +27,8 @@ debug: false
 
 # Enable Honeybadger Insights
 insights:
-  enabled: false
+  enabled: true
+
+solid_queue:
+  insights:
+    collection_interval: 5
