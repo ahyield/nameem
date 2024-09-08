@@ -205,7 +205,6 @@ GEM
       raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    honeybadger (5.15.6)
     http-accept (1.7.0)
     http-cookie (1.0.7)
       domain_name (~> 0.5)
@@ -492,7 +491,6 @@ DEPENDENCIES
   flipper-active_record
   font-awesome-rails
   friendly_id
-  honeybadger
   image_processing (>= 1.13)
   importmap-rails
   letter_opener
