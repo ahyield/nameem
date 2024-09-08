@@ -47,7 +47,6 @@ jobs:
           my-sql-username: ${{ secrets.MYSQL_USERNAME }}
           rails-max-threads: ${{ env.RAILS_MAX_THREADS }}
           sentry-dsn: ${{ env.SENTRY_DSN }}
-          honeybadger-api-key: ${{ secrets.HONEYBADGER_API_KEY }}
           environment: production
 
       - name: kamal ${{ github.event.inputs.command }} --destination=${{ github.event.inputs.environment }}
@@ -58,7 +57,6 @@ jobs:
           MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           RAILS_MAX_THREADS: ${{ env.RAILS_MAX_THREADS }}
-          HONEYBADGER_API_KEY: ${{ secrets.HONEYBADGER_API_KEY }}
           SENTRY_DSN: ${{ env.SENTRY_DSN }}
         run: |
           kamal ${{ github.event.inputs.command }} --destination=${{ github.event.inputs.environment }}
