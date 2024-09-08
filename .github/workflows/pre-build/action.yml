@@ -15,8 +15,6 @@ inputs:
     type: string
   sentry-dsn:
     type: string
-  honeybadger-api-key:
-    type: string
   environment:
     type: string
 

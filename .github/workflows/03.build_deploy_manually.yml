@@ -45,7 +45,6 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           rails-max-threads: ${{ env.RAILS_MAX_THREADS }}
           sentry-dsn: ${{ env.SENTRY_DSN }}
-          honeybadger-api-key: ${{ secrets.HONEYBADGER_API_KEY }}
           environment: production
 
       - name: Build and Deploy
@@ -81,7 +80,6 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           rails-max-threads: ${{ env.RAILS_MAX_THREADS }}
           sentry-dsn: ${{ env.SENTRY_DSN }}
-          honeybadger-api-key: ${{ secrets.HONEYBADGER_API_KEY }}
           environment: staging
 
       - name: Build and Deploy
