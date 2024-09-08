@@ -9,6 +9,8 @@ import TweetBlot from "lib/quill/blots/tweet_blot"
 import DividerBlot from "lib/quill/blots/divider_blot"
 import { validateVideoUrl, validateTweetUrl } from "lib/quill/utils/validation_utils"
 
+import { fetchArticle, newArticle, updateArticleContent, updateArticleTitle } from "lib/api/article_api"
+
 const Block = Quill.import("blots/block")
 
 Quill.register(ImageBlot)
@@ -81,7 +83,7 @@ export default class extends Controller {
 
       const uuid = this.articleUuid()
       const slug = this.userSlug()
-      const article = await this.fetchArticle(uuid, slug)
+      const article = await fetchArticle(uuid, slug)
       controls.style.display = "none"
       articleTitle.value = article.title
       editor.setContents(article.content)
@@ -91,7 +93,7 @@ export default class extends Controller {
       if (source == "api") {
           var uuid = this.articleUuid()
           var slug = this.userSlug()
-          this.updateArticleContent(uuid, slug)
+          updateArticleContent(uuid, slug, editor)
       } else if (source == "user") {
         const deleted = this.getImgUrls(editor.getContents().diff(oldContents))
 
@@ -108,15 +110,15 @@ export default class extends Controller {
     setInterval(async () => {
       if (change.length() > 0) {
         if (this.isNewArticle()) {
-          const data = await this.newArticle()
+          const data = await newArticle()
           this.drawUrl(data)
           this.activatePublishingButton(data.article.uuid, data.user.slug)
-          await this.updateArticleContent(data.article.uuid, data.user.slug)
+          await updateArticleContent(data.article.uuid, data.user.slug, editor)
         } else {
           var uuid = this.articleUuid()
           var slug = this.userSlug()
           this.activatePublishingButton(uuid, slug)
-          await this.updateArticleContent(uuid, slug)
+          await updateArticleContent(uuid, slug, editor)
         }
         change = new Delta()
       }
@@ -136,19 +138,6 @@ export default class extends Controller {
     }
   }
 
-  async fetchArticle(uuid, slug) {
-    const response = await fetch(`/api/articles/${slug}/${uuid}/edit`, { method: "GET" })
-
-    const data = await response.json()
-    return data
-  }
-
-  async newArticle() {
-    const response = await fetch("/api/articles/new", { method: "GET" })
-
-    const data = await response.json()
-    return data
-  }
 
   isNewArticle() {
     const path = window.location.pathname
@@ -164,42 +153,16 @@ export default class extends Controller {
     if (articleTitle === null) return
 
     if (this.isNewArticle()) {
-      const data = await this.newArticle()
+      const data = await newArticle()
       this.drawUrl(data)
       this.activatePublishingButton(data.article.uuid, data.user.slug)
-      await this.updateArticleTitle(data.article.uuid, data.user.slug)
-      } else {
-        var uuid = this.articleUuid()
-        var slug = this.userSlug()
-        this.activatePublishingButton(uuid, slug)
-        await this.updateArticleTitle(uuid, slug)
-      }
-  }
-
-  async updateArticleTitle(uuid, slug) {
-    const articleTitle = document.getElementById("article-title").value
-
-    const response = await fetch(`/api/articles/${slug}/${uuid}`, {
-      method: "PUT",
-      body: JSON.stringify({ article: { title: articleTitle, content: editor.getContents(), }}),
-      headers: {
-        "CONTENT-TYPE": "application/json",
-      }
-    })
-    const article = await response.json()
-    return article
-  }
-
-  async updateArticleContent(uuid, slug) {
-    const response = await fetch(`/api/articles/${slug}/${uuid}`, {
-      method: "PUT",
-      body: JSON.stringify({ article: { content: editor.getContents(), }}),
-      headers: {
-        "CONTENT-TYPE": "application/json",
-      }
-    })
-    const article = await response.json()
-    return article
+      await updateArticleTitle(data.article.uuid, data.user.slug, editor)
+    } else {
+      var uuid = this.articleUuid()
+      var slug = this.userSlug()
+      this.activatePublishingButton(uuid, slug)
+      await updateArticleTitle(uuid, slug, editor)
+    }
   }
 
   articleUuid() {
