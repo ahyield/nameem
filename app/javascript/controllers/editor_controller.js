@@ -1,130 +1,33 @@
-// I am ashamed of it.
-// needs hygine, but works for now.
-
 import { DirectUpload } from "@rails/activestorage"
 import { Controller } from "@hotwired/stimulus"
 import Quill from "quill"
 
+import { setupQuill } from "lib/configs/quill_config"
+import ImageBlot from "lib/blots/image_blot"
+import VideoBlot from "lib/blots/video_blot"
+import TweetBlot from "lib/blots/tweet_blot"
+import DividerBlot from "lib/blots/divider_blot"
+import { validateVideoUrl, validateTweetUrl } from "lib/utils/validation_utils"
+
 const Block = Quill.import("blots/block")
-const BlockEmbed = Quill.import("blots/block/embed")
-
-const Delta = Quill.import("delta")
-
-class ImageBlot extends BlockEmbed {
-  static create(value) {
-    const node = super.create()
-    node.setAttribute("src", value.url)
-    node.setAttribute("class", "py-4")
-    return node
-  }
-
-  static value(node) {
-    return {
-      url: node.getAttribute("src")
-    }
-  }
-}
-
-ImageBlot.blotName = "customImage"
-ImageBlot.tagName = "img"
-
-class VideoBlot extends BlockEmbed {
-  static create(url) {
-    const node = super.create()
-    node.setAttribute("src", url)
-    node.setAttribute("class", "py-4")
-    node.setAttribute("frameborder", "0")
-    node.setAttribute("allowfullscreen", true)
-    return node
-  }
-
-  static formats(node) {
-    const format = {}
-    if (node.hasAttribute("height")) {
-      format.height = node.getAttribute("height")
-    }
-    if (node.hasAttribute("width")) {
-      format.width = node.getAttribute("width")
-    }
-    return format
-  }
-
-  static value(node) {
-    return node.getAttribute("src")
-  }
-
-  format(name, value) {
-    if (name === "height" || name === "width") {
-      if (value) {
-        this.domNode.setAttribute(name, value)
-      } else {
-        this.domNode.removeAttribute(name, value)
-      }
-    } else {
-      super.format(name, value)
-    }
-  }
-}
-
-VideoBlot.blotName = "video"
-VideoBlot.tagName = "iframe"
-
-class TweetBlot extends BlockEmbed {
-  static create(id) {
-    const node = super.create()
-    node.dataset.id = id
-    twttr.widgets.createTweet(id, node) // eslint-disable-line
-    return node
-  }
-
-  static value(domNode) {
-    return domNode.dataset.id
-  }
-}
-
-TweetBlot.blotName = "tweet"
-TweetBlot.tagName = "div"
-TweetBlot.className = "tweet"
-
-class DividerBlot extends BlockEmbed { }
-DividerBlot.blotName = "divider"
-DividerBlot.tagName = "hr"
-
 
 Quill.register(ImageBlot)
-Quill.register(TweetBlot)
 Quill.register(VideoBlot)
+Quill.register(TweetBlot)
 Quill.register(DividerBlot)
+
+const Delta = Quill.import("delta")
 
 let editor = null
 let change = new Delta()
 
 export default class extends Controller {
   async connect() {
-    var editorOptions = {
-      // This ignores the bullet/list keystroke.
-      modules: {
-        keyboard: {
-          bindings: {
-            "list autofill": {
-              prefix: /^\s*()$/
-            }
-          }
-        }
-      },
-      debug: "error",
-      placeholder: "إبدأ بالكتابة...",
-      scrollingContainer: "html",
-    }
-
-    editor = new Quill(".editor-container", editorOptions)
+    editor = setupQuill(".editor-container")
 
     const toolTip = document.querySelector(".tooltip-controls")
     const sidebar = document.querySelector(".sidebar-controls")
     const controls = document.querySelector(".show-controls")
-
-    editor.format("direction", "rtl")
-    editor.format("align", "right")
 
     const range = editor.getSelection()
     const rangeBounds = editor.getBounds(range)
@@ -523,7 +426,7 @@ export default class extends Controller {
   hideVideoTip(event) {
     const videoTip = document.querySelector(".video-input")
     var videoLink = document.getElementById("video").value
-    const validUrl = this.validateVideoUrl(videoLink)
+    const validUrl = validateVideoUrl(videoLink)
 
     const range = editor.getSelection()
 
@@ -544,7 +447,7 @@ export default class extends Controller {
   enterVideoTip(event) {
     const videoTip = document.querySelector(".video-input")
     var videoLink = document.getElementById("video").value
-    const validUrl = this.validateVideoUrl(videoLink)
+    const validUrl = validateVideoUrl(videoLink)
 
     if (validUrl) {
       this.videoInsert(validUrl)
@@ -561,24 +464,6 @@ export default class extends Controller {
     editor.insertEmbed(range.index, "video", url, Quill.sources.USER)
     editor.formatText(range.index, 1, { height: "360", width: "740" })
     editor.setSelection(range.index + 1, Quill.sources.SILENT)
-  }
-
-  validateVideoUrl(url) {
-    const youtubePattern = /^(https?:\/\/)(www\.)?(youtube\.com\/(.*\/)?(v\/|e\/|u\/\w+\/|embed\/|v=|vi=|t=|\?v=|\?vi=|\?u=|\?e=|\?t=)?([^#]*))(#[\w]*)?$/
-    const youtubeShortPattern = /^(https?:\/\/)(www\.)?(youtu\.be\/)([^#]*)?(#[\w]*)?$/
-    const vimeoPattern = /^(https?:\/\/)(www\.)?(vimeo\.com\/|player\.vimeo\.com\/video\/)?([0-9]+)(\?h=[\w]+)?(\/)?([^#]*)(#[\w]*)?$/
-
-    if (youtubePattern.test(url)) {
-      return url.replace("watch?v=", "embed/")
-    } else if (youtubeShortPattern.test(url)) {
-      return url.replace("youtu.be/", "www.youtube.com/embed/")
-    } else if (vimeoPattern.test(url)) {
-      if (url.includes("player.vimeo.com/video")) {
-        return url
-      } else if (url.includes("vimeo.com")) {
-        return url.replace("vimeo.com", "player.vimeo.com/video")
-      }
-    }
   }
 
   toggleTweetInput(){
@@ -611,7 +496,7 @@ export default class extends Controller {
   hideTweetTip(event) {
     const tweetTip = document.querySelector(".tweet-input")
     var tweetLink = document.getElementById("tweet").value
-    const validUrl = this.validateTweetUrl(tweetLink)
+    const validUrl = validateTweetUrl(tweetLink)
     const sidebar = document.querySelector(".sidebar-controls")
     const controls = document.querySelector(".show-controls")
 
@@ -637,7 +522,7 @@ export default class extends Controller {
     event.preventDefault()
     const tweetTip = document.querySelector(".tweet-input")
     var tweetLink = document.getElementById("tweet").value
-    const validUrl = this.validateTweetUrl(tweetLink)
+    const validUrl = validateTweetUrl(tweetLink)
     const sidebar = document.querySelector(".sidebar-controls")
     const controls = document.querySelector(".show-controls")
 
@@ -650,14 +535,6 @@ export default class extends Controller {
       controls.style.display = "none"
     } else {
       alert("Invalid tweet link!, please use full tweet link")
-    }
-  }
-
-  validateTweetUrl(url) {
-    const tweetPattern = /^(https?:\/\/)(www\.)?((twitter\.com|x\.com)\/(.*\/)?(status\/)?([^#]*))(#[\w]*)?$/
-
-    if (tweetPattern.test(url)) {
-      return url.split("/")[5].split("?")[0]
     }
   }
 
