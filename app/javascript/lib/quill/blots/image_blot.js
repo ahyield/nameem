@@ -1,4 +1,4 @@
-import { BaseBlot } from "lib/blots/base_blot"
+import { BaseBlot } from "lib/quill/blots/base_blot"
 
 export class ImageBlot extends BaseBlot {
   static create(value) {

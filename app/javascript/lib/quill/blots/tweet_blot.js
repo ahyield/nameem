@@ -1,4 +1,4 @@
-import { BaseBlot } from "lib/blots/base_blot"
+import { BaseBlot } from "lib/quill/blots/base_blot"
 
 export class TweetBlot extends BaseBlot {
   static create(id) {

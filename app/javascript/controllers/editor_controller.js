@@ -2,12 +2,12 @@ import { DirectUpload } from "@rails/activestorage"
 import { Controller } from "@hotwired/stimulus"
 import Quill from "quill"
 
-import { setupQuill } from "lib/configs/quill_config"
-import ImageBlot from "lib/blots/image_blot"
-import VideoBlot from "lib/blots/video_blot"
-import TweetBlot from "lib/blots/tweet_blot"
-import DividerBlot from "lib/blots/divider_blot"
-import { validateVideoUrl, validateTweetUrl } from "lib/utils/validation_utils"
+import { setupQuill } from "lib/quill/configs/quill_config"
+import ImageBlot from "lib/quill/blots/image_blot"
+import VideoBlot from "lib/quill/blots/video_blot"
+import TweetBlot from "lib/quill/blots/tweet_blot"
+import DividerBlot from "lib/quill/blots/divider_blot"
+import { validateVideoUrl, validateTweetUrl } from "lib/quill/utils/validation_utils"
 
 const Block = Quill.import("blots/block")
 
