@@ -1,130 +1,48 @@
-// I am ashamed of it.
-// needs hygine, but works for now.
-
 import { DirectUpload } from "@rails/activestorage"
 import { Controller } from "@hotwired/stimulus"
 import Quill from "quill"
 
+import { setupQuill } from "lib/quill/configs/quill_config"
+import ImageBlot from "lib/quill/blots/image_blot"
+import VideoBlot from "lib/quill/blots/video_blot"
+import TweetBlot from "lib/quill/blots/tweet_blot"
+import DividerBlot from "lib/quill/blots/divider_blot"
+import { validateVideoUrl, validateTweetUrl } from "lib/quill/utils/validation_utils"
+
+import {
+  fetchArticle,
+  newArticle,
+  updateArticleContent,
+  updateArticleTitle
+} from "lib/api/article_api"
+
+import {
+  isNewArticle,
+  articleUuid,
+  userSlug,
+  drawUrl,
+  getImgUrls
+} from "lib/api/helpers/url_helpers"
+
 const Block = Quill.import("blots/block")
-const BlockEmbed = Quill.import("blots/block/embed")
-
-const Delta = Quill.import("delta")
-
-class ImageBlot extends BlockEmbed {
-  static create(value) {
-    const node = super.create()
-    node.setAttribute("src", value.url)
-    node.setAttribute("class", "py-4")
-    return node
-  }
-
-  static value(node) {
-    return {
-      url: node.getAttribute("src")
-    }
-  }
-}
-
-ImageBlot.blotName = "customImage"
-ImageBlot.tagName = "img"
-
-class VideoBlot extends BlockEmbed {
-  static create(url) {
-    const node = super.create()
-    node.setAttribute("src", url)
-    node.setAttribute("class", "py-4")
-    node.setAttribute("frameborder", "0")
-    node.setAttribute("allowfullscreen", true)
-    return node
-  }
-
-  static formats(node) {
-    const format = {}
-    if (node.hasAttribute("height")) {
-      format.height = node.getAttribute("height")
-    }
-    if (node.hasAttribute("width")) {
-      format.width = node.getAttribute("width")
-    }
-    return format
-  }
-
-  static value(node) {
-    return node.getAttribute("src")
-  }
-
-  format(name, value) {
-    if (name === "height" || name === "width") {
-      if (value) {
-        this.domNode.setAttribute(name, value)
-      } else {
-        this.domNode.removeAttribute(name, value)
-      }
-    } else {
-      super.format(name, value)
-    }
-  }
-}
-
-VideoBlot.blotName = "video"
-VideoBlot.tagName = "iframe"
-
-class TweetBlot extends BlockEmbed {
-  static create(id) {
-    const node = super.create()
-    node.dataset.id = id
-    twttr.widgets.createTweet(id, node) // eslint-disable-line
-    return node
-  }
-
-  static value(domNode) {
-    return domNode.dataset.id
-  }
-}
-
-TweetBlot.blotName = "tweet"
-TweetBlot.tagName = "div"
-TweetBlot.className = "tweet"
-
-class DividerBlot extends BlockEmbed { }
-DividerBlot.blotName = "divider"
-DividerBlot.tagName = "hr"
-
 
 Quill.register(ImageBlot)
-Quill.register(TweetBlot)
 Quill.register(VideoBlot)
+Quill.register(TweetBlot)
 Quill.register(DividerBlot)
+
+const Delta = Quill.import("delta")
 
 let editor = null
 let change = new Delta()
 
 export default class extends Controller {
   async connect() {
-    var editorOptions = {
-      // This ignores the bullet/list keystroke.
-      modules: {
-        keyboard: {
-          bindings: {
-            "list autofill": {
-              prefix: /^\s*()$/
-            }
-          }
-        }
-      },
-      debug: "error",
-      placeholder: "إبدأ بالكتابة...",
-      scrollingContainer: "html",
-    }
-
-    editor = new Quill(".editor-container", editorOptions)
+    editor = setupQuill(".editor-container")
 
     const toolTip = document.querySelector(".tooltip-controls")
     const sidebar = document.querySelector(".sidebar-controls")
     const controls = document.querySelector(".show-controls")
-
-    editor.format("direction", "rtl")
-    editor.format("align", "right")
 
     const range = editor.getSelection()
     const rangeBounds = editor.getBounds(range)
@@ -168,7 +86,7 @@ export default class extends Controller {
      }
     })
 
-    if (!this.isNewArticle()) {
+    if (!isNewArticle()) {
       const articleTitle = document.getElementById("article-title")
       const publishButton = document.querySelector(".btn-publish-disabled")
       const publichText = document.querySelector(".btn-publish-text")
@@ -176,9 +94,9 @@ export default class extends Controller {
       publichText.innerHTML = "حفظ ونشر"
       publishButton.classList.remove("btn-publish-disabled")
 
-      const uuid = this.articleUuid()
-      const slug = this.userSlug()
-      const article = await this.fetchArticle(uuid, slug)
+      const uuid = articleUuid()
+      const slug = userSlug()
+      const article = await fetchArticle(uuid, slug)
       controls.style.display = "none"
       articleTitle.value = article.title
       editor.setContents(article.content)
@@ -186,11 +104,11 @@ export default class extends Controller {
 
     editor.on("text-change", (delta, oldContents, source) => {
       if (source == "api") {
-          var uuid = this.articleUuid()
-          var slug = this.userSlug()
-          this.updateArticleContent(uuid, slug)
+          var uuid = articleUuid()
+          var slug = userSlug()
+          updateArticleContent(uuid, slug, editor)
       } else if (source == "user") {
-        const deleted = this.getImgUrls(editor.getContents().diff(oldContents))
+        const deleted = getImgUrls(editor.getContents().diff(oldContents))
 
         change = change.compose(delta)
         if(deleted.length >= 1) {
@@ -204,16 +122,16 @@ export default class extends Controller {
     // wow
     setInterval(async () => {
       if (change.length() > 0) {
-        if (this.isNewArticle()) {
-          const data = await this.newArticle()
-          this.drawUrl(data)
+        if (isNewArticle()) {
+          const data = await newArticle()
+          drawUrl(data)
           this.activatePublishingButton(data.article.uuid, data.user.slug)
-          await this.updateArticleContent(data.article.uuid, data.user.slug)
+          await updateArticleContent(data.article.uuid, data.user.slug, editor)
         } else {
-          var uuid = this.articleUuid()
-          var slug = this.userSlug()
+          var uuid = articleUuid()
+          var slug = userSlug()
           this.activatePublishingButton(uuid, slug)
-          await this.updateArticleContent(uuid, slug)
+          await updateArticleContent(uuid, slug, editor)
         }
         change = new Delta()
       }
@@ -233,85 +151,21 @@ export default class extends Controller {
     }
   }
 
-  async fetchArticle(uuid, slug) {
-    const response = await fetch(`/api/articles/${slug}/${uuid}/edit`, { method: "GET" })
-
-    const data = await response.json()
-    return data
-  }
-
-  async newArticle() {
-    const response = await fetch("/api/articles/new", { method: "GET" })
-
-    const data = await response.json()
-    return data
-  }
-
-  isNewArticle() {
-    const path = window.location.pathname
-    if (path === "/new-story") {
-      return true
-    } else {
-      return false
-    }
-  }
-
   async upsertTitle(event) {
     const articleTitle = document.getElementById("article-title").value
     if (articleTitle === null) return
 
-    if (this.isNewArticle()) {
-      const data = await this.newArticle()
-      this.drawUrl(data)
+    if (isNewArticle()) {
+      const data = await newArticle()
+      drawUrl(data)
       this.activatePublishingButton(data.article.uuid, data.user.slug)
-      await this.updateArticleTitle(data.article.uuid, data.user.slug)
-      } else {
-        var uuid = this.articleUuid()
-        var slug = this.userSlug()
-        this.activatePublishingButton(uuid, slug)
-        await this.updateArticleTitle(uuid, slug)
-      }
-  }
-
-  async updateArticleTitle(uuid, slug) {
-    const articleTitle = document.getElementById("article-title").value
-
-    const response = await fetch(`/api/articles/${slug}/${uuid}`, {
-      method: "PUT",
-      body: JSON.stringify({ article: { title: articleTitle, content: editor.getContents(), }}),
-      headers: {
-        "CONTENT-TYPE": "application/json",
-      }
-    })
-    const article = await response.json()
-    return article
-  }
-
-  async updateArticleContent(uuid, slug) {
-    const response = await fetch(`/api/articles/${slug}/${uuid}`, {
-      method: "PUT",
-      body: JSON.stringify({ article: { content: editor.getContents(), }}),
-      headers: {
-        "CONTENT-TYPE": "application/json",
-      }
-    })
-    const article = await response.json()
-    return article
-  }
-
-  articleUuid() {
-    const uuid = window.location.pathname.split("/")[2]
-    return uuid
-  }
-
-  userSlug() {
-    const slug = window.location.pathname.split("/")[1]
-    return slug
-  }
-
-  drawUrl(data) {
-    const url = window.location.origin + `/${data.user.slug}/${data.article.uuid}/edit`
-    window.history.pushState(null, null, url)
+      await updateArticleTitle(data.article.uuid, data.user.slug, editor)
+    } else {
+      var uuid = articleUuid()
+      var slug = userSlug()
+      this.activatePublishingButton(uuid, slug)
+      await updateArticleTitle(uuid, slug, editor)
+    }
   }
 
   activatePublishingButton(uuid, slug) {
@@ -322,10 +176,6 @@ export default class extends Controller {
 
     const form = document.getElementById("publish-form-btn")
     form.action = `/${slug}/publish_modal/${uuid}`
-  }
-
-  getImgUrls(delta) {
-    return delta.ops.filter(i => i.insert && i.insert.customImage).map(i => i.insert.customImage)
   }
 
   toggleLink() {
@@ -523,7 +373,7 @@ export default class extends Controller {
   hideVideoTip(event) {
     const videoTip = document.querySelector(".video-input")
     var videoLink = document.getElementById("video").value
-    const validUrl = this.validateVideoUrl(videoLink)
+    const validUrl = validateVideoUrl(videoLink)
 
     const range = editor.getSelection()
 
@@ -544,7 +394,7 @@ export default class extends Controller {
   enterVideoTip(event) {
     const videoTip = document.querySelector(".video-input")
     var videoLink = document.getElementById("video").value
-    const validUrl = this.validateVideoUrl(videoLink)
+    const validUrl = validateVideoUrl(videoLink)
 
     if (validUrl) {
       this.videoInsert(validUrl)
@@ -561,24 +411,6 @@ export default class extends Controller {
     editor.insertEmbed(range.index, "video", url, Quill.sources.USER)
     editor.formatText(range.index, 1, { height: "360", width: "740" })
     editor.setSelection(range.index + 1, Quill.sources.SILENT)
-  }
-
-  validateVideoUrl(url) {
-    const youtubePattern = /^(https?:\/\/)(www\.)?(youtube\.com\/(.*\/)?(v\/|e\/|u\/\w+\/|embed\/|v=|vi=|t=|\?v=|\?vi=|\?u=|\?e=|\?t=)?([^#]*))(#[\w]*)?$/
-    const youtubeShortPattern = /^(https?:\/\/)(www\.)?(youtu\.be\/)([^#]*)?(#[\w]*)?$/
-    const vimeoPattern = /^(https?:\/\/)(www\.)?(vimeo\.com\/|player\.vimeo\.com\/video\/)?([0-9]+)(\?h=[\w]+)?(\/)?([^#]*)(#[\w]*)?$/
-
-    if (youtubePattern.test(url)) {
-      return url.replace("watch?v=", "embed/")
-    } else if (youtubeShortPattern.test(url)) {
-      return url.replace("youtu.be/", "www.youtube.com/embed/")
-    } else if (vimeoPattern.test(url)) {
-      if (url.includes("player.vimeo.com/video")) {
-        return url
-      } else if (url.includes("vimeo.com")) {
-        return url.replace("vimeo.com", "player.vimeo.com/video")
-      }
-    }
   }
 
   toggleTweetInput(){
@@ -611,7 +443,7 @@ export default class extends Controller {
   hideTweetTip(event) {
     const tweetTip = document.querySelector(".tweet-input")
     var tweetLink = document.getElementById("tweet").value
-    const validUrl = this.validateTweetUrl(tweetLink)
+    const validUrl = validateTweetUrl(tweetLink)
     const sidebar = document.querySelector(".sidebar-controls")
     const controls = document.querySelector(".show-controls")
 
@@ -637,7 +469,7 @@ export default class extends Controller {
     event.preventDefault()
     const tweetTip = document.querySelector(".tweet-input")
     var tweetLink = document.getElementById("tweet").value
-    const validUrl = this.validateTweetUrl(tweetLink)
+    const validUrl = validateTweetUrl(tweetLink)
     const sidebar = document.querySelector(".sidebar-controls")
     const controls = document.querySelector(".show-controls")
 
@@ -650,14 +482,6 @@ export default class extends Controller {
       controls.style.display = "none"
     } else {
       alert("Invalid tweet link!, please use full tweet link")
-    }
-  }
-
-  validateTweetUrl(url) {
-    const tweetPattern = /^(https?:\/\/)(www\.)?((twitter\.com|x\.com)\/(.*\/)?(status\/)?([^#]*))(#[\w]*)?$/
-
-    if (tweetPattern.test(url)) {
-      return url.split("/")[5].split("?")[0]
     }
   }
 
