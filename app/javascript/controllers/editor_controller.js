@@ -9,7 +9,20 @@ import TweetBlot from "lib/quill/blots/tweet_blot"
 import DividerBlot from "lib/quill/blots/divider_blot"
 import { validateVideoUrl, validateTweetUrl } from "lib/quill/utils/validation_utils"
 
-import { fetchArticle, newArticle, updateArticleContent, updateArticleTitle } from "lib/api/article_api"
+import {
+  fetchArticle,
+  newArticle,
+  updateArticleContent,
+  updateArticleTitle
+} from "lib/api/article_api"
+
+import {
+  isNewArticle,
+  articleUuid,
+  userSlug,
+  drawUrl,
+  getImgUrls
+} from "lib/api/helpers/url_helpers"
 
 const Block = Quill.import("blots/block")
 
@@ -73,7 +86,7 @@ export default class extends Controller {
      }
     })
 
-    if (!this.isNewArticle()) {
+    if (!isNewArticle()) {
       const articleTitle = document.getElementById("article-title")
       const publishButton = document.querySelector(".btn-publish-disabled")
       const publichText = document.querySelector(".btn-publish-text")
@@ -81,8 +94,8 @@ export default class extends Controller {
       publichText.innerHTML = "حفظ ونشر"
       publishButton.classList.remove("btn-publish-disabled")
 
-      const uuid = this.articleUuid()
-      const slug = this.userSlug()
+      const uuid = articleUuid()
+      const slug = userSlug()
       const article = await fetchArticle(uuid, slug)
       controls.style.display = "none"
       articleTitle.value = article.title
@@ -91,11 +104,11 @@ export default class extends Controller {
 
     editor.on("text-change", (delta, oldContents, source) => {
       if (source == "api") {
-          var uuid = this.articleUuid()
-          var slug = this.userSlug()
+          var uuid = articleUuid()
+          var slug = userSlug()
           updateArticleContent(uuid, slug, editor)
       } else if (source == "user") {
-        const deleted = this.getImgUrls(editor.getContents().diff(oldContents))
+        const deleted = getImgUrls(editor.getContents().diff(oldContents))
 
         change = change.compose(delta)
         if(deleted.length >= 1) {
@@ -109,14 +122,14 @@ export default class extends Controller {
     // wow
     setInterval(async () => {
       if (change.length() > 0) {
-        if (this.isNewArticle()) {
+        if (isNewArticle()) {
           const data = await newArticle()
-          this.drawUrl(data)
+          drawUrl(data)
           this.activatePublishingButton(data.article.uuid, data.user.slug)
           await updateArticleContent(data.article.uuid, data.user.slug, editor)
         } else {
-          var uuid = this.articleUuid()
-          var slug = this.userSlug()
+          var uuid = articleUuid()
+          var slug = userSlug()
           this.activatePublishingButton(uuid, slug)
           await updateArticleContent(uuid, slug, editor)
         }
@@ -138,46 +151,21 @@ export default class extends Controller {
     }
   }
 
-
-  isNewArticle() {
-    const path = window.location.pathname
-    if (path === "/new-story") {
-      return true
-    } else {
-      return false
-    }
-  }
-
   async upsertTitle(event) {
     const articleTitle = document.getElementById("article-title").value
     if (articleTitle === null) return
 
-    if (this.isNewArticle()) {
+    if (isNewArticle()) {
       const data = await newArticle()
-      this.drawUrl(data)
+      drawUrl(data)
       this.activatePublishingButton(data.article.uuid, data.user.slug)
       await updateArticleTitle(data.article.uuid, data.user.slug, editor)
     } else {
-      var uuid = this.articleUuid()
-      var slug = this.userSlug()
+      var uuid = articleUuid()
+      var slug = userSlug()
       this.activatePublishingButton(uuid, slug)
       await updateArticleTitle(uuid, slug, editor)
     }
-  }
-
-  articleUuid() {
-    const uuid = window.location.pathname.split("/")[2]
-    return uuid
-  }
-
-  userSlug() {
-    const slug = window.location.pathname.split("/")[1]
-    return slug
-  }
-
-  drawUrl(data) {
-    const url = window.location.origin + `/${data.user.slug}/${data.article.uuid}/edit`
-    window.history.pushState(null, null, url)
   }
 
   activatePublishingButton(uuid, slug) {
@@ -188,10 +176,6 @@ export default class extends Controller {
 
     const form = document.getElementById("publish-form-btn")
     form.action = `/${slug}/publish_modal/${uuid}`
-  }
-
-  getImgUrls(delta) {
-    return delta.ops.filter(i => i.insert && i.insert.customImage).map(i => i.insert.customImage)
   }
 
   toggleLink() {
