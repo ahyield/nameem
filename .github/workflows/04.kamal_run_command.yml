@@ -12,8 +12,9 @@ on:
         required: true
         type: choice
         options:
-          - traefik reboot --rolling
-          - env push
+          - accessory reboot db --destination=${{ github.event.inputs.environment }}
+          - env push --destination=${{ github.event.inputs.environment }}
+
       environment:
         description: 'Environment'
         required: true
