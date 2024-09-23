@@ -32,5 +32,5 @@ accessories:
       memory: 4G
     host: 65.109.14.124
     files:
-      - config/mysql/production.cnf:/etc/mysql/confg.d/my.cnf
       - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
+      - config/mysql/production.cnf:/etc/mysql/confg.d/my.cnf
