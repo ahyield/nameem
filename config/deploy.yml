@@ -6,7 +6,6 @@ image: nameemhq/nameem
 
 # Deploy to these servers.
 servers:
-  -
 
 # Credentials for your image host.
 registry:
