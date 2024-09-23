@@ -36,6 +36,8 @@ accessories:
     image: mysql:8.0
     host:
     port: 3306
+    options:
+      memory: 4G
     env:
       clear:
         MYSQL_ROOT_HOST: '%'
@@ -43,7 +45,7 @@ accessories:
         - MYSQL_USERNAME
         - MYSQL_ROOT_PASSWORD
     files:
-      # - config/mysql/production.cnf:/etc/mysql/my.cnf
+      - config/mysql/production.cnf:/etc/mysql/confg.d/my.cnf
       - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
     directories:
       - data:/var/lib/mysql
