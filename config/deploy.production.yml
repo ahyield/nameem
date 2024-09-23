@@ -33,4 +33,4 @@ accessories:
     host: 203.0.113.20
     files:
       - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
-      - config/mysql/production.cnf:/etc/mysql/confg.d/my.cnf
+      - config/mysql/production.cnf:/etc/mysql/conf.d/my.cnf
