@@ -34,3 +34,12 @@ accessories:
     files:
       - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
       - config/mysql/production.cnf:/etc/mysql/conf.d/my.cnf
+
+  prometheus:
+    host: 203.0.113.10
+  otel_collector:
+    hosts:
+     - 203.0.113.10
+     - 203.0.113.20
+  grafana:
+    host: 203.0.113.10
