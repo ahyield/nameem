@@ -44,8 +44,8 @@ accessories:
         - MYSQL_USERNAME
         - MYSQL_ROOT_PASSWORD
     files:
-      - config/mysql/production.cnf:/etc/mysql/confg.d/my.cnf
-      - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
+      - infrastucture/mysql/production.cnf:/etc/mysql/conf.d/my.cnf
+      - infrastucture/mysql/production.sql:/docker-entrypoint-initdb.d/setup.sql
     directories:
       - data:/var/lib/mysql
 
@@ -61,7 +61,7 @@ accessories:
         PROMETHEUS_STORAGE_LOCAL_RETENTION: 90d
         PROMETHEUS_STORAGE_TSDB_RETENTION: 90d
     files:
-      - config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - infrastucture/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     directories:
       - data:/prometheus
     labels:
@@ -80,7 +80,7 @@ accessories:
       memory: 1G
       user: 0
     files:
-      - config/otel_collector.yml:/etc/otelcol/config.yaml
+      - infrastucture/otel_collector/otel_collector.yml:/etc/otelcol/config.yaml
     labels:
       traefik.http.routers.otel-collector.rule: Host(`otel-collector.nameem.net`)
       traefik.http.routers.otel-collector_secure.entrypoints: websecure
