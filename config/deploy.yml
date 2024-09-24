@@ -95,7 +95,7 @@ traefik:
     publish:
       - 443:443
     volume:
-      - /Users/ahmgeek/Workspace/nameem/config/letsencrypt/acme.json:/letsencrypt/acme.json
+      - /Users/ahmgeek/letsencrypt/acme.json:/letsencrypt/acme.json
   args:
     api.dashboard: true
     # accesslog: true
@@ -128,12 +128,3 @@ traefik:
     traefik.http.routers.dashboard.tls: true
     traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
     traefik.http.middlewares.auth.basicauth.users: "user:UGFzc3cwcmQK"
-
-  certificatesResolvers:
-    letsencrypt:
-      acme:
-        email: "please@dont.spam"
-        storage: "/letsencrypt/acme.json"
-        httpChallenge:
-          entryPoint: web
-
