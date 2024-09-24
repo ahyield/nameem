@@ -64,6 +64,12 @@ accessories:
       - config/prometheus.yml:/etc/prometheus/prometheus.yml
     directories:
       - data:/prometheus
+    labels:
+      traefik.http.routers.prometheus.rule: Host(`prometheus.nameem.net`)
+      traefik.http.routers.prometheus_secure.entrypoints: websecure
+      traefik.http.routers.prometheus_secure.rule: Host(`prometheus.nameem.net`)
+      traefik.http.routers.prometheus_secure.tls: true
+      traefik.http.routers.prometheus_secure.tls.certresolver: letsencrypt
 
   otel_collector:
     image: otel/opentelemetry-collector:0.100.0
@@ -75,8 +81,12 @@ accessories:
       user: 0
     files:
       - config/otel_collector.yml:/etc/otelcol/config.yaml
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      traefik.http.routers.otel-collector.rule: Host(`otel-collector.nameem.net`)
+      traefik.http.routers.otel-collector_secure.entrypoints: websecure
+      traefik.http.routers.otel-collector_secure.rule: Host(`otel-collector.nameem.net`)
+      traefik.http.routers.otel-collector_secure.tls: true
+      traefik.http.routers.otel-collector_secure.tls.certresolver: letsencrypt
 
   grafana:
     image: grafana/grafana:11.2.0
@@ -87,44 +97,32 @@ accessories:
       user: 0
     directories:
       - data:/var/lib/grafana
+    labels:
+      traefik.http.routers.grafana.rule: Host(`grafana.nameem.net`)
+      traefik.http.routers.grafana_secure.entrypoints: websecure
+      traefik.http.routers.grafana_secure.rule: Host(`grafana.nameem.net`)
+      traefik.http.routers.grafana_secure.tls: true
+      traefik.http.routers.grafana_secure.tls.certresolver: letsencrypt
 
 traefik:
   image: traefik:v3.1.4
   options:
-    user: 0
     publish:
-      - 443:443
+      - "443:443"
     volume:
-      - /Users/ahmgeek/letsencrypt/acme.json:/letsencrypt/acme.json
+      - "/letsencrypt/acme.json:/letsencrypt/acme.json"
   args:
-    api.dashboard: true
     # accesslog: true
     log.level: INFO
     accesslog.format: json
     accesslog.filters.statusCodes: "400-599"
     accesslog.filters.retryAttempts: true
     accesslog.filters.minDuration: 101ms
-
     entryPoints.web.address: ":80"
     entryPoints.websecure.address: ":443"
-
-    entryPoints.web.http.redirections.entryPoint.to: websecure
-    entryPoints.web.http.redirections.entryPoint.scheme: https
-    entryPoints.web.http.redirections.entrypoint.permanent: true
-
-    certificatesResolvers.letsencrypt.acme.email: "please@dont.spam"
+    certificatesResolvers.letsencrypt.acme.email: "tolpa1@gmail.com"
     certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
     certificatesResolvers.letsencrypt.acme.httpchallenge: true
     certificatesResolvers.letsencrypt.acme.httpchallenge.entrypoint: web
-
   labels:
-    traefik.enable: true
-
-    traefik.http.routers.nameem.rule: Host(`nameem.com`)
-
-    traefik.http.routers.dashboard.rule: Host(`traefik.nameem.net`)
-    traefik.http.routers.dashboard.service: api@internal
-    traefik.http.routers.dashboard.middlewares: redirect-to-https, auth
-    traefik.http.routers.dashboard.tls: true
-    traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
-    traefik.http.middlewares.auth.basicauth.users: "user:UGFzc3cwcmQK"
+    traefik.http.routers.catchall.entryPoints: web

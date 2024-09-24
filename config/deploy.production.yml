@@ -6,10 +6,17 @@ servers:
   web:
     hosts:
       - 95.217.222.203
+    labels:
+      traefik.http.routers.nameem.rule: Host(`nameem.com`)
+      traefik.http.routers.nameem_secure.entrypoints: websecure
+      traefik.http.routers.nameem_secure.rule: Host(`nameem.com`)
+      traefik.http.routers.nameem_secure.tls: true
+      traefik.http.routers.nameem_secure.tls.certresolver: letsencrypt
   job:
     hosts:
       - 95.217.222.203
     cmd: bundle exec rake solid_queue:start
+
 
 # Inject ENV variables into containers (secrets come from .env).
 # Remember to run `kamal env push` after making changes!
