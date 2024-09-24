@@ -48,3 +48,82 @@ accessories:
       - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
     directories:
       - data:/var/lib/mysql
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    host:
+    port: 9090
+    options:
+      memory: 4G
+      user: 0
+    env:
+      clear:
+        PROMETHEUS_STORAGE_LOCAL_RETENTION: 90d
+        PROMETHEUS_STORAGE_TSDB_RETENTION: 90d
+    files:
+      - config/prometheus.yml:/etc/prometheus/prometheus.yml
+    directories:
+      - data:/prometheus
+
+  otel_collector:
+    image: otel/opentelemetry-collector:0.100.0
+    hosts:
+     -
+    port: 9394
+    options:
+      memory: 1G
+      user: 0
+    files:
+      - config/otel_collector.yml:/etc/otelcol/config.yaml
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    host:
+    port: 3030
+    options:
+      memory: 4G
+      user: 0
+    directories:
+      - data:/var/lib/grafana
+
+traefik:
+  image: traefik:v3.1.4
+  options:
+    publish:
+      - "443:443"
+    volume:
+      - "config/lets_encrypt/acme.json:/letsencrypt/acme.json"
+  args:
+    api.dashboard: true
+    # accesslog: true
+    log.level: INFO
+    accesslog.format: json
+    accesslog.filters.statusCodes: "400-599"
+    accesslog.filters.retryAttempts: true
+    accesslog.filters.minDuration: 101ms
+
+    entryPoints.web.address: ":80"
+    entryPoints.websecure.address: ":443"
+
+    entryPoints.web.http.redirections.entryPoint.to: websecure
+    entryPoints.web.http.redirections.entryPoint.scheme: https
+    entryPoints.web.http.redirections.entrypoint.permanent: true
+
+    certificatesResolvers.letsencrypt.acme.email: "please@dont.spam"
+    certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
+    certificatesResolvers.letsencrypt.acme.httpchallenge: true
+    certificatesResolvers.letsencrypt.acme.httpchallenge.entrypoint: web
+
+  labels:
+    traefik.enable: true
+
+    traefik.http.routers.nameem.rule: Host(`nameem.com`)
+
+    traefik.http.routers.dashboard.rule: Host(`traefik.nameem.net`)
+    traefik.http.routers.dashboard.service: api@internal
+    traefik.http.routers.dashboard.middlewares: redirect-to-https, auth
+    traefik.http.routers.dashboard.tls: true
+    traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
+    traefik.http.middlewares.auth.basicauth.users: "$passW0rd"
