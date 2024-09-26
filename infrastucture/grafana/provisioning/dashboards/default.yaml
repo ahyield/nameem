@@ -1,0 +1,24 @@
+apiVersion: 1
+
+providers:
+  - name: Nodes
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 15
+    allowUiUpdates: false
+    options:
+      path: /etc/grafana/provisioning/dashboards/nodes
+  - name: Traefik
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 15
+    allowUiUpdates: false
+    options:
+      path: /etc/grafana/provisioning/dashboards/traefik
+  - name: Mysql
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 15
+    allowUiUpdates: false
+    options:
+      path: /etc/grafana/provisioning/dashboards/mysql

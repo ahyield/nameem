@@ -100,8 +100,9 @@ accessories:
       memory: 4G
       user: 0
     files:
+      - infrastucture/grafana/provisioning/dashboards/default.yaml:/etc/grafana/provisioning/dashboards/default.yaml
       - infrastucture/grafana/provisioning/datasources/provisioning.yaml:/etc/grafana/provisioning/datasources/provisioning.yaml
-      - infrastucture/grafana/provisioning/dashboards/hetzner-nodes.json:/etc/grafana/provisioning/dashboards/hetzner-nodes.json
+      - infrastucture/grafana/provisioning/dashboards/nodes/hetzner-nodes.json:/etc/grafana/provisioning/dashboards/nodes/hetzner-nodes.json
     directories:
       - data:/var/lib/grafana
     labels:
