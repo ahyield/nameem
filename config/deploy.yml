@@ -56,7 +56,7 @@ accessories:
     options:
       memory: 4G
       user: 0
-    cmd: --config.file=/etc/prometheus/web.yml
+    cmd: --config.file=/etc/prometheus/web.yml --storage.tsdb.path=/prometheus --storage.tsdb.retention.time=90d
     files:
       - infrastucture/prometheus/web.yml:/etc/prometheus/web.yml
     directories:
