@@ -100,7 +100,6 @@ accessories:
       memory: 4G
       user: 0
     files:
-      - infrastucture/grafana/grafana.ini:/etc/grafana/grafana.ini
       - infrastucture/grafana/provisioning/datasources/provisioning.yaml:/etc/grafana/provisioning/datasources/provisioning.yaml
     directories:
       - data:/var/lib/grafana
