@@ -94,6 +94,9 @@ accessories:
     options:
       memory: 4G
       user: 0
+    files:
+      - infrastucture/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - infrastucture/grafana/provisioning.yml:/etc/grafana/provisioning.yml
     directories:
       - data:/var/lib/grafana
     labels:
@@ -112,6 +115,7 @@ traefik:
       - "/letsencrypt/acme.json:/letsencrypt/acme.json"
   args:
     # accesslog: true
+    metrics.prometheus: "true"
     log.level: INFO
     accesslog.format: json
     accesslog.filters.statusCodes: "400-599"
