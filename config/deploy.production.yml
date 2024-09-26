@@ -44,9 +44,14 @@ accessories:
 
   prometheus:
     host: 95.217.222.203
+
   otel_collector:
     hosts:
      - 95.217.222.203
      - 65.109.14.124
   grafana:
     host: 95.217.222.203
+
+  mysql_exporter:
+    hosts:
+      - 65.109.14.124

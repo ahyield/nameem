@@ -112,6 +112,17 @@ accessories:
       traefik.http.routers.grafana_secure.tls: true
       traefik.http.routers.grafana_secure.tls.certresolver: letsencrypt
 
+  mysql_exporter:
+    image: prom/mysqld-exporter
+    hosts:
+     - 
+    port: 9104
+    options:
+      user: 0
+    cmd: --config.my-cnf=/etc/mysql/exporter.cnf
+    files:
+      - infrastucture/mysql/exporter.cnf:/etc/mysql/exporter.cnf
+
 traefik:
   image: traefik:v3.1.4
   options:
