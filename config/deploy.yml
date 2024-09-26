@@ -101,9 +101,11 @@ accessories:
       user: 0
     files:
       - infrastucture/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - infrastucture/grafana/provisioning/datasources/provisioning.yaml:/etc/grafana/provisioning/datasources/provisioning.yaml
     directories:
       - data:/var/lib/grafana
       - infrastucture/grafana/provisioning:/etc/grafana/provisioning
+      - infrastucture/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
     labels:
       traefik.http.routers.grafana.rule: Host(`grafana.nameem.net`)
       traefik.http.routers.grafana_secure.entrypoints: websecure

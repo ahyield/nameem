@@ -8,7 +8,6 @@ datasources:
     basicAuth: true
     basicAuthUser: admin
     isDefault: true
-    editable: true
     jsonData:
       timeInterval: "10s"
     secureJsonData:
