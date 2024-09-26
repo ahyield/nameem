@@ -91,14 +91,19 @@ accessories:
     image: grafana/grafana:11.2.0
     host:
     port: 3030
+    env:
+      secret:
+        - GF_SECURITY_ADMIN_PASSWORD
+        - GF_SECURITY_ADMIN_USER
+        - GRAFANA_PROMETHEUS_PASSWORD
     options:
       memory: 4G
       user: 0
     files:
       - infrastucture/grafana/grafana.ini:/etc/grafana/grafana.ini
-      - infrastucture/grafana/provisioning.yml:/etc/grafana/provisioning.yml
     directories:
       - data:/var/lib/grafana
+      - infrastucture/grafana/provisioning:/etc/grafana/provisioning
     labels:
       traefik.http.routers.grafana.rule: Host(`grafana.nameem.net`)
       traefik.http.routers.grafana_secure.entrypoints: websecure
