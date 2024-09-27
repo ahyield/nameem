@@ -122,9 +122,9 @@ accessories:
     port: 9104
     options:
       user: 0
-    cmd: --config.my-cnf=/etc/mysql/exporter.cnf
+    cmd: --config.my-cnf=/.my.cnf
     files:
-      - infrastucture/mysql/exporter.cnf:/etc/mysql/exporter.cnf
+      - infrastucture/mysql/exporter.cnf:/.my.cnf
 
 traefik:
   image: traefik:v3.1.4
