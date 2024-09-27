@@ -1,0 +1,27 @@
+apiVersion: 1
+
+providers:
+  - name: Nodes
+    folder: nodes
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 15
+    allowUiUpdates: false
+    options:
+      path: /etc/grafana/provisioning/dashboards/nodes/hetzner-nodes.json
+  - name: Traefik
+    folder: traefik
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 15
+    allowUiUpdates: false
+    options:
+      path: /etc/grafana/provisioning/dashboards/traefik/traefik-stand-alone.json
+  - name: Mysql
+    folder: mysql
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 15
+    allowUiUpdates: false
+    options:
+      path: /etc/grafana/provisioning/dashboards/mysql

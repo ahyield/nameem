@@ -104,9 +104,10 @@ accessories:
       - infrastucture/grafana/provisioning/datasources/provisioning.yaml:/etc/grafana/provisioning/datasources/provisioning.yaml
       - infrastucture/grafana/provisioning/dashboards/nodes/hetzner-nodes.json:/etc/grafana/provisioning/dashboards/nodes/hetzner-nodes.json
       - infrastucture/grafana/provisioning/dashboards/traefik/traefik-stand-alone.json:/etc/grafana/provisioning/dashboards/traefik/traefik-stand-alone.json
+      - infrastucture/grafana/provisioning/dashboards/mysql/mysql-overview.json:/etc/grafana/provisioning/dashboards/mysql/mysql-overview.json
     directories:
       - data:/var/lib/grafana
-      - infrastucture/grafana/provisioning/dashboards/mysql/:/etc/grafana/provisioning/dashboards/mysql/
+      - infrastucture/grafana/provisioning/dashboards/mysql/*.json:/etc/grafana/provisioning/dashboards/mysql/*.json
     labels:
       traefik.http.routers.grafana.rule: Host(`grafana.nameem.net`)
       traefik.http.routers.grafana_secure.entrypoints: websecure
