@@ -31,27 +31,31 @@
                     <td class="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                       <div class="flex items-center">
                         <div class="h-11 w-11 flex-shrink-0">
-                          <% if user.avatar.attached? %>
-                            <%= image_tag user.avatar.variant(resize_to_fill: [100, 100]), class: "h-11 w-11 rounded-full" %>
-                          <% else %>
-                            <span class="inline-block h-11 w-11 overflow-hidden rounded-full bg-gray-100">
-                              <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                              </svg>
-                            </span>
+                          <%= link_to edit_backoffice_user_path(user), class: "text-sm font-medium text-gray-900" do %>
+                            <% if user.avatar.attached? %>
+                              <%= image_tag user.avatar.variant(resize_to_fill: [100, 100]), class: "h-11 w-11 rounded-full" %>
+                            <% else %>
+                              <span class="inline-block h-11 w-11 overflow-hidden rounded-full bg-gray-100">
+                                <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                              </span>
+                            <% end %>
                           <% end %>
                         </div>
                         <div class="ml-4">
-                          <div class="font-medium text-gray-900"><%= user.name %></div>
-                          <div class="mt-1 text-gray-500"><%= user.email %></div>
+                          <%= link_to edit_backoffice_user_path(user), class: "text-sm font-medium text-gray-900" do %>
+                            <div class="font-medium text-gray-900"><%= user.name %></div>
+                            <div class="mt-1 text-gray-500"><%= user.email %></div>
+                          <% end %>
                         </div>
                       </div>
                     </td>
                     <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                       <div class="text-gray-900"><%= user.slug %></div>
                     </td>
-                    <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"><%= user.featured? %></td>
-                    <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"><%= user.picked? %></td>
+                      <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"><%= check_box_tag :featured, class: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600", checked: user.featured?, diasabled: true %></td>
+                      <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"><%= check_box_tag :picked, class: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600", checked: user.picked?, disabled: true %></td>
                     <td class="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                       <%= link_to "View", user_path(user), class: "text-indigo-600 hover:text-indigo-900" %>
                     </td>
