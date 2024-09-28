@@ -12,16 +12,11 @@ on:
         required: true
         type: choice
         options:
-          - accessory reboot db --destination=${{ github.event.inputs.environment }}
-          - env push --destination=${{ github.event.inputs.environment }}
-
-      environment:
-        description: 'Environment'
-        required: true
-        type: choice
-        options:
-          - production
-          - staging
+          - accessory reboot prometheus --destination=production
+          - accessory reboot db --destination=production
+          - accessory reboot otel_collector --destination=production
+          - accessory reboot grafana --destination=production
+          - accessory reboot mysql_exporter --destination=production
 
 jobs:
   kamal_run_command:
@@ -45,19 +40,27 @@ jobs:
           kamal-registry-password: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           my-sql-root-password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          gf-security-admin-password: ${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
+          grafana-prometheus-password: ${{ secrets.GRAFANA_PROMETHEUS_PASSWORD }}
+          mysql-exporter-password: ${{ secrets.MYSQL_EXPORTER_PASSWORD }}
+          prometheus-password: ${{ secrets.PROMETHEUS_PASSWORD }}
           my-sql-username: ${{ secrets.MYSQL_USERNAME }}
           rails-max-threads: ${{ env.RAILS_MAX_THREADS }}
           sentry-dsn: ${{ env.SENTRY_DSN }}
           environment: production
 
-      - name: kamal ${{ github.event.inputs.command }} --destination=${{ github.event.inputs.environment }}
+      - name: kamal ${{ github.event.inputs.command }}
         env:
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          gf-security-admin-password: ${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
+          grafana-prometheus-password: ${{ secrets.GRAFANA_PROMETHEUS_PASSWORD }}
+          mysql-exporter-password: ${{ secrets.MYSQL_EXPORTER_PASSWORD }}
+          prometheus-password: ${{ secrets.PROMETHEUS_PASSWORD }}
           RAILS_MAX_THREADS: ${{ env.RAILS_MAX_THREADS }}
           SENTRY_DSN: ${{ env.SENTRY_DSN }}
         run: |
-          kamal ${{ github.event.inputs.command }} --destination=${{ github.event.inputs.environment }}
+          kamal ${{ github.event.inputs.command }}

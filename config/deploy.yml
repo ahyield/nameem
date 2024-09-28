@@ -72,7 +72,7 @@ accessories:
       traefik.http.routers.prometheus_secure.tls: true
       traefik.http.routers.prometheus_secure.tls.certresolver: letsencrypt
       traefik.http.routers.prometheus.middlewares: prometheus-auth
-      traefik.http.middlewares.prometheus-auth.basicauth.users: <%= ENV["PROMETHEUS_PASSWORD"] %>
+      traefik.http.middlewares.prometheus-auth.basicauth.users: $PROMETHEUS_PASSWORD
 
   otel_collector:
     image: otel/opentelemetry-collector:0.100.0
