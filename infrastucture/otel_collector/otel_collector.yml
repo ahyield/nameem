@@ -8,18 +8,13 @@ receivers:
             - host: unix:///var/run/docker.sock
               refresh_interval: 10s
           relabel_configs:
-            # Only keep targets with role label as 'web' or 'jobs'
-            - source_labels: [__meta_docker_container_label_role]
-              regex: (web|jobs)
-              action: keep
-            # Only scrape port 9394
-            - source_labels: [__address__]
-              regex: (.*):9394
-              action: keep
             # Add container label
             - source_labels: [__meta_docker_container_label_role, __meta_docker_container_id]
               separator: "_"
               target_label: container
+            - source_labels: [__meta_docker_container_name]
+              separator: "/"
+              target_label: name
 
 exporters:
   prometheus:

@@ -44,8 +44,8 @@ accessories:
         - MYSQL_USERNAME
         - MYSQL_ROOT_PASSWORD
     files:
-      - config/mysql/production.cnf:/etc/mysql/confg.d/my.cnf
-      - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
+      - infrastucture/mysql/production.cnf:/etc/mysql/conf.d/my.cnf
+      - infrastucture/mysql/production.sql:/docker-entrypoint-initdb.d/setup.sql
     directories:
       - data:/var/lib/mysql
 
@@ -56,12 +56,13 @@ accessories:
     options:
       memory: 4G
       user: 0
+    cmd: --config.file=/etc/prometheus/web.yml --storage.tsdb.path=/prometheus --storage.tsdb.retention.time=90d
     env:
-      clear:
-        PROMETHEUS_STORAGE_LOCAL_RETENTION: 90d
-        PROMETHEUS_STORAGE_TSDB_RETENTION: 90d
+      secret:
+        - PROMETHEUS_USER
+        - PROMETHEUS_PASSWORD
     files:
-      - config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - infrastucture/prometheus/web.yml:/etc/prometheus/web.yml
     directories:
       - data:/prometheus
     labels:
@@ -70,6 +71,8 @@ accessories:
       traefik.http.routers.prometheus_secure.rule: Host(`prometheus.nameem.net`)
       traefik.http.routers.prometheus_secure.tls: true
       traefik.http.routers.prometheus_secure.tls.certresolver: letsencrypt
+      traefik.http.routers.prometheus.middlewares: prometheus-auth
+      traefik.http.middlewares.prometheus-auth.basicauth.users: <%= ENV["PROMETHEUS_PASSWORD"] %>
 
   otel_collector:
     image: otel/opentelemetry-collector:0.100.0
@@ -79,8 +82,10 @@ accessories:
     options:
       memory: 1G
       user: 0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     files:
-      - config/otel_collector.yml:/etc/otelcol/config.yaml
+      - infrastucture/otel_collector/otel_collector.yml:/etc/otelcol/config.yaml
     labels:
       traefik.http.routers.otel-collector.rule: Host(`otel-collector.nameem.net`)
       traefik.http.routers.otel-collector_secure.entrypoints: websecure
@@ -92,17 +97,43 @@ accessories:
     image: grafana/grafana:11.2.0
     host:
     port: 3030
+    env:
+      secret:
+        - GF_SECURITY_ADMIN_PASSWORD
+        - GF_SECURITY_ADMIN_USER
+        - GRAFANA_PROMETHEUS_PASSWORD
     options:
       memory: 4G
       user: 0
+    files:
+      - infrastucture/grafana/provisioning/dashboards/default.yaml:/etc/grafana/provisioning/dashboards/default.yaml
+      - infrastucture/grafana/provisioning/datasources/provisioning.yaml:/etc/grafana/provisioning/datasources/provisioning.yaml
+      - infrastucture/grafana/provisioning/dashboards/nodes/hetzner-nodes.json:/etc/grafana/provisioning/dashboards/nodes/hetzner-nodes.json
+      - infrastucture/grafana/provisioning/dashboards/traefik/traefik-stand-alone.json:/etc/grafana/provisioning/dashboards/traefik/traefik-stand-alone.json
+      - infrastucture/grafana/provisioning/dashboards/mysql/mysql-overview.json:/etc/grafana/provisioning/dashboards/mysql/mysql-overview.json
     directories:
       - data:/var/lib/grafana
+      - infrastucture/grafana/provisioning/dashboards/mysql/*.json:/etc/grafana/provisioning/dashboards/mysql/*.json
     labels:
       traefik.http.routers.grafana.rule: Host(`grafana.nameem.net`)
       traefik.http.routers.grafana_secure.entrypoints: websecure
       traefik.http.routers.grafana_secure.rule: Host(`grafana.nameem.net`)
       traefik.http.routers.grafana_secure.tls: true
       traefik.http.routers.grafana_secure.tls.certresolver: letsencrypt
+
+  mysql_exporter:
+    image: prom/mysqld-exporter
+    hosts:
+     - 
+    port: 9104
+    env:
+      secret:
+        - MYSQL_EXPORTER_PASSWORD
+    options:
+      user: 0
+    cmd: --config.my-cnf=/.my.cnf
+    files:
+      - infrastucture/mysql/exporter.cnf.erb:/.my.cnf
 
 traefik:
   image: traefik:v3.1.4
@@ -113,6 +144,10 @@ traefik:
       - "/letsencrypt/acme.json:/letsencrypt/acme.json"
   args:
     # accesslog: true
+    metrics.prometheus: "true"
+    metrics.prometheus.addEntryPointsLabels: true
+    metrics.prometheus.addServicesLabels: true
+    metrics.prometheus.addRoutersLabels: true
     log.level: INFO
     accesslog.format: json
     accesslog.filters.statusCodes: "400-599"

@@ -39,14 +39,19 @@ accessories:
       memory: 4G
     host: 203.0.113.20
     files:
-      - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
-      - config/mysql/production.cnf:/etc/mysql/conf.d/my.cnf
+      - infrastucture/mysql/production.sql:/docker-entrypoint-initdb.d/setup.sql
+      - infrastucture/mysql/production.cnf:/etc/mysql/conf.d/my.cnf
 
   prometheus:
     host: 203.0.113.10
+
   otel_collector:
     hosts:
      - 203.0.113.10
      - 203.0.113.20
   grafana:
     host: 203.0.113.10
+
+  mysql_exporter:
+    hosts:
+      - 203.0.113.20
