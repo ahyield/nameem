@@ -3,10 +3,12 @@ name: Specs
 on:
   pull_request:
     paths:
-      - '**/.rb'
+      - '**/*.rb'
+      - '**/*.erb'
   push:
     paths:
-      - '**/.rb'
+      - '**/*.rb'
+      - '**/*.erb'
     branches: [ main ]
 
 permissions:
