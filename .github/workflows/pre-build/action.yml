@@ -37,4 +37,4 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: gem install bundler && bundle install && gem install kamal
+      run: gem install bundler && bundle install && gem install kamal v1.9.0
