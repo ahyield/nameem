@@ -78,6 +78,8 @@ accessories:
     options:
       memory: 1G
       user: 0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     files:
       - infrastucture/otel_collector/otel_collector.yml:/etc/otelcol/config.yaml
     labels:
@@ -136,6 +138,9 @@ traefik:
   args:
     # accesslog: true
     metrics.prometheus: "true"
+    metrics.prometheus.addEntryPointsLabels: true
+    metrics.prometheus.addServicesLabels: true
+    metrics.prometheus.addRoutersLabels: true
     log.level: INFO
     accesslog.format: json
     accesslog.filters.statusCodes: "400-599"
