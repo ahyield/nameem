@@ -22,7 +22,7 @@ on:
         required: true
         type: choice
         options:
-          - accessory reboot {{ github.event.inputs.accessory}} --destination=${{ github.event.inputs.environment }}
+          - accessory reboot ${{github.event.inputs.accessory}} --destination=${{ github.event.inputs.environment }}
           - env push --destination=${{ github.event.inputs.environment }}
 
       environment:
