@@ -57,6 +57,10 @@ accessories:
       memory: 4G
       user: 0
     cmd: --config.file=/etc/prometheus/web.yml --storage.tsdb.path=/prometheus --storage.tsdb.retention.time=90d
+    env:
+      secret:
+        - PROMETHEUS_USER
+        - PROMETHEUS_PASSWORD
     files:
       - infrastucture/prometheus/web.yml:/etc/prometheus/web.yml
     directories:
@@ -68,7 +72,7 @@ accessories:
       traefik.http.routers.prometheus_secure.tls: true
       traefik.http.routers.prometheus_secure.tls.certresolver: letsencrypt
       traefik.http.routers.prometheus.middlewares: prometheus-auth
-      traefik.http.middlewares.prometheus-auth.basicauth.users: "admin:$apr1$6QwG.GVj$oqkrBTAxysBodgSGwTOfH0"
+      traefik.http.middlewares.prometheus-auth.basicauth.users: <%= ENV["PROMETHEUS_PASSWORD"] %>
 
   otel_collector:
     image: otel/opentelemetry-collector:0.100.0
