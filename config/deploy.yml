@@ -122,11 +122,14 @@ accessories:
     hosts:
      - 
     port: 9104
+    env:
+      secret:
+        - MYSQL_EXPORTER_PASSWORD
     options:
       user: 0
     cmd: --config.my-cnf=/.my.cnf
     files:
-      - infrastucture/mysql/exporter.cnf:/.my.cnf
+      - infrastucture/mysql/exporter.cnf.erb:/.my.cnf
 
 traefik:
   image: traefik:v3.1.4
