@@ -7,12 +7,22 @@ permissions:
 on:
   workflow_dispatch:
     inputs:
+      accessory:
+        description: 'Accessory'
+        required: true
+        type: choice
+        options:
+          - db
+          - prometheus
+          - mysql_exporter
+          - otel_collector
+          - grafana
       command:
         description: 'Commands'
         required: true
         type: choice
         options:
-          - accessory reboot db --destination=${{ github.event.inputs.environment }}
+          - accessory reboot {{ github.event.inputs.accessory}} --destination=${{ github.event.inputs.environment }}
           - env push --destination=${{ github.event.inputs.environment }}
 
       environment:
