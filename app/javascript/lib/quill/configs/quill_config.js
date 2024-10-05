@@ -3,6 +3,11 @@ import Quill from "quill"
 export const getEditorOptions = () => ({
   // This ignores the bullet/list keystroke.
   modules: {
+    history: {
+      delay: 1000,
+      maxStack: 500,
+      userOnly: false
+    },
     keyboard: {
       bindings: {
         "list autofill": {
