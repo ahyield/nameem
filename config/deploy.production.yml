@@ -15,7 +15,7 @@ servers:
   job:
     hosts:
       - 203.0.113.10
-    cmd: bundle exec rake solid_queue:start
+    cmd: bundle exec bin/jobs
 
 
 # Inject ENV variables into containers (secrets come from .env).

@@ -59,9 +59,15 @@ staging:
   password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
 
 production:
-  <<: *default
-  socket: /tmp/mysql.sock
-  host: <%= ENV["DB_HOST"] %>
-  database: nameem_production
-  username: <%= ENV["MYSQL_USERNAME"] %>
-  password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
+  primary: &primary_production
+    <<: *default
+    socket: /tmp/mysql.sock
+    host: <%= ENV["DB_HOST"] %>
+    database: nameem_production
+    username: <%= ENV["MYSQL_USERNAME"] %>
+    password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
+
+  queue:
+    <<: *primary_production
+    database: nameem_queue_production
+    migrations_paths: db/queue_migrate
