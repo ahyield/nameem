@@ -30,7 +30,6 @@
 !/tmp/storage/.keep
 
 /public/assets
-/db/backups/*
 /node_modules
 package-lock.json
 package.json
