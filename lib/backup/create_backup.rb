@@ -56,7 +56,9 @@ module Backup
     end
 
     def upload_to_s3
-      s3_client = Aws::S3::Client.new(region: "eu-central-1")
+      s3_client = Aws::S3::Client.new(region:            "eu-central-1",
+                                      access_key_id:     Rails.application.credentials.dig(:aws, :access_key_id),
+                                      secret_access_key: Rails.application.credentials.dig(:aws, :secret_access_key))
       object_key = File.basename(compressed_file)
 
       begin
