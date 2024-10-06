@@ -1,5 +1,6 @@
 require "English"
 require "fileutils"
+require "aws-sdk-s3"
 
 module Backup
   class CreateBackup
@@ -16,6 +17,7 @@ module Backup
       create_backup
       compress_backup
       upload_to_s3
+      delete_local_backup
     end
 
     private
@@ -54,21 +56,28 @@ module Backup
     end
 
     def upload_to_s3
-      compressed_backup = File.open(compressed_file)
+      s3_client = Aws::S3::Client.new(region: "eu-central-1")
+      object_key = File.basename(compressed_file)
 
-      blob = ActiveStorage::Blob.create_and_upload!(
-        io:           compressed_backup,
-        filename:     File.basename(compressed_file),
-        content_type: "application/gzip",
-        service_name: :amazon
-      )
+      begin
+        s3_client.put_object(
+          bucket: bucket_name,
+          key:    object_key,
+          body:   File.open(compressed_file, "rb")
+        )
+        Rails.logger.debug { "Backup uploaded to S3 successfully: s3://#{bucket_name}/#{object_key}" }
+      rescue Aws::S3::Errors::ServiceError => e
+        Rails.logger.fatal "An error occurred while uploading the backup to S3: #{e.message}"
+      end
+    end
 
-      # Attach to the different bucket
-      ActiveStorage::Blob.service.bucket(bucket_name).object(blob.key).upload_file(compressed_file)
-      url = Rails.application.routes.url_helpers.rails_blob_url(blob, only_path: true)
-      Rails.logger.debug { "Backup uploaded to S3 successfully: #{url}" }
+    def delete_local_backup
+      FileUtils.rm_f(compressed_file)
+      FileUtils.rm_f(backup_file)
+
+      Rails.logger.info "Local backup file deleted: #{compressed_file}, #{backup_file}"
     rescue StandardError => e
-      Rails.logger.debug { "An error occurred while uploading the backup to S3: #{e.message}" }
+      Rails.logger.error "An error occurred while deleting the local backup: #{e.message}"
     end
   end
 end
