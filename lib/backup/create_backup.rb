@@ -10,6 +10,7 @@ module Backup
       @backup_file     = File.join(backup_dir, "#{db_config[:database]}_backup_#{timestamp}.sql")
       @bucket_name = "nameem-production-db-backups"
       @compressed_file = "#{backup_file}.gz"
+      @db_url          = "mysql2://#{db_config[:username]}:#{db_config[:password]}@#{db_config[:host]}/#{db_config[:database]}"
     end
 
     def perform
@@ -20,11 +21,11 @@ module Backup
 
     private
 
-    attr_reader :db_config, :backup_dir, :backup_file, :compressed_file, :timestamp, :bucket_name
+    attr_reader :db_config, :backup_dir, :backup_file, :compressed_file, :timestamp, :bucket_name, :db_url
 
     def create_backup
-      command = "mysqldump -u #{db_config[:username]} -p#{db_config[:password]}" \
-                "-h #{db_config[:host]} -c -q #{db_config[:database]} > #{backup_file}"
+      command = "mysqldump #{db_url}" \
+                "-c -q #{db_config[:database]} > #{backup_file}"
       Rails.logger.debug { "Running: #{command}" }
       system(command)
 
