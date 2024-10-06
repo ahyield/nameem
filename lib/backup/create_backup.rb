@@ -8,7 +8,7 @@ module Backup
       @backup_dir      = Rails.root.join("db/backups").to_s
       @timestamp       = Time.zone.now.strftime("%Y%m%d%H%M%S")
       @backup_file     = File.join(backup_dir, "#{db_config[:database]}_backup_#{timestamp}.sql")
-      @bucket_name = "nameem-production-db-backups"
+      @bucket_name     = "nameem-production-db-backups"
       @compressed_file = "#{backup_file}.gz"
       @db_url          = "mysql2://#{db_config[:username]}:#{db_config[:password]}@#{db_config[:host]}/#{db_config[:database]}"
     end
@@ -24,7 +24,7 @@ module Backup
     attr_reader :db_config, :backup_dir, :backup_file, :compressed_file, :timestamp, :bucket_name, :db_url
 
     def create_backup
-      command = "mysqldump #{db_url}" \
+      command = "mysqldump --protocol=TCP #{db_url}" \
                 "-c -q #{db_config[:database]} > #{backup_file}"
       Rails.logger.debug { "Running: #{command}" }
       system(command)
