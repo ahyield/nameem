@@ -23,6 +23,7 @@ module Backup
     attr_reader :db_config, :backup_dir, :backup_file, :compressed_file, :timestamp, :bucket_name, :db_url
 
     def command
+      # Spaces are important in the command string
       @command ||= "mysqldump --protocol=TCP -u #{db_config[:username]} -h #{db_config[:host]} -p#{db_config[:password]} " \
                    "-c -q #{db_config[:database]} > #{backup_file}"
     end
