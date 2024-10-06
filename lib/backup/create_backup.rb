@@ -23,7 +23,8 @@ module Backup
     attr_reader :db_config, :backup_dir, :backup_file, :compressed_file, :timestamp, :bucket_name
 
     def create_backup
-      command = "mysqldump -u #{db_config[:username]} -h #{db_config[:host]} -c -q #{db_config[:database]} > #{backup_file}"
+      command = "mysqldump -u #{db_config[:username]} -p #{db_config[:password]}" \
+                "-h #{db_config[:host]} -c -q #{db_config[:database]} > #{backup_file}"
       Rails.logger.debug { "Running: #{command}" }
       system(command)
 

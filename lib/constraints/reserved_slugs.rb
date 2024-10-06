@@ -76,6 +76,7 @@ module Constraints
       rails_health_check
       root
       published_articles
+      metrics
     ].freeze
   end
 end
