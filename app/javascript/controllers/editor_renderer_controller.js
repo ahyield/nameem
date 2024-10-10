@@ -28,7 +28,7 @@ export default class extends Controller {
       } else if (customOp.insert.type === "tweet") {
         return `<div id="${customOp.insert.value}" class="tweet-block"></div>`
       } else if (customOp.insert.type === "divider") {
-        return "<hr class=\"my-1\">"
+        return `<hr class="editor-hr">`
       }
     })
 
