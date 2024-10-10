@@ -15,6 +15,10 @@
     border-left: 4px solid #111;
     padding-left: 1em;
   }
+
+  .editor-hr {
+    @apply my-1 border-gray-300 w-1/2 mx-auto;
+  }
 }
 
 .pagy {
