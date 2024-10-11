@@ -2,4 +2,4 @@ production:
   periodic_backups:
     class: BackupJob
     queue: background
-    schedule: every 3.hours
+    schedule: every 3 hours
