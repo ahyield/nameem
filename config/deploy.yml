@@ -128,5 +128,5 @@ proxy:
   app_port: 3000
   healthcheck:
     interval: 3
-    path: /health
+    path: /up
     timeout: 3
