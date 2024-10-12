@@ -125,6 +125,7 @@ accessories:
 proxy:
   ssl: true
   host: nameem.com
+  app_port: 3000
   healthcheck:
     interval: 3
     path: /health
