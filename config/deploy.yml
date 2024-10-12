@@ -145,6 +145,7 @@ accessories:
 
   traefik:
     image: traefik:v3.1.4
+    port: 80
     host:
     options:
       publish:
@@ -153,20 +154,21 @@ accessories:
         - "/letsencrypt/acme.json:/letsencrypt/acme.json"
       # accesslog: true
     cmd: --metrics.prometheus=true \
-          --metrics.prometheus.addEntryPointsLabels=true \
-          --metrics.prometheus.addServicesLabels=true \
-          --metrics.prometheus.addRoutersLabels=true \
-          --log.level=INFO \
-          --accesslog.format=json \
-          --accesslog.filters.statusCodes=400-599 \
-          --accesslog.filters.retryAttempts=true \
-          --accesslog.filters.minDuration=101ms \
-          --entryPoints.web.address=:80 \
-          --entryPoints.websecure.address=:443 \
-          --certificatesResolvers.letsencrypt.acme.email=tolpa1@gmail.com \
-          --certificatesResolvers.letsencrypt.acme.storage=/letsencrypt/acme.json \
-          --certificatesResolvers.letsencrypt.acme.httpchallenge=true \
-          --certificatesResolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+         --providers.docker
+         --metrics.prometheus.addEntryPointsLabels=true \
+         --metrics.prometheus.addServicesLabels=true \
+         --metrics.prometheus.addRoutersLabels=true \
+         --log.level=INFO \
+         --accesslog.format=json \
+         --accesslog.filters.statusCodes=400-599 \
+         --accesslog.filters.retryAttempts=true \
+         --accesslog.filters.minDuration=101ms \
+         --entryPoints.web.address=:80 \
+         --entryPoints.websecure.address=:443 \
+         --certificatesResolvers.letsencrypt.acme.email=tolpa1@gmail.com \
+         --certificatesResolvers.letsencrypt.acme.storage=/letsencrypt/acme.json \
+         --certificatesResolvers.letsencrypt.acme.httpchallenge=true \
+         --certificatesResolvers.letsencrypt.acme.httpchallenge.entrypoint=web
     labels:
       traefik.http.routers.catchall.entryPoints: web
 
