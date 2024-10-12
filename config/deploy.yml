@@ -172,7 +172,6 @@ accessories:
 
 proxy:
   ssl: false
-  host: nameem.com
   app_port: 3000
   healthcheck:
     interval: 3
