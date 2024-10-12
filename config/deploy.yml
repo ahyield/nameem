@@ -146,6 +146,7 @@ accessories:
   traefik:
     image: traefik:v3.1.4
     host:
+    port: 80
     options:
       volume:
         - "/letsencrypt/acme.json:/letsencrypt/acme.json"
