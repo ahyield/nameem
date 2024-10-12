@@ -123,7 +123,7 @@ accessories:
       - infrastucture/mysql/exporter.cnf.erb:/.my.cnf
 
 proxy:
-  ssl: true
+  ssl: false
   host: nameem.com
   app_port: 3000
   healthcheck:
