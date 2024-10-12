@@ -145,7 +145,6 @@ accessories:
 
   traefik:
     image: traefik:v3.1.4
-    port: 80
     host:
     options:
       volume:
@@ -161,6 +160,8 @@ accessories:
          --accesslog.filters.statusCodes=400-599 \
          --accesslog.filters.retryAttempts=true \
          --accesslog.filters.minDuration=101ms \
+         --entryPoints.web.address=:80 \
+         --entryPoints.websecure.address=:443 \
          --certificatesResolvers.letsencrypt.acme.email=tolpa1@gmail.com \
          --certificatesResolvers.letsencrypt.acme.storage=/letsencrypt/acme.json \
          --certificatesResolvers.letsencrypt.acme.httpchallenge=true \
