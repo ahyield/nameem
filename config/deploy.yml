@@ -156,7 +156,7 @@ accessories:
          --metrics.prometheus.addEntryPointsLabels=true \
          --metrics.prometheus.addServicesLabels=true \
          --metrics.prometheus.addRoutersLabels=true \
-         --log.level=INFO \
+         --log.level=DBUG \
          --accesslog.format=json \
          --accesslog.filters.statusCodes=400-599 \
          --accesslog.filters.retryAttempts=true \
@@ -172,6 +172,7 @@ accessories:
 
 proxy:
   ssl: false
+  host: nameem.com
   app_port: 3000
   healthcheck:
     interval: 3
