@@ -13,7 +13,7 @@ runs:
       shell: bash
       id: kamal-deploy
       env:
-        KAMAL_REGISTRY_PASSWORD: ${{ inputs.kamal-registry-password }}
+        KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
       run: |
         kamal deploy --destination=${{ inputs.environment }}
 
