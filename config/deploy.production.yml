@@ -49,7 +49,3 @@ accessories:
   mysql_exporter:
     hosts:
       - 65.109.14.124
-
-  traefik:
-    host: 95.217.222.203
-
