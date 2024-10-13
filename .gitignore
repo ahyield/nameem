@@ -54,3 +54,6 @@ package.json
 /coverage
 
 /public/assets_test
+
+/.kamal/secrets-*
+/.kamal/secrets.*

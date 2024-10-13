@@ -7,6 +7,14 @@ image: nameemhq/nameem
 # Deploy to these servers.
 servers:
 
+builder:
+  arch: amd64
+  cache:
+    type: registry
+    options: mode=max,oci-mediatypes=true
+
+asset_path: /rails/public/assets
+
 # Credentials for your image host.
 registry:
   server: ghcr.io
@@ -71,8 +79,6 @@ accessories:
       traefik.http.routers.prometheus_secure.rule: Host(`prometheus.nameem.net`)
       traefik.http.routers.prometheus_secure.tls: true
       traefik.http.routers.prometheus_secure.tls.certresolver: letsencrypt
-      traefik.http.routers.prometheus.middlewares: prometheus-auth
-      traefik.http.middlewares.prometheus-auth.basicauth.users: "<%= ENV['PROMETHEUS_PASSWORD'] %>"
 
   otel_collector:
     image: otel/opentelemetry-collector:0.100.0
@@ -108,8 +114,8 @@ accessories:
     files:
       - infrastucture/grafana/provisioning/dashboards/default.yaml:/etc/grafana/provisioning/dashboards/default.yaml
       - infrastucture/grafana/provisioning/datasources/provisioning.yaml:/etc/grafana/provisioning/datasources/provisioning.yaml
-      - infrastucture/grafana/provisioning/dashboards/nodes/hetzner-nodes.json:/etc/grafana/provisioning/dashboards/nodes/hetzner-nodes.json
       - infrastucture/grafana/provisioning/dashboards/traefik/traefik-stand-alone.json:/etc/grafana/provisioning/dashboards/traefik/traefik-stand-alone.json
+      - infrastucture/grafana/provisioning/dashboards/nodes/hetzner-nodes.json:/etc/grafana/provisioning/dashboards/nodes/hetzner-nodes.json
       - infrastucture/grafana/provisioning/dashboards/mysql/mysql-overview.json:/etc/grafana/provisioning/dashboards/mysql/mysql-overview.json
     directories:
       - data:/var/lib/grafana
@@ -121,43 +127,21 @@ accessories:
       traefik.http.routers.grafana_secure.tls: true
       traefik.http.routers.grafana_secure.tls.certresolver: letsencrypt
 
-  mysql_exporter:
-    image: prom/mysqld-exporter
-    hosts:
-     - 
-    port: 9104
-    env:
-      secret:
-        - MYSQL_EXPORTER_PASSWORD
+  traefik:
+    service: traefik
+    image: traefik:v3.1.4
+    port: 80
+    cmd: "--providers.docker --metrics.prometheus=true --metrics.prometheus.addEntryPointsLabels=true --metrics.prometheus.addServicesLabels=true --metrics.prometheus.addRoutersLabels=true --log.level=INFO --accesslog.format=json --accesslog.filters.statusCodes=400-599 --accesslog.filters.retryAttempts=true --accesslog.filters.minDuration=101ms --certificatesResolvers.letsencrypt.acme.email=tolpa1@gmail.com --certificatesResolvers.letsencrypt.acme.storage=/letsencrypt/acme.json --certificatesResolvers.letsencrypt.acme.httpchallenge=true"
     options:
-      user: 0
-    cmd: --config.my-cnf=/.my.cnf
-    files:
-      - infrastucture/mysql/exporter.cnf.erb:/.my.cnf
-
-traefik:
-  image: traefik:v3.1.4
-  options:
-    publish:
-      - "443:443"
-    volume:
-      - "/letsencrypt/acme.json:/letsencrypt/acme.json"
-  args:
-    # accesslog: true
-    metrics.prometheus: "true"
-    metrics.prometheus.addEntryPointsLabels: true
-    metrics.prometheus.addServicesLabels: true
-    metrics.prometheus.addRoutersLabels: true
-    log.level: INFO
-    accesslog.format: json
-    accesslog.filters.statusCodes: "400-599"
-    accesslog.filters.retryAttempts: true
-    accesslog.filters.minDuration: 101ms
-    entryPoints.web.address: ":80"
-    entryPoints.websecure.address: ":443"
-    certificatesResolvers.letsencrypt.acme.email: "tolpa1@gmail.com"
-    certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
-    certificatesResolvers.letsencrypt.acme.httpchallenge: true
-    certificatesResolvers.letsencrypt.acme.httpchallenge.entrypoint: web
-  labels:
-    traefik.http.routers.catchall.entryPoints: web
+      volume:
+        - "/var/run/docker.sock:/var/run/docker.sock"
+    roles:
+      - web
+proxy:
+  ssl: false
+  host: nameem.com
+  app_port: 3000
+  healthcheck:
+    interval: 3
+    path: /up
+    timeout: 3
