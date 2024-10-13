@@ -6,12 +6,6 @@ servers:
   web:
     hosts:
       - 203.0.113.10
-    labels:
-      traefik.http.routers.nameem.rule: Host(`nameem.com`)
-      traefik.http.routers.nameem_secure.entrypoints: websecure
-      traefik.http.routers.nameem_secure.rule: Host(`nameem.com`)
-      traefik.http.routers.nameem_secure.tls: true
-      traefik.http.routers.nameem_secure.tls.certresolver: letsencrypt
   job:
     hosts:
       - 203.0.113.10
