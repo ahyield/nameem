@@ -69,13 +69,6 @@ gem "sentry-ruby"
 
 gem "english"
 
-# Metrics
-
-gem "yabeda"
-gem "yabeda-activerecord"
-gem "yabeda-prometheus-mmap"
-gem "yabeda-rails"
-
 group :development, :test do
   gem "debug", platforms: %i[mri windows]
   gem "rspec-rails"
