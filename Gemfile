@@ -58,7 +58,6 @@ gem "dotenv-rails"
 gem "meta-tags"
 
 gem "flipper"
-gem "flipper-active_record"
 
 # Background with solid queue
 gem "mission_control-jobs"
