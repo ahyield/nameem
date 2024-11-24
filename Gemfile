@@ -68,6 +68,8 @@ gem "sentry-ruby"
 
 gem "english"
 
+gem "turnstile-captcha", require: "turnstile"
+
 group :development, :test do
   gem "debug", platforms: %i[mri windows]
   gem "rspec-rails"
