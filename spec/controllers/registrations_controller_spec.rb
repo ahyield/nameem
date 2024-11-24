@@ -26,6 +26,10 @@ RSpec.describe RegistrationsController do
 
   describe "POST #create" do
     context "when the user is already confirmed" do
+      before do
+        allow(controller).to receive(:valid_captcha?).and_return(true) # Stub valid CAPTCHA
+      end
+
       it "renders the new template with an error" do
         post :create, params: { sign_up: { email: user.email } }
         expect(response).to render_template(:new)
@@ -34,8 +38,22 @@ RSpec.describe RegistrationsController do
       end
     end
 
-    context "when the user is not confirmed" do
+    context "when the CAPTCHA is invalid" do
       before do
+        allow(controller).to receive(:valid_captcha?).and_return(false) # Stub invalid CAPTCHA
+      end
+
+      it "renders the new template with an error" do
+        post :create, params: { sign_up: { email: unconfirmed_user.email } }
+        expect(response).to render_template(:new)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(flash.now[:error]).to eq("فشل التحقق من الكابتشا")
+      end
+    end
+
+    context "when the user is not confirmed and the CAPTCHA is valid" do
+      before do
+        allow(controller).to receive(:valid_captcha?).and_return(true) # Stub valid CAPTCHA
         allow(User).to receive(:find_or_create_by).and_return(unconfirmed_user)
         allow(unconfirmed_user).to receive(:generate_token_for).and_return("token")
       end
