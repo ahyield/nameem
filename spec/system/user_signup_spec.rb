@@ -7,7 +7,10 @@ RSpec.describe "UserLogin" do
   context "when user is not logged in" do
     before do
       visit root_path
-      allow_instance_of(ApplicationController).to receive(:valid_captcha?).and_return(true)
+
+      # rubocop:disable RSpec/AnyInstance
+      allow_any_instance_of(ApplicationController).to receive(:valid_captcha?).and_return(true)
+      # rubocop:enable RSpec/AnyInstance
     end
 
     it "lets user login with magiclink" do
