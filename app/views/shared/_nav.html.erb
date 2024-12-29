@@ -33,13 +33,13 @@
       <div class="flex items-center">
         <div class="flex-shrink-0">
           <% if !user_signed_in? %>
-            <%= link_to signup_path, class: "relative rounded-full flex focus:outline-none focus:ring-0 gap-x-1.5 px-3 py-2 opacity-70 hover:opacity-100" do %>
+            <%= link_to signup_path, class: "relative rounded-full flex focus:outline-none focus:ring-0 gap-x-1.5 px-3 py-2 opacity-70 hover:opacity-100", data: { turbo: false } do %>
               <span class="absolute -inset-1.5"></span>
               <%= heroicon "pencil-square" %>
               <span class="rtl:mr-1 font-bold mt-1">أكــتــب</span>
             <% end %>
           <% else %>
-            <%= link_to new_story_path, class: "relative rounded-full flex focus:outline-none focus:ring-0 gap-x-1.5 px-3 py-2 opacity-70 hover:opacity-100" do %>
+            <%= link_to new_story_path, class: "relative rounded-full flex focus:outline-none focus:ring-0 gap-x-1.5 px-3 py-2 opacity-70 hover:opacity-100", data: { turbo: false } do %>
               <span class="absolute -inset-1.5"></span>
               <%= heroicon "pencil-square" %>
               <span class="font-bold mt-1">أكــتــب</span>
@@ -89,7 +89,7 @@
               </div>
             </div>
           <% else %>
-            <%= button_to signup_path, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", method: :get do %>
+            <%= button_to signup_path, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", data: { turbo: false }, method: :get do %>
               <span class="absolute -inset-1.5"></span>
               <span class="btn-publish-text">حساب جديد</span>
             <% end %>
@@ -133,7 +133,7 @@
           <%= link_to "تسجيل الخروج", logout_path, class: "block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6", method: :delete, 'data-turbo-method': :delete %>
         </div>
       <% else %>
-        <%= button_to signup_path, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", method: :get do %>
+        <%= button_to signup_path, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", data: { turbo: false }, method: :get do %>
           <span class="absolute -inset-1.5"></span>
           <span class="btn-publish-text">حساب جديد</span>
         <% end %>
