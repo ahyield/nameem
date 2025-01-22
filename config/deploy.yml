@@ -57,75 +57,75 @@ accessories:
     directories:
       - data:/var/lib/mysql
 
-  prometheus:
-    image: prom/prometheus:v2.54.1
-    host:
-    port: 9090
-    options:
-      memory: 4G
-      user: 0
-    cmd: --config.file=/etc/prometheus/web.yml --storage.tsdb.path=/prometheus --storage.tsdb.retention.time=90d
-    env:
-      secret:
-        - PROMETHEUS_USER
-        - PROMETHEUS_PASSWORD
-    files:
-      - infrastucture/prometheus/web.yml:/etc/prometheus/web.yml
-    directories:
-      - data:/prometheus
-    labels:
-      traefik.http.routers.prometheus.rule: Host(`prometheus.nameem.net`)
-      traefik.http.routers.prometheus_secure.entrypoints: websecure
-      traefik.http.routers.prometheus_secure.rule: Host(`prometheus.nameem.net`)
-      traefik.http.routers.prometheus_secure.tls: true
-      traefik.http.routers.prometheus_secure.tls.certresolver: letsencrypt
+  # prometheus:
+  #   image: prom/prometheus:v2.54.1
+  #   host:
+  #   port: 9090
+  #   options:
+  #     memory: 4G
+  #     user: 0
+  #   cmd: --config.file=/etc/prometheus/web.yml --storage.tsdb.path=/prometheus --storage.tsdb.retention.time=90d
+  #   env:
+  #     secret:
+  #       - PROMETHEUS_USER
+  #       - PROMETHEUS_PASSWORD
+  #   files:
+  #     - infrastucture/prometheus/web.yml:/etc/prometheus/web.yml
+  #   directories:
+  #     - data:/prometheus
+  #   labels:
+  #     traefik.http.routers.prometheus.rule: Host(`prometheus.nameem.net`)
+  #     traefik.http.routers.prometheus_secure.entrypoints: websecure
+  #     traefik.http.routers.prometheus_secure.rule: Host(`prometheus.nameem.net`)
+  #     traefik.http.routers.prometheus_secure.tls: true
+  #     traefik.http.routers.prometheus_secure.tls.certresolver: letsencrypt
 
-  otel_collector:
-    image: otel/opentelemetry-collector:0.100.0
-    hosts:
-     -
-    port: 9394
-    options:
-      memory: 1G
-      user: 0
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    files:
-      - infrastucture/otel_collector/otel_collector.yml:/etc/otelcol/config.yaml
-    labels:
-      traefik.http.routers.otel-collector.rule: Host(`otel-collector.nameem.net`)
-      traefik.http.routers.otel-collector_secure.entrypoints: websecure
-      traefik.http.routers.otel-collector_secure.rule: Host(`otel-collector.nameem.net`)
-      traefik.http.routers.otel-collector_secure.tls: true
-      traefik.http.routers.otel-collector_secure.tls.certresolver: letsencrypt
+  # otel_collector:
+  #   image: otel/opentelemetry-collector:0.100.0
+  #   hosts:
+  #    -
+  #   port: 9394
+  #   options:
+  #     memory: 1G
+  #     user: 0
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   files:
+  #     - infrastucture/otel_collector/otel_collector.yml:/etc/otelcol/config.yaml
+  #   labels:
+  #     traefik.http.routers.otel-collector.rule: Host(`otel-collector.nameem.net`)
+  #     traefik.http.routers.otel-collector_secure.entrypoints: websecure
+  #     traefik.http.routers.otel-collector_secure.rule: Host(`otel-collector.nameem.net`)
+  #     traefik.http.routers.otel-collector_secure.tls: true
+  #     traefik.http.routers.otel-collector_secure.tls.certresolver: letsencrypt
 
-  grafana:
-    image: grafana/grafana:11.2.0
-    host:
-    port: 3030
-    env:
-      secret:
-        - GF_SECURITY_ADMIN_PASSWORD
-        - GF_SECURITY_ADMIN_USER
-        - GRAFANA_PROMETHEUS_PASSWORD
-    options:
-      memory: 4G
-      user: 0
-    files:
-      - infrastucture/grafana/provisioning/dashboards/default.yaml:/etc/grafana/provisioning/dashboards/default.yaml
-      - infrastucture/grafana/provisioning/datasources/provisioning.yaml:/etc/grafana/provisioning/datasources/provisioning.yaml
-      - infrastucture/grafana/provisioning/dashboards/traefik/traefik-stand-alone.json:/etc/grafana/provisioning/dashboards/traefik/traefik-stand-alone.json
-      - infrastucture/grafana/provisioning/dashboards/nodes/hetzner-nodes.json:/etc/grafana/provisioning/dashboards/nodes/hetzner-nodes.json
-      - infrastucture/grafana/provisioning/dashboards/mysql/mysql-overview.json:/etc/grafana/provisioning/dashboards/mysql/mysql-overview.json
-    directories:
-      - data:/var/lib/grafana
-      - infrastucture/grafana/provisioning/dashboards/mysql/*.json:/etc/grafana/provisioning/dashboards/mysql/*.json
-    labels:
-      traefik.http.routers.grafana.rule: Host(`grafana.nameem.net`)
-      traefik.http.routers.grafana_secure.entrypoints: websecure
-      traefik.http.routers.grafana_secure.rule: Host(`grafana.nameem.net`)
-      traefik.http.routers.grafana_secure.tls: true
-      traefik.http.routers.grafana_secure.tls.certresolver: letsencrypt
+  # grafana:
+  #   image: grafana/grafana:11.2.0
+  #   host:
+  #   port: 3030
+  #   env:
+  #     secret:
+  #       - GF_SECURITY_ADMIN_PASSWORD
+  #       - GF_SECURITY_ADMIN_USER
+  #       - GRAFANA_PROMETHEUS_PASSWORD
+  #   options:
+  #     memory: 4G
+  #     user: 0
+  #   files:
+  #     - infrastucture/grafana/provisioning/dashboards/default.yaml:/etc/grafana/provisioning/dashboards/default.yaml
+  #     - infrastucture/grafana/provisioning/datasources/provisioning.yaml:/etc/grafana/provisioning/datasources/provisioning.yaml
+  #     - infrastucture/grafana/provisioning/dashboards/traefik/traefik-stand-alone.json:/etc/grafana/provisioning/dashboards/traefik/traefik-stand-alone.json
+  #     - infrastucture/grafana/provisioning/dashboards/nodes/hetzner-nodes.json:/etc/grafana/provisioning/dashboards/nodes/hetzner-nodes.json
+  #     - infrastucture/grafana/provisioning/dashboards/mysql/mysql-overview.json:/etc/grafana/provisioning/dashboards/mysql/mysql-overview.json
+  #   directories:
+  #     - data:/var/lib/grafana
+  #     - infrastucture/grafana/provisioning/dashboards/mysql/*.json:/etc/grafana/provisioning/dashboards/mysql/*.json
+  #   labels:
+  #     traefik.http.routers.grafana.rule: Host(`grafana.nameem.net`)
+  #     traefik.http.routers.grafana_secure.entrypoints: websecure
+  #     traefik.http.routers.grafana_secure.rule: Host(`grafana.nameem.net`)
+  #     traefik.http.routers.grafana_secure.tls: true
+  #     traefik.http.routers.grafana_secure.tls.certresolver: letsencrypt
 
   traefik:
     service: traefik
