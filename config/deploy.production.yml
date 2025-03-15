@@ -35,3 +35,12 @@ accessories:
     files:
       - infrastucture/mysql/production.sql:/docker-entrypoint-initdb.d/setup.sql
       - infrastucture/mysql/production.cnf:/etc/mysql/conf.d/my.cnf
+
+proxy:
+  ssl: false
+  host: nameem.com
+  app_port: 80
+  healthcheck:
+    interval: 3
+    path: /up
+    timeout: 3
