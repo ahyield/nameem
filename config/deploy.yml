@@ -8,7 +8,8 @@ image: nameemhq/nameem
 servers:
 
 builder:
-  arch: arm64
+  arch: amd64
+  remote: ssh://root@95.217.222.203
   cache:
     type: registry
     options: mode=max,oci-mediatypes=true
