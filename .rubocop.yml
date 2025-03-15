@@ -4,7 +4,7 @@ require:
   - rubocop-performance
 
 AllCops:
-  TargetRubyVersion: 3.3.4
+  TargetRubyVersion: 3.4.2
   DisplayCopNames: true
   CacheRootDirectory: '.git'
   NewCops: enable
