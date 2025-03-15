@@ -8,7 +8,7 @@ image: nameemhq/nameem
 servers:
 
 builder:
-  arch: amd64
+  arch: arm64
   cache:
     type: registry
     options: mode=max,oci-mediatypes=true
