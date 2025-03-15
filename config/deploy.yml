@@ -57,12 +57,3 @@ accessories:
       - infrastucture/mysql/production.sql:/docker-entrypoint-initdb.d/setup.sql
     directories:
       - data:/var/lib/mysql
-
-proxy:
-  ssl: false
-  host: nameem.com
-  app_port: 80
-  healthcheck:
-    interval: 3
-    path: /up
-    timeout: 3
