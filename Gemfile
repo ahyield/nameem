@@ -70,6 +70,8 @@ gem "english"
 
 gem "turnstile-captcha", require: "turnstile"
 
+gem "thruster"
+
 group :development, :test do
   gem "debug", platforms: %i[mri windows]
   gem "rspec-rails"
