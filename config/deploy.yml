@@ -61,7 +61,7 @@ accessories:
 proxy:
   ssl: false
   host: nameem.com
-  app_port: 3000
+  app_port: 80
   healthcheck:
     interval: 3
     path: /up
