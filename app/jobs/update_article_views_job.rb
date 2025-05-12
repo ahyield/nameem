@@ -46,8 +46,8 @@ class UpdateArticleViewsJob < ApplicationJob
     end
 
     article.update(
-      page_views:               views_count,
-      visitors:                 visitors_count,
+      views_count:              views_count,
+      visitors_count:           visitors_count,
       plausible_last_synced_at: Time.current
     )
 
