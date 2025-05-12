@@ -1,0 +1,15 @@
+production:
+  periodic_backups:
+    class: BackupJob
+    queue: background
+    schedule: every 3 hours
+  sync_article_views:
+    class: UpdateArticleViewsJob
+    queue: article_views
+    schedule: every 6 hours
+
+development:
+  sync_article_views:
+    class: UpdateArticleViewsJob
+    queue: article_views
+    schedule: every 6 hour
