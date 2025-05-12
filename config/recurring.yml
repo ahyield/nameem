@@ -1,5 +1,18 @@
 production:
-  periodic_backups:
-    class: BackupJob
-    queue: background
-    schedule: every 3 hours
+  dispatchers:
+    - polling_interval: 3600
+      batch_size: 300
+      concurrency_maintenance_interval: 300
+  workers:
+    - queues: "*"
+      threads: 3
+      polling_interval: 2
+development:
+  dispatchers:
+    - polling_interval: 1
+      batch_size: 300
+      concurrency_maintenance_interval: 300
+  workers:
+    - queues: "*"
+      threads: 3
+      polling_interval: 2
