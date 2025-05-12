@@ -13,6 +13,9 @@ FactoryBot.define do
     picked { false }
     published { false }
     description { "article" }
+    views_count { 0 }
+    visitors_count { 0 }
+    plausible_last_synced_at { nil }
 
     trait :published do
       published { true }
