@@ -9,7 +9,7 @@ servers:
   job:
     hosts:
       - 95.217.222.203
-    cmd: bundle exec bin/jobs
+    cmd: bundle exec bin/jobs --recurring_schedule_file=config/schedule.yml -c config/recurring.yml
 
 
 # Inject ENV variables into containers (secrets come from .env).
