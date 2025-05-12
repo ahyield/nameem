@@ -22,7 +22,7 @@ module PlausibleClient
     end
 
     def aggregate(metrics: %w[pageviews visitors], date_range: "all", filters: nil)
-      filters ||= article_filters if @article
+      filters ||= article_filters
 
       params = {
         site_id:    @site_id,
@@ -39,7 +39,7 @@ module PlausibleClient
     end
 
     def timeseries(period: "30d", metrics: %w[pageviews visitors], filters: nil)
-      filters ||= article_filters if @article
+      filters ||= article_filters
 
       params = {
         site_id: @site_id,
