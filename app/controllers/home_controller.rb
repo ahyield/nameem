@@ -12,7 +12,7 @@ class HomeController < ApplicationController
   end
 
   def published_articles
-    @pagy, @articles = pagy(Article.published.order(published_at: :desc))
+    @pagy, @articles = pagy(Article.most_visited)
 
     respond_to do |format|
       format.html
