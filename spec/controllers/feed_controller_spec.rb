@@ -68,9 +68,9 @@ RSpec.describe FeedController do
       expect(response).to be_successful
     end
 
-    it "assigns the most recently featured articles to @articles" do
+    it "assigns the most viewed articles @articles" do
       get :popular_feed, format: :turbo_stream
-      expected_articles = Article.featured.order(published_at: :desc).limit(20)
+      expected_articles = Article.most_popular
       expect(assigns(:articles)).to match_array(expected_articles)
     end
   end

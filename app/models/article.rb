@@ -9,6 +9,8 @@ class Article < ApplicationRecord
   scope :picked, -> { where(picked: true) }
   scope :featured, -> { where(featured: true) }
   scope :drafts, -> { where(published: false) }
+  scope :most_popular, -> { where(published: true).order(views_count: :desc) }
+  scope :most_visited, -> { where(published: true).order(visitors_count: :desc) }
 
   attribute :uuid, MySQLBinUUID::Type.new
 

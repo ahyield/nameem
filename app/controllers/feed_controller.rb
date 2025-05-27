@@ -25,7 +25,7 @@ class FeedController < ApplicationController
   end
 
   def popular_feed
-    @pagy, @articles = pagy(Article.featured.order(published_at: :desc))
+    @pagy, @articles = pagy(Article.most_popular)
 
     respond_to do |format|
       format.turbo_stream
