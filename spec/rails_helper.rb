@@ -8,11 +8,6 @@ require "rspec/rails"
 require "support/auth_helpers"
 require "support/factory_bot"
 require "pundit/rspec"
-require "capybara/rspec"
-require "capybara-screenshot/rspec"
-require "capybara/email/rspec"
-require "webdrivers"
-require "selenium/webdriver"
 
 def json
   JSON.parse(response.body)
@@ -54,9 +49,6 @@ RSpec.configure do |config|
 
     ActiveJob::Base.queue_adapter = :inline
     config.include ActiveJob::TestHelper
-
-    Capybara.server_port = 3001
-    Capybara.app_host = "http://localhost:3001"
   end
 
   config.before(:each, type: :system) do
@@ -68,11 +60,6 @@ RSpec.configure do |config|
       options.add_argument("ignore-certificate-errors")
       options.add_argument("disable-web-security")
     end
-  end
-
-  config.after(:each, type: :system) do
-    Capybara.reset_sessions!
-    Capybara.use_default_driver
   end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
