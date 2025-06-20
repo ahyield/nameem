@@ -9,8 +9,10 @@ class Article < ApplicationRecord
   scope :picked, -> { where(picked: true) }
   scope :featured, -> { where(featured: true) }
   scope :drafts, -> { where(published: false) }
-  scope :most_popular, -> { where(published: true).order(views_count: :desc) }
-  scope :most_visited, -> { where(published: true).order(visitors_count: :desc) }
+  # lol, easy way to fuck things up, however it works. User.find_by(id: 1) == `nameem`,
+  # so we don't want articles from nameem to show up in most reads.
+  scope :most_popular, -> { where("published = ? AND user_id != ?", true, 1).order(views_count: :desc) }
+  scope :most_visited, -> { where("published = ? AND user_id != ?", true, 1).order(visitors_count: :desc) }
 
   attribute :uuid, MySQLBinUUID::Type.new
 
