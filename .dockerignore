@@ -9,10 +9,12 @@
 # Ignore all environment files (except templates).
 /.env*
 !/.env*.erb
+/.env.*
 
 # Ignore all default key files.
 /config/master.key
 /config/credentials/*.key
+/config/master.key
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -35,5 +37,3 @@
 /app/assets/builds/*
 !/app/assets/builds/.keep
 /public/assets
-
-/.kamal/secrets

@@ -9,7 +9,6 @@ servers:
 
 builder:
   arch: amd64
-  remote: ssh://root@95.217.222.203
   cache:
     type: registry
     options: mode=max,oci-mediatypes=true
@@ -48,7 +47,7 @@ accessories:
       memory: 4G
     env:
       clear:
-        MYSQL_ROOT_HOST: '%'
+        MYSQL_ROOT_HOST: "%"
       secret:
         - MYSQL_USERNAME
         - MYSQL_ROOT_PASSWORD
