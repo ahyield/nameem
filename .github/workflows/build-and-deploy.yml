@@ -74,7 +74,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          PLAUSIBLE_API_KEY: ${{ secrets.$PLAUSIBLE_API_KEY }}
+          PLAUSIBLE_API_KEY: ${{ secrets.PLAUSIBLE_API_KEY }}
         run: |
           kamal lock release --verbose -d production
           kamal redeploy --verbose -d production
