@@ -21,7 +21,7 @@ on:
 jobs:
   kamal_run_command:
     name: Kamal run command
-    runs-on: buildjet-4vcpu-ubuntu-2204	
+    runs-on: blacksmith-4vcpu-ubuntu-2204	
     timeout-minutes: 20
     concurrency:
       group: ${{ github.event.inputs.environment }}_environment
