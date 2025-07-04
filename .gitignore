@@ -10,6 +10,7 @@
 # Ignore all environment files (except templates).
 /.env*
 !/.env*.erb
+/.env.*
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -49,11 +50,9 @@ package.json
 .env
 
 /config/credentials/development.key
+/config/master.key
 
 # ignore coverage
 /coverage
 
 /public/assets_test
-
-/.kamal/secrets-*
-/.kamal/secrets.*
