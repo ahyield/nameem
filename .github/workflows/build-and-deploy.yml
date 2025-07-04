@@ -69,8 +69,12 @@ jobs:
       - name: Kamal Deploy
         shell: bash
         env:
-          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY}}
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          PLAUSIBLE_API_KEY: ${{ secrets.$PLAUSIBLE_API_KEY }}
         run: |
           kamal lock release --verbose -d production
           kamal redeploy --verbose -d production
