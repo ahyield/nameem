@@ -56,8 +56,6 @@ class UpdateArticleViewsJob < ApplicationJob
 
   def handle_no_stats(article)
     Rails.logger.info "Article #{article.id} not found in Plausible, skipping update."
-    # Still update the sync timestamp to avoid repeatedly checking articles with no stats
-    article.update(plausible_last_synced_at: Time.current)
   end
 
   def log_error(article, exception)
