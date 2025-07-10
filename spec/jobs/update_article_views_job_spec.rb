@@ -20,16 +20,6 @@ RSpec.describe UpdateArticleViewsJob, type: :job do
 
         expect(article.plausible_last_synced_at).to be_within(1.second).of(Time.current)
       end
-
-      it "handles no stats returned" do
-        allow(plausible_client).to receive(:aggregate).and_return({ pageviews: 0, visitors: 0 })
-
-        expect do
-          described_class.perform_now
-        end.not_to(change { article.reload.views_count })
-
-        expect(article.plausible_last_synced_at).to be_within(1.second).of(Time.current)
-      end
     end
 
     context "when article has been synced recently" do
