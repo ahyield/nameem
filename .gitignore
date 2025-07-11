@@ -50,6 +50,7 @@ package.json
 .env
 
 /config/credentials/development.key
+/config/*.key
 /config/master.key
 
 # ignore coverage
