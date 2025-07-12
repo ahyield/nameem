@@ -51,17 +51,6 @@ RSpec.configure do |config|
     config.include ActiveJob::TestHelper
   end
 
-  config.before(:each, type: :system) do
-    driven_by :selenium do |options|
-      options.add_argument("disable-search-engine-choice-screen")
-      options.add_argument("no-sandbox")
-      options.add_argument("headless")
-      options.add_argument("disable-dev-shm-usage")
-      options.add_argument("ignore-certificate-errors")
-      options.add_argument("disable-web-security")
-    end
-  end
-
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = Rails.root.join("spec/fixtures").to_s
 
