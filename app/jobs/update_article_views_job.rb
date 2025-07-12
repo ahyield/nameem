@@ -28,7 +28,9 @@ class UpdateArticleViewsJob < ApplicationJob
   end
 
   def recently_synced?(article)
-    article.plausible_last_synced_at && article.plausible_last_synced_at > SYNC_THRESHOLD.ago
+    return false if article.plausible_last_synced_at.nil?
+
+    article.plausible_last_synced_at > SYNC_THRESHOLD.ago
   end
 
   def log_skipping_article(article)
