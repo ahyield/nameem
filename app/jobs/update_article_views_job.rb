@@ -1,5 +1,5 @@
 class UpdateArticleViewsJob < ApplicationJob
-  queue_as :default
+  queue_as :article_views
 
   SYNC_THRESHOLD = 6.hours
 
