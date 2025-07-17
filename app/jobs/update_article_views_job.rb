@@ -5,8 +5,8 @@ class UpdateArticleViewsJob < ApplicationJob
 
   def perform
     Article.published
-           .order(Arel.sql("plausible_last_synced_at ASC NULLS FIRST"))
-           .find_each(batch_size: 100) do |article|
+           .order(Arel.sql("plausible_last_synced_at IS NULL ASC"))
+           .each do |article|
       process_article(article)
     end
   end
