@@ -22,18 +22,6 @@ RSpec.describe UpdateArticleViewsJob, type: :job do
       end
     end
 
-    context "when article has been synced recently" do
-      before do
-        article.update(plausible_last_synced_at: 2.hours.ago)
-      end
-
-      it "skips updating" do
-        expect(PlausibleClient::Plausible).not_to receive(:new)
-
-        described_class.perform_now
-      end
-    end
-
     context "when an error occurs during update" do
       it "logs error and captures in Sentry" do
         allow(plausible_client).to receive(:aggregate).and_raise(StandardError.new("Boom"))

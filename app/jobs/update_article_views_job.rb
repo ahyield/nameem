@@ -14,28 +14,9 @@ class UpdateArticleViewsJob < ApplicationJob
   private
 
   def process_article(article)
-    # Skip if synced too recently
-    if recently_synced?(article)
-      log_skipping_article(article)
-      return
-    end
-
-    begin
-      update_article_stats(article)
-    rescue StandardError => e
-      log_error(article, e)
-    end
-  end
-
-  def recently_synced?(article)
-    return false if article.plausible_last_synced_at.nil?
-
-    article.plausible_last_synced_at > SYNC_THRESHOLD.ago
-  end
-
-  def log_skipping_article(article)
-    hours = (SYNC_THRESHOLD / 1.hour).to_i
-    Rails.logger.info "Article #{article.id} already synced within the last #{hours} hours, skipping update."
+    update_article_stats(article)
+  rescue StandardError => e
+    log_error(article, e)
   end
 
   def update_article_stats(article)
