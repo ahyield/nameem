@@ -1,7 +1,7 @@
 production:
   dispatchers:
     - polling_interval: 3600
-      batch_size: 300
+      batch_size: 800
       concurrency_maintenance_interval: 300
   workers:
     - queues: "*"
