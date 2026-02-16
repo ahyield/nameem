@@ -21,7 +21,7 @@ module Settings
     private
 
     def user_params
-      params.require(:user).permit(:name, :avatar, :slug, :bio)
+      params.expect(user: %i[name avatar slug bio])
     end
   end
 end

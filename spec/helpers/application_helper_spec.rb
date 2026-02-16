@@ -4,14 +4,14 @@ RSpec.describe ApplicationHelper do
   context "when #active? nav bar selected" do
     it "returns active class" do
       allow(helper).to receive(:request).and_return(instance_double(ActionDispatch::Request, path: "/"))
-      expect(helper.active_nav_path?("/")).to eq("border-blue-500 text-gray-900")
+      expect(helper.active_nav_class("/")).to eq("border-blue-500 text-gray-900")
     end
   end
 
   context "when non #active? nav bar not selected" do
     it "returns inactive class" do
       allow(helper).to receive(:request).and_return(instance_double(ActionDispatch::Request, path: "/"))
-      expect(helper.active_nav_path?("/test"))
+      expect(helper.active_nav_class("/test"))
         .to eq("border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700")
     end
   end

@@ -25,7 +25,7 @@ module Backoffice
     private
 
     def article_params
-      params.require(:article).permit(:picked, :featured)
+      params.expect(article: %i[picked featured])
     end
   end
 end

@@ -23,7 +23,7 @@ module Backoffice
     private
 
     def user_params
-      params.require(:user).permit(:featured, :picked)
+      params.expect(user: %i[featured picked])
     end
   end
 end

@@ -1,7 +1,5 @@
 module ApplicationHelper
-  include Pagy::Frontend
-
-  def active_nav_path?(path)
+  def active_nav_class(path)
     if request.path == path
       "border-blue-500 text-gray-900"
     else
