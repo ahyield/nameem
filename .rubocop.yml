@@ -4,9 +4,9 @@ require:
   - rubocop-performance
 
 AllCops:
-  TargetRubyVersion: 3.4.2
+  TargetRubyVersion: 4.0.1
   DisplayCopNames: true
-  CacheRootDirectory: '.git'
+  CacheRootDirectory: ".git"
   NewCops: enable
   SuggestExtensions: false
   Exclude:
@@ -17,7 +17,6 @@ AllCops:
     - bin/**
     - vendor/**/**
     - spec/**/*
-
 
 Style/Documentation:
   Enabled: false
@@ -150,4 +149,3 @@ RSpec/NamedSubject:
 
 RSpec/NestedGroups:
   Enabled: false
-
