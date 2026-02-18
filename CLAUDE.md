@@ -1,0 +1,207 @@
+# Nameem
+
+Arabic-language article publishing platform. "A minor wound on the arm of the absurd present."
+
+## Tech Stack
+
+- **Ruby 4.0.1 / Rails 8.2** (edge, from GitHub main)
+- **MySQL 8.0** with binary UUIDs for articles
+- **Hotwire** (Turbo + Stimulus) — no SPA, no React
+- **Tailwind CSS 4.0** with RTL layout (`dir="rtl"`)
+- **Quill.js 2.0** for article editor (Delta JSON stored in DB)
+- **ImportMap** for JS modules (no bundler)
+- **Solid Queue** for background jobs
+- **Kamal** for Docker deployment to Hetzner
+
+## Commands
+
+```bash
+bin/dev                    # Start dev (web + css + jobs via Foreman)
+bin/rails server           # Rails only
+bundle exec rspec          # Run all specs
+bundle exec rspec spec/models/article_spec.rb  # Run specific spec
+bundle exec rubocop        # Lint Ruby
+bundle exec rubocop -a     # Auto-fix
+```
+
+## Project Structure
+
+```
+app/
+├── controllers/
+│   ├── api/              # JSON endpoints for Quill editor
+│   ├── backoffice/       # Admin dashboard
+│   ├── concerns/         # Authentication concern
+│   └── sessions/         # Magic link auth flow
+├── models/
+│   └── concerns/         # Metable (auto-extract description/images)
+├── javascript/
+│   ├── controllers/      # Stimulus controllers
+│   └── lib/              # Quill config, custom blots, API helpers
+├── jobs/                 # Solid Queue jobs
+├── mailers/              # Magic link emails
+├── policies/             # Pundit authorization
+└── views/                # ERB templates
+config/
+├── routes.rb             # Main routes
+├── routes/backoffice.rb  # Admin routes
+├── deploy.yml            # Kamal base config
+└── schedule.yml          # Recurring jobs (Plausible sync)
+db/
+├── migrate/              # Migrations
+└── schema.rb             # Current schema
+spec/
+├── models/               # Model specs
+├── requests/             # Request specs
+└── support/              # auth_helpers, factory_bot
+```
+
+## Key Models
+
+- **User** — email, slug (friendly_id), name, bio, avatar, roles (admin/editor/featured/picked/confirmed)
+- **Article** — binary UUID, title, content (JSON Delta), published/featured/picked, counter caches (likes, comments, views, visitors)
+- **ArticleLike** — user + article unique pair, counter cache
+- **Comment** — Action Text body, counter cache
+- **Session** — signed cookie auth tokens
+- **MagicLink** — 6-digit code, expires in 15min, purpose enum (sign_in/sign_up/confirm_email)
+
+## Auth
+
+Passwordless magic link system:
+1. User enters email → 6-digit code generated and emailed (Mailgun)
+2. User enters code → session created with signed cookie
+3. `Current.user` / `Current.session` via thread-local `Current` attributes
+4. Pundit policies for authorization
+
+## Routing Pattern
+
+User profiles and articles live under `/:slug` and `/:slug/:uuid`:
+- `/:slug` — user profile
+- `/:slug/:uuid` — article (UUID constraint)
+- `/:slug/:uuid/edit` — edit article
+- `/new-story` — create article
+- `/feed` — main feed (with `/latest_feed`, `/popular_feed`, `/picked_feed` variants)
+- `/backoffice/*` — admin (AdminConstraint)
+- `/api/*` — JSON endpoints for editor
+
+## Code Style
+
+- **Double quotes** everywhere (Ruby and JS)
+- **No frozen_string_literal** comments
+- **Max line length**: 130
+- **Hash alignment**: table style (`:` aligned)
+- **No semicolons** in JS
+- Rubocop with rubocop-rails, rubocop-rspec, rubocop-performance
+- Guard clause style disabled (use explicit if/else)
+
+## Testing
+
+- **RSpec** with FactoryBot, Shoulda Matchers, Faker, Timecop
+- `authenticate_user(user)` helper in request specs
+- `json` helper to parse response body
+- Transactional fixtures enabled
+- CI: GitHub Actions with MySQL service container
+
+## Integrations
+
+- **Plausible Analytics** — article view/visitor tracking, synced via background job
+- **AWS S3** — production file storage (avatars, article images)
+- **Mailgun** — magic link emails
+- **Sentry** — error tracking
+- **Flipper** — feature flags
+- **Turnstile** — CAPTCHA
+
+## TODO
+
+### Tags & Topics
+- [ ] Create `Tag` model (name, slug, articles_count counter cache)
+- [ ] Create `ArticleTag` join model (article + tag, unique pair)
+- [ ] Add tag input to the publish modal (Stimulus controller with autocomplete)
+- [ ] Build `/topics` browse page listing all tags with article counts
+- [ ] Build `/topics/:slug` page showing articles for a tag
+- [ ] Add tag pills to article cards in feed and article show page
+- [ ] Add popular tags sidebar widget to feed
+- [ ] Backoffice: tag management (merge, rename, delete)
+- [ ] Specs for Tag, ArticleTag models and topics controller
+
+### Search
+- [ ] Add MySQL FULLTEXT index on articles (title, description)
+- [ ] Create `SearchController` with GROQ query against title/description/content
+- [ ] Build search bar component (Stimulus controller with debounced input)
+- [ ] Build `/search?q=` results page with article cards
+- [ ] Add search to navbar (expandable input or dedicated icon)
+- [ ] Handle Arabic text search quirks (diacritics, alef normalization)
+- [ ] Specs for search controller and edge cases
+
+### Follow System
+- [ ] Create `Follow` model (follower_id, followed_id, unique pair, counter caches)
+- [ ] Add `followers_count` and `following_count` to users
+- [ ] Create `FollowsController` (create/destroy via Turbo Stream)
+- [ ] Add follow/unfollow button to user profile page
+- [ ] Build `/following_feed` — articles from followed authors only
+- [ ] Add following feed tab to feed navigation
+- [ ] Show follower/following counts on user profile
+- [ ] Build `/:slug/followers` and `/:slug/following` pages
+- [ ] Specs for Follow model, controller, and feed filtering
+
+### Notifications
+- [ ] Create `Notification` model (recipient_id, actor_id, notifiable polymorphic, action enum, read_at)
+- [ ] Create `NotificationsController` (index, mark_read, mark_all_read)
+- [ ] Add notification bell to navbar with unread count badge (Turbo Stream updates)
+- [ ] Generate notifications on: like, comment, new follower, article featured/picked
+- [ ] Build notifications dropdown/page with grouped entries
+- [ ] Add email digest job (daily/weekly summary of unread notifications)
+- [ ] User setting to toggle email notifications
+- [ ] Specs for Notification model, creation callbacks, and controller
+
+### Threaded Comments
+- [ ] Add `parent_id` (self-referential) to comments
+- [ ] Add `replies_count` counter cache to comments
+- [ ] Update comment UI to show nested replies (max 2 levels deep)
+- [ ] Add "reply" button that opens inline reply form (Turbo Frame)
+- [ ] Update `CommentsController` to handle parent_id
+- [ ] Add likes on comments (`CommentLike` model, counter cache)
+- [ ] Sort comments: top-level by newest/popular, replies by oldest
+- [ ] Specs for threaded comments and comment likes
+
+### Author Analytics
+- [ ] Build `/:slug/stats` page (behind authentication, own profile only)
+- [ ] Show per-article stats: views, visitors, likes, comments over time
+- [ ] Show aggregate stats: total views, total likes, top articles
+- [ ] Pull time-series data from Plausible for charts
+- [ ] Simple chart rendering (Stimulus controller with lightweight chart lib or CSS-only bars)
+- [ ] Add "Stats" link to user dropdown menu
+- [ ] Specs for stats controller authorization
+
+### Reading Time
+- [ ] Add `reading_time_minutes` column to articles
+- [ ] Calculate from Quill Delta on save (count words in text ops, divide by 200 wpm for Arabic)
+- [ ] Display reading time on article cards and article show page
+- [ ] Add to Metable concern so it auto-updates with content
+- [ ] Specs for reading time calculation
+
+### Bookmarks
+- [ ] Create `Bookmark` model (user + article, unique pair, counter cache optional)
+- [ ] Create `BookmarksController` (create/destroy via Turbo Stream)
+- [ ] Add bookmark icon to article cards and article show page
+- [ ] Build `/:slug/bookmarks` page (private, own profile only)
+- [ ] Add "Bookmarks" link to user dropdown menu
+- [ ] Specs for Bookmark model and controller
+
+### Test Coverage
+- [ ] Model specs: Article (scopes, Metable, publishing logic), User (roles, slug generation)
+- [ ] Request specs: full auth flow (signup, login, magic link expiry, logout)
+- [ ] Request specs: article CRUD (create, edit, publish, delete, authorization)
+- [ ] Request specs: likes and comments (create, delete, counter caches)
+- [ ] Request specs: feed variants (latest, popular, picked)
+- [ ] Request specs: backoffice access control
+- [ ] Request specs: API endpoints (article JSON, attachments)
+- [ ] Add SimpleCov minimum coverage threshold to CI
+
+## Important Notes
+
+- Arabic-first: default locale is `:ar`, all UI is RTL
+- Article content is Quill Delta JSON, not HTML
+- Articles use binary UUIDs (16 bytes) as public identifiers, not auto-increment IDs
+- Fonts: Noto Naskh Arabic (primary), Montserrat (secondary)
+- Production: Hetzner server (203.0.113.10), DB on separate server (203.0.113.20)
