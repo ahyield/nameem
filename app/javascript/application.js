@@ -5,3 +5,6 @@ import "@fortawesome/fontawesome-free"
 
 import * as ActiveStorage from "@rails/activestorage"
 ActiveStorage.start()
+
+import "trix"
+import "@rails/actiontext"

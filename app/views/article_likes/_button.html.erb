@@ -1,0 +1,26 @@
+<%= turbo_frame_tag dom_id(article, :like) do %>
+  <% if current_user && current_user != article.user %>
+    <% if liked %>
+      <%= button_to user_unlike_article_path(slug: article.user, uuid: article),
+            method: :delete,
+            class: "flex items-center gap-1 cursor-pointer group",
+            data: { turbo_frame: dom_id(article, :like) } do %>
+        <%= heroicon "heart", variant: :solid, class: "w-6 h-6 text-red-500 group-hover:scale-110 transition-transform" %>
+        <span class="text-sm text-gray-500"><%= article.likes_count %></span>
+      <% end %>
+    <% else %>
+      <%= button_to user_like_article_path(slug: article.user, uuid: article),
+            method: :post,
+            class: "flex items-center gap-1 cursor-pointer group",
+            data: { turbo_frame: dom_id(article, :like) } do %>
+        <%= heroicon "heart", class: "w-6 h-6 text-gray-300 group-hover:text-red-400 transition-colors" %>
+        <span class="text-sm text-gray-500"><%= article.likes_count %></span>
+      <% end %>
+    <% end %>
+  <% else %>
+    <div class="flex items-center gap-1">
+      <%= heroicon "heart", class: "w-6 h-6 text-gray-300" %>
+      <span class="text-sm text-gray-500"><%= article.likes_count %></span>
+    </div>
+  <% end %>
+<% end %>

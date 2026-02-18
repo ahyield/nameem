@@ -1,0 +1,10 @@
+<%= turbo_stream.append "comments" do %>
+  <%= render @comment %>
+<% end %>
+
+<%= turbo_stream.replace "comment_form" do %>
+  <%= render "comments/form" %>
+<% end %>
+
+<%= turbo_stream.update "comments_count", @article.reload.comments_count.to_s %>
+<%= turbo_stream.update "drawer_comments_count", @article.comments_count.to_s %>

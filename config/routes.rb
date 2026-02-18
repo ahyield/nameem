@@ -12,6 +12,16 @@ Rails.application.routes.draw do
 
     get ":uuid", action: :article, as: "article", constraints: Constraints::ArticleUuidConstraint.new
     delete ":uuid", action: :destroy, as: "destroy_article", constraints: Constraints::ArticleUuidConstraint.new
+
+    post ":uuid/like", action: :create, as: "like_article",
+         constraints: Constraints::ArticleUuidConstraint.new, controller: "article_likes"
+    delete ":uuid/like", action: :destroy, as: "unlike_article",
+           constraints: Constraints::ArticleUuidConstraint.new, controller: "article_likes"
+
+    post ":uuid/comments", action: :create, as: "article_comments",
+         constraints: Constraints::ArticleUuidConstraint.new, controller: "comments"
+    delete ":uuid/comments/:id", action: :destroy, as: "article_comment",
+           constraints: Constraints::ArticleUuidConstraint.new, controller: "comments"
     put ":uuid", to: "articles#update", as: "update_article"
     get ":uuid/edit", to: "articles#edit", as: "edit_article"
 

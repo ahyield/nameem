@@ -17,3 +17,5 @@ pin '@rails/activestorage', to: 'https://ga.jspm.io/npm:@rails/activestorage@7.1
 pin "quill-delta-to-html", to: "https://ga.jspm.io/npm:quill-delta-to-html@0.12.1/dist/commonjs/main.js"
 pin "lodash.isequal", to: "https://ga.jspm.io/npm:lodash.isequal@4.5.0/index.js"
 pin "stimulus-clipboard", to: "https://ga.jspm.io/npm:stimulus-clipboard@4.0.1/dist/stimulus-clipboard.mjs"
+pin "trix"
+pin "@rails/actiontext", to: "actiontext.esm.js"

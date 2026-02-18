@@ -12,6 +12,9 @@ class UsersController < ApplicationController
 
     authorize @article, :show?
 
+    @liked = Current.user&.article_likes&.exists?(article: @article)
+    @comments = @article.comments.includes(:user, :rich_text_body).order(created_at: :asc)
+
     respond_to do |format|
       format.html
       format.json { render json: @article }

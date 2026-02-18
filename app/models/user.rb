@@ -4,6 +4,9 @@ class User < ApplicationRecord
   friendly_id :email, use: :slugged
 
   has_many :articles, dependent: :destroy
+  has_many :article_likes, dependent: :destroy
+  has_many :comments, dependent: :destroy
+  has_many :liked_articles, through: :article_likes, source: :article
   has_many :sessions, dependent: :destroy
   has_many :magic_links, dependent: :destroy
 

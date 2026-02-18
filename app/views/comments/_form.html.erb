@@ -1,0 +1,10 @@
+<%= turbo_frame_tag "comment_form" do %>
+  <%= form_with model: Comment.new, url: user_article_comments_path(slug: @article.user, uuid: @article), class: "comment-form" do |form| %>
+    <div>
+      <%= form.rich_text_area :body, class: "w-full min-h-[80px]" %>
+    </div>
+    <div class="mt-3 flex justify-end">
+      <%= form.submit "أضف تعليق", class: "rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 cursor-pointer" %>
+    </div>
+  <% end %>
+<% end %>

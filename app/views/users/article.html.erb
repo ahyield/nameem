@@ -13,7 +13,7 @@
 
 <%= render "shared/nav" %>
 
-<div class="bg-white px-6 py-32 lg:px-8">
+<div class="bg-white px-6 py-32 lg:px-8" data-controller="drawer">
   <div class="mx-auto max-w-3xl text-base leading-7 text-gray-700">
     <h1 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"><%= @article.title %></h1>
     <div class="flex space-x-4 text-sm text-gray-500">
@@ -40,78 +40,119 @@
       </div>
     </div>
 
-    <div class="border-solid border-gray-200 h-12 relative items-center border-t border-b grid grid-cols-3">
-      <div class="col-start-3 absolute left-0">
-        <div class="grid grid-cols-2 gap-8">
-          <div class="" data-controller="dropdown">
-            <button type="button" class="block text-gray-600 font-bold hover:text-gray-500" id="options-menu-2-button" aria-expanded="false"
-              aria-haspopup="true" data-action="click->dropdown#toggle click@window->dropdown#hide">
-              <span class="sr-only">Share</span>
-              <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+    <div class="border-t border-b border-gray-200 py-3 flex items-center justify-between">
+      <%# Likes & Comments (right side in RTL) %>
+      <div class="flex items-center gap-6">
+        <%= render "article_likes/button", article: @article, liked: @liked %>
+        <button type="button" data-action="drawer#open" class="flex items-center gap-1 cursor-pointer group">
+          <svg class="w-6 h-6 text-gray-300 group-hover:text-gray-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+          </svg>
+          <span id="comments_count" class="text-sm text-gray-500"><%= @article.comments_count %></span>
+        </button>
+      </div>
+
+      <%# Share & Options (left side in RTL) %>
+      <div class="flex items-center gap-4">
+        <div data-controller="dropdown" class="relative">
+          <button type="button" class="text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+            data-action="click->dropdown#toggle click@window->dropdown#hide">
+            <span class="sr-only">Share</span>
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+            </svg>
+          </button>
+          <div class="hidden absolute z-50 w-24 mt-2 rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+               role="menu" data-dropdown-target="menu">
+            <div data-controller="clipboard" data-clipboard-success-content-value="تم نسخ الرابط">
+              <input type="text" value="<%= user_article_url(slug: @user, uuid: @article) %>" class="hidden" data-clipboard-target="source" autocomplete="off">
+              <button type="button" class="block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900"
+              data-action="clipboard#copy" data-clipboard-target="button">رابط المقال</button>
+            </div>
+          </div>
+        </div>
+
+        <% if policy(@article).edit? %>
+          <div data-controller="dropdown" class="relative">
+            <button type="button" class="text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+              data-action="click->dropdown#toggle click@window->dropdown#hide">
+              <span class="sr-only">Open options</span>
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
               </svg>
             </button>
-            <div class="hidden ml-6 absolute z-50 w-24 mt-8 rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
-                 role="menu" aria-orientation="vertical" aria-labelledby="options-menu-2-button" tabindex="-1" data-dropdown-target="menu">
-              <div data-controller="clipboard" data-clipboard-success-content-value="تم نسخ الرابط">
-                <input type="text" value="<%= user_article_url(slug: @user, uuid: @article) %>" class="hidden" data-clipboard-target="source" autocomplete="off">
-
-                <button type="button" class="block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900"
-                data-action="clipboard#copy" data-clipboard-target="button">رابط المقال</button>
-              </div>
+            <div class="hidden absolute z-50 w-16 mt-2 rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+                role="menu" data-dropdown-target="menu">
+              <%= link_to user_edit_article_path(slug: @user, uuid: @article),
+                class: "block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900", role: "menuitem", data: { turbo: false } do %>
+                تعديل
+              <% end %>
+              <%= button_to user_destroy_article_path(slug: @user, uuid: @article), method: :delete,
+                class: "block px-3 py-1 text-sm leading-6 text-red-500 hover:text-gray-900", role: "menuitem", data: { turbo: false } do %>
+                حذف
+              <% end %>
             </div>
           </div>
-
-          <% if policy(@article).edit? %>
-            <div class="" data-controller="dropdown">
-              <button type="button" class="block text-gray-600 font-bold hover:text-gray-500" id="options-menu-2-button" aria-expanded="false"
-                aria-haspopup="true" data-action="click->dropdown#toggle click@window->dropdown#hide">
-                <span class="sr-only">Open options</span>
-                <svg class="h-5 w-5 flex" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
-                </svg>
-              </button>
-              <div class="hidden ml-6 absolute z-50 w-16 mt-8 rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
-                  role="menu" aria-orientation="vertical" aria-labelledby="options-menu-2-button" tabindex="-1" data-dropdown-target="menu">
-                <%= link_to user_edit_article_path(slug: @user, uuid: @article),
-                  class: "block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900", role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0", data: { turbo: false }  do %>
-                  تعديل
-                  <span class="sr-only">, Reform</span>
-                <% end %>
-                <%= button_to user_destroy_article_path(slug: @user, uuid: @article), method: :delete,
-                  class: "block px-3 py-1 text-sm leading-6 text-red-500 hover:text-gray-900", role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0", data: { turbo: false }  do %>
-                  حذف
-                  <span class="sr-only">, Reform</span>
-                <% end %>
-              </div>
-            </div>
-          <% else %>
-            <svg class="h-5 w-5 opacity-40" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
-            </svg>
-          <% end %>
-        </div>
-      </div>
-      <div class="col-start-1 absolute right-0">
-        <div class="grid grid-cols-2 gap-8">
-          <div class="flex items-center gap-2">
-            <div class="flex items-center gap-1 px-2 py-0.5 border border-gray-100 rounded-full bg-gray-20">
-              <%= heroicon "eye", class: "w-4 h-4 text-gray-400" %>
-              <span class="text-sm mt-1 text-gray-500 font-medium"><%= @article.views_count || 0 %></span>
-              <span class="text-sm text-gray-500 font-medium">مشاهدة</span>
-            </div>
-            <div class="flex items-center gap-1 px-2 py-0.5 border border-gray-100 rounded-full bg-gray-20">
-              <%= heroicon "user", class: "w-4 h-4 text-gray-400" %>
-              <span class="text-sm mt-1 text-gray-500 font-medium"><%= @article.visitors_count || 0 %></span>
-              <span class="text-sm text-gray-500 font-medium">زائر</span>
-            </div>
-          </div>
-        </div>
+        <% else %>
+          <svg class="h-5 w-5 text-gray-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
+          </svg>
+        <% end %>
       </div>
     </div>
 
     <div id="quill-renderer" class="mt-4" data-controller="editor-renderer">
     </div>
+
+  </div>
+
+  <%# Comments Drawer %>
+  <div class="hidden relative z-50" data-drawer-target="container" data-action="keydown@window->drawer#escape" role="dialog" aria-modal="true" aria-label="التعليقات">
+  <%# Backdrop %>
+  <div class="fixed inset-0 bg-gray-500/75 transition-opacity duration-500 ease-in-out opacity-0" data-drawer-target="overlay"></div>
+
+  <div class="fixed inset-0 overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden" data-action="click->drawer#outside">
+      <div class="pointer-events-none fixed inset-y-0 left-0 flex max-w-full pr-10">
+        <%# Panel %>
+        <div class="pointer-events-auto relative w-screen max-w-md transform transition ease-in-out duration-500 -translate-x-full" data-drawer-target="panel">
+          <%# Close button %>
+          <div class="absolute right-0 top-0 -mr-8 flex pl-2 pt-4 sm:-mr-10 sm:pl-4 transition-opacity duration-500 ease-in-out opacity-0" data-drawer-target="closeButton">
+            <button type="button" class="relative rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white cursor-pointer" data-action="drawer#close">
+              <span class="absolute -inset-2.5"></span>
+              <span class="sr-only">إغلاق</span>
+              <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="flex h-full flex-col bg-white shadow-xl">
+            <%# Header %>
+            <div class="border-b border-gray-200 px-4 py-4 sm:px-6">
+              <h2 class="text-base font-semibold text-gray-900">
+                التعليقات (<span id="drawer_comments_count"><%= @article.comments_count %></span>)
+              </h2>
+            </div>
+
+            <%# Comments list %>
+            <div class="relative flex-1 overflow-y-auto px-4 sm:px-6 py-4">
+              <div id="comments">
+                <%= render @comments %>
+              </div>
+            </div>
+
+            <%# Comment form (sticky footer) %>
+            <% if authenticated? %>
+              <div class="border-t border-gray-200 px-4 py-4 sm:px-6">
+                <%= render "comments/form" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   </div>
 </div>
 

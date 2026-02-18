@@ -100,6 +100,41 @@ RSpec.describe User do
       expect { user.destroy }.to change(Session, :count).by(-1)
     end
 
+    it "has many article_likes" do
+      user = create(:user)
+      article = create(:article, user: create(:user))
+      create(:article_like, user: user, article: article)
+      expect(user.article_likes.count).to eq(1)
+    end
+
+    it "has many liked_articles through article_likes" do
+      user = create(:user)
+      article = create(:article, user: create(:user))
+      create(:article_like, user: user, article: article)
+      expect(user.liked_articles).to include(article)
+    end
+
+    it "destroys article_likes when user is destroyed" do
+      user = create(:user)
+      article = create(:article, user: create(:user))
+      create(:article_like, user: user, article: article)
+      expect { user.destroy }.to change(ArticleLike, :count).by(-1)
+    end
+
+    it "has many comments" do
+      user = create(:user)
+      article = create(:article, user: create(:user))
+      create(:comment, user: user, article: article)
+      expect(user.comments.count).to eq(1)
+    end
+
+    it "destroys comments when user is destroyed" do
+      user = create(:user)
+      article = create(:article, user: create(:user))
+      create(:comment, user: user, article: article)
+      expect { user.destroy }.to change(Comment, :count).by(-1)
+    end
+
     it "has many magic_links" do
       user = create(:user)
       create(:magic_link, user: user)

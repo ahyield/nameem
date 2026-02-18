@@ -58,6 +58,20 @@ RSpec.describe Article do
     end
   end
 
+  describe "associations" do
+    it "has many comments" do
+      article = create(:article)
+      create(:comment, article: article)
+      expect(article.comments.count).to eq(1)
+    end
+
+    it "destroys comments when article is destroyed" do
+      article = create(:article)
+      create(:comment, article: article)
+      expect { article.destroy }.to change(Comment, :count).by(-1)
+    end
+  end
+
   describe "publishing" do
     it "can be published" do
       article.publish
