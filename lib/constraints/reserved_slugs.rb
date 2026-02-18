@@ -77,6 +77,7 @@ module Constraints
       root
       published_articles
       metrics
+      topics
     ].freeze
   end
 end

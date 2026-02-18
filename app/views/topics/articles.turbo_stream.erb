@@ -1,0 +1,11 @@
+<%= turbo_stream.append "topic_feed" do %>
+  <% @articles.each do |article| %>
+    <%= render "feed/article", article: article %>
+  <% end %>
+<% end %>
+
+<% if @pagy.next.present? %>
+  <%= turbo_stream.append "topic_feed_pagination" do %>
+    <%= turbo_frame_tag "topic_feed_pagination", src: articles_topic_path(@tag, page: @pagy.next, format: "turbo_stream"), loading: "lazy" %>
+  <% end %>
+<% end %>

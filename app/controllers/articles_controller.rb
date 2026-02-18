@@ -26,6 +26,8 @@ class ArticlesController < ApplicationController
     @article.published_at = DateTime.now if @article.published_at.nil? && @article.published?
     @article.save!
 
+    sync_tags(@article, params[:tag_names])
+
     redirect_to user_article_path(uuid: @article.uuid, slug: @user.slug)
   end
 
@@ -33,5 +35,13 @@ class ArticlesController < ApplicationController
     @user = User.find_by(slug: params[:slug])
 
     @article = @user.articles.find_by(uuid: params[:uuid])
+  end
+
+  private
+
+  def sync_tags(article, tag_names)
+    tag_names = Array(tag_names).map(&:strip).compact_blank.first(5)
+    tags = tag_names.map { |name| Tag.find_or_create_by!(name: name) }
+    article.tags = tags
   end
 end
