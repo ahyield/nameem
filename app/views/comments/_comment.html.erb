@@ -1,7 +1,7 @@
 <%= turbo_frame_tag dom_id(comment) do %>
   <div class="flex gap-3 py-4 border-b border-gray-100">
     <div class="flex-none">
-      <%= link_to user_path(comment.user) do %>
+      <%= link_to user_path(comment.user), data: { turbo: false } do %>
         <% if comment.user.avatar.attached? %>
           <%= image_tag comment.user.avatar.variant(resize_to_fill: [80, 80]), class: "h-8 w-8 rounded-full bg-gray-50" %>
         <% else %>
@@ -16,7 +16,7 @@
     <div class="flex-1 min-w-0">
       <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2 text-sm">
-          <%= link_to comment.user.name, user_path(comment.user), class: "font-medium text-gray-900 hover:underline" %>
+          <%= link_to comment.user.name, user_path(comment.user), class: "font-medium text-gray-900 hover:underline", data: { turbo: false } %>
           <span class="text-gray-400">&middot;</span>
           <time class="text-gray-400"><%= short_date(comment.created_at) %></time>
         </div>
