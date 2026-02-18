@@ -1,0 +1,38 @@
+<% title "نميم | رمز التحقق" %>
+
+<%= render "shared/nav" %>
+<%= render "flashes/error", error: flash[:error] if !flash[:error].nil? %>
+
+<div class="email-form flex min-h-full flex-col justify-center py-12 text-right sm:px-6 lg:px-8 pt-20" dir="ltr">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <img class="mx-auto h-10 w-auto" src="<%= asset_path("brand/logo.png") %>" alt="Nameem">
+    <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">رمز التحقق</h2>
+    <p class="mt-2 text-center text-sm text-gray-600">أدخل رمز التحقق المُرسل إلى بريدك الإلكتروني</p>
+  </div>
+
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
+    <div class="bg-white px-6 space-y-4 py-12 shadow sm:rounded-lg sm:px-12">
+      <%= form_with url: session_magic_link_path, method: :post, html: { class: "space-y-6 font-montserrat", data: { controller: "magic-code" } } do |form| %>
+
+        <div class="text-center">
+          <label for="code" class="block text-sm font-medium leading-6 text-gray-900 text-center mb-4">رمز التحقق</label>
+          <div class="mt-2">
+            <%= form.text_field :code, id: "code", maxlength: 6, autocomplete: "one-time-code", autofocus: true,
+              class: "block mx-auto w-48 text-center rounded-md border-0 py-3 text-2xl font-mono tracking-[0.3em] text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 uppercase",
+              data: { "magic-code-target": "input", action: "input->magic-code#onInput paste->magic-code#onPaste" } %>
+          </div>
+        </div>
+
+        <%= form.button "تحقق", class: "flex font-naskh w-full justify-center rounded-md
+                                     text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 px-3 py-1.5
+                                     text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2
+                                     focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
+                                     data: { "magic-code-target": "submit" } %>
+
+      <% end %>
+
+      <p class="text-center text-sm text-gray-500 mt-4">لم يصلك الرمز؟ <a href="<%= login_path %>" class="text-indigo-600 hover:text-indigo-500">حاول مجددًا</a></p>
+    </div>
+  </div>
+</div>
+<%= render "shared/footer" %>

@@ -87,7 +87,7 @@ group :development, :rubocop do
 
   gem "erb_lint", require: false
   gem "rack-mini-profiler"
-  gem "rubocop"
+  gem "rubocop", github: "rubocop/rubocop"
   gem "rubocop-lsp", "~> 0.1.6"
   gem "rubocop-rails", require: false
   gem "rubocop-rspec", require: false

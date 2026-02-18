@@ -6,9 +6,7 @@ RSpec.describe RegistrationsController do
 
   describe "GET #new" do
     context "when user is signed in" do
-      before do
-        sign_in user
-      end
+      before { sign_in user }
 
       it "redirects to the root path" do
         get :new
@@ -27,7 +25,7 @@ RSpec.describe RegistrationsController do
   describe "POST #create" do
     context "when the user is already confirmed" do
       before do
-        allow(controller).to receive(:valid_captcha?).and_return(true) # Stub valid CAPTCHA
+        allow(controller).to receive(:valid_captcha?).and_return(true)
       end
 
       it "renders the new template with an error" do
@@ -40,7 +38,7 @@ RSpec.describe RegistrationsController do
 
     context "when the CAPTCHA is invalid" do
       before do
-        allow(controller).to receive(:valid_captcha?).and_return(false) # Stub invalid CAPTCHA
+        allow(controller).to receive(:valid_captcha?).and_return(false)
       end
 
       it "renders the new template with an error" do
@@ -53,25 +51,32 @@ RSpec.describe RegistrationsController do
 
     context "when the user is not confirmed and the CAPTCHA is valid" do
       before do
-        allow(controller).to receive(:valid_captcha?).and_return(true) # Stub valid CAPTCHA
-        allow(User).to receive(:find_or_create_by).and_return(unconfirmed_user)
-        allow(unconfirmed_user).to receive(:generate_token_for).and_return("token")
+        allow(controller).to receive(:valid_captcha?).and_return(true)
       end
 
-      it "sends a magic sign-up link email and redirects to root path" do
-        mailer_double = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-
-        allow(MagicSignUpLinkMailer).to receive(:with)
-          .with(email: unconfirmed_user.email, token: "token")
-          .and_return(instance_double(MagicSignUpLinkMailer, magic_sign_up_link: mailer_double))
-
+      it "creates a magic link and redirects to code entry" do
         post :create, params: { sign_up: { email: unconfirmed_user.email } }
 
-        expect(MagicSignUpLinkMailer).to have_received(:with).once.with(email: unconfirmed_user.email, token: "token")
-        expect(mailer_double).to have_received(:deliver_later).once
+        expect(unconfirmed_user.magic_links.count).to eq(1)
+        expect(unconfirmed_user.magic_links.last).to be_sign_up
+        expect(response).to redirect_to(session_magic_link_path)
+        expect(cookies[:pending_authentication_token]).to be_present
+      end
+    end
 
-        expect(response).to redirect_to(root_path)
-        expect(flash[:notice]).to eq("من فضلك راجع بريدك الإليكتروني")
+    context "with a new email" do
+      before do
+        allow(controller).to receive(:valid_captcha?).and_return(true)
+      end
+
+      it "creates user and magic link, redirects to code entry" do
+        expect {
+          post :create, params: { sign_up: { email: "newuser@example.com" } }
+        }.to change(User, :count).by(1)
+
+        user = User.find_by(email: "newuser@example.com")
+        expect(user.magic_links.count).to eq(1)
+        expect(response).to redirect_to(session_magic_link_path)
       end
     end
   end

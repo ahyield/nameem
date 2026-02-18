@@ -3,7 +3,13 @@
     "allow": [
       "Bash(ls:*)",
       "Bash(bundle show:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "WebFetch(domain:github.com)",
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:epona.me)",
+      "Bash(RAILS_ENV=test bin/rails db:migrate:*)",
+      "Bash(bundle exec rspec:*)"
     ]
   }
 }

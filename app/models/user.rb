@@ -4,6 +4,8 @@ class User < ApplicationRecord
   friendly_id :email, use: :slugged
 
   has_many :articles, dependent: :destroy
+  has_many :sessions, dependent: :destroy
+  has_many :magic_links, dependent: :destroy
 
   has_one_attached :avatar
 
@@ -22,7 +24,7 @@ class User < ApplicationRecord
   validates :slug, uniqueness:  true,
                    presence:    true,
                    allow_blank: false,
-                   length:      { minimu: 4, maximum: 50 },
+                   length:      { minimum: 4, maximum: 50 },
                    format:      { with:    /\A(?![._-])(?=.*[a-zA-Z0-9])[-_a-zA-Z0-9]+(?<![._-])\z/,
                                   message: "إسم المستخدم يجب أن يكون أحرف مع أرقام، شرطة، \
   أو شرطة سفلية فقط، أيضًا، يجب ألا يبدأ أو ينتهي بعلامات" }
@@ -35,8 +37,10 @@ class User < ApplicationRecord
   validate :slug_is_not_reserved
   validate :correct_avatar_mime_type
 
-  generates_token_for :magic_login, expires_in: 15.minutes do
-    last_sign_in_at
+  def send_magic_link(purpose:)
+    magic_link = magic_links.create!(purpose: purpose)
+    MagicLinkMailer.verification_code(magic_link).deliver_later
+    magic_link
   end
 
   def feature

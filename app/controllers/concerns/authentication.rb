@@ -2,31 +2,54 @@ module Authentication
   extend ActiveSupport::Concern
 
   included do
-    helper_method :current_user, :user_signed_in?
+    helper_method :current_user, :authenticated?, :user_signed_in?
+    before_action :require_authentication
   end
 
   private
 
-  def authenticate_user_after_sign_up(user)
-    session[:user_id] = user.id
-    user.touch(:last_sign_in_at)
-    Current.user = user
-    redirect_to root_path
+  def require_authentication
+    resume_session || redirect_to_login
   end
 
-  def authenticate_user!
-    redirect_to root_path, alert: "يجب تسجيل الدخول أولًا!" unless user_signed_in?
+  def resume_session
+    if (session_record = find_session_by_cookie)
+      Current.session = session_record
+      true
+    end
   end
 
-  def authenticate_from_session
-    Current.user ||= User.find_by(id: session[:user_id])
+  def find_session_by_cookie
+    Session.find_signed(cookies[:session_token])
   end
 
-  def user_signed_in?
-    current_user.present?
+  def start_new_session_for(user)
+    session_record = user.sessions.create!(
+      ip_address: request.remote_ip,
+      user_agent: request.user_agent&.first(4096)
+    )
+    Current.session = session_record
+    cookies.permanent[:session_token] = { value: session_record.signed_id, httponly: true, same_site: :lax }
+    session_record
   end
+
+  def terminate_session
+    Current.session&.destroy
+    cookies.delete(:session_token)
+    Current.session = nil
+  end
+
+  def authenticated?
+    Current.user.present?
+  end
+
+  alias user_signed_in? authenticated?
 
   def current_user
-    Current.user || authenticate_from_session
+    Current.user
+  end
+
+  def redirect_to_login
+    redirect_to login_path, alert: "يجب تسجيل الدخول أولًا!"
   end
 end

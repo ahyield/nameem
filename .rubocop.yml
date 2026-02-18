@@ -1,10 +1,9 @@
-require:
+plugins:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-performance
-
 AllCops:
-  TargetRubyVersion: 4.0.1
+  TargetRubyVersion: 3.5
   DisplayCopNames: true
   CacheRootDirectory: ".git"
   NewCops: enable

@@ -1,5 +1,5 @@
 class ArticlesController < ApplicationController
-  before_action :authenticate_user!
+  # require_authentication is inherited from ApplicationController
 
   def new
     redirect_to settings_security_path unless current_user&.confirmed?

@@ -48,20 +48,24 @@ Rails.application.routes.draw do
     put 'articles/:slug/:uuid', to: 'articles#update', as: 'articles_update'
   end
 
-  ################### Since auth is from scratch ####################
-  get 'login', to: 'sessions#new', as: 'login'
-  post 'login', to: 'sessions#create'
-
-  get 'signup', to: 'registrations#new', as: 'signup'
-  post 'signup', to: 'registrations#create'
-
+  ################### Auth ####################
+  get  'login',  to: 'sessions#new',     as: 'login'
+  post 'login',  to: 'sessions#create'
   delete 'logout', to: 'sessions#destroy', as: 'logout'
 
-  get "auth/callback", to: "callbacks#new", as: 'callback'
-  get "auth/callback/confirm_email", to: "callbacks#confirm_email", as: 'callback_confirm_email'
-  get "auth/callback/login", to: "callbacks#login", as: 'callback_login'
-  post "auth/callback", to: "callbacks#create", as: 'callback_create'
-  ##################################################################
+  resource :session, only: [] do
+    scope module: :sessions do
+      resource :magic_link, only: [:show, :create]
+    end
+  end
+
+  get  'signup', to: 'registrations#new',    as: 'signup'
+  post 'signup', to: 'registrations#create'
+
+  namespace :signups do
+    resource :completion, only: [:new, :create]
+  end
+  ################################################
 
   get 'new-story', to: 'articles#new', as: 'new-story'
 

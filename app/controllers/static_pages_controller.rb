@@ -1,5 +1,6 @@
 class StaticPagesController < ApplicationController
-  skip_before_action :authenticate_user!
+  skip_before_action :require_authentication
+  before_action :resume_session
 
   def about_nameem; end
 

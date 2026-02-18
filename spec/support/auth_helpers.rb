@@ -1,11 +1,15 @@
 module AuthHelpers
   def sign_in(user)
-    session[:user_id] = user.id
+    session_record = user.sessions.create!(ip_address: "127.0.0.1", user_agent: "RSpec")
+    cookies[:session_token] = session_record.signed_id
+    Current.session = session_record
     Current.user = user
   end
 
   def sign_out
-    session.delete(:user_id)
+    Current.session&.destroy
+    cookies.delete(:session_token)
+    Current.session = nil
     Current.user = nil
   end
 end

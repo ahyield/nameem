@@ -13,9 +13,11 @@ def json
   JSON.parse(response.body)
 end
 
-# Used in requests specs to authenticate a user.
+# Used in request specs to authenticate a user.
 def authenticate_user(user)
-  allow(Current).to receive(:user).and_return(user)
+  session_record = user.sessions.create!(ip_address: "127.0.0.1", user_agent: "RSpec")
+  cookies[:session_token] = session_record.signed_id
+  Current.user = user
 end
 
 # Add additional requires below this line. Rails is not loaded until this point!

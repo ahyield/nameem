@@ -1,35 +1,33 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate_user!
-  before_action :redirect_signed_in_users, only: [:new]
+  include Authentication::UnauthenticatedAccess
+  include Authentication::ViaMagicLink
+
+  before_action :redirect_authenticated_user, only: [:new]
+
+  rate_limit to: 10, within: 3.minutes, only: :create, with: lambda {
+    flash[:error] = "عدد المحاولات كبير، يرجى المحاولة لاحقًا"
+    redirect_to login_path
+  }
 
   def new; end
 
   def create
-    @user = User.find_by(email: login_params[:email])
+    user = User.find_by(email: login_params[:email])
 
-    if @user&.confirmed?
-      MagicLoginLinkMailer.with(user:  @user,
-                                token: @user.generate_token_for(:magic_login)).magic_login_link.deliver_later
-      redirect_to root_path, notice: "من فضلك تحقق من بريدك الإليكتروني."
+    if user&.confirmed?
+      magic_link = user.send_magic_link(purpose: :sign_in)
+      redirect_to_magic_link_verification(magic_link)
     else
-      flash.now[:error] = "عفوًا هذا الحساب غير موجود"
-      render :new, status: :unprocessable_entity
+      redirect_to_fake_magic_link_verification(login_params[:email])
     end
   end
 
   def destroy
-    Current.user = nil
-    reset_session
+    terminate_session
     redirect_to root_path
   end
 
   private
-
-  def redirect_signed_in_users
-    return unless user_signed_in?
-
-    redirect_to root_path
-  end
 
   def login_params
     params[:login]

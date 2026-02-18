@@ -87,6 +87,43 @@ RSpec.describe User do
       user = create(:user, :with_articles)
       expect(user.articles.size).to eq(5)
     end
+
+    it "has many sessions" do
+      user = create(:user)
+      create(:session, user: user)
+      expect(user.sessions.count).to eq(1)
+    end
+
+    it "destroys sessions when user is destroyed" do
+      user = create(:user)
+      create(:session, user: user)
+      expect { user.destroy }.to change(Session, :count).by(-1)
+    end
+
+    it "has many magic_links" do
+      user = create(:user)
+      create(:magic_link, user: user)
+      expect(user.magic_links.count).to eq(1)
+    end
+
+    it "destroys magic_links when user is destroyed" do
+      user = create(:user)
+      create(:magic_link, user: user)
+      expect { user.destroy }.to change(MagicLink, :count).by(-1)
+    end
+  end
+
+  describe "#send_magic_link" do
+    it "creates a magic link and enqueues the mailer" do
+      user = create(:user)
+
+      expect {
+        user.send_magic_link(purpose: :sign_in)
+      }.to change(MagicLink, :count).by(1)
+
+      magic_link = user.magic_links.last
+      expect(magic_link).to be_sign_in
+    end
   end
 
   describe "features" do

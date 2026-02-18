@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, except: %i[show articles article]
+  skip_before_action :require_authentication, only: %i[show articles article]
+  before_action :resume_session, only: %i[show articles article]
 
   def show
     @user = User.friendly.find(params[:slug])

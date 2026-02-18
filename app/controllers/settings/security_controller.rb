@@ -14,13 +14,11 @@ module Settings
         flash.now[:error] = "هذا المستخدم موجود بالفعل"
         render :edit, status: :unprocessable_entity
       else
-        ConfirmEmailMailer.with(email: user_params[:email],
-                                token: @user.generate_token_for(:magic_login))
-                          .confirm_email.deliver_later
-        @user.update(confirmed: nil)
+        @user.update(confirmed: false)
         @user.update(email: user_params[:email])
+        @user.send_magic_link(purpose: :confirm_email)
 
-        flash[:notice] = "تم إرسال رابط التأكيد إلى بريدك الإلكتروني"
+        flash[:notice] = "تم إرسال رمز التأكيد إلى بريدك الإلكتروني"
         redirect_to settings_security_path
       end
     end

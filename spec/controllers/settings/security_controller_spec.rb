@@ -2,16 +2,9 @@ require "rails_helper"
 
 RSpec.describe Settings::SecurityController do
   let(:user) { create(:user) }
-  let(:unconfirmed_user) { create(:user, :unconfirmed) }
   let(:other_user) { create(:user, email: "other@example.com") }
-  let(:token) { "stubbed_token" }
 
-  before do
-    sign_in user
-    # rubocop:disable RSpec/AnyInstance
-    allow_any_instance_of(User).to receive(:generate_token_for).with(:magic_login).and_return(token)
-    # rubocop:enable RSpec/AnyInstance
-  end
+  before { sign_in user }
 
   describe "GET #edit" do
     it "assigns the current user to @user" do
@@ -44,22 +37,18 @@ RSpec.describe Settings::SecurityController do
     end
 
     context "when the new email does not belong to a confirmed user" do
-      it "sends a confirmation email, updates the user's email, and redirects" do
-        mailer_double = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-
-        allow(ConfirmEmailMailer).to receive(:with).and_return(instance_double(ConfirmEmailMailer, confirm_email: mailer_double))
-
+      it "creates a confirm_email magic link, updates email, and redirects" do
         patch :update, params: { user: { email: "newemail@example.com" } }
-
-        expect(ConfirmEmailMailer).to have_received(:with).once.with(email: "newemail@example.com", token:)
-        expect(mailer_double).to have_received(:deliver_later).once
 
         user.reload
         expect(user.email).to eq("newemail@example.com")
-        expect(user.confirmed).to be_nil
+        expect(user.confirmed).to be false
+
+        expect(user.magic_links.count).to eq(1)
+        expect(user.magic_links.last).to be_confirm_email
 
         expect(response).to redirect_to(settings_security_path)
-        expect(flash[:notice]).to eq("تم إرسال رابط التأكيد إلى بريدك الإلكتروني")
+        expect(flash[:notice]).to eq("تم إرسال رمز التأكيد إلى بريدك الإلكتروني")
       end
     end
   end

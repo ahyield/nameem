@@ -1,6 +1,6 @@
 module Api
   class ArticlesController < ApiBaseController
-    before_action :authenticate_user!, except: [:show]
+    skip_before_action :require_authentication, only: [:show]
 
     def show
       @user = User.find_by(slug: params[:slug])
