@@ -9,7 +9,7 @@ module Api
     end
 
     def edit
-      @article = Current.user.articles.find_by!(uuid: params[:uuid])
+      @article = Article.find_by!(uuid: params[:uuid])
       authorize @article, :edit?
       render json: @article
     end
@@ -22,7 +22,7 @@ module Api
     end
 
     def update
-      @article = Current.user.articles.find_by!(uuid: params[:uuid])
+      @article = Article.find_by!(uuid: params[:uuid])
       authorize @article, :update?
       @article.update!(article_params)
       render json: @article
