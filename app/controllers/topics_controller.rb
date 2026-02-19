@@ -1,5 +1,6 @@
 class TopicsController < ApplicationController
   skip_before_action :require_authentication
+  before_action :resume_session
 
   def index
     @tags = Tag.popular.with_articles
