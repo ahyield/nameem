@@ -8,7 +8,7 @@ Arabic-language article publishing platform. "A minor wound on the arm of the ab
 - **MySQL 8.0** with binary UUIDs for articles
 - **Hotwire** (Turbo + Stimulus) — no SPA, no React
 - **Tailwind CSS 4.0** with RTL layout (`dir="rtl"`)
-- **Quill.js 2.0** for article editor (Delta JSON stored in DB)
+- **Lexical** (Meta) for article editor (EditorState JSON + HTML dual storage)
 - **ImportMap** for JS modules (no bundler)
 - **Solid Queue** for background jobs
 - **Kamal** for Docker deployment to Hetzner
@@ -29,7 +29,7 @@ bundle exec rubocop -a     # Auto-fix
 ```
 app/
 ├── controllers/
-│   ├── api/              # JSON endpoints for Quill editor
+│   ├── api/              # JSON endpoints for Lexical editor
 │   ├── backoffice/       # Admin dashboard
 │   ├── concerns/         # Authentication concern
 │   └── sessions/         # Magic link auth flow
@@ -37,7 +37,7 @@ app/
 │   └── concerns/         # Metable (auto-extract description/images)
 ├── javascript/
 │   ├── controllers/      # Stimulus controllers
-│   └── lib/              # Quill config, custom blots, API helpers
+│   └── lib/              # Lexical config, custom nodes, API helpers
 ├── jobs/                 # Solid Queue jobs
 ├── mailers/              # Magic link emails
 ├── policies/             # Pundit authorization
@@ -59,7 +59,7 @@ spec/
 ## Key Models
 
 - **User** — email, slug (friendly_id), name, bio, avatar, roles (admin/editor/featured/picked/confirmed)
-- **Article** — binary UUID, title, content (JSON Delta), published/featured/picked, counter caches (likes, comments, views, visitors)
+- **Article** — binary UUID, title, content (Lexical JSON), content_html (server-rendered HTML), published/featured/picked, counter caches (likes, comments, views, visitors)
 - **ArticleLike** — user + article unique pair, counter cache
 - **Comment** — Action Text body, counter cache
 - **Session** — signed cookie auth tokens
@@ -113,16 +113,16 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 
 ## TODO
 
-### Tags & Topics
-- [ ] Create `Tag` model (name, slug, articles_count counter cache)
-- [ ] Create `ArticleTag` join model (article + tag, unique pair)
-- [ ] Add tag input to the publish modal (Stimulus controller with autocomplete)
-- [ ] Build `/topics` browse page listing all tags with article counts
-- [ ] Build `/topics/:slug` page showing articles for a tag
-- [ ] Add tag pills to article cards in feed and article show page
-- [ ] Add popular tags sidebar widget to feed
-- [ ] Backoffice: tag management (merge, rename, delete)
-- [ ] Specs for Tag, ArticleTag models and topics controller
+### Tags & Topics ✅
+- [x] Create `Tag` model (name, slug, articles_count counter cache)
+- [x] Create `ArticleTag` join model (article + tag, unique pair)
+- [x] Add tag input to the publish modal (Stimulus controller with autocomplete)
+- [x] Build `/topics` browse page listing all tags with article counts
+- [x] Build `/topics/:slug` page showing articles for a tag
+- [x] Add tag pills to article cards in feed and article show page
+- [x] Add popular tags sidebar widget to feed
+- [x] Backoffice: tag management (merge, rename, delete)
+- [x] Specs for Tag, ArticleTag models and topics controller
 
 ### Search
 - [ ] Add MySQL FULLTEXT index on articles (title, description)
@@ -175,7 +175,7 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 
 ### Reading Time
 - [ ] Add `reading_time_minutes` column to articles
-- [ ] Calculate from Quill Delta on save (count words in text ops, divide by 200 wpm for Arabic)
+- [ ] Calculate from content_html on save (strip HTML, count words, divide by 200 wpm for Arabic)
 - [ ] Display reading time on article cards and article show page
 - [ ] Add to Metable concern so it auto-updates with content
 - [ ] Specs for reading time calculation
@@ -201,7 +201,7 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 ## Important Notes
 
 - Arabic-first: default locale is `:ar`, all UI is RTL
-- Article content is Quill Delta JSON, not HTML
+- Article content stored as Lexical EditorState JSON (`content`) + server-rendered HTML (`content_html`)
 - Articles use binary UUIDs (16 bytes) as public identifiers, not auto-increment IDs
 - Fonts: Noto Naskh Arabic (primary), Montserrat (secondary)
 - Production: Hetzner server (203.0.113.10), DB on separate server (203.0.113.20)

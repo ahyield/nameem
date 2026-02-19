@@ -2,7 +2,7 @@ module Metable
   extend ActiveSupport::Concern
 
   included do
-    after_update :update_description
+    after_update :update_description, :update_reading_time
 
     def update_description
       return if content_html.blank?
@@ -10,6 +10,15 @@ module Metable
       doc = Nokogiri::HTML.fragment(content_html)
       text = doc.text.squish
       update_column(:description, text.truncate(100)) if text.present?
+    end
+
+    def update_reading_time
+      return if content_html.blank?
+
+      doc = Nokogiri::HTML.fragment(content_html)
+      words = doc.text.split(/\s+/).count { |w| w.length > 1 }
+      minutes = [ (words / 200.0).ceil, 1 ].max
+      update_column(:reading_time_minutes, minutes)
     end
 
     def alternative_titles

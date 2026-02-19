@@ -36,7 +36,13 @@
             <%= @article.user.name %>
           <% end %>
         </h3>
-        <p class="text-xs"><time><%= short_date(@article.published_at || @article.created_at) %></time></p>
+        <p class="text-xs">
+          <time><%= short_date(@article.published_at || @article.created_at) %></time>
+          <% if @article.reading_time_minutes.present? %>
+            <span class="mx-1">.</span>
+            <span><%= @article.reading_time_minutes %> د قراءة</span>
+          <% end %>
+        </p>
       </div>
     </div>
 

@@ -1,3 +1,15 @@
+desc "Backfill reading_time_minutes for all articles"
+task backfill_reading_time: :environment do
+  Article.where(reading_time_minutes: nil).where.not(content_html: nil).find_each do |article|
+    doc = Nokogiri::HTML.fragment(article.content_html)
+    words = doc.text.split(/\s+/).count { |w| w.length > 1 }
+    minutes = [ (words / 200.0).ceil, 1 ].max
+    article.update_column(:reading_time_minutes, minutes)
+    print "."
+  end
+  puts "\nDone."
+end
+
 desc "Migrate Quill Delta content to HTML"
 task migrate_quill_to_html: :environment do
   require "cgi"
