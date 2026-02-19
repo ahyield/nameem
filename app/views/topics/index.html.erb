@@ -1,0 +1,20 @@
+<% title "نميم - المواضيع" %>
+
+<%= render "shared/nav" %>
+
+<div class="bg-white px-6 py-24 lg:px-8" dir="rtl">
+  <div class="mx-auto max-w-3xl">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 mb-8">المواضيع</h1>
+
+    <div class="flex flex-wrap gap-3">
+      <% @tags.each do |tag| %>
+        <%= link_to topic_path(tag), class: "inline-flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors", data: { turbo: false } do %>
+          <%= tag.name %>
+          <span class="text-xs text-gray-500">(<%= tag.articles_count %>)</span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%= render "shared/footer" %>

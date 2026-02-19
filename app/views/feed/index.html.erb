@@ -84,6 +84,25 @@
         </div>
       </section>
 
+      <% if @tags.any? %>
+        <section aria-labelledby="section-topics-title">
+          <h2 class="sr-only" id="section-topics-title">المواضيع</h2>
+          <div class="overflow-hidden rounded-lg bg-white">
+            <div class="p-6">
+              <h1>المواضيع</h1>
+            </div>
+            <div class="px-6 pb-6 flex flex-wrap gap-2">
+              <% @tags.each do |tag| %>
+                <%= link_to tag.name, topic_path(tag), class: "inline-block rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600 hover:bg-gray-200 transition-colors", data: { turbo: false } %>
+              <% end %>
+            </div>
+            <div class="px-6 pb-6">
+              <%= link_to "عرض الكل", topics_path, class: "text-sm text-blue-500 hover:text-blue-700", data: { turbo: false } %>
+            </div>
+          </div>
+        </section>
+      <% end %>
+
       <%= render "shared/footer" %>
     </div>
   </div>

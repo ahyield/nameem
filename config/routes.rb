@@ -7,6 +7,14 @@ Rails.application.routes.draw do
 
   draw :backoffice
   resources :feed, only: [:index]
+  resources :topics, only: [:index, :show], param: :slug do
+    collection do
+      get :search
+    end
+    member do
+      get :articles
+    end
+  end
   scope(path: ':slug', as: :user, constraints: Constraints::RootNamespaceRoutesConstraint.new, controller: :users) do
     get '/', action: :show
 

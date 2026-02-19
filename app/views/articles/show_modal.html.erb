@@ -37,16 +37,30 @@
               </div>
             </div>
 
-            <div class="mt-5 sm:mt-6 flex w-2/5 sm:gap-3">
-              <%= button_to "نشر", user_update_article_path(slug: params[:slug], uuid: params[:uuid], publish: true), class: "flex-1 rounded-lg px-3 py-2 text-sm
-                            font-semibold text-white shadow-sm text-white bg-gradient-to-l from-cyan-400 to-blue-500
-                            publish-btn hover:from-cyan-500 hover:to-blue-600 focus-visible:outline
-                            focus-visible:outline-2 focus-visible:outline-offset-2 text-lg w-24", method: :put, data: { turbo: false } %>
+            <%= form_tag user_update_article_path(slug: params[:slug], uuid: params[:uuid]), method: :put, data: { turbo: false, controller: "tag-input", "tag-input-existing-value": (@article&.tags&.pluck(:name) || []).to_json } do %>
+              <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">المواضيع (حتى ٥)</label>
+                <div class="relative">
+                  <input type="text" data-tag-input-target="input" data-action="keydown->tag-input#keydown input->tag-input#input"
+                         placeholder="اكتب موضوع واضغط Enter"
+                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6" autocomplete="off">
+                  <div data-tag-input-target="suggestions" class="hidden absolute z-50 w-full mt-1 bg-white rounded-md shadow-lg ring-1 ring-gray-900/5 max-h-48 overflow-y-auto"></div>
+                </div>
+                <div data-tag-input-target="pills" class="flex flex-wrap gap-2 mt-2"></div>
+                <div data-tag-input-target="hiddenFields"></div>
+              </div>
 
-              <%= button_to "حفظ كمسودة", user_update_article_path(uuid: params[:uuid], slug: params[:slug], publish: false), class: "flex-1 rounded-md bg-gray-500 px-3 w-24 py-2 text-sm font-semibold
-                            text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2
-                            focus-visible:outline-offset-2 focus-visible:outline-indigo-600", method: :put, data: { turbo: false } %>
-            </div>
+              <div class="mt-5 sm:mt-6 flex w-2/5 sm:gap-3">
+                <button type="submit" name="publish" value="true" class="flex-1 rounded-lg px-3 py-2 text-sm
+                              font-semibold text-white shadow-sm text-white bg-gradient-to-l from-cyan-400 to-blue-500
+                              publish-btn hover:from-cyan-500 hover:to-blue-600 focus-visible:outline
+                              focus-visible:outline-2 focus-visible:outline-offset-2 text-lg w-24">نشر</button>
+
+                <button type="submit" name="publish" value="false" class="flex-1 rounded-md bg-gray-500 px-3 w-24 py-2 text-sm font-semibold
+                              text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2
+                              focus-visible:outline-offset-2 focus-visible:outline-indigo-600">حفظ كمسودة</button>
+              </div>
+            <% end %>
 
           </div>
         </div>

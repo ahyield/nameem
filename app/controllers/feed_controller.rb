@@ -2,6 +2,7 @@ class FeedController < ApplicationController
   def index
     @pagy, @articles = pagy(Article.published.order(published_at: :desc))
     @users = User.picked.sample(4)
+    @tags = Tag.popular.with_articles.limit(10)
 
     respond_to do |format|
       format.html

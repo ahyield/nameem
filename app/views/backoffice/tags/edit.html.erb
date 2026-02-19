@@ -1,0 +1,42 @@
+<%= render "shared/nav" %>
+<%= render "flashes/alert", alert: flash[:alert] if !flash[:alert].nil? %>
+<%= render "flashes/notice", notice: flash[:notice] if !flash[:notice].nil? %>
+<%= render "flashes/error", error: flash[:error] if !flash[:error].nil? %>
+
+<main class="font-montserrat">
+  <div class="pt-16">
+    <%= render "backoffice/nav" %>
+  </div>
+
+  <div class="mx-auto max-w-2xl space-y-16 sm:space-y-20 lg:mx-0 lg:max-w-none">
+    <div class="">
+      <%= form_with model: @tag, url: backoffice_tag_path(@tag), html: { class: "md:col-span-2" }, method: :put do |form| %>
+        <div>
+          <div class="mt-6 border-t border-gray-100">
+            <dl class="divide-y divide-gray-100">
+              <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm font-medium leading-6 text-gray-900">Name</dt>
+                <dd class="mt-1 sm:col-span-2 sm:mt-0">
+                  <%= form.text_field :name, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+                </dd>
+              </div>
+              <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm font-medium leading-6 text-gray-900">Slug</dt>
+                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @tag.slug %></dd>
+              </div>
+              <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm font-medium leading-6 text-gray-900">Articles Count</dt>
+                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @tag.articles_count %></dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        <div class="mt-8 flex gap-8">
+          <%= form.submit "حفظ", class: "rounded-md bg-blue-50 px-3.5 py-2.5 text-sm font-semibold text-blue-600 shadow-sm hover:bg-blue-100" %>
+          <%= link_to "الغاء", backoffice_tags_path, class: "rounded-md bg-gray-50 px-3.5 py-2.5 text-sm font-semibold text-gray-600 shadow-sm hover:bg-gray-100 ml-4" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</main>

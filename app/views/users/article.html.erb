@@ -40,6 +40,12 @@
       </div>
     </div>
 
+    <% if @article.tags.any? %>
+      <div class="flex flex-wrap gap-2 mt-2 mb-4">
+        <%= render partial: "tags/tag", collection: @article.tags, as: :tag %>
+      </div>
+    <% end %>
+
     <div class="border-t border-b border-gray-200 py-3 flex items-center justify-between">
       <%# Likes & Comments (right side in RTL) %>
       <div class="flex items-center gap-6">

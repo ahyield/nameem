@@ -14,7 +14,8 @@
       "WebFetch(domain:basecamp.github.io)",
       "Bash(bin/rails action_text:install:*)",
       "Bash(bundle install:*)",
-      "Bash(bundle exec ruby:*)"
+      "Bash(bundle exec ruby:*)",
+      "Bash(bundle exec rubocop:*)"
     ]
   }
 }
