@@ -1,59 +1,50 @@
 <div id="editor" data-controller="editor" class="w-3/5 mx-auto">
-  <div class="tooltip-controls hidden space-x-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg" data-action="click@window->editor#hideToolTip">
-    <button id="bold-button" data-action="click->editor#toggleBold"><i class="fa-solid fa-bold"></i></button>
-    <button id="italic-button" class="pr-4" data-action="click->editor#toggleItalic"><i class="fa-solid fa-italic"></i></button>
-    <button id="link-button" data-action="click->editor#toggleLink"><i class="fa-solid fa-link"></i></button>
-    <span class="tooltip-separator"></span>
-    <button id="blockquote-button" data-action="click->editor#toggleQuote"><i class="fa-solid fa-quote-left"></i></button>
-    <button id="header-1-button" data-action="click->editor#toggleHead1"><i class="fa-solid fa-t head1"></i></button>
-    <button id="header-2-button" data-action="click->editor#toggleHead2"><i class="fa-solid fa-t head2"></i></button>
+  <div class="tooltip-controls hidden" data-action="click@window->editor#hideToolTip">
+    <div class="tooltip-inner">
+      <button data-action="click->editor#toggleBold" title="عريض"><i class="fa-solid fa-bold"></i></button>
+      <button data-action="click->editor#toggleItalic" title="مائل"><i class="fa-solid fa-italic"></i></button>
+      <button data-action="click->editor#toggleLink" title="رابط"><i class="fa-solid fa-link"></i></button>
+      <span class="tooltip-separator"></span>
+      <button data-action="click->editor#toggleHead1" title="عنوان رئيسي" class="tooltip-btn-text">H1</button>
+      <button data-action="click->editor#toggleHead2" title="عنوان فرعي" class="tooltip-btn-text">H2</button>
+      <button data-action="click->editor#toggleQuote" title="اقتباس"><i class="fa-solid fa-quote-right"></i></button>
+    </div>
+    <div class="tooltip-arrow"></div>
   </div>
-  <input type="text" autocomplete="off" placeholder="Paste link and hit enter..." dir="ltr" id="link"
+  <input type="text" autocomplete="off" placeholder="الصق الرابط واضغط Enter..." dir="ltr" id="link"
         data-action="click@window->editor#hideLinkTip keydown.enter->editor#enterLinkTip keydown.esc->editor#closeTips"
-        class="link-tip hidden shaddow-none focus:ring-0 border-0 placeholder:italic placeholder:text-slate-200 bg-gradient-to-r from-cyan-500 text-slate-50 to-blue-500 rounded-lg" name="link">
-  <input type="text" autocomplete="off" placeholder="Paste link and hit enter..." dir="ltr" id="video"
+        class="link-tip hidden shadow-none focus:ring-0 border-0 placeholder:italic placeholder:text-gray-500 bg-[#1e1e1e] text-white text-sm rounded-lg px-3 py-2" name="link">
+  <input type="text" autocomplete="off" placeholder="الصق رابط الفيديو واضغط Enter..." dir="ltr" id="video"
         data-action="click@window->editor#hideVideoTip keydown.enter->editor#enterVideoTip keydown.esc->editor#closeTips"
-        class="video-input hidden shaddow-none focus:ring-0 border-0 placeholder:italic placeholder:text-slate-200 bg-gradient-to-r from-cyan-500 text-slate-50 to-blue-500 rounded-lg" name="video">
-  <input type="text" autocomplete="off" placeholder="Paste link and hit enter..." dir="ltr" id="tweet"
+        class="video-input hidden shadow-none focus:ring-0 border-0 placeholder:italic placeholder:text-gray-500 bg-[#1e1e1e] text-white text-sm rounded-lg px-3 py-2" name="video">
+  <input type="text" autocomplete="off" placeholder="الصق رابط التغريدة واضغط Enter..." dir="ltr" id="tweet"
         data-action="click@window->editor#hideTweetTip keydown.enter->editor#enterTweetTip keydown.esc->editor#closeTips"
-        class="tweet-input hidden shaddow-none focus:ring-0 border-0 placeholder:italic placeholder:text-slate-200 bg-gradient-to-r from-cyan-500 text-slate-50 to-blue-500 rounded-lg" name="tweet">
-  <div class="show-controls bg-transparent border-2 border-solid border-gray-500 rounded-full text-gray-500 h-8 w-12">
-    <button id="show-controls" data-action="click->editor#toggleControls" class="">
+        class="tweet-input hidden shadow-none focus:ring-0 border-0 placeholder:italic placeholder:text-gray-500 bg-[#1e1e1e] text-white text-sm rounded-lg px-3 py-2" name="tweet">
+
+  <div class="show-controls">
+    <button data-action="click->editor#toggleControls" class="insert-toggle">
       <i class="fa-solid fa-plus"></i>
     </button>
   </div>
-  <div class="hidden sidebar-controls bg-transparent border-2 border-solid border-gray-500 rounded-full text-gray-500 rounded-lg">
-    <ul>
-      <li>
-        <button id="image-button" data-action="click->editor#imageUpload">
-          <i class="fa-solid fa-image"></i>
-        </button>
-      </li>
-      <hr class="h-px bg-slate-200 border-0">
-      <li>
-        <button id="video-button" data-action="click->editor#toggleVideoInput">
-          <i class="fa-brands fa-youtube pt-1"></i>
-        </button>
-      </li>
-      <hr class="h-px bg-slate-200 border-0">
-      <li>
-        <button id="tweet-button" data-action="click->editor#toggleTweetInput">
-          <i class="fa-brands fa-twitter pt-1"></i>
-        </button>
-      </li>
-      <hr class="h-px bg-slate-200 border-0">
-      <li>
-        <button id="divider-button" data-action="click->editor#toggleDivder">
-          <i class="fa-solid fa-minus pt-1"></i>
-        </button>
-      </li>
-      <hr class="h-px bg-slate-200 border-0">
-      <li>
-        <button id="close-controls" data-action="click->editor#toggleControls">
-          <i class="fa-regular fa-circle-xmark pt-1"></i>
-        </button>
-      </li>
-    </ul>
+
+  <div class="hidden sidebar-controls">
+    <div class="sidebar-inner">
+      <button data-action="click->editor#imageUpload" title="صورة">
+        <i class="fa-solid fa-image"></i>
+      </button>
+      <button data-action="click->editor#toggleVideoInput" title="فيديو">
+        <i class="fa-brands fa-youtube"></i>
+      </button>
+      <button data-action="click->editor#toggleTweetInput" title="تغريدة">
+        <i class="fa-brands fa-twitter"></i>
+      </button>
+      <button data-action="click->editor#toggleDivder" title="فاصل">
+        <i class="fa-solid fa-minus"></i>
+      </button>
+      <button data-action="click->editor#toggleControls" title="إغلاق" class="sidebar-close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
   </div>
 
   <div class="h-full mt-20 title">
@@ -62,7 +53,7 @@
   </div>
   <hr class="h-px bg-slate-200 border-0 w-1/2">
 
-  <div class="h-full editor-container mt-10">
+  <div class="h-full editor-container mt-10" contenteditable="true" dir="rtl">
   </div>
 </div>
 

@@ -1,197 +1,338 @@
-import { DirectUpload } from "@rails/activestorage"
 import { Controller } from "@hotwired/stimulus"
-import Quill from "quill"
-
-import { setupQuill } from "lib/quill/configs/quill_config"
-import ImageBlot from "lib/quill/blots/image_blot"
-import VideoBlot from "lib/quill/blots/video_blot"
-import TweetBlot from "lib/quill/blots/tweet_blot"
-import DividerBlot from "lib/quill/blots/divider_blot"
-import { validateVideoUrl, validateTweetUrl } from "lib/quill/utils/validation_utils"
-
+import { DirectUpload } from "@rails/activestorage"
 import {
-  fetchArticle,
-  newArticle,
-  updateArticleContent,
-  updateArticleTitle
-} from "lib/api/article_api"
+  $getRoot,
+  $getSelection,
+  $isRangeSelection,
+  $createParagraphNode,
+  $insertNodes,
+  FORMAT_TEXT_COMMAND,
+  SELECTION_CHANGE_COMMAND,
+  COMMAND_PRIORITY_LOW,
+} from "lexical"
+import { $setBlocksType } from "@lexical/selection"
+import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text"
+import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html"
+import { TOGGLE_LINK_COMMAND } from "@lexical/link"
 
-import {
-  isNewArticle,
-  articleUuid,
-  userSlug,
-  drawUrl,
-  getImgUrls
-} from "lib/api/helpers/url_helpers"
-
-const Block = Quill.import("blots/block")
-
-Quill.register(ImageBlot)
-Quill.register(VideoBlot)
-Quill.register(TweetBlot)
-Quill.register(DividerBlot)
-
-const Delta = Quill.import("delta")
-
-let editor = null
-let change = new Delta()
+import { createNamoemEditor } from "lib/lexical/editor_config"
+import { ImageNode, $createImageNode } from "lib/lexical/nodes/image_node"
+import { $createVideoNode } from "lib/lexical/nodes/video_node"
+import { TweetNode, $createTweetNode } from "lib/lexical/nodes/tweet_node"
+import { $createDividerNode } from "lib/lexical/nodes/divider_node"
+import { validateVideoUrl, validateTweetUrl } from "lib/utils/validation_utils"
+import { createArticle, fetchArticle, saveArticle } from "lib/api/article_api"
+import { isNewArticle, articleUuid, userSlug, drawUrl } from "lib/api/helpers/url_helpers"
 
 export default class extends Controller {
-  async connect() {
-    editor = setupQuill(".editor-container")
+  connect() {
+    const container = this.element.querySelector(".editor-container")
+    this.editor = createNamoemEditor(container)
+    this.dirty = false
+    this.saving = false
+    this.titleDebounceTimer = null
 
-    const toolTip = document.querySelector(".tooltip-controls")
-    const sidebar = document.querySelector(".sidebar-controls")
-    const controls = document.querySelector(".show-controls")
-
-    const range = editor.getSelection()
-    const rangeBounds = editor.getBounds(range)
-
-    controls.style.display = "block"
-    controls.style.marginTop = `${rangeBounds.top + 139}px`
-    controls.style.left = `${ 8 + rangeBounds.left}px`
-
-    sidebar.style.display = "none"
-    sidebar.style.marginTop = `${rangeBounds.top + 115}px`
-    sidebar.style.left = `${ 8 + rangeBounds.left}px`
-
-    editor.on(Quill.events.EDITOR_CHANGE, function(event, range) {
-      if (event !== Quill.events.SELECTION_CHANGE) return
-      if (range === null) return
-
-     const rangeBounds = editor.getBounds(range.index, range.length)
-     if (range.length === 0) {
-       toolTip.style.display = "none"
-       const [block] = editor.scroll.descendant(Block, range.index)
-
-       if (block != null && block.domNode.firstChild instanceof HTMLBRElement) {
-         controls.style.display = "block"
-         controls.style.marginTop = `${rangeBounds.top + 139}px`
-         controls.style.left = `${ 8 + rangeBounds.left}px`
-
-         sidebar.style.display = "none"
-         sidebar.style.marginTop = `${rangeBounds.top + 115}px`
-         sidebar.style.left = `${ 8 + rangeBounds.left}px`
-       } else {
-         controls.style.display = "none"
-         sidebar.style.display = "none"
-       }
-     } else if (range.length > 0 ) {
-       toolTip.style.display = "block"
-       // position the tooltip
-       toolTip.style.left = "0px"
-       toolTip.style.marginRight = "-180px" // Hack to enable proper styling.)
-       toolTip.style.marginLeft = `${rangeBounds.left - 100}px`
-       toolTip.style.marginTop = `${rangeBounds.top + 90}px`
-     }
+    // RTL direction on root
+    this.editor.update(() => {
+      const root = $getRoot()
+      if (root.getChildrenSize() === 0) {
+        const paragraph = $createParagraphNode()
+        root.append(paragraph)
+        paragraph.select()
+      }
     })
 
+    const rootElement = this.editor.getRootElement()
+    if (rootElement) {
+      rootElement.dir = "rtl"
+      rootElement.classList.add("editor-empty")
+      rootElement.style.textAlign = "right"
+    }
+
+    // Selection change → toolbar positioning
+    this.editor.registerCommand(
+      SELECTION_CHANGE_COMMAND,
+      () => {
+        this.updateToolbar()
+        return false
+      },
+      COMMAND_PRIORITY_LOW,
+    )
+
+    // Track dirty state + empty state for placeholder
+    this.editor.registerUpdateListener(({ dirtyElements, dirtyLeaves, editorState }) => {
+      if (dirtyElements.size > 0 || dirtyLeaves.size > 0) {
+        this.dirty = true
+      }
+
+      // Toggle placeholder class
+      editorState.read(() => {
+        const root = $getRoot()
+        const isEmpty = root.getTextContent().trim() === "" && root.getChildrenSize() <= 1
+        const rootEl = this.editor.getRootElement()
+        if (rootEl) {
+          rootEl.classList.toggle("editor-empty", isEmpty)
+        }
+      })
+    })
+
+    // Track image deletions
+    this.editor.registerMutationListener(ImageNode, (mutations) => {
+      for (const [nodeKey, mutation] of mutations) {
+        if (mutation === "destroyed") {
+          // We can't access the node after destruction, but we track via the DOM
+          // The image cleanup will happen via the auto-save cycle
+        }
+      }
+    })
+
+    // Hydrate tweets when inserted into editor
+    this.editor.registerMutationListener(TweetNode, (mutations) => {
+      for (const [nodeKey, mutation] of mutations) {
+        if (mutation === "created") {
+          const element = this.editor.getElementByKey(nodeKey)
+          if (element && window.twttr?.widgets) {
+            const tweetId = element.dataset.tweetId
+            if (tweetId) {
+              twttr.widgets.createTweet(tweetId, element)
+            }
+          }
+        }
+      }
+    })
+
+    // Reposition toolbar when images finish loading (they shift content down)
+    // Defer to next frame so image is visible and layout is recalculated
+    container.addEventListener("load", (e) => {
+      if (e.target.tagName === "IMG") {
+        requestAnimationFrame(() => this.updateToolbar())
+      }
+    }, true)
+
+    // Load existing article if editing
     if (!isNewArticle()) {
-      const articleTitle = document.getElementById("article-title")
-      const publishButton = document.querySelector(".btn-publish-disabled")
-      const publichText = document.querySelector(".btn-publish-text")
-
-      publichText.innerHTML = "حفظ ونشر"
-      publishButton.classList.remove("btn-publish-disabled")
-
-      const uuid = articleUuid()
-      const slug = userSlug()
-      const article = await fetchArticle(uuid, slug)
-      controls.style.display = "none"
-      articleTitle.value = article.title
-      editor.setContents(article.content)
+      this.loadArticle()
+    } else {
+      this.showControlsAtCaret()
     }
 
-    editor.on("text-change", (delta, oldContents, source) => {
-      if (source == "api") {
-          var uuid = articleUuid()
-          var slug = userSlug()
-          updateArticleContent(uuid, slug, editor)
-      } else if (source == "user") {
-        const deleted = getImgUrls(editor.getContents().diff(oldContents))
-
-        change = change.compose(delta)
-        if(deleted.length >= 1) {
-          const imageURL = deleted[0].url
-          const signed_id = imageURL.split("/")[7]
-          fetch(`/api/attachments/delete?image_url=${signed_id}`, { method: "DELETE" })
-        }
-      }
-    })
-
-    // wow
-    setInterval(async () => {
-      if (change.length() > 0) {
-        if (isNewArticle()) {
-          const data = await newArticle()
-          drawUrl(data)
-          this.activatePublishingButton(data.article.uuid, data.user.slug)
-          await updateArticleContent(data.article.uuid, data.user.slug, editor)
-        } else {
-          var uuid = articleUuid()
-          var slug = userSlug()
-          this.activatePublishingButton(uuid, slug)
-          await updateArticleContent(uuid, slug, editor)
-        }
-        change = new Delta()
-      }
-    }, 2 * 1000)
+    // Auto-save every 2 seconds
+    this.autoSaveInterval = setInterval(() => this.autoSave(), 2000)
   }
 
-  toggleControls(event) {
+  disconnect() {
+    if (this.autoSaveInterval) {
+      clearInterval(this.autoSaveInterval)
+    }
+    if (this.titleDebounceTimer) {
+      clearTimeout(this.titleDebounceTimer)
+    }
+  }
+
+  async loadArticle() {
+    const uuid = articleUuid()
+    const slug = userSlug()
+
+    const articleTitle = document.getElementById("article-title")
+    const publishButton = document.querySelector(".btn-publish-disabled")
+    const publishText = document.querySelector(".btn-publish-text")
+
+    if (publishText) publishText.innerHTML = "حفظ ونشر"
+    if (publishButton) publishButton.classList.remove("btn-publish-disabled")
+
+    const article = await fetchArticle(uuid, slug)
+    if (articleTitle) articleTitle.value = article.title
+
+    // Hide + controls when loading existing content
     const controls = document.querySelector(".show-controls")
-    const sidebar = document.querySelector(".sidebar-controls")
+    if (controls) controls.style.display = "none"
 
-    if (controls.style.display === "block") {
-      controls.style.display = "none"
-      sidebar.style.display = "block"
-    } else {
-      controls.style.display = "block"
-      sidebar.style.display = "none"
+    // Load content into editor
+    if (article.content && article.content.root) {
+      // Lexical JSON format
+      const editorState = this.editor.parseEditorState(article.content)
+      this.editor.setEditorState(editorState)
+    } else if (article.content_html) {
+      // Migrated HTML format
+      this.editor.update(() => {
+        const parser = new DOMParser()
+        const dom = parser.parseFromString(article.content_html, "text/html")
+        const nodes = $generateNodesFromDOM(this.editor, dom)
+        const root = $getRoot()
+        root.clear()
+        root.append(...nodes)
+      })
+    } else if (article.content && article.content.ops) {
+      // Legacy Quill Delta — should not happen after migration, but fallback
+      // The article should be migrated first via rake task
+      console.warn("Article has Quill Delta content. Run migrate_quill_to_html rake task.")
+    }
+
+    this.dirty = false
+  }
+
+  async autoSave() {
+    if (!this.dirty || this.saving) return
+    this.saving = true
+
+    const statusEl = document.getElementById("save-status")
+    if (statusEl) statusEl.textContent = "جاري الحفظ..."
+
+    try {
+      let uuid, slug
+
+      if (isNewArticle()) {
+        const data = await createArticle()
+        drawUrl(data)
+        this.activatePublishingButton(data.article.uuid, data.user.slug)
+        uuid = data.article.uuid
+        slug = data.user.slug
+      } else {
+        uuid = articleUuid()
+        slug = userSlug()
+        this.activatePublishingButton(uuid, slug)
+      }
+
+      const editorState = this.editor.getEditorState()
+      const content = editorState.toJSON()
+      let contentHtml = ""
+      editorState.read(() => {
+        contentHtml = $generateHtmlFromNodes(this.editor)
+      })
+
+      await saveArticle(uuid, slug, { content, content_html: contentHtml })
+
+      if (statusEl) statusEl.textContent = "تم الحفظ"
+      this.dirty = false
+    } catch (error) {
+      console.error("Auto-save failed:", error)
+      const statusEl = document.getElementById("save-status")
+      if (statusEl) statusEl.textContent = "فشل الحفظ"
+      // Keep dirty = true for retry
+    } finally {
+      this.saving = false
     }
   }
 
-  async upsertTitle(event) {
-    const articleTitle = document.getElementById("article-title").value
-    if (articleTitle === null) return
+  upsertTitle() {
+    if (this.titleDebounceTimer) {
+      clearTimeout(this.titleDebounceTimer)
+    }
 
-    if (isNewArticle()) {
-      const data = await newArticle()
-      drawUrl(data)
-      this.activatePublishingButton(data.article.uuid, data.user.slug)
-      await updateArticleTitle(data.article.uuid, data.user.slug, editor)
-    } else {
-      var uuid = articleUuid()
-      var slug = userSlug()
-      this.activatePublishingButton(uuid, slug)
-      await updateArticleTitle(uuid, slug, editor)
+    this.titleDebounceTimer = setTimeout(() => this.saveTitle(), 500)
+  }
+
+  async saveTitle() {
+    const title = document.getElementById("article-title")?.value
+    if (!title) return
+
+    try {
+      let uuid, slug
+
+      if (isNewArticle()) {
+        const data = await createArticle()
+        drawUrl(data)
+        this.activatePublishingButton(data.article.uuid, data.user.slug)
+        uuid = data.article.uuid
+        slug = data.user.slug
+      } else {
+        uuid = articleUuid()
+        slug = userSlug()
+        this.activatePublishingButton(uuid, slug)
+      }
+
+      await saveArticle(uuid, slug, { title })
+    } catch (error) {
+      console.error("Title save failed:", error)
     }
   }
 
   activatePublishingButton(uuid, slug) {
     const btn = document.querySelector(".btn-publish-disabled")
-    if(btn) {
+    if (btn) {
       btn.classList.remove("btn-publish-disabled")
     }
 
     const form = document.getElementById("publish-form-btn")
-    form.action = `/${slug}/publish_modal/${uuid}`
+    if (form) form.action = `/${slug}/publish_modal/${uuid}`
   }
+
+  // === Formatting Actions ===
+
+  toggleBold() {
+    this.editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold")
+  }
+
+  toggleItalic() {
+    this.editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic")
+  }
+
+  toggleHead1() {
+    this.editor.update(() => {
+      const selection = $getSelection()
+      if (!$isRangeSelection(selection)) return
+      const anchorNode = selection.anchor.getNode()
+      const element = anchorNode.getTopLevelElementOrThrow()
+      if (element.getType() === "heading" && element.getTag() === "h1") {
+        $setBlocksType(selection, () => $createParagraphNode())
+      } else {
+        $setBlocksType(selection, () => $createHeadingNode("h1"))
+      }
+    })
+  }
+
+  toggleHead2() {
+    this.editor.update(() => {
+      const selection = $getSelection()
+      if (!$isRangeSelection(selection)) return
+      const anchorNode = selection.anchor.getNode()
+      const element = anchorNode.getTopLevelElementOrThrow()
+      if (element.getType() === "heading" && element.getTag() === "h2") {
+        $setBlocksType(selection, () => $createParagraphNode())
+      } else {
+        $setBlocksType(selection, () => $createHeadingNode("h2"))
+      }
+    })
+  }
+
+  toggleQuote() {
+    this.editor.update(() => {
+      const selection = $getSelection()
+      if (!$isRangeSelection(selection)) return
+      const anchorNode = selection.anchor.getNode()
+      const element = anchorNode.getTopLevelElementOrThrow()
+      if (element.getType() === "quote") {
+        $setBlocksType(selection, () => $createParagraphNode())
+      } else {
+        $setBlocksType(selection, () => $createQuoteNode())
+      }
+    })
+  }
+
+  // === Link ===
 
   toggleLink() {
     const toolTip = document.querySelector(".tooltip-controls")
     const linkTip = document.querySelector(".link-tip")
 
-    const range = editor.getSelection()
-    const rangeBounds = editor.getBounds(range.index, range.length)
-
-    if(toolTip.style.display === "block") {
+    if (toolTip.style.display === "block") {
       toolTip.style.display = "none"
       linkTip.style.display = "block"
-      linkTip.style.left = "0px"
-      linkTip.style.width = "32%"
-      linkTip.style.marginLeft = `${rangeBounds.left - 100}px`
-      linkTip.style.marginTop = `${rangeBounds.top + 90}px`
+
+      // Position link input centered above the selection
+      const nativeSelection = window.getSelection()
+      if (nativeSelection.rangeCount > 0) {
+        const range = nativeSelection.getRangeAt(0)
+        const rect = range.getBoundingClientRect()
+        const editorRect = this.element.getBoundingClientRect()
+        const center = rect.left + rect.width / 2
+        linkTip.style.top = `${rect.top - editorRect.top - 44}px`
+        linkTip.style.left = `${center - editorRect.left}px`
+        linkTip.style.width = "280px"
+        linkTip.style.marginTop = "0"
+        linkTip.style.marginLeft = "0"
+      }
+
       document.getElementById("link").focus()
     } else {
       toolTip.style.display = "block"
@@ -199,57 +340,41 @@ export default class extends Controller {
     }
   }
 
-  toggleBold() {
-    const range = editor.getSelection()
-    const format = editor.getFormat(range)
-    if (format.bold === undefined) {
-      editor.format("bold", true)
-    } else {
-      editor.format("bold", false)
-    }
+  enterLinkTip() {
+    const linkTip = document.querySelector(".link-tip")
+    const toolTip = document.querySelector(".tooltip-controls")
+    const linkValue = document.getElementById("link").value
+
+    document.getElementById("link").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        this.editor.dispatchCommand(TOGGLE_LINK_COMMAND, linkValue)
+        document.getElementById("link").value = ""
+        linkTip.style.display = "none"
+        toolTip.style.display = "none"
+      }
+    })
   }
 
-  toggleItalic() {
-    const range = editor.getSelection()
-    const format = editor.getFormat(range)
-    if (format.italic === undefined) {
-      editor.format("italic", true)
-    } else {
-      editor.format("italic", false)
+  hideLinkTip(event) {
+    const linkTip = document.querySelector(".link-tip")
+    const linkValue = document.getElementById("link").value
+
+    if (this.element === event.target || this.element.contains(event.target)) return
+    if (linkValue) {
+      this.editor.dispatchCommand(TOGGLE_LINK_COMMAND, linkValue)
+      document.getElementById("link").value = ""
     }
+    linkTip.style.display = "none"
+    this.hideToolTip(event)
   }
 
-  toggleQuote() {
-    const range = editor.getSelection()
-    const format = editor.getFormat(range)
-    if (format.blockquote === undefined) {
-      editor.format("blockquote", true)
-    } else {
-      editor.format("blockquote", false)
-    }
+  hideToolTip(event) {
+    if (this.element === event.target || this.element.contains(event.target)) return
+    const toolTip = document.querySelector(".tooltip-controls")
+    toolTip.style.display = "none"
   }
 
-  toggleHead1() {
-    const range = editor.getSelection()
-    const format = editor.getFormat(range)
-    if (format.header === undefined) {
-      editor.format("header", 1)
-    } else {
-      editor.format("header", false)
-    }
-  }
-
-  toggleHead2() {
-    const range = editor.getSelection()
-    const format = editor.getFormat(range)
-    if (format.header === undefined) {
-      editor.format("header", 2)
-    } else {
-      editor.format("header", false)
-    }
-  }
-
-  closeTips(event) {
+  closeTips() {
     const linkTip = document.querySelector(".link-tip")
     const videoTip = document.querySelector(".video-input")
     const toolTip = document.querySelector(".tooltip-controls")
@@ -264,61 +389,19 @@ export default class extends Controller {
     videoTip.style.display = "none"
     tweetTip.style.display = "none"
 
-
-    editor.focus()
+    this.editor.focus()
   }
 
-  enterLinkTip(event) {
-    const linkTip = document.querySelector(".link-tip")
-    const toolTip = document.querySelector(".tooltip-controls")
-    var linkValue = document.getElementById("link").value
+  // === Media Insertion ===
 
-    document.getElementById("link").addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        editor.format("link", linkValue)
-        document.getElementById("link").value = ""
-
-        linkTip.style.display = "none"
-        toolTip.style.display = "none"
-      }
-    })
-  }
-
-  hideLinkTip(event) {
-    const linkTip = document.querySelector(".link-tip")
-    var linkValue = document.getElementById("link").value
-
-    const range = editor.getSelection()
-
-    if (range && range.length === 0) {
-      linkTip.style.display = "none"
-    }
-
-    // no clue how this works
-    if(this.element === event.target || this.element.contains(event.target)) return
-    if(linkValue) {
-      editor.format("link", linkValue)
-      document.getElementById("link").value = ""
-    }
-    linkTip.style.display = "none"
-    this.hideToolTip(event)
-  }
-
-  hideToolTip(event) {
-    if(this.element === event.target || this.element.contains(event.target)) return
-
-    const toolTip = document.querySelector(".tooltip-controls")
-    toolTip.style.display = "none"
-  }
-
-  imageUpload(event) {
+  imageUpload() {
     const input = document.createElement("input")
     input.type = "file"
     input.accept = "image/png, image/jpeg"
 
-    input.onchange = _ => {
-      const range = editor.getSelection(true)
-      const file =   input.files[0]
+    input.onchange = () => {
+      const file = input.files[0]
+      if (!file) return
 
       const baseURL = window.location.origin
       const url = `${baseURL}/rails/active_storage/direct_uploads`
@@ -326,180 +409,281 @@ export default class extends Controller {
 
       upload.create((error, blob) => {
         if (error) {
-          alert("Uploading failed!")
-        } else {
-          editor.insertEmbed(range.index, "customImage", {
-            url: `${baseURL}/rails/active_storage/blobs/proxy/${blob.signed_id}/${blob.filename}`,
-          }, Quill.sources.USER)
-          editor.setSelection(range.index + 1, Quill.sources.SILENT)
-          const sidebar = document.querySelector(".sidebar-controls")
-          sidebar.style.display = "none"
-
-          const controls = document.querySelector(".show-controls")
-          controls.style.display = "none"
+          alert("فشل رفع الصورة!")
+          return
         }
+
+        const imageUrl = `${baseURL}/rails/active_storage/blobs/proxy/${blob.signed_id}/${blob.filename}`
+        this.editor.update(() => {
+          const imageNode = $createImageNode({ src: imageUrl, alt: "" })
+          const newParagraph = $createParagraphNode()
+          $insertNodes([imageNode, newParagraph])
+          newParagraph.select()
+        })
+
+        // Only hide sidebar bar, let updateToolbar() reposition the + button
+        const sidebar = document.querySelector(".sidebar-controls")
+        if (sidebar) sidebar.style.display = "none"
       })
     }
     input.click()
   }
 
-  toggleVideoInput(){
+  toggleVideoInput() {
     const videoInput = document.querySelector(".video-input")
-
-    let range = editor.getSelection(editor.getLength() - 1)
-
-    if (range === null) {
-      range = { index: 1, length: 1 }
-    }
-    const rangeBounds = editor.getBounds(range.index, range.length)
     const sidebar = document.querySelector(".sidebar-controls")
     const controls = document.querySelector(".show-controls")
 
-    if(videoInput.style.display === "block") {
+    if (videoInput.style.display === "block") {
       videoInput.style.display = "none"
     } else {
-      videoInput.style.display = "block"
-      videoInput.style.position = "absolute"
-      videoInput.style.left = "0px"
-      videoInput.style.width = "30%"
-      videoInput.style.marginLeft = `${rangeBounds.left - 250}px`
-      videoInput.style.top = `${rangeBounds.top + 140}px`
+      this.positionMediaInput(videoInput)
       sidebar.style.display = "none"
       controls.style.display = "none"
       document.getElementById("video").focus()
     }
   }
 
-  hideVideoTip(event) {
+  enterVideoTip() {
     const videoTip = document.querySelector(".video-input")
-    var videoLink = document.getElementById("video").value
+    const videoLink = document.getElementById("video").value
     const validUrl = validateVideoUrl(videoLink)
 
-    const range = editor.getSelection()
-
-    if (range && range.length === 0) {
-      videoTip.style.display = "none"
-    }
-
-    // no clue how this works
-    if(this.element === event.target || this.element.contains(event.target)) return
     if (validUrl) {
-      this.videoInsert(validUrl)
+      this.editor.update(() => {
+        const newParagraph = $createParagraphNode()
+        $insertNodes([$createVideoNode(validUrl), newParagraph])
+        newParagraph.select()
+      })
       document.getElementById("video").value = ""
       videoTip.style.display = "none"
+    } else {
+      alert("رابط فيديو غير صالح! استخدم رابط يوتيوب أو فيميو كامل")
+    }
+  }
+
+  hideVideoTip(event) {
+    const videoTip = document.querySelector(".video-input")
+    const videoLink = document.getElementById("video").value
+    const validUrl = validateVideoUrl(videoLink)
+
+    if (this.element === event.target || this.element.contains(event.target)) return
+    if (validUrl) {
+      this.editor.update(() => {
+        const newParagraph = $createParagraphNode()
+        $insertNodes([$createVideoNode(validUrl), newParagraph])
+        newParagraph.select()
+      })
+      document.getElementById("video").value = ""
     }
     videoTip.style.display = "none"
   }
 
-  enterVideoTip(event) {
-    const videoTip = document.querySelector(".video-input")
-    var videoLink = document.getElementById("video").value
-    const validUrl = validateVideoUrl(videoLink)
-
-    if (validUrl) {
-      this.videoInsert(validUrl)
-      document.getElementById("video").value = ""
-
-      videoTip.style.display = "none"
-    } else {
-      alert("Invalid video link!, please use full youtube or vimeo link")
-    }
-  }
-
-  videoInsert(url) {
-    const range = editor.getSelection(true)
-    editor.insertEmbed(range.index, "video", url, Quill.sources.USER)
-    editor.formatText(range.index, 1, { height: "360", width: "740" })
-    editor.setSelection(range.index + 1, Quill.sources.SILENT)
-  }
-
-  toggleTweetInput(){
+  toggleTweetInput() {
     const tweetInput = document.querySelector(".tweet-input")
-
-    let range = editor.getSelection(editor.getLength() - 1)
-
-    if (range === null) {
-      range = { index: 1, length: 1 }
-    }
-    const rangeBounds = editor.getBounds(range.index, range.length)
     const sidebar = document.querySelector(".sidebar-controls")
     const controls = document.querySelector(".show-controls")
 
-    if(tweetInput.style.display === "block") {
+    if (tweetInput.style.display === "block") {
       tweetInput.style.display = "none"
     } else {
-      tweetInput.style.display = "block"
-      tweetInput.style.position = "absolute"
-      tweetInput.style.left = "0px"
-      tweetInput.style.width = "30%"
-      tweetInput.style.marginLeft = `${rangeBounds.left - 250}px`
-      tweetInput.style.top = `${rangeBounds.top + 140}px`
+      this.positionMediaInput(tweetInput)
       sidebar.style.display = "none"
       controls.style.display = "none"
       document.getElementById("tweet").focus()
     }
   }
 
-  hideTweetTip(event) {
-    const tweetTip = document.querySelector(".tweet-input")
-    var tweetLink = document.getElementById("tweet").value
-    const validUrl = validateTweetUrl(tweetLink)
-    const sidebar = document.querySelector(".sidebar-controls")
-    const controls = document.querySelector(".show-controls")
-
-    const range = editor.getSelection()
-
-    if (range && range.length === 0) {
-      tweetTip.style.display = "none"
-    }
-
-    // no clue how this works
-    if(this.element === event.target || this.element.contains(event.target)) return
-    if (validUrl) {
-      this.tweetInsert(validUrl)
-      document.getElementById("tweet").value = ""
-      tweetTip.style.display = "none"
-    }
-    tweetTip.style.display = "none"
-    sidebar.style.display = "none"
-    controls.style.display = "none"
-  }
-
   enterTweetTip(event) {
     event.preventDefault()
     const tweetTip = document.querySelector(".tweet-input")
-    var tweetLink = document.getElementById("tweet").value
-    const validUrl = validateTweetUrl(tweetLink)
-    const sidebar = document.querySelector(".sidebar-controls")
-    const controls = document.querySelector(".show-controls")
+    const tweetLink = document.getElementById("tweet").value
+    const tweetId = validateTweetUrl(tweetLink)
 
-    if (validUrl) {
-      this.tweetInsert(validUrl)
+    if (tweetId) {
+      this.editor.update(() => {
+        const newParagraph = $createParagraphNode()
+        $insertNodes([$createTweetNode(tweetId), newParagraph])
+        newParagraph.select()
+      })
       document.getElementById("tweet").value = ""
-
       tweetTip.style.display = "none"
-      sidebar.style.display = "none"
-      controls.style.display = "none"
+      this.hideSidebar()
     } else {
-      alert("Invalid tweet link!, please use full tweet link")
+      alert("رابط تغريدة غير صالح! استخدم رابط التغريدة الكامل")
     }
   }
 
-  tweetInsert(id) {
-    const range = editor.getSelection(true)
-    editor.insertEmbed(range.index, "tweet", id, Quill.sources.USER)
-    editor.setSelection(range.index + 1, Quill.sources.API)
+  hideTweetTip(event) {
+    const tweetTip = document.querySelector(".tweet-input")
+    const tweetLink = document.getElementById("tweet").value
+    const tweetId = validateTweetUrl(tweetLink)
+
+    if (this.element === event.target || this.element.contains(event.target)) return
+    if (tweetId) {
+      this.editor.update(() => {
+        const newParagraph = $createParagraphNode()
+        $insertNodes([$createTweetNode(tweetId), newParagraph])
+        newParagraph.select()
+      })
+      document.getElementById("tweet").value = ""
+    }
+    tweetTip.style.display = "none"
+    this.hideSidebar()
   }
 
-  toggleDivder(event) {
-    const range = editor.getSelection()
+  toggleDivder() {
+    this.editor.update(() => {
+      const newParagraph = $createParagraphNode()
+      $insertNodes([$createDividerNode(), newParagraph])
+      newParagraph.select()
+    })
+  }
 
-    if (range === null) {
-      return
+  // === Controls & Toolbar ===
+
+  toggleControls() {
+    const controls = document.querySelector(".show-controls")
+    const sidebar = document.querySelector(".sidebar-controls")
+
+    if (controls.style.display === "block") {
+      controls.style.display = "none"
+      sidebar.style.display = "block"
     } else {
-      editor.insertText(range.index, "\n", Quill.sources.USER)
-      editor.insertEmbed(range.index + 1, "divider", true, Quill.sources.USER)
-      editor.setSelection(range.index + 3, Quill.sources.SILENT)
+      controls.style.display = "block"
+      sidebar.style.display = "none"
+    }
+  }
+
+  updateToolbar() {
+    const toolTip = document.querySelector(".tooltip-controls")
+    const controls = document.querySelector(".show-controls")
+    const sidebar = document.querySelector(".sidebar-controls")
+
+    const nativeSelection = window.getSelection()
+    if (!nativeSelection || nativeSelection.rangeCount === 0) return
+
+    const range = nativeSelection.getRangeAt(0)
+    const editorRect = this.element.getBoundingClientRect()
+
+    if (nativeSelection.isCollapsed) {
+      toolTip.style.display = "none"
+
+      // Walk up from anchor to find the top-level block (direct child of editor root)
+      const rootElement = this.editor.getRootElement()
+      let node = nativeSelection.anchorNode
+      if (node?.nodeType === Node.TEXT_NODE) node = node.parentElement
+
+      let block = node
+      while (block && block.parentElement !== rootElement) {
+        block = block.parentElement
+      }
+
+      if (block && block.parentElement === rootElement) {
+        // Only show + button on empty <p> elements
+        const isEmptyParagraph =
+          block.tagName === "P" &&
+          block.textContent.trim() === "" &&
+          block.querySelectorAll("img, iframe, div, figure").length === 0
+
+        if (isEmptyParagraph) {
+          const rect = block.getBoundingClientRect()
+          const top = rect.top - editorRect.top + (rect.height / 2) - 16
+
+          controls.style.display = "block"
+          controls.style.top = `${top}px`
+          controls.style.left = "auto"
+          controls.style.right = "-48px"
+
+          sidebar.style.top = `${top}px`
+          sidebar.style.left = "auto"
+          sidebar.style.right = "-48px"
+        } else {
+          controls.style.display = "none"
+          sidebar.style.display = "none"
+        }
+      } else {
+        controls.style.display = "none"
+        sidebar.style.display = "none"
+      }
+    } else {
+      // Range selection — center toolbar above selected text
+      const rect = range.getBoundingClientRect()
+      const selectionCenter = rect.left + rect.width / 2
+      const top = rect.top - editorRect.top - 44
+
+      toolTip.style.display = "block"
+      toolTip.style.top = `${top}px`
+      toolTip.style.left = `${selectionCenter - editorRect.left}px`
+      // Reset any stale margin values
+      toolTip.style.marginTop = "0"
+      toolTip.style.marginLeft = "0"
+      toolTip.style.marginRight = "0"
+    }
+  }
+
+  // === Helpers ===
+
+  showControlsAtCaret() {
+    const controls = document.querySelector(".show-controls")
+    const sidebar = document.querySelector(".sidebar-controls")
+    if (!controls) return
+
+    const rootElement = this.editor.getRootElement()
+    if (rootElement) {
+      const firstChild = rootElement.firstElementChild
+      if (firstChild) {
+        const rect = firstChild.getBoundingClientRect()
+        const editorRect = this.element.getBoundingClientRect()
+        const top = rect.top - editorRect.top + (rect.height / 2) - 16
+        controls.style.display = "block"
+        controls.style.top = `${top}px`
+        controls.style.left = "auto"
+        controls.style.right = "-48px"
+
+        if (sidebar) {
+          sidebar.style.display = "none"
+          sidebar.style.top = `${top}px`
+          sidebar.style.left = "auto"
+          sidebar.style.right = "-48px"
+        }
+      }
+    }
+  }
+
+  hideSidebar() {
+    const sidebar = document.querySelector(".sidebar-controls")
+    const controls = document.querySelector(".show-controls")
+    if (sidebar) sidebar.style.display = "none"
+    if (controls) controls.style.display = "none"
+  }
+
+  getCaretRect() {
+    const nativeSelection = window.getSelection()
+    if (!nativeSelection || nativeSelection.rangeCount === 0) return null
+    const range = nativeSelection.getRangeAt(0)
+    return range.getBoundingClientRect()
+  }
+
+  positionMediaInput(inputEl) {
+    const rect = this.getCaretRect()
+    const editorRect = this.element.getBoundingClientRect()
+
+    inputEl.style.display = "block"
+    inputEl.style.position = "absolute"
+    inputEl.style.width = "280px"
+    inputEl.style.left = "auto"
+
+    if (rect && rect.height > 0) {
+      inputEl.style.top = `${rect.top - editorRect.top + rect.height + 8}px`
+      inputEl.style.right = "0px"
+    } else {
+      // Fallback: position at the + button location
+      const controls = document.querySelector(".show-controls")
+      if (controls) {
+        inputEl.style.top = controls.style.top
+        inputEl.style.right = "0px"
+      }
     }
   }
 }

@@ -3,40 +3,39 @@ module Api
     skip_before_action :require_authentication, only: [:show]
 
     def show
-      @user = User.find_by(slug: params[:slug])
-      @article = @user.articles.find_by(uuid: params[:uuid])
-      render json: @article
-    end
-
-    def new
-      @article = Current.user.articles.new(uuid: SecureRandom.uuid)
-      render json: { article: @article, user: Current.user }
+      @user = User.find_by!(slug: params[:slug])
+      @article = @user.articles.find_by!(uuid: params[:uuid])
+      render json: @article.as_json(only: %i[uuid title content content_html description published])
     end
 
     def edit
-      @user = User.find_by(slug: params[:slug])
-      @article = @user.articles.find_by(uuid: params[:uuid])
+      @article = Current.user.articles.find_by!(uuid: params[:uuid])
       authorize @article, :edit?
-
       render json: @article
     end
 
-    def update
-      @user = User.find_by(slug: params[:slug])
-      @article = @user.articles.find_or_create_by(uuid: params[:uuid])
-      authorize @article, :update?
-
-      @article.attributes = article_params
-      @article.user = @user unless @article.user
+    def create
+      authorize Article, :create?
+      @article = Current.user.articles.new(uuid: SecureRandom.uuid)
       @article.save!
+      render json: { article: @article, user: Current.user }
+    end
+
+    def update
+      @article = Current.user.articles.find_by!(uuid: params[:uuid])
+      authorize @article, :update?
+      @article.update!(article_params)
       render json: @article
     end
 
     private
 
     def article_params
-      article_params = params[:article]
-      article_params ? article_params.permit(:title, :published_at, :slug, :user_id, :uuid, content: {}) : {}
+      return {} unless params[:article]
+
+      permitted = params[:article].permit(:title, :content_html)
+      permitted[:content] = params[:article][:content].permit!.to_h if params[:article][:content].present?
+      permitted
     end
   end
 end

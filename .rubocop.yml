@@ -3,7 +3,7 @@ plugins:
   - rubocop-rspec
   - rubocop-performance
 AllCops:
-  TargetRubyVersion: 3.5
+  TargetRubyVersion: 4.0
   DisplayCopNames: true
   CacheRootDirectory: ".git"
   NewCops: enable

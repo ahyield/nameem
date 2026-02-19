@@ -22,8 +22,4 @@ function drawUrl(data) {
   window.history.pushState(null, null, url)
 }
 
-function getImgUrls(delta) {
-  return delta.ops.filter(i => i.insert && i.insert.customImage).map(i => i.insert.customImage)
-}
-
-export { isNewArticle, articleUuid, userSlug, drawUrl, getImgUrls }
+export { isNewArticle, articleUuid, userSlug, drawUrl }

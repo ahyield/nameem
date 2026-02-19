@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_18_183205) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_18_200000) do
   create_table "action_text_rich_texts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "body", size: :long
     t.datetime "created_at", null: false
@@ -72,6 +72,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_18_183205) do
   create_table "articles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "comments_count", default: 0, null: false
     t.json "content"
+    t.text "content_html", size: :medium
     t.datetime "created_at", null: false
     t.text "description"
     t.boolean "featured", default: false, null: false
