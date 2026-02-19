@@ -173,12 +173,13 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 - [ ] Add "Stats" link to user dropdown menu
 - [ ] Specs for stats controller authorization
 
-### Reading Time
-- [ ] Add `reading_time_minutes` column to articles
-- [ ] Calculate from content_html on save (strip HTML, count words, divide by 200 wpm for Arabic)
-- [ ] Display reading time on article cards and article show page
-- [ ] Add to Metable concern so it auto-updates with content
-- [ ] Specs for reading time calculation
+### Reading Time ✅
+- [x] Add `reading_time_minutes` column to articles
+- [x] Calculate from content_html on save (strip HTML, count words, divide by 200 wpm for Arabic)
+- [x] Display reading time on article cards and article show page
+- [x] Add to Metable concern so it auto-updates with content
+- [x] Backfill existing articles via `rake backfill_reading_time`
+- [x] Specs for reading time calculation
 
 ### Bookmarks
 - [ ] Create `Bookmark` model (user + article, unique pair, counter cache optional)

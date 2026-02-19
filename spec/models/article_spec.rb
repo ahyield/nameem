@@ -35,25 +35,78 @@ RSpec.describe Article do
   end
 
   describe "metable" do
-    context "when updating content" do
-      let(:content_text) { "Lorem Ipsum is simply dummy text of the printing and typesetting industry." }
-      let(:content) { { ops: [{ insert: content_text }] } }
-
+    context "when updating content_html" do
       before do
-        article.update(content: { ops: [{ insert: "Updated Article" }] })
+        article.update(content_html: "<p>Updated Article</p>")
       end
 
       it "has a description" do
-        expect(article.description).to eq("Updated Article\n")
+        expect(article.description).to eq("Updated Article")
       end
 
       it "has alternative titles" do
-        article = create(:article, title: nil, user: create(:user), content:)
+        article = create(:article, title: nil, user: create(:user),
+                                   content_html: "<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>")
         expect(article.alternative_titles).to eq(["Lorem Ipsum is simply dummy text of the printing and typesetting industry."])
       end
 
       it "has article images" do
         expect(article.article_images).to eq([])
+      end
+
+      it "extracts images from content_html" do
+        article.update(content_html: '<p>text</p><figure><img src="https://example.com/photo.jpg"></figure>')
+        expect(article.article_images).to eq(["https://example.com/photo.jpg"])
+      end
+    end
+
+    describe "#update_reading_time" do
+      it "calculates reading time from content_html on update" do
+        words = (["كلمة"] * 400).join(" ")
+        article.update(content_html: "<p>#{words}</p>")
+
+        expect(article.reading_time_minutes).to eq(2)
+      end
+
+      it "returns 1 minute minimum for short content" do
+        article.update(content_html: "<p>مرحبا بالعالم</p>")
+
+        expect(article.reading_time_minutes).to eq(1)
+      end
+
+      it "strips HTML tags before counting words" do
+        words = (["كلمة"] * 200).join(" ")
+        article.update(content_html: "<h1>عنوان</h1><p><strong>#{words}</strong></p><blockquote>اقتباس</blockquote>")
+
+        expect(article.reading_time_minutes).to eq(1)
+      end
+
+      it "ignores single-character words" do
+        article.update(content_html: "<p>a b c d e f g h i j</p>")
+
+        expect(article.reading_time_minutes).to eq(1)
+      end
+
+      it "rounds up to the nearest minute" do
+        words = (["كلمة"] * 210).join(" ")
+        article.update(content_html: "<p>#{words}</p>")
+
+        expect(article.reading_time_minutes).to eq(2)
+      end
+
+      it "does not update reading time when content_html is blank" do
+        article.update(content_html: nil)
+        article.update(title: "New Title")
+
+        expect(article.reading_time_minutes).to be_nil
+      end
+
+      it "handles content with images and embeds" do
+        words = (["كلمة"] * 600).join(" ")
+        html = "<p>#{words}</p><figure><img src=\"test.jpg\"></figure><div class=\"tweet-embed\" data-tweet-id=\"123\"></div>"
+        article.update(content_html: html)
+
+        expect(article.reading_time_minutes).to eq(3)
       end
     end
   end
