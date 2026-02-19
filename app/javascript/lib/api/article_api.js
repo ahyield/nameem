@@ -1,44 +1,34 @@
-// Description: This file contains the functions that interact with the article API.
-
-
-async function fetchArticle(uuid, slug) {
-  const response = await fetch(`/api/articles/${slug}/${uuid}/edit`, { method: "GET" })
-
-  const data = await response.json()
-  return data
+function csrfToken() {
+  return document.querySelector("meta[name=\"csrf-token\"]")?.content
 }
 
-async function newArticle() {
-  const response = await fetch("/api/articles/new", { method: "GET" })
-
-  const data = await response.json()
-  return data
-}
-
-async function updateArticleTitle(uuid, slug, editor) {
-  const articleTitle = document.getElementById("article-title").value
-
-  const response = await fetch(`/api/articles/${slug}/${uuid}`, {
-    method: "PUT",
-    body: JSON.stringify({ article: { title: articleTitle, content: editor.getContents(), }}),
+async function request(url, options = {}) {
+  const response = await fetch(url, {
     headers: {
-      "CONTENT-TYPE": "application/json",
-    }
+      "Content-Type": "application/json",
+      "X-CSRF-Token": csrfToken(),
+    },
+    ...options,
   })
-  const article = await response.json()
-  return article
+  if (!response.ok) throw new Error(`API ${response.status}`)
+  return response.json()
 }
 
-async function updateArticleContent(uuid, slug, editor) {
-  const response = await fetch(`/api/articles/${slug}/${uuid}`, {
+export async function createArticle() {
+  return request("/api/articles", { method: "POST" })
+}
+
+export async function fetchArticle(uuid, slug) {
+  return request(`/api/articles/${slug}/${uuid}/edit`)
+}
+
+export async function saveArticle(uuid, slug, { title, content, content_html } = {}) {
+  const article = {}
+  if (title !== undefined) article.title = title
+  if (content !== undefined) article.content = content
+  if (content_html !== undefined) article.content_html = content_html
+  return request(`/api/articles/${slug}/${uuid}`, {
     method: "PUT",
-    body: JSON.stringify({ article: { content: editor.getContents(), }}),
-    headers: {
-      "CONTENT-TYPE": "application/json",
-    }
+    body: JSON.stringify({ article }),
   })
-  const article = await response.json()
-  return article
 }
-
-export { fetchArticle, newArticle, updateArticleTitle, updateArticleContent }

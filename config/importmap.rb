@@ -9,13 +9,16 @@ pin '@hotwired/stimulus-loading', to: 'stimulus-loading.js', preload: true
 pin_all_from 'app/javascript/controllers', under: 'controllers'
 pin_all_from "app/javascript/lib", under: "lib"
 pin_all_from "app/javascript/api", under: "api"
-pin 'quill', to: 'https://cdn.skypack.dev/quill@2.0.2'
-pin 'buffer', to: 'https://ga.jspm.io/npm:@jspm/core@2.0.1/nodelibs/browser/buffer.js'
 pin '@fortawesome/fontawesome-free', to: 'https://ga.jspm.io/npm:@fortawesome/fontawesome-free@6.1.1/js/all.js'
 pin 'tailwindcss-stimulus-components', to: 'https://ga.jspm.io/npm:tailwindcss-stimulus-components@4.0.4/dist/tailwindcss-stimulus-components.module.js'
 pin '@rails/activestorage', to: 'https://ga.jspm.io/npm:@rails/activestorage@7.1.1/app/assets/javascripts/activestorage.esm.js'
-pin "quill-delta-to-html", to: "https://ga.jspm.io/npm:quill-delta-to-html@0.12.1/dist/commonjs/main.js"
-pin "lodash.isequal", to: "https://ga.jspm.io/npm:lodash.isequal@4.5.0/index.js"
+pin "lexical", to: "https://esm.sh/lexical@0.28.0"
+pin "@lexical/rich-text", to: "https://esm.sh/@lexical/rich-text@0.28.0?external=lexical"
+pin "@lexical/link", to: "https://esm.sh/@lexical/link@0.28.0?external=lexical"
+pin "@lexical/history", to: "https://esm.sh/@lexical/history@0.28.0?external=lexical"
+pin "@lexical/selection", to: "https://esm.sh/@lexical/selection@0.28.0?external=lexical"
+pin "@lexical/html", to: "https://esm.sh/@lexical/html@0.28.0?external=lexical,@lexical/selection"
+pin "@lexical/utils", to: "https://esm.sh/@lexical/utils@0.28.0?external=lexical,@lexical/selection"
 pin "stimulus-clipboard", to: "https://ga.jspm.io/npm:stimulus-clipboard@4.0.1/dist/stimulus-clipboard.mjs"
 pin "trix"
 pin "@rails/actiontext", to: "actiontext.esm.js"

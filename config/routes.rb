@@ -59,7 +59,7 @@ Rails.application.routes.draw do
   namespace :api do
     delete 'attachments/delete', to: 'attachments#delete'
 
-    get 'articles/new', to: 'articles#new'
+    post 'articles', to: 'articles#create'
     get 'articles/:slug/:uuid/edit', to: 'articles#edit', as: 'articles_edit'
     get 'articles/:slug/:uuid', to: 'articles#show', as: 'show_article'
 

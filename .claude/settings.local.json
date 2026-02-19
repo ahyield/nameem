@@ -15,7 +15,13 @@
       "Bash(bin/rails action_text:install:*)",
       "Bash(bundle install:*)",
       "Bash(bundle exec ruby:*)",
-      "Bash(bundle exec rubocop:*)"
+      "Bash(bundle exec rubocop:*)",
+      "WebFetch(domain:lexical.dev)",
+      "Bash(git status:*)",
+      "Bash(bin/rails importmap:json:*)",
+      "Bash(bin/rails importmap:pins:*)",
+      "Bash(bin/rails assets:clobber:*)",
+      "Bash(bin/rails assets:precompile:*)"
     ]
   }
 }
