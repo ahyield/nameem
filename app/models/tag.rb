@@ -11,6 +11,11 @@ class Tag < ApplicationRecord
 
   scope :popular, -> { order(articles_count: :desc) }
   scope :with_articles, -> { where("articles_count > 0") }
+  scope :with_published_counts, -> {
+    left_joins(articles: [])
+      .select("tags.*, COUNT(CASE WHEN articles.published = 1 THEN 1 END) AS published_articles_count")
+      .group("tags.id")
+  }
 
   def to_param
     slug

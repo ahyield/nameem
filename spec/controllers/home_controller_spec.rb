@@ -36,9 +36,9 @@ RSpec.describe HomeController do
       expect(assigns(:articles)).to match_array(expected_articles)
     end
 
-    it "assigns a sample of 4 featured users to @users" do
+    it "assigns up to 12 featured users to @users" do
       get :index
-      expect(assigns(:users).size).to eq(4)
+      expect(assigns(:users).size).to eq(featured_users_count)
       expect(assigns(:users)).to all(be_an(User))
       expect(assigns(:users).map(&:featured).uniq).to eq([true])
     end

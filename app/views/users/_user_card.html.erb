@@ -1,6 +1,6 @@
-<div class="flex items-center justify-between py-4">
-  <div class="flex items-center gap-x-4">
-    <%= link_to user_path(user) do %>
+<div class="flex items-center justify-between gap-x-4 py-4">
+  <div class="flex items-center gap-x-4 min-w-0">
+    <%= link_to user_path(user), class: "shrink-0" do %>
       <% if user.avatar.attached? %>
         <%= image_tag user.avatar.variant(resize_to_fill: [200, 200]), class: "h-12 w-12 rounded-full bg-gray-50" %>
       <% else %>
@@ -11,14 +11,16 @@
         </span>
       <% end %>
     <% end %>
-    <div>
+    <div class="min-w-0">
       <%= link_to user_path(user), class: "hover:underline" do %>
-        <h3 class="text-sm font-semibold text-gray-900"><%= user.name %></h3>
+        <h3 class="text-sm font-semibold text-gray-900 truncate"><%= user.name %></h3>
       <% end %>
-      <p class="text-sm text-gray-500"><%= user.bio&.truncate(120) %></p>
+      <p class="text-sm text-gray-500 line-clamp-1"><%= user.bio&.truncate(120) %></p>
     </div>
   </div>
   <% if Current.user && Current.user != user %>
-    <%= render "follows/user_button", user: user, following: Current.user.following?(user) %>
+    <div class="shrink-0">
+      <%= render "follows/user_button", user: user, following: Current.user.following?(user) %>
+    </div>
   <% end %>
 </div>

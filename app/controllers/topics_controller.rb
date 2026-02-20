@@ -3,7 +3,7 @@ class TopicsController < ApplicationController
   before_action :resume_session
 
   def index
-    @tags = Tag.popular.with_articles
+    @tags = Tag.popular.with_published_counts
   end
 
   def show

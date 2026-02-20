@@ -34,7 +34,23 @@
 
             <% end %>
 
-            <span class="mt-1 text-sm text-gray-400"><%= short_date(article.published_at) %></span>
+            <div class="mt-1 flex items-center gap-x-2 text-sm text-gray-400">
+              <span><%= short_date(article.published_at) %></span>
+              <% if article.reading_time_minutes.present? %>
+                <span>.</span>
+                <span><%= article.reading_time_minutes %> د قراءة</span>
+              <% end %>
+            </div>
+
+            <p class="mt-1 text-sm text-gray-500 line-clamp-2"><%= article.description&.truncate(160) %></p>
+
+            <% if article.tags.any? %>
+              <div class="mt-2 flex flex-wrap gap-1">
+                <% article.tags.limit(3).each do |tag| %>
+                  <%= link_to tag.name, topic_path(tag), class: "inline-block rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600" %>
+                <% end %>
+              </div>
+            <% end %>
           </div>
         <div>
       </li>

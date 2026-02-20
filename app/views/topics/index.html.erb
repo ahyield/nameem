@@ -10,7 +10,7 @@
       <% @tags.each do |tag| %>
         <%= link_to topic_path(tag), class: "inline-flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors", data: { turbo: false } do %>
           <%= tag.name %>
-          <span class="text-xs text-gray-500">(<%= tag.articles_count %>)</span>
+          <span class="text-xs text-gray-500">(<%= tag.published_articles_count %>)</span>
         <% end %>
       <% end %>
     </div>

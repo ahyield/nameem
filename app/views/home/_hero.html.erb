@@ -18,6 +18,20 @@
             <span class="btn-publish-text">ابدأ القراءة</span>
           <% end %>
         </div>
+        <div class="mt-8 flex gap-x-8 text-right">
+          <div>
+            <p class="text-3xl font-bold text-gray-900"><%= number_with_delimiter(@stats[:articles_count]) %></p>
+            <p class="text-sm text-gray-500">مقال منشور</p>
+          </div>
+          <div>
+            <p class="text-3xl font-bold text-gray-900"><%= number_with_delimiter(@stats[:authors_count]) %></p>
+            <p class="text-sm text-gray-500">كاتب</p>
+          </div>
+          <div>
+            <p class="text-3xl font-bold text-gray-900"><%= number_with_delimiter(@stats[:topics_count]) %></p>
+            <p class="text-sm text-gray-500">موضوع</p>
+          </div>
+        </div>
       </div>
       <div class="text-left">
         <h1 class="text-8xl opacity-90 bg-gradient-to-r from-slate-200 to-blue-400 inline-block text-transparent bg-clip-text">ناور. تعلم. شارك.</h1>

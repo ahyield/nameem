@@ -3,31 +3,35 @@
     <h1 class="text-9xl opacity-80 bg-gradient-to-r from-slate-100 to-blue-400 inline-block text-transparent bg-clip-text">مناورون</h1>
   </div>
 
-  <div class="mx-auto w-full py-8 sm:py-8">
-    <div class="mt-6 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:grid-rows-2 sm:gap-x-6 lg:gap-8">
-
+  <div class="py-8 -mx-6 px-6 overflow-x-auto scrollbar-hide">
+    <div class="flex gap-4" style="min-width: max-content;">
       <% @users.each do |user| %>
-        <div class="group aspect-h-1 aspect-w-2 overflow-hidden rounded-lg sm:aspect-h-1 sm:aspect-w-1 sm:row-span-2">
-          <% if user.avatar.attached? %>
-            <%= image_tag user.avatar.variant(resize_to_fill: [600, 600]), class: "object-cover object-center group-hover:opacity-75" %>
-          <% else %>
-            <%= image_tag asset_path("brand/logo.png"), class: "object-cover object-center group-hover:opacity-75" %>
-          <% end %>
-          <div aria-hidden="true" class="bg-gradient-to-b from-transparent to-black opacity-50"></div>
-          <div class="flex items-end p-6">
+        <div class="group relative w-48 shrink-0 overflow-hidden rounded-lg">
+          <div class="aspect-square">
+            <% if user.avatar.attached? %>
+              <%= image_tag user.avatar.variant(resize_to_fill: [300, 300]), class: "h-full w-full object-cover object-center group-hover:opacity-75" %>
+            <% else %>
+              <%= image_tag asset_path("brand/logo.png"), class: "h-full w-full object-cover object-center group-hover:opacity-75" %>
+            <% end %>
+            <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-50"></div>
+          </div>
+          <div class="absolute inset-0 flex items-end p-4">
             <div>
-              <h3 class="font-semibold text-white text-3xl">
+              <h3 class="font-semibold text-white text-lg">
                 <%= link_to user.slug do %>
                   <span class="absolute inset-0"></span>
                   <%= user.name %>
                 <% end %>
               </h3>
-              <p aria-hidden="true" class="mt-1 text-black opacity-40 bg-white"><%= user.bio&.truncate(50) %></p>
+              <p class="text-xs text-gray-300"><%= user.articles.published.count %> مقال</p>
             </div>
           </div>
         </div>
       <% end %>
-
     </div>
   </div>
+
+  <p class="text-sm text-gray-500">
+    <%= link_to "سجّل لمتابعة كتّابك المفضلين", signup_path, class: "text-blue-500 hover:text-blue-700" %>
+  </p>
 </div>

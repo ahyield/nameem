@@ -1,0 +1,15 @@
+<div class="relative isolate px-6 pt-8 lg:px-8">
+  <div class="grid w-full grid-cols-1 gap-x-16 gap-y-8">
+    <h1 class="text-9xl opacity-80 bg-gradient-to-r from-slate-100 to-blue-400 inline-block text-transparent bg-clip-text">المواضيع</h1>
+  </div>
+
+  <div class="flex flex-wrap gap-3 py-8">
+    <% @tags.each do |tag| %>
+      <%= link_to topic_path(tag), class: "group flex items-center gap-x-2 rounded-full bg-gray-50 px-5 py-3 text-sm font-medium text-gray-700 ring-1 ring-inset ring-gray-200 hover:bg-gray-100 transition-colors" do %>
+        <span><%= tag.name %></span>
+        <span class="text-xs text-gray-400"><%= tag.articles_count %></span>
+      <% end %>
+    <% end %>
+  </div>
+
+</div>

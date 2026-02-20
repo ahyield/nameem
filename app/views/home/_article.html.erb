@@ -43,6 +43,11 @@
             </h1>
           <% end %>
           <p class="hidden lg:block mt-2 text-sm leading-6 text-gray-600"><%= article.description&.truncate(320) %></p>
+          <% if article.tags.any? %>
+            <div class="relative z-10 mt-2 flex flex-wrap gap-1">
+              <%= render partial: "tags/tag", collection: article.tags, as: :tag %>
+            </div>
+          <% end %>
         </div>
       </div>
       <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false } do %>
