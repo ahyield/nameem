@@ -38,20 +38,22 @@ module PlausibleClient
       build_response(body, metrics)
     end
 
-    def timeseries(period: "30d", metrics: %w[pageviews visitors], filters: nil)
+    def timeseries(date_range: "30d", metrics: %w[pageviews visitors], filters: nil)
       filters ||= article_filters
 
       params = {
-        site_id: @site_id,
-        metrics: metrics,
-        period:  period
+        site_id:    @site_id,
+        metrics:    metrics,
+        date_range: date_range,
+        dimensions: ["time"]
       }
 
       params[:filters] = filters if filters
 
       log_request(params)
-      response = @conn.post("/api/v2/timeseries", params.transform_keys(&:to_s))
-      handle_response(response)
+      response = @conn.post("/api/v2/query", params.transform_keys(&:to_s))
+      body = handle_response(response)
+      build_timeseries_response(body, metrics)
     end
 
     private
@@ -69,6 +71,16 @@ module PlausibleClient
       return unless defined?(Rails)
 
       Rails.logger.info "Plausible API request: #{params.transform_keys(&:to_s).to_json}"
+    end
+
+    def build_timeseries_response(response, metrics)
+      return [] if response["results"].nil? || response["results"].empty?
+
+      response["results"].map do |row|
+        entry = { date: row["dimensions"].first }
+        metrics.each_with_index { |m, i| entry[m.to_sym] = row["metrics"][i] || 0 }
+        entry
+      end
     end
 
     def build_response(response, metrics)

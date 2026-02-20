@@ -60,9 +60,28 @@ RSpec.describe PlausibleClient::Plausible do
   end
 
   describe "#timeseries" do
+    let(:timeseries_response) do
+      instance_double(Faraday::Response, status: 200, body: {
+        results: [
+          { dimensions: ["2026-01-21"], metrics: [10, 5] },
+          { dimensions: ["2026-01-22"], metrics: [20, 8] }
+        ]
+      }.to_json)
+    end
+
+    before { allow(conn).to receive(:post).and_return(timeseries_response) }
+
     it "returns parsed timeseries data" do
       result = client.timeseries
-      expect(result).to eq(JSON.parse(response.body))
+      expect(result).to eq([
+        { date: "2026-01-21", pageviews: 10, visitors: 5 },
+        { date: "2026-01-22", pageviews: 20, visitors: 8 }
+      ])
+    end
+
+    it "returns empty array for empty results" do
+      allow(timeseries_response).to receive(:body).and_return({ results: [] }.to_json)
+      expect(client.timeseries).to eq([])
     end
   end
 end

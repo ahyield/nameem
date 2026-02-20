@@ -25,6 +25,18 @@
     </div>
   </div>
 
+  <!-- 30-day chart -->
+  <% if @timeseries.present? %>
+    <div class="rounded-lg bg-white p-6 shadow mb-10"
+         data-controller="stats-chart"
+         data-stats-chart-labels-value="<%= @timeseries.map { |d| d[:date] }.to_json %>"
+         data-stats-chart-views-value="<%= @timeseries.map { |d| d[:pageviews] }.to_json %>"
+         data-stats-chart-visitors-value="<%= @timeseries.map { |d| d[:visitors] }.to_json %>">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">آخر 30 يوم</h2>
+      <canvas data-stats-chart-target="canvas" height="200"></canvas>
+    </div>
+  <% end %>
+
   <!-- Per-article table -->
   <div class="rounded-lg bg-white shadow overflow-hidden">
     <table class="min-w-full divide-y divide-gray-200">

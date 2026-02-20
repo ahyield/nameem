@@ -51,6 +51,15 @@ class UsersController < ApplicationController
     @total_likes = @articles.sum(:likes_count)
     @total_comments = @articles.sum(:comments_count)
     @top_article = @articles.order(views_count: :desc).first
+
+    begin
+      client = PlausibleClient::Plausible.new
+      filters = [["matches", "event:page", ["/#{@user.slug}/*"]]]
+      @timeseries = client.timeseries(filters: filters)
+    rescue PlausibleClient::Error, Faraday::Error => e
+      Rails.logger.error "Plausible timeseries error for #{@user.slug}: #{e.message}"
+      @timeseries = nil
+    end
   end
 
   def followers
