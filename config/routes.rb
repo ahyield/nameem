@@ -15,6 +15,14 @@ Rails.application.routes.draw do
       get :articles
     end
   end
+  resources :notifications, only: [:index] do
+    member do
+      post :mark_read
+    end
+    collection do
+      post :mark_all_read
+    end
+  end
   scope(path: ':slug', as: :user, constraints: Constraints::RootNamespaceRoutesConstraint.new, controller: :users) do
     get '/', action: :show
 
@@ -45,6 +53,9 @@ Rails.application.routes.draw do
 
     get "security", to: "security#edit", as: "security"
     put "security", to: "security#update", as: "update_security"
+
+    get "notifications", to: "notifications#edit", as: "notifications"
+    put "notifications", to: "notifications#update", as: "update_notifications"
   end
 
   get "latest_feed", to: "feed#latest_feed", as: "latest_feed"

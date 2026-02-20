@@ -67,7 +67,7 @@ RSpec.describe Settings::ProfileController do
           patch :update, params: { user: { name: "" } }
 
           expect(response).to render_template(:edit)
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
           expect(flash.now[:error]).to eq(error)
         end
       end

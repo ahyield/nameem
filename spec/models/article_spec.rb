@@ -148,4 +148,44 @@ RSpec.describe Article do
       expect(article.featured).to be true
     end
   end
+
+  describe "notifications" do
+    before { create(:user, id: 1) }
+
+    it "creates a notification when featured" do
+      expect do
+        article.feature
+      end.to change(Notification, :count).by(1)
+
+      notification = Notification.last
+      expect(notification.action).to eq("featured")
+      expect(notification.recipient).to eq(article.user)
+    end
+
+    it "creates a notification when picked" do
+      expect do
+        article.pick
+      end.to change(Notification, :count).by(1)
+
+      notification = Notification.last
+      expect(notification.action).to eq("picked")
+      expect(notification.recipient).to eq(article.user)
+    end
+
+    it "does not create a notification when unfeatured" do
+      article.update(featured: true)
+
+      expect do
+        article.update(featured: false)
+      end.not_to change(Notification, :count)
+    end
+
+    it "does not create a notification when unpicked" do
+      article.update(picked: true)
+
+      expect do
+        article.update(picked: false)
+      end.not_to change(Notification, :count)
+    end
+  end
 end

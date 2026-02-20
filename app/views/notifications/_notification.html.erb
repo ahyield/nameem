@@ -1,0 +1,48 @@
+<%= turbo_frame_tag dom_id(notification) do %>
+  <% article = notification_article(notification) %>
+  <div id="<%= dom_id(notification) %>" class="rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5 mb-4 px-4 py-4 sm:px-6">
+    <div class="flex items-start gap-x-3">
+      <%# Avatar %>
+      <div class="flex-shrink-0">
+        <% if notification.actor.avatar.attached? %>
+          <%= image_tag notification.actor.avatar.variant(resize_to_fill: [100, 100]), class: "h-10 w-10 rounded-full bg-gray-50" %>
+        <% else %>
+          <span class="inline-block h-10 w-10 overflow-hidden rounded-full bg-gray-100">
+            <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </span>
+        <% end %>
+      </div>
+
+      <%# Content %>
+      <div class="flex-1 min-w-0 pt-0.5">
+        <p class="text-sm text-gray-700 flex items-center gap-x-1.5">
+          <%= link_to notification.actor.name, user_path(slug: notification.actor), class: "font-semibold text-gray-900 hover:underline", data: { turbo: false } %>
+          <%= notification_message(notification) %>
+          <%= notification_action_icon(notification) %>
+        </p>
+        <% if article %>
+          <%= link_to notification_path_for(notification), class: "mt-1 block text-sm text-gray-500 truncate font-medium hover:text-gray-700 transition-colors", data: { turbo: false } do %>
+            <%= article.title.presence || "بدون عنوان" %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <%# Date + Mark as read / Unread dot %>
+      <div class="flex-shrink-0 flex items-center gap-x-2 pt-0.5">
+        <span class="text-xs text-gray-400"><%= short_date(notification.created_at) %></span>
+        <% unless notification.read? %>
+          <%= button_to mark_read_notification_path(notification), method: :post,
+              class: "text-gray-400 hover:text-green-500 transition-colors",
+              data: { turbo_method: :post },
+              title: "تعيين كمقروء" do %>
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

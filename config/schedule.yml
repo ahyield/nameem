@@ -7,6 +7,10 @@ production:
     class: UpdateArticleViewsJob
     queue: article_views
     schedule: every 6 hours
+  notification_digest:
+    class: SendNotificationDigestJob
+    queue: default
+    schedule: every day at 9am
 
 development:
   sync_article_views:

@@ -22,7 +22,10 @@
       "Bash(bin/rails importmap:pins:*)",
       "Bash(bin/rails assets:clobber:*)",
       "Bash(bin/rails assets:precompile:*)",
-      "Bash(bin/rails backfill_reading_time:*)"
+      "Bash(bin/rails backfill_reading_time:*)",
+      "Bash(bin/rails generate migration:*)",
+      "Bash(git stash:*)",
+      "Bash(ruby:*)"
     ]
   }
 }

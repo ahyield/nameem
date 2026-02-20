@@ -1,0 +1,12 @@
+<%= turbo_stream.replace dom_id(@notification) do %>
+  <%= render "notification", notification: @notification %>
+<% end %>
+
+<%= turbo_stream.replace "notification_count" do %>
+  <%= turbo_frame_tag "notification_count" do %>
+    <% unread_count = current_user.notifications.unread.count %>
+    <% if unread_count > 0 %>
+      <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white"><%= unread_count %></span>
+    <% end %>
+  <% end %>
+<% end %>

@@ -28,7 +28,7 @@ RSpec.describe ArticleLikesController do
         expect {
           post :create, params: { slug: author.slug, uuid: article.uuid }, format: :turbo_stream
         }.not_to change(ArticleLike, :count)
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 

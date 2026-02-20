@@ -1,0 +1,54 @@
+<% title "نميم - الإشعارات" %>
+
+<%= render "shared/nav" %>
+<%= render "flashes/alert", alert: flash[:alert] if !flash[:alert].nil? %>
+<%= render "flashes/notice", notice: flash[:notice] if !flash[:notice].nil? %>
+
+<div class="mx-auto max-w-2xl pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+  <%# Header %>
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">الإشعارات</h1>
+      <% if @unread_count > 0 %>
+        <p class="mt-1 text-sm text-gray-500"><%= @unread_count %> غير مقروءة</p>
+      <% end %>
+    </div>
+    <% if @unread_count > 0 %>
+      <%= button_to mark_all_read_notifications_path, method: :post,
+          class: "inline-flex items-center gap-x-1.5 rounded-full bg-white px-3.5 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-colors" do %>
+        <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        تعيين الكل كمقروء
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if @notifications.any? %>
+    <%# Notification list %>
+    <div id="notifications_list">
+      <% @notifications.each do |notification| %>
+        <%= render "notification", notification: notification %>
+      <% end %>
+    </div>
+
+    <%= turbo_frame_tag "notifications_pagination" do %>
+      <% if @pagy.next.present? %>
+        <%= turbo_frame_tag "notifications_pagination", src: notifications_path(page: @pagy.next, format: "turbo_stream"), loading: "lazy" %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%# Empty state %>
+    <div class="text-center py-20">
+      <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+        <svg class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+        </svg>
+      </div>
+      <h3 class="mt-4 text-sm font-semibold text-gray-900">لا توجد إشعارات</h3>
+      <p class="mt-1 text-sm text-gray-500">سنعلمك عندما يتفاعل أحد مع مقالاتك.</p>
+    </div>
+  <% end %>
+</div>
+
+<%= render "shared/footer" %>

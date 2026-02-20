@@ -34,8 +34,9 @@ RSpec.describe ApplicationHelper do
   context "when #first_paragraph is called" do
     it "returns the first paragraph" do
       article = Article.create!(
-        content: { ops: [{ insert: "New Article" }] },
-        user:    User.create(email: "test@test.com", slug: "test")
+        content:      { ops: [{ insert: "New Article" }] },
+        content_html: "<p>New Article</p>",
+        user:         User.create(email: "test@test.com", slug: "test")
       )
 
       expect(helper.first_paragraph(article)).to eq("New Article")
@@ -44,10 +45,11 @@ RSpec.describe ApplicationHelper do
 
   context "when #article_cover is called" do
     it "returns the first image" do
-      article =  Article.create!(
-        title:   "New Article",
-        content: { ops: [{ insert: { customImage: { url: "https://test.com/image.jpeg" } } }] },
-        user:    User.create(email: "test@test.com", slug: "test")
+      article = Article.create!(
+        title:        "New Article",
+        content:      { ops: [{ insert: { customImage: { url: "https://test.com/image.jpeg" } } }] },
+        content_html: '<p>text</p><figure><img src="https://test.com/image.jpeg"></figure>',
+        user:         User.create(email: "test@test.com", slug: "test")
       )
 
       expect(helper.article_cover(article)).to eq("https://test.com/image.jpeg")

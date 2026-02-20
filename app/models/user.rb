@@ -9,6 +9,8 @@ class User < ApplicationRecord
   has_many :liked_articles, through: :article_likes, source: :article
   has_many :sessions, dependent: :destroy
   has_many :magic_links, dependent: :destroy
+  has_many :notifications, foreign_key: :recipient_id, inverse_of: :recipient, dependent: :destroy
+  has_many :sent_notifications, class_name: "Notification", foreign_key: :actor_id, inverse_of: :actor, dependent: :destroy
 
   has_one_attached :avatar
 

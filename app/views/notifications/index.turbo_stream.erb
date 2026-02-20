@@ -1,0 +1,13 @@
+<%= turbo_stream.append "notifications_list" do %>
+  <% @notifications.each do |notification| %>
+    <%= render "notification", notification: notification %>
+  <% end %>
+<% end %>
+
+<% if @pagy.next.present? %>
+  <%= turbo_stream.replace "notifications_pagination" do %>
+    <%= turbo_frame_tag "notifications_pagination", src: notifications_path(page: @pagy.next, format: "turbo_stream"), loading: "lazy" %>
+  <% end %>
+<% else %>
+  <%= turbo_stream.remove "notifications_pagination" %>
+<% end %>

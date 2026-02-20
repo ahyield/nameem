@@ -49,4 +49,31 @@ class Article < ApplicationRecord
   def feature
     update(featured: true)
   end
+
+  after_update :notify_on_feature_or_pick
+
+  private
+
+  def notify_on_feature_or_pick
+    system_user = User.find_by(id: 1)
+    return unless system_user
+
+    if saved_change_to_featured? && featured?
+      Notification.create!(
+        recipient:  user,
+        actor:      system_user,
+        notifiable: self,
+        action:     :featured
+      )
+    end
+
+    if saved_change_to_picked? && picked?
+      Notification.create!(
+        recipient:  user,
+        actor:      system_user,
+        notifiable: self,
+        action:     :picked
+      )
+    end
+  end
 end

@@ -16,14 +16,14 @@ class RegistrationsController < ApplicationController
 
     if @user&.confirmed?
       flash.now[:error] = "هذا المستخدم موجود بالفعل"
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     elsif valid_captcha?(model: @user)
       user = User.find_or_create_by(email: sign_up_params[:email])
       magic_link = user.send_magic_link(purpose: :sign_up)
       redirect_to_magic_link_verification(magic_link)
     else
       flash.now[:error] = "فشل التحقق من الكابتشا"
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

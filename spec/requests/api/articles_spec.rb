@@ -9,14 +9,14 @@ RSpec.describe "Api::Articles" do
     it "returns the article as JSON" do
       get "/api/articles/#{user.slug}/#{article.uuid}"
       expect(response).to have_http_status(:success)
-      expect(json["id"]).to eq(article.id)
+      expect(json["uuid"]).to eq(article.uuid)
     end
   end
 
-  describe "GET /api/articles/new" do
+  describe "POST /api/articles" do
     it "returns a new article and the current user as JSON" do
       authenticate_user(user)
-      get "/api/articles/new"
+      post "/api/articles"
       expect(response).to have_http_status(:success)
       expect(json["article"]["uuid"]).not_to be_nil
       expect(json["user"]["id"]).to eq(user.id)

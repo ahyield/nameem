@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_19_020213) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_20_010819) do
   create_table "action_text_rich_texts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "body", size: :long
     t.datetime "created_at", null: false
@@ -132,6 +132,22 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_19_020213) do
     t.index ["code"], name: "index_magic_links_on_code", unique: true
     t.index ["expires_at"], name: "index_magic_links_on_expires_at"
     t.index ["user_id"], name: "index_magic_links_on_user_id"
+  end
+
+  create_table "notifications", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "action", null: false
+    t.bigint "actor_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "notifiable_id", null: false
+    t.string "notifiable_type", null: false
+    t.datetime "read_at"
+    t.bigint "recipient_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_notifications_on_actor_id"
+    t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
+    t.index ["recipient_id", "created_at"], name: "index_notifications_on_recipient_id_and_created_at"
+    t.index ["recipient_id", "read_at"], name: "index_notifications_on_recipient_id_and_read_at"
+    t.index ["recipient_id"], name: "index_notifications_on_recipient_id"
   end
 
   create_table "sessions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -281,6 +297,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_19_020213) do
     t.datetime "created_at", null: false
     t.boolean "editor", default: false, null: false
     t.string "email"
+    t.boolean "email_notifications", default: true, null: false
     t.boolean "featured", default: false, null: false
     t.string "first_name"
     t.string "last_name"
@@ -303,6 +320,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_19_020213) do
   add_foreign_key "comments", "articles"
   add_foreign_key "comments", "users"
   add_foreign_key "magic_links", "users"
+  add_foreign_key "notifications", "users", column: "actor_id"
+  add_foreign_key "notifications", "users", column: "recipient_id"
   add_foreign_key "sessions", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

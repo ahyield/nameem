@@ -1,0 +1,36 @@
+<% title "نميم - #{@user.name} - إعدادات الإشعارات" %>
+
+<%= render "shared/nav" %>
+<%= render "flashes/alert", alert: flash[:alert] if !flash[:alert].nil? %>
+<%= render "flashes/notice", notice: flash[:notice] if !flash[:notice].nil? %>
+<%= render "flashes/error", error: flash[:error] if !flash[:error].nil? %>
+
+<div class="mx-auto max-w-7xl pt-16 lg:flex lg:gap-x-16 lg:px-8">
+
+  <aside class="flex overflow-x-auto border-b border-gray-900/5 py-4 lg:block lg:w-64 lg:flex-none lg:border-0 lg:py-20">
+    <%= render "settings/sidebar" %>
+  </aside>
+
+  <main class="px-4 py-16 sm:px-6 lg:flex-auto lg:px-0 lg:py-20">
+    <div class="mx-auto max-w-2xl space-y-16 sm:space-y-20 lg:mx-0 lg:max-w-none">
+      <div class="">
+        <%= form_with model: @user, url: settings_update_notifications_path, html: { class: "md:col-span-2" }, method: :put do |form| %>
+          <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
+            <div class="col-span-full">
+              <div class="flex items-center gap-x-3">
+                <%= form.check_box :email_notifications, class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" %>
+                <%= form.label :email_notifications, "تلقي إشعارات على البريد الإلكتروني", class: "block text-sm font-medium leading-6 text-gray-900" %>
+              </div>
+              <p class="mt-2 text-sm text-gray-500">عند التفعيل، ستتلقى ملخصًا يوميًا بالإشعارات الجديدة على بريدك الإلكتروني.</p>
+            </div>
+          </div>
+
+          <div class="mt-8 flex">
+            <%= form.submit "حفظ", class: "rounded-md bg-blue-50 px-3.5 py-2.5 text-sm font-semibold text-blue-600 shadow-sm hover:bg-blue-100" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </main>
+</div>
+<%= render "shared/footer" %>

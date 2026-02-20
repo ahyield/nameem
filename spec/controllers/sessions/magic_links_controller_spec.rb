@@ -85,7 +85,7 @@ RSpec.describe Sessions::MagicLinksController do
         post :create, params: { code: magic_link.code }
 
         expect(response).to render_template(:show)
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(flash.now[:error]).to be_present
       end
     end
