@@ -58,6 +58,7 @@ gem "mailgun-ruby"
 gem "dotenv-rails"
 
 gem "meta-tags"
+gem "sitemap_generator"
 
 gem "flipper"
 

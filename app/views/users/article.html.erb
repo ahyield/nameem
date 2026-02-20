@@ -1,15 +1,20 @@
-<% title "نميم - #{@article.title || @article.alternative_titles.first&.truncate(20) } بقلم #{@user.name}" %>
-<% description "#{@article.description&.truncate(100)}" %>
-
-<% set_meta_tags og: { title: "#{@article.title}" } %>
-<% set_meta_tags og: { description: "#{@article.description&.truncate(100)}" } %>
-<% set_meta_tags og: { image: "#{article_cover(@article) ||  asset_path("brand/logo.png") }" } %>
-<% set_meta_tags og: { url: "#{user_article_url(slug: @article.user, uuid: @article)}" } %>
-<% set_meta_tags og: { type: "article" } %>
-
-<% set_meta_tags twitter: { site: "@nameemofficial" } %>
-<% set_meta_tags twitter: { card: "summary_large_image" } %>
-<% set_meta_tags twitter: { image:  { _: "#{article_cover(@article) ||  asset_path("brand/logo.png") }", width: 100, height: 100 } } %>
+<% title "#{@article.title || @article.alternative_titles.first&.truncate(20)} بقلم #{@user.name}" %>
+<% description @article.description&.truncate(160) %>
+<% set_meta_tags og: {
+  type: "article",
+  title: @article.title,
+  description: @article.description&.truncate(160),
+  image: article_cover(@article) || asset_url("brand/logo.png"),
+  url: user_article_url(slug: @article.user, uuid: @article)
+},
+article: {
+  published_time: @article.published_at&.iso8601,
+  author: @user.name
+},
+twitter: {
+  image: article_cover(@article) || asset_url("brand/logo.png")
+} %>
+<%= json_ld_tag(article_json_ld(@article, @user)) %>
 
 <%= render "shared/nav" %>
 

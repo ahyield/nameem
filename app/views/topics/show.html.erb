@@ -1,4 +1,6 @@
-<% title "نميم - #{@tag.name}" %>
+<% title "#{@tag.name}" %>
+<% description "مقالات عن #{@tag.name} على نميم" %>
+<% set_meta_tags og: { description: "مقالات عن #{@tag.name} على نميم" } %>
 
 <%= render "shared/nav" %>
 

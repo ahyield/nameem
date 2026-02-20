@@ -1,1 +1,8 @@
-# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+User-agent: *
+Allow: /
+Disallow: /backoffice/
+Disallow: /api/
+Disallow: /login
+Disallow: /signup
+Disallow: /settings/
+Sitemap: https://nameem.com/sitemap.xml

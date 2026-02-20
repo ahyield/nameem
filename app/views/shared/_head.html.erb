@@ -1,7 +1,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <%= csrf_meta_tags %>
 <%= csp_meta_tag %>
-<%= display_meta_tags %>
+<%= display_meta_tags(
+  site: "نميم",
+  reverse: true,
+  separator: "—",
+  og: { site_name: "نميم", locale: "ar_AR", type: "website", image: asset_url("brand/logo.png") },
+  twitter: { site: "@nameemofficial", card: "summary_large_image" }
+) %>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
