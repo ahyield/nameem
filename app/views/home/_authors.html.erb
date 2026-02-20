@@ -3,31 +3,97 @@
     <h1 class="text-9xl opacity-80 bg-gradient-to-r from-slate-100 to-blue-400 inline-block text-transparent bg-clip-text">مناورون</h1>
   </div>
 
-  <div class="py-8 -mx-6 px-6 overflow-x-auto scrollbar-hide">
-    <div class="flex gap-4" style="min-width: max-content;">
-      <% @users.each do |user| %>
-        <div class="group relative w-48 shrink-0 overflow-hidden rounded-lg">
-          <div class="aspect-square">
-            <% if user.avatar.attached? %>
-              <%= image_tag user.avatar.variant(resize_to_fill: [300, 300]), class: "h-full w-full object-cover object-center group-hover:opacity-75" %>
-            <% else %>
-              <%= image_tag asset_path("brand/logo.png"), class: "h-full w-full object-cover object-center group-hover:opacity-75" %>
-            <% end %>
-            <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-50"></div>
-          </div>
-          <div class="absolute inset-0 flex items-end p-4">
-            <div>
-              <h3 class="font-semibold text-white text-lg">
-                <%= link_to user.slug do %>
-                  <span class="absolute inset-0"></span>
-                  <%= user.name %>
+  <% half = (@users.size / 2.0).ceil %>
+  <% row1 = @users.first(half) %>
+  <% row2 = @users.last(@users.size - half) %>
+
+  <style>
+    @keyframes scroll-rtl {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(50%); }
+    }
+    @keyframes scroll-ltr {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .carousel-row { overflow: hidden; }
+    .carousel-track-rtl {
+      display: flex;
+      gap: 1rem;
+      width: max-content;
+      animation: scroll-rtl 30s linear infinite;
+    }
+    .carousel-track-ltr {
+      display: flex;
+      gap: 1rem;
+      width: max-content;
+      animation: scroll-ltr 30s linear infinite;
+    }
+    .carousel-row:hover .carousel-track-rtl,
+    .carousel-row:hover .carousel-track-ltr {
+      animation-play-state: paused;
+    }
+  </style>
+
+  <div class="space-y-4 py-8 -mx-6">
+    <div class="carousel-row">
+      <div class="carousel-track-rtl">
+        <% 2.times do %>
+          <% row1.each do |user| %>
+            <div class="group relative w-40 shrink-0 overflow-hidden rounded-lg">
+              <div class="aspect-square">
+                <% if user.avatar.attached? %>
+                  <%= image_tag user.avatar.variant(resize_to_fill: [300, 300]), class: "h-full w-full object-cover object-center group-hover:opacity-75" %>
+                <% else %>
+                  <%= image_tag asset_path("brand/logo.png"), class: "h-full w-full object-cover object-center group-hover:opacity-75" %>
                 <% end %>
-              </h3>
-              <p class="text-xs text-gray-300"><%= user.articles.published.count %> مقال</p>
+                <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-50"></div>
+              </div>
+              <div class="absolute inset-0 flex items-end p-3">
+                <div>
+                  <h3 class="font-semibold text-white text-sm">
+                    <%= link_to user.slug do %>
+                      <span class="absolute inset-0"></span>
+                      <%= user.name %>
+                    <% end %>
+                  </h3>
+                  <p class="text-xs text-gray-300"><%= user.articles.published.count %> مقال</p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="carousel-row">
+      <div class="carousel-track-ltr">
+        <% 2.times do %>
+          <% row2.each do |user| %>
+            <div class="group relative w-40 shrink-0 overflow-hidden rounded-lg">
+              <div class="aspect-square">
+                <% if user.avatar.attached? %>
+                  <%= image_tag user.avatar.variant(resize_to_fill: [300, 300]), class: "h-full w-full object-cover object-center group-hover:opacity-75" %>
+                <% else %>
+                  <%= image_tag asset_path("brand/logo.png"), class: "h-full w-full object-cover object-center group-hover:opacity-75" %>
+                <% end %>
+                <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-50"></div>
+              </div>
+              <div class="absolute inset-0 flex items-end p-3">
+                <div>
+                  <h3 class="font-semibold text-white text-sm">
+                    <%= link_to user.slug do %>
+                      <span class="absolute inset-0"></span>
+                      <%= user.name %>
+                    <% end %>
+                  </h3>
+                  <p class="text-xs text-gray-300"><%= user.articles.published.count %> مقال</p>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
     </div>
   </div>
 
