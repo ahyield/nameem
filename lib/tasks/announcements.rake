@@ -1,6 +1,6 @@
 namespace :announcements do
-  desc "Send new features announcement (likes & comments) to all confirmed users via Mailgun batch API"
-  task new_features: :environment do
+  desc "Send new features announcement (Feb 2026) to all confirmed users via Mailgun batch API"
+  task february_2026: :environment do
     api_key = Rails.application.credentials.dig(:mailgun, :api_key)
     domain = "mail.nameem.com"
 
@@ -8,8 +8,8 @@ namespace :announcements do
     batch = Mailgun::BatchMessage.new(mg_client, domain)
 
     batch.from("نميم <noreply@nameem.com>")
-    batch.subject("جديد نميم")
-    batch.body_html(email_html)
+    batch.subject("جديد نميم — ميزات جديدة في فبراير")
+    batch.body_html(february_2026_html)
 
     users = User.confirmed.where.not(email: nil)
     total = users.count
@@ -27,7 +27,7 @@ namespace :announcements do
   end
 end
 
-def email_html
+def february_2026_html
   <<~HTML
     <!DOCTYPE html>
     <html lang="ar" dir="rtl" xmlns:v="urn:schemas-microsoft-com:vml">
@@ -88,27 +88,52 @@ def email_html
                     </p>
 
                     <p style="margin: 0 0 32px; line-height: 1.6;">
-                      يسعدنا أن نعلن عن إضافة ميزتين جديدتين لتجربة أفضل على نميم:
+                      أضفنا مجموعة من الميزات الجديدة لتجعل تجربتك على نميم أفضل:
                     </p>
 
-                    <table style="width: 100%; margin-bottom: 32px;" cellpadding="0" cellspacing="0">
+                    <!-- Row 1: Following + Topics -->
+                    <table style="width: 100%; margin-bottom: 16px;" cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="padding: 16px; text-align: center; vertical-align: top; width: 50%;">
-                          <div class="feature-icon" style="background-color: #fef2f2;">
-                            &#10084;&#65039;
+                          <div class="feature-icon" style="background-color: #eff6ff;">
+                            &#128101;
                           </div>
-                          <h3 style="margin: 8px 0 4px; font-size: 16px; color: #000;">الإعجابات</h3>
+                          <h3 style="margin: 8px 0 4px; font-size: 16px; color: #000;">المتابعة</h3>
                           <p style="margin: 0; font-size: 14px; color: #64748b; line-height: 1.5;">
-                            عبّر عن إعجابك بالمقالات التي تستمتع بقراءتها
+                            تابع كتّابك المفضلين وشاهد مقالاتهم الجديدة في صفحة المتابَعين
                           </p>
                         </td>
                         <td style="padding: 16px; text-align: center; vertical-align: top; width: 50%;">
-                          <div class="feature-icon" style="background-color: #eff6ff;">
-                            &#128172;
+                          <div class="feature-icon" style="background-color: #f0fdf4;">
+                            &#128278;
                           </div>
-                          <h3 style="margin: 8px 0 4px; font-size: 16px; color: #000;">التعليقات</h3>
+                          <h3 style="margin: 8px 0 4px; font-size: 16px; color: #000;">المواضيع</h3>
                           <p style="margin: 0; font-size: 14px; color: #64748b; line-height: 1.5;">
-                            شارك أفكارك وناقش المقالات مع الكتّاب والقرّاء
+                            تصفّح المقالات حسب الموضوع واكتشف ما يهمّك بسهولة
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- Row 2: Social Links + New Home -->
+                    <table style="width: 100%; margin-bottom: 32px;" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="padding: 16px; text-align: center; vertical-align: top; width: 50%;">
+                          <div class="feature-icon" style="background-color: #faf5ff;">
+                            &#127760;
+                          </div>
+                          <h3 style="margin: 8px 0 4px; font-size: 16px; color: #000;">حسابات التواصل</h3>
+                          <p style="margin: 0; font-size: 14px; color: #64748b; line-height: 1.5;">
+                            أضف روابط حساباتك على X وانستقرام وفيسبوك وموقعك الشخصي إلى ملفك
+                          </p>
+                        </td>
+                        <td style="padding: 16px; text-align: center; vertical-align: top; width: 50%;">
+                          <div class="feature-icon" style="background-color: #fef2f2;">
+                            &#10024;
+                          </div>
+                          <h3 style="margin: 8px 0 4px; font-size: 16px; color: #000;">الصفحة الرئيسية</h3>
+                          <p style="margin: 0; font-size: 14px; color: #64748b; line-height: 1.5;">
+                            صفحة رئيسية جديدة بتبويبات الأحدث والأكثر شعبية ومختارات نميم
                           </p>
                         </td>
                       </tr>
@@ -133,7 +158,7 @@ def email_html
                     <p style="margin: 0;">
                       <a href="mailto:support@nameem.com" style="color: #4338ca; text-decoration: none;">الدعم</a>
                       &bull;
-                      <a href="https://twitter.com/nameemofficial" style="color: #4338ca; text-decoration: none;">Twitter</a>
+                      <a href="https://x.com/nameemofficial" style="color: #4338ca; text-decoration: none;">X</a>
                     </p>
                   </td>
                 </tr>
