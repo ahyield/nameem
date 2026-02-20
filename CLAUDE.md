@@ -133,26 +133,26 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 - [ ] Handle Arabic text search quirks (diacritics, alef normalization)
 - [ ] Specs for search controller and edge cases
 
-### Follow System
-- [ ] Create `Follow` model (follower_id, followed_id, unique pair, counter caches)
-- [ ] Add `followers_count` and `following_count` to users
-- [ ] Create `FollowsController` (create/destroy via Turbo Stream)
-- [ ] Add follow/unfollow button to user profile page
-- [ ] Build `/following_feed` — articles from followed authors only
-- [ ] Add following feed tab to feed navigation
-- [ ] Show follower/following counts on user profile
-- [ ] Build `/:slug/followers` and `/:slug/following` pages
-- [ ] Specs for Follow model, controller, and feed filtering
+### Follow System ✅
+- [x] Create `Follow` model (follower_id, followed_id, unique pair, counter caches)
+- [x] Add `followers_count` and `following_count` to users
+- [x] Create `FollowsController` (create/destroy via Turbo Stream)
+- [x] Add follow/unfollow button to user profile page
+- [x] Build `/following_feed` — articles from followed authors only
+- [x] Add following feed tab to feed navigation
+- [x] Show follower/following counts on user profile
+- [x] Build `/:slug/followers` and `/:slug/following` pages
+- [x] Specs for Follow model, controller, and feed filtering
 
-### Notifications
-- [ ] Create `Notification` model (recipient_id, actor_id, notifiable polymorphic, action enum, read_at)
-- [ ] Create `NotificationsController` (index, mark_read, mark_all_read)
-- [ ] Add notification bell to navbar with unread count badge (Turbo Stream updates)
-- [ ] Generate notifications on: like, comment, new follower, article featured/picked
-- [ ] Build notifications dropdown/page with grouped entries
-- [ ] Add email digest job (daily/weekly summary of unread notifications)
-- [ ] User setting to toggle email notifications
-- [ ] Specs for Notification model, creation callbacks, and controller
+### Notifications ✅
+- [x] Create `Notification` model (recipient_id, actor_id, notifiable polymorphic, action enum, read_at)
+- [x] Create `NotificationsController` (index, mark_read, mark_all_read)
+- [x] Add notification bell to navbar with unread count badge (Turbo Stream updates)
+- [x] Generate notifications on: like, comment, new follower, article featured/picked
+- [x] Build notifications dropdown/page with grouped entries
+- [x] Add email digest job (daily/weekly summary of unread notifications)
+- [x] User setting to toggle email notifications
+- [x] Specs for Notification model, creation callbacks, and controller
 
 ### Threaded Comments
 - [ ] Add `parent_id` (self-referential) to comments
@@ -188,6 +188,40 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 - [ ] Build `/:slug/bookmarks` page (private, own profile only)
 - [ ] Add "Bookmarks" link to user dropdown menu
 - [ ] Specs for Bookmark model and controller
+
+### Related Articles
+- [ ] Show 3-4 related articles at the bottom of article show page (matched by shared tags)
+- [ ] "More from this author" section on article page (other articles by same writer)
+- [ ] Specs for related articles query
+
+### Trending
+- [ ] Add trending section to feed (sidebar or top area) showing articles trending this week
+- [ ] Trending algorithm based on views/likes velocity (recent engagement, not just totals)
+- [ ] Specs for trending scope/query
+
+### SEO & Structured Data
+- [ ] Add JSON-LD structured data for articles (Article schema)
+- [ ] Ensure proper Open Graph and Twitter Card meta tags on all pages
+- [ ] Generate XML sitemap (articles, topics, authors)
+- [ ] Handle Arabic text SEO (canonical URLs, hreflang)
+
+### RSS Feeds
+- [ ] Add RSS feed for all published articles (`/feed.xml`)
+- [ ] Add per-author RSS feed (`/:slug/feed.xml`)
+- [ ] Add per-topic RSS feed (`/topics/:slug/feed.xml`)
+- [ ] Add RSS autodiscovery link tags to relevant pages
+
+### Personalized Recommendations
+- [ ] "Based on what you've liked" — articles sharing tags with user's liked articles, excluding read
+- [ ] Surface recommendations on feed page or dedicated section
+- [ ] Specs for recommendation query
+
+### Curated Collections
+- [ ] Create `Collection` model (title, description, slug, editor-curated)
+- [ ] Create `CollectionArticle` join model (collection + article, with position/order)
+- [ ] Build `/collections` browse page and `/collections/:slug` detail page
+- [ ] Backoffice: collection management (create, add/remove/reorder articles)
+- [ ] Specs for Collection model and controller
 
 ### Test Coverage
 - [ ] Model specs: Article (scopes, Metable, publishing logic), User (roles, slug generation)

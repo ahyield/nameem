@@ -1,0 +1,24 @@
+<div class="flex items-center justify-between py-4">
+  <div class="flex items-center gap-x-4">
+    <%= link_to user_path(user) do %>
+      <% if user.avatar.attached? %>
+        <%= image_tag user.avatar.variant(resize_to_fill: [200, 200]), class: "h-12 w-12 rounded-full bg-gray-50" %>
+      <% else %>
+        <span class="inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100">
+          <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </span>
+      <% end %>
+    <% end %>
+    <div>
+      <%= link_to user_path(user), class: "hover:underline" do %>
+        <h3 class="text-sm font-semibold text-gray-900"><%= user.name %></h3>
+      <% end %>
+      <p class="text-sm text-gray-500"><%= user.bio&.truncate(120) %></p>
+    </div>
+  </div>
+  <% if Current.user && Current.user != user %>
+    <%= render "follows/user_button", user: user, following: Current.user.following?(user) %>
+  <% end %>
+</div>

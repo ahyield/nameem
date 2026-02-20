@@ -1,0 +1,12 @@
+<% if @followable.is_a?(User) %>
+  <%= turbo_stream.replace dom_id(@followable, :follow) do %>
+    <%= render "follows/user_button", user: @followable, following: @following %>
+  <% end %>
+  <%= turbo_stream.replace dom_id(@followable, :followers_count) do %>
+    <%= render "follows/followers_count", user: @followable %>
+  <% end %>
+<% else %>
+  <%= turbo_stream.replace dom_id(@followable, :follow) do %>
+    <%= render "follows/tag_button", tag: @followable, following: @following %>
+  <% end %>
+<% end %>

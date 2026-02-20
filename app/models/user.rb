@@ -12,6 +12,13 @@ class User < ApplicationRecord
   has_many :notifications, foreign_key: :recipient_id, inverse_of: :recipient, dependent: :destroy
   has_many :sent_notifications, class_name: "Notification", foreign_key: :actor_id, inverse_of: :actor, dependent: :destroy
 
+  has_many :follows_as_follower, class_name: "Follow", foreign_key: :follower_id, dependent: :destroy
+  has_many :follows_as_followed, class_name: "Follow", as: :followable, dependent: :destroy
+
+  has_many :following_users, through: :follows_as_follower, source: :followable, source_type: "User"
+  has_many :following_tags, through: :follows_as_follower, source: :followable, source_type: "Tag"
+  has_many :followers, through: :follows_as_followed, source: :follower
+
   has_one_attached :avatar
 
   has_person_name
@@ -66,6 +73,10 @@ class User < ApplicationRecord
 
   def make_editor
     update(editor: true)
+  end
+
+  def following?(record)
+    follows_as_follower.exists?(followable: record)
   end
 
   private

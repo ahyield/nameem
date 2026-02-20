@@ -5,9 +5,13 @@ export default class extends Controller{
 
   initialize(){
     this.handleTurboClick = this.handleTurboClick.bind(this)
-    this.linkTargets[0].classList.add("border-gray-400", "text-gray-600")
-    this.linkTargets[1].classList.add("border-transparent", "text-gray-400", "hover:text-gray-600")
-    this.linkTargets[2].classList.add("border-transparent", "text-gray-400", "hover:text-gray-600")
+    this.linkTargets.forEach((target, index) => {
+      if(index === 0){
+        target.classList.add("border-gray-400", "text-gray-600")
+      }else{
+        target.classList.add("border-transparent", "text-gray-400", "hover:text-gray-600")
+      }
+    })
   }
 
   connect(){

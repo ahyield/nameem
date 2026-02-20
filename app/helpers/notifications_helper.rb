@@ -3,7 +3,8 @@ module NotificationsHelper
     "liked"     => "أعجب بمقالك",
     "commented" => "علّق على مقالك",
     "featured"  => "تم تمييز مقالك",
-    "picked"    => "تم اختيار مقالك"
+    "picked"    => "تم اختيار مقالك",
+    "followed"  => "بدأ متابعتك"
   }.freeze
 
   def notification_message(notification)
@@ -11,14 +12,16 @@ module NotificationsHelper
   end
 
   def notification_path_for(notification)
-    article = case notification.notifiable_type
-              when "ArticleLike", "Comment"
-                notification.notifiable.article
-              when "Article"
-                notification.notifiable
-              end
-
-    user_article_path(slug: article.user, uuid: article) if article
+    case notification.notifiable_type
+    when "ArticleLike", "Comment"
+      article = notification.notifiable.article
+      user_article_path(slug: article.user, uuid: article) if article
+    when "Article"
+      article = notification.notifiable
+      user_article_path(slug: article.user, uuid: article) if article
+    when "Follow"
+      user_path(slug: notification.actor)
+    end
   end
 
   def notification_article(notification)
@@ -27,6 +30,8 @@ module NotificationsHelper
       notification.notifiable.article
     when "Article"
       notification.notifiable
+    when "Follow"
+      nil
     end
   end
 
@@ -60,6 +65,12 @@ module NotificationsHelper
           tag.path(fill_rule: "evenodd",
                    d: "M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z",
                    clip_rule: "evenodd")
+        end
+      end
+    when "followed"
+      tag.span(class: "flex h-5 w-5 items-center justify-center rounded-full bg-purple-50 ring-2 ring-white") do
+        tag.svg(class: "h-3 w-3 text-purple-500", viewBox: "0 0 24 24", fill: "currentColor") do
+          tag.path(d: "M5.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM2.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM18.75 7.5a.75.75 0 00-1.5 0v2.25H15a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H21a.75.75 0 000-1.5h-2.25V7.5z")
         end
       end
     end

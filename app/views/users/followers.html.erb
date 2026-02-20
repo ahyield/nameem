@@ -1,0 +1,24 @@
+<% title "متابعو #{@user.name}" %>
+
+<%= render "shared/nav" %>
+
+<div class="bg-white px-6 py-24 lg:px-8" dir="rtl">
+  <div class="mx-auto max-w-2xl">
+    <h1 class="text-2xl font-bold tracking-tight text-gray-900 mb-2">متابعو <%= @user.name %></h1>
+    <p class="text-sm text-gray-500 mb-8"><%= @user.followers_count %> متابِع</p>
+
+    <% if @followers.any? %>
+      <div class="divide-y divide-gray-200">
+        <% @followers.each do |follower| %>
+          <%= render "users/user_card", user: follower %>
+        <% end %>
+      </div>
+
+      <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+    <% else %>
+      <p class="text-gray-500 text-center py-12">لا يوجد متابعون بعد</p>
+    <% end %>
+  </div>
+</div>
+
+<%= render "shared/footer" %>

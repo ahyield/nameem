@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_20_010819) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_20_023758) do
   create_table "action_text_rich_texts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "body", size: :long
     t.datetime "created_at", null: false
@@ -120,6 +120,17 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_20_010819) do
     t.datetime "updated_at", null: false
     t.text "value"
     t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true, length: { value: 255 }
+  end
+
+  create_table "follows", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "followable_id", null: false
+    t.string "followable_type", null: false
+    t.bigint "follower_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["followable_type", "followable_id"], name: "index_follows_on_followable"
+    t.index ["follower_id", "followable_type", "followable_id"], name: "idx_on_follower_id_followable_type_followable_id_86ab6270f1", unique: true
+    t.index ["follower_id"], name: "index_follows_on_follower_id"
   end
 
   create_table "magic_links", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -283,6 +294,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_20_010819) do
   create_table "tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "articles_count", default: 0, null: false
     t.datetime "created_at", null: false
+    t.integer "followers_count", default: 0, null: false
     t.string "name", null: false
     t.string "slug", null: false
     t.datetime "updated_at", null: false
@@ -300,6 +312,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_20_010819) do
     t.boolean "email_notifications", default: true, null: false
     t.boolean "featured", default: false, null: false
     t.string "first_name"
+    t.integer "followers_count", default: 0, null: false
+    t.integer "following_count", default: 0, null: false
     t.string "last_name"
     t.datetime "last_sign_in_at"
     t.boolean "picked", default: false, null: false
@@ -319,6 +333,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_20_010819) do
   add_foreign_key "articles", "users"
   add_foreign_key "comments", "articles"
   add_foreign_key "comments", "users"
+  add_foreign_key "follows", "users", column: "follower_id"
   add_foreign_key "magic_links", "users"
   add_foreign_key "notifications", "users", column: "actor_id"
   add_foreign_key "notifications", "users", column: "recipient_id"

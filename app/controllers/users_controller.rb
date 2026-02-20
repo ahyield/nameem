@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  skip_before_action :require_authentication, only: %i[show articles article]
-  before_action :resume_session, only: %i[show articles article]
+  skip_before_action :require_authentication, only: %i[show articles article followers following]
+  before_action :resume_session, only: %i[show articles article followers following]
 
   def show
     @user = User.friendly.find(params[:slug])
@@ -39,6 +39,17 @@ class UsersController < ApplicationController
       format.html
       format.turbo_stream
     end
+  end
+
+  def followers
+    @user = User.friendly.find(params[:slug])
+    @pagy, @followers = pagy(@user.followers)
+  end
+
+  def following
+    @user = User.friendly.find(params[:slug])
+    @following_users = @user.following_users
+    @following_tags = @user.following_tags
   end
 
   def destroy

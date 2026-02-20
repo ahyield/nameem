@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     end
     member do
       get :articles
+      post :follow, to: "follows#create", defaults: { followable_type: "Tag" }
+      delete :unfollow, to: "follows#destroy", defaults: { followable_type: "Tag" }
     end
   end
   resources :notifications, only: [:index] do
@@ -43,6 +45,11 @@ Rails.application.routes.draw do
 
     get 'publish_modal/:uuid', to: "articles#show_modal", as: "publish_modal"
 
+    post "follow", action: :create, as: "follow", controller: "follows"
+    delete "follow", action: :destroy, as: "unfollow", controller: "follows"
+    get "followers", action: :followers, as: "followers"
+    get "following", action: :following, as: "following"
+
     get "articles", action: :articles, as: "articles"
     get "drafts", action: :drafts, as: "drafts"
   end
@@ -61,6 +68,7 @@ Rails.application.routes.draw do
   get "latest_feed", to: "feed#latest_feed", as: "latest_feed"
   get "popular_feed", to: "feed#popular_feed", as: "popular_feed"
   get "picked_feed", to: "feed#picked_feed", as: "picked_feed"
+  get "following_feed", to: "feed#following_feed", as: "following_feed"
 
   get 'about-nameem', to: "static_pages#about_nameem"
   get 'terms', to: "static_pages#terms"

@@ -3,7 +3,7 @@ class Notification < ApplicationRecord
   belongs_to :actor, class_name: "User"
   belongs_to :notifiable, polymorphic: true
 
-  enum :action, { liked: 0, commented: 1, featured: 2, picked: 3 }
+  enum :action, { liked: 0, commented: 1, featured: 2, picked: 3, followed: 4 }
 
   scope :unread, -> { where(read_at: nil) }
   scope :recent, -> { order(created_at: :desc) }

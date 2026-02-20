@@ -1,0 +1,33 @@
+<% title "يتابعهم #{@user.name}" %>
+
+<%= render "shared/nav" %>
+
+<div class="bg-white px-6 py-24 lg:px-8" dir="rtl">
+  <div class="mx-auto max-w-2xl">
+    <h1 class="text-2xl font-bold tracking-tight text-gray-900 mb-8">يتابعهم <%= @user.name %></h1>
+
+    <% if @following_users.any? %>
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">الكتّاب</h2>
+      <div class="divide-y divide-gray-200 mb-8">
+        <% @following_users.each do |user| %>
+          <%= render "users/user_card", user: user %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @following_tags.any? %>
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">المواضيع</h2>
+      <div class="flex flex-wrap gap-2">
+        <% @following_tags.each do |tag| %>
+          <%= link_to tag.name, topic_path(tag), class: "inline-block rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600 hover:bg-gray-200 transition-colors" %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @following_users.empty? && @following_tags.empty? %>
+      <p class="text-gray-500 text-center py-12">لا يتابع أحدًا بعد</p>
+    <% end %>
+  </div>
+</div>
+
+<%= render "shared/footer" %>
