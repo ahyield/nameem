@@ -56,7 +56,7 @@ class UsersController < ApplicationController
       client = PlausibleClient::Plausible.new
       filters = [["matches", "event:page", ["/#{@user.slug}/*"]]]
       @timeseries = client.timeseries(filters: filters)
-    rescue PlausibleClient::Error, Faraday::Error => e
+    rescue KeyError, PlausibleClient::Error, Faraday::Error => e
       Rails.logger.error "Plausible timeseries error for #{@user.slug}: #{e.message}"
       @timeseries = nil
     end

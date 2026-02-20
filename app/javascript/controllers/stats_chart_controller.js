@@ -5,7 +5,8 @@ export default class extends Controller {
   static values = { labels: Array, views: Array, visitors: Array }
 
   async connect() {
-    const { default: Chart } = await import("chart.js")
+    const mod = await import("chart.js")
+    const Chart = mod.default || mod.Chart || mod
 
     new Chart(this.canvasTarget, {
       type: "bar",
