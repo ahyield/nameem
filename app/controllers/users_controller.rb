@@ -15,6 +15,15 @@ class UsersController < ApplicationController
     @liked = Current.user&.article_likes&.exists?(article: @article)
     @comments = @article.comments.includes(:user, :rich_text_body).order(created_at: :asc)
 
+    if policy(@article).edit?
+      @likers = @article.article_likes
+                        .includes(user: { avatar_attachment: :blob })
+                        .order(created_at: :desc)
+                        .map(&:user)
+      @commenters = User.where(id: @article.comments.select(:user_id))
+                        .includes(avatar_attachment: :blob)
+    end
+
     respond_to do |format|
       format.html
       format.json { render json: @article }

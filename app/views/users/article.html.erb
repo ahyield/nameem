@@ -90,7 +90,7 @@ twitter: {
         </div>
 
         <% if policy(@article).edit? %>
-          <div data-controller="dropdown" class="relative">
+          <div data-controller="dropdown modal" class="relative">
             <button type="button" class="text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
               data-action="click->dropdown#toggle click@window->dropdown#hide">
               <span class="sr-only">Open options</span>
@@ -98,17 +98,22 @@ twitter: {
                 <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
               </svg>
             </button>
-            <div class="hidden absolute z-50 w-16 mt-2 rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+            <div class="hidden absolute z-50 w-20 mt-2 rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
                 role="menu" data-dropdown-target="menu">
               <%= link_to user_edit_article_path(slug: @user, uuid: @article),
                 class: "block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900", role: "menuitem", data: { turbo: false } do %>
                 تعديل
               <% end %>
+              <button type="button" class="block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900 cursor-pointer"
+                role="menuitem" data-action="modal#open">
+                إحصائيات
+              </button>
               <%= button_to user_destroy_article_path(slug: @user, uuid: @article), method: :delete,
                 class: "block px-3 py-1 text-sm leading-6 text-red-500 hover:text-gray-900", role: "menuitem", data: { turbo: false } do %>
                 حذف
               <% end %>
             </div>
+            <%= render "articles/analytics", article: @article, likers: @likers || [], commenters: @commenters || [] %>
           </div>
         <% else %>
           <svg class="h-5 w-5 text-gray-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
