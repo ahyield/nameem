@@ -38,35 +38,49 @@
   <% end %>
 
   <!-- Per-article table -->
-  <div class="rounded-lg bg-white shadow overflow-hidden">
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-50">
-        <tr>
-          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">العنوان</th>
-          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تاريخ النشر</th>
-          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">المشاهدات</th>
-          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الزوار</th>
-          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الإعجابات</th>
-          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">التعليقات</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <% @articles.each do |article| %>
-          <tr class="<%= "bg-yellow-50" if @top_article && article == @top_article %>">
-            <td class="px-6 py-4 text-sm font-medium text-gray-900 max-w-xs truncate">
-              <%= link_to article.title, user_article_path(slug: @user.slug, uuid: article.uuid), class: "hover:text-blue-600" %>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= l(article.published_at.to_date, format: :long) %></td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= number_with_delimiter(article.views_count) %></td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= number_with_delimiter(article.visitors_count) %></td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= number_with_delimiter(article.likes_count) %></td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= number_with_delimiter(article.comments_count) %></td>
+  <div class="rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5 overflow-hidden">
+    <div class="px-6 py-5 border-b border-gray-100">
+      <h2 class="text-lg font-semibold text-gray-900">أداء المقالات</h2>
+      <p class="mt-1 text-sm text-gray-500"><%= @articles.size %> مقالة منشورة</p>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full">
+        <thead>
+          <tr class="border-b border-gray-100">
+            <th scope="col" class="px-6 py-3.5 text-right text-xs font-semibold text-gray-500">العنوان</th>
+            <th scope="col" class="px-6 py-3.5 text-right text-xs font-semibold text-gray-500">تاريخ النشر</th>
+            <th scope="col" class="px-6 py-3.5 text-right text-xs font-semibold text-gray-500">المشاهدات</th>
+            <th scope="col" class="px-6 py-3.5 text-right text-xs font-semibold text-gray-500">الزوار</th>
+            <th scope="col" class="px-6 py-3.5 text-right text-xs font-semibold text-gray-500">الإعجابات</th>
+            <th scope="col" class="px-6 py-3.5 text-right text-xs font-semibold text-gray-500">التعليقات</th>
           </tr>
-        <% end %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% @articles.each_with_index do |article, i| %>
+            <tr class="group border-b border-gray-50 last:border-0 transition-colors hover:bg-gray-50/80 <%= "bg-amber-50/40" if @top_article && article == @top_article %>">
+              <td class="px-6 py-4 max-w-xs">
+                <div class="flex items-center gap-2">
+                  <% if @top_article && article == @top_article %>
+                    <span class="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-700 whitespace-nowrap">الأكثر مشاهدة</span>
+                  <% end %>
+                  <%= link_to article.title, user_article_path(slug: @user.slug, uuid: article.uuid),
+                      class: "text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors truncate block" %>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400"><%= l(article.published_at.to_date, format: :long) %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700 tabular-nums"><%= number_with_delimiter(article.views_count) %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700 tabular-nums"><%= number_with_delimiter(article.visitors_count) %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700 tabular-nums"><%= number_with_delimiter(article.likes_count) %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700 tabular-nums"><%= number_with_delimiter(article.comments_count) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
     <% if @articles.empty? %>
-      <div class="px-6 py-12 text-center text-gray-500">لا توجد مقالات منشورة بعد</div>
+      <div class="px-6 py-16 text-center">
+        <p class="text-sm text-gray-400">لا توجد مقالات منشورة بعد</p>
+      </div>
     <% end %>
   </div>
 </div>

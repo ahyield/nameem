@@ -5,8 +5,7 @@ export default class extends Controller {
   static values = { labels: Array, views: Array, visitors: Array }
 
   async connect() {
-    const { Chart, BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend } = await import("chart.js")
-    Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend)
+    const { default: Chart } = await import("chart.js")
 
     new Chart(this.canvasTarget, {
       type: "bar",
