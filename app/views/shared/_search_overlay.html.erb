@@ -1,0 +1,33 @@
+<div data-search-target="overlay" class="hidden fixed inset-0 z-50">
+  <!-- Backdrop -->
+  <div data-search-target="backdrop"
+       data-action="click->search#close"
+       class="fixed inset-0 bg-gray-900/50 opacity-0 transition-opacity duration-150"></div>
+
+  <!-- Panel -->
+  <div class="fixed inset-0 flex items-start justify-center pt-24 px-4 pointer-events-none">
+    <div data-search-target="panel" class="relative w-full max-w-xl bg-white rounded-xl shadow-2xl pointer-events-auto" dir="rtl">
+      <!-- Search input -->
+      <div class="flex items-center px-4">
+        <svg class="h-5 w-5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+        <input data-search-target="input"
+               data-action="input->search#input keydown->search#keydown"
+               type="text"
+               class="w-full border-0 bg-transparent py-4 pr-3 text-gray-900 placeholder:text-gray-400 focus:ring-0 focus:outline-none text-sm"
+               placeholder="ابحث عن مقالات، كتّاب، أو مواضيع..."
+               autocomplete="off" />
+        <button type="button" data-action="click->search#close"
+                class="rounded p-1 text-gray-400 hover:text-gray-600">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Results -->
+      <div data-search-target="results" class="max-h-96 overflow-y-auto [&:not(:empty)]:border-t [&:not(:empty)]:border-gray-200"></div>
+    </div>
+  </div>
+</div>

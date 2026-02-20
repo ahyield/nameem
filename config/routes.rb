@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   end
 
   draw :backoffice
+  get "search", to: "search#index", as: "search"
+  get "search/autocomplete", to: "search#autocomplete", as: "search_autocomplete"
   resources :feed, only: [:index]
   resources :topics, only: [:index, :show], param: :slug do
     collection do

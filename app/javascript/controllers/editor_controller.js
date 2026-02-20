@@ -140,35 +140,41 @@ export default class extends Controller {
     if (publishText) publishText.innerHTML = "حفظ ونشر"
     if (publishButton) publishButton.classList.remove("btn-publish-disabled")
 
-    const article = await fetchArticle(uuid, slug)
-    if (articleTitle) articleTitle.value = article.title
+    try {
+      const article = await fetchArticle(uuid, slug)
+      if (articleTitle) articleTitle.value = article.title
 
-    // Hide + controls when loading existing content
-    const controls = document.querySelector(".show-controls")
-    if (controls) controls.style.display = "none"
+      // Hide + controls when loading existing content
+      const controls = document.querySelector(".show-controls")
+      if (controls) controls.style.display = "none"
 
-    // Load content into editor
-    if (article.content && article.content.root) {
-      // Lexical JSON format
-      const editorState = this.editor.parseEditorState(article.content)
-      this.editor.setEditorState(editorState)
-    } else if (article.content_html) {
-      // Migrated HTML format
-      this.editor.update(() => {
-        const parser = new DOMParser()
-        const dom = parser.parseFromString(article.content_html, "text/html")
-        const nodes = $generateNodesFromDOM(this.editor, dom)
-        const root = $getRoot()
-        root.clear()
-        root.append(...nodes)
-      })
-    } else if (article.content && article.content.ops) {
-      // Legacy Quill Delta — should not happen after migration, but fallback
-      // The article should be migrated first via rake task
-      console.warn("Article has Quill Delta content. Run migrate_quill_to_html rake task.")
+      // Load content into editor
+      if (article.content && article.content.root) {
+        // Lexical JSON format
+        const editorState = this.editor.parseEditorState(article.content)
+        this.editor.setEditorState(editorState)
+      } else if (article.content_html) {
+        // Migrated HTML format
+        this.editor.update(() => {
+          const parser = new DOMParser()
+          const dom = parser.parseFromString(article.content_html, "text/html")
+          const nodes = $generateNodesFromDOM(this.editor, dom)
+          const root = $getRoot()
+          root.clear()
+          root.select()
+          $insertNodes(nodes)
+        })
+      } else if (article.content && article.content.ops) {
+        // Legacy Quill Delta — should not happen after migration, but fallback
+        console.warn("Article has Quill Delta content. Run migrate_quill_to_html rake task.")
+      }
+
+      this.dirty = false
+    } catch (error) {
+      console.error("Failed to load article:", error)
+      const statusEl = document.getElementById("save-status")
+      if (statusEl) statusEl.textContent = "فشل تحميل المقال"
     }
-
-    this.dirty = false
   }
 
   async autoSave() {

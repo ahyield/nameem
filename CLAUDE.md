@@ -124,14 +124,14 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 - [x] Backoffice: tag management (merge, rename, delete)
 - [x] Specs for Tag, ArticleTag models and topics controller
 
-### Search
-- [ ] Add MySQL FULLTEXT index on articles (title, description)
-- [ ] Create `SearchController` with GROQ query against title/description/content
-- [ ] Build search bar component (Stimulus controller with debounced input)
-- [ ] Build `/search?q=` results page with article cards
-- [ ] Add search to navbar (expandable input or dedicated icon)
-- [ ] Handle Arabic text search quirks (diacritics, alef normalization)
-- [ ] Specs for search controller and edge cases
+### Search ✅
+- [x] Add MySQL FULLTEXT index on articles (title, description)
+- [x] Create `SearchController` with LIKE query + Arabic normalization against title/description
+- [x] Build search bar component (Stimulus controller with debounced input)
+- [x] Build `/search?q=` results page with article cards
+- [x] Add search to navbar (expandable input or dedicated icon)
+- [x] Handle Arabic text search quirks (diacritics, alef normalization)
+- [x] Specs for search controller and edge cases
 
 ### Follow System ✅
 - [x] Create `Follow` model (follower_id, followed_id, unique pair, counter caches)
@@ -164,14 +164,14 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 - [ ] Sort comments: top-level by newest/popular, replies by oldest
 - [ ] Specs for threaded comments and comment likes
 
-### Author Analytics
-- [ ] Build `/:slug/stats` page (behind authentication, own profile only)
-- [ ] Show per-article stats: views, visitors, likes, comments over time
-- [ ] Show aggregate stats: total views, total likes, top articles
-- [ ] Pull time-series data from Plausible for charts
-- [ ] Simple chart rendering (Stimulus controller with lightweight chart lib or CSS-only bars)
-- [ ] Add "Stats" link to user dropdown menu
-- [ ] Specs for stats controller authorization
+### Author Analytics ✅
+- [x] Build `/:slug/stats` page (behind authentication, own profile only)
+- [x] Show per-article stats: views, visitors, likes, comments over time
+- [x] Show aggregate stats: total views, total likes, top articles
+- [x] Pull time-series data from Plausible for charts
+- [x] Simple chart rendering (Stimulus controller with lightweight chart lib or CSS-only bars)
+- [x] Add "Stats" link to user dropdown menu
+- [x] Specs for stats controller authorization
 
 ### Reading Time ✅
 - [x] Add `reading_time_minutes` column to articles
@@ -199,11 +199,11 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 - [ ] Trending algorithm based on views/likes velocity (recent engagement, not just totals)
 - [ ] Specs for trending scope/query
 
-### SEO & Structured Data
-- [ ] Add JSON-LD structured data for articles (Article schema)
-- [ ] Ensure proper Open Graph and Twitter Card meta tags on all pages
-- [ ] Generate XML sitemap (articles, topics, authors)
-- [ ] Handle Arabic text SEO (canonical URLs, hreflang)
+### SEO & Structured Data ✅
+- [x] Add JSON-LD structured data for articles (Article schema)
+- [x] Ensure proper Open Graph and Twitter Card meta tags on all pages
+- [x] Generate XML sitemap (articles, topics, authors)
+- [x] Handle Arabic text SEO (canonical URLs, hreflang)
 
 ### RSS Feeds
 - [ ] Add RSS feed for all published articles (`/feed.xml`)

@@ -27,7 +27,11 @@
       "Bash(git stash:*)",
       "Bash(ruby:*)",
       "Bash(bin/rails runner:*)",
-      "Bash(bin/rails routes:*)"
+      "Bash(bin/rails routes:*)",
+      "Bash(bin/rails db:migrate:redo:*)",
+      "Bash(bin/rails db:migrate:down:*)",
+      "Bash(grep:*)",
+      "Bash(bin/rails middleware:*)"
     ]
   }
 }

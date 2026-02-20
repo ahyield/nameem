@@ -1,6 +1,7 @@
 <nav class="bg-transparent inset-x-0 top-0 z-30 absolute shadow">
   <div class="mx-auto w-full px-4 sm:px-6 lg:w-3/4 lg:px-8">
     <div class="flex h-16 justify-between items-center">
+      <!-- Right section: logo + links -->
       <div class="flex">
         <div class="sm:ml-1 mr-2 flex items-center md:hidden">
           <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400
@@ -30,22 +31,30 @@
           <a href="/terms" class="inline-flex items-center border-b-2 px-1 pt-1 text-lg font-medium <%= active_nav_class("/terms") %>" data-turbo="false">الشروط</a>
         </div>
       </div>
+
+      <!-- Center section: search + write -->
+      <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-x-4">
+        <% if !user_signed_in? %>
+          <%= link_to signup_path, class: "relative rounded-full flex focus:outline-none focus:ring-0 gap-x-1.5 px-3 py-2 opacity-70 hover:opacity-100", data: { turbo: false } do %>
+            <%= heroicon "pencil-square" %>
+            <span class="rtl:mr-1 font-bold mt-1">أكــتــب</span>
+          <% end %>
+        <% else %>
+          <%= link_to new_story_path, class: "relative rounded-full flex focus:outline-none focus:ring-0 gap-x-1.5 px-3 py-2 opacity-70 hover:opacity-100", data: { turbo: false } do %>
+            <%= heroicon "pencil-square" %>
+            <span class="font-bold mt-1">أكــتــب</span>
+          <% end %>
+        <% end %>
+        <button type="button" data-action="click->search#open" class="rounded-full p-2 text-gray-400 hover:text-gray-600 focus:outline-none">
+          <span class="sr-only">بحث</span>
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Left section: actions -->
       <div class="flex items-center">
-        <div class="flex-shrink-0">
-          <% if !user_signed_in? %>
-            <%= link_to signup_path, class: "relative rounded-full flex focus:outline-none focus:ring-0 gap-x-1.5 px-3 py-2 opacity-70 hover:opacity-100", data: { turbo: false } do %>
-              <span class="absolute -inset-1.5"></span>
-              <%= heroicon "pencil-square" %>
-              <span class="rtl:mr-1 font-bold mt-1">أكــتــب</span>
-            <% end %>
-          <% else %>
-            <%= link_to new_story_path, class: "relative rounded-full flex focus:outline-none focus:ring-0 gap-x-1.5 px-3 py-2 opacity-70 hover:opacity-100", data: { turbo: false } do %>
-              <span class="absolute -inset-1.5"></span>
-              <%= heroicon "pencil-square" %>
-              <span class="font-bold mt-1">أكــتــب</span>
-            <% end %>
-         <% end %>
-        </div>
         <div class="hidden md:ml-24 md:flex md:flex-shrink-0 md:items-center">
           <% if user_signed_in? %>
             <!-- Notification bell -->

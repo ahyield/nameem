@@ -1,0 +1,128 @@
+<% title @query.present? ? "#{@query} — بحث" : "بحث" %>
+<% description "ابحث في نميم عن مقالات، كتّاب، ومواضيع" %>
+
+<%= render "shared/nav" %>
+
+<div class="mx-auto max-w-3xl px-4 pt-24 pb-14 sm:px-6 lg:max-w-7xl lg:px-8">
+
+  <% if @query.blank? %>
+    <!-- Empty state -->
+    <div class="flex flex-col items-center justify-center py-32">
+      <div class="rounded-full bg-gray-50 p-6 mb-6">
+        <svg class="h-10 w-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+      </div>
+      <form action="<%= search_path %>" method="get" class="w-full max-w-lg">
+        <div class="relative">
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+          </div>
+          <input type="text" name="q"
+                 class="block w-full rounded-full border-0 bg-gray-50 py-3.5 pr-12 pl-6 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-400 text-base"
+                 placeholder="ابحث عن مقالات، كتّاب، أو مواضيع..."
+                 autocomplete="off" autofocus />
+        </div>
+      </form>
+      <p class="mt-4 text-sm text-gray-400">ابحث عن مقالات، كتّاب، أو مواضيع</p>
+    </div>
+
+  <% else %>
+    <!-- Search bar -->
+    <div class="mb-10">
+      <form action="<%= search_path %>" method="get">
+        <div class="relative">
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+          </div>
+          <input type="text" name="q" value="<%= @query %>"
+                 class="block w-full rounded-full border-0 bg-gray-50 py-3 pr-12 pl-6 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-400 text-base"
+                 placeholder="ابحث عن مقالات، كتّاب، أو مواضيع..."
+                 autocomplete="off" autofocus />
+        </div>
+      </form>
+    </div>
+
+    <% total = @articles.size + @users.size + @tags.size %>
+    <% if total == 0 %>
+      <!-- No results -->
+      <div class="flex flex-col items-center justify-center py-20">
+        <div class="rounded-full bg-gray-50 p-5 mb-4">
+          <svg class="h-8 w-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+        </div>
+        <p class="text-gray-900 font-medium">لا توجد نتائج لـ "<%= @query %>"</p>
+        <p class="mt-1 text-sm text-gray-400">جرّب كلمات مختلفة أو تحقق من الإملاء</p>
+      </div>
+
+    <% else %>
+      <!-- Results grid -->
+      <div class="grid grid-cols-1 items-start gap-1 lg:grid-cols-3">
+        <!-- Articles (main column) -->
+        <div class="grid grid-cols-1 gap-4 lg:col-span-2">
+          <section>
+            <div class="rounded-lg bg-white">
+              <div class="p-6">
+                <% if @articles.any? %>
+                  <h2 class="text-lg font-semibold text-gray-900 mb-2">المقالات</h2>
+                  <div id="search_results">
+                    <%= render partial: "feed/article", collection: @articles, as: :article %>
+                  </div>
+                  <%= turbo_frame_tag "search_pagination" do %>
+                    <% if @pagy&.next %>
+                      <%= turbo_frame_tag "search_pagination", src: search_path(q: @query, page: @pagy.next, format: :turbo_stream), loading: "lazy" %>
+                    <% end %>
+                  <% end %>
+                <% else %>
+                  <div class="py-8 text-center">
+                    <p class="text-sm text-gray-400">لا توجد مقالات مطابقة لـ "<%= @query %>"</p>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="grid my-6 grid-cols-1 gap-4 self-start sticky top-0">
+          <% if @users.any? %>
+            <section>
+              <div class="overflow-hidden rounded-lg bg-white">
+                <div class="p-6">
+                  <h2 class="font-semibold text-gray-900 mb-1">الكتّاب</h2>
+                </div>
+                <div class="px-6 pb-4">
+                  <% @users.each do |user| %>
+                    <%= render partial: "users/user_card", locals: { user: user } %>
+                  <% end %>
+                </div>
+              </div>
+            </section>
+          <% end %>
+
+          <% if @tags.any? %>
+            <section>
+              <div class="overflow-hidden rounded-lg bg-white">
+                <div class="p-6">
+                  <h2 class="font-semibold text-gray-900">المواضيع</h2>
+                </div>
+                <div class="px-6 pb-6 flex flex-wrap gap-2">
+                  <% @tags.each do |tag| %>
+                    <%= link_to tag.name, topic_path(tag), class: "inline-block rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600 hover:bg-gray-200 transition-colors", data: { turbo: false } %>
+                  <% end %>
+                </div>
+              </div>
+            </section>
+          <% end %>
+
+          <%= render "shared/footer" %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>

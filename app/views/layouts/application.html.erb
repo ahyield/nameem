@@ -4,7 +4,7 @@
     <%= render "shared/head" %>
     <%= Sentry.get_trace_propagation_meta.html_safe %>
   </head>
-  <body class="font-naskh min-h-screen scroll-smooth">
+  <body class="font-naskh min-h-screen scroll-smooth" data-controller="search">
     <% if current_page?(new_story_path) || current_page?(user_edit_article_path(slug: (params[:slug] || ""), uuid: (params[:uuid] || ""))) %>
       <%= render "shared/editor_nav" %>
     <% end %>
@@ -13,5 +13,6 @@
       <%= yield %>
     </main>
 
+    <%= render "shared/search_overlay" %>
   </body>
 </html>
