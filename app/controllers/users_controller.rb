@@ -41,6 +41,18 @@ class UsersController < ApplicationController
     end
   end
 
+  def stats
+    @user = User.friendly.find(params[:slug])
+    authorize @user, :stats?
+
+    @articles = @user.articles.published.order(published_at: :desc)
+    @total_views = @articles.sum(:views_count).to_i
+    @total_visitors = @articles.sum(:visitors_count).to_i
+    @total_likes = @articles.sum(:likes_count)
+    @total_comments = @articles.sum(:comments_count)
+    @top_article = @articles.order(views_count: :desc).first
+  end
+
   def followers
     @user = User.friendly.find(params[:slug])
     @pagy, @followers = pagy(@user.followers)

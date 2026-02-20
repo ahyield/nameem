@@ -48,6 +48,8 @@
               role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0" do %>
               اعدادات الحساب<span class="sr-only">, Reform</span>
             <% end %>
+            <%= link_to "الإحصائيات", user_stats_path(@user), class: "block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900",
+              role: "menuitem", tabindex: "-1", id: "options-menu-2-item-stats" %>
           <% end %>
           <div data-controller="clipboard" data-clipboard-success-content-value="تم نسخ الرابط">
             <input type="text" value="<%= user_url(@user) %>" class="hidden" data-clipboard-target="source" autocomplete="off">
@@ -137,8 +139,13 @@
               <% end %>
 
               <% if Current.user == @user %>
-                <div class="mt-6 text-sm text-blue-400 hover:text-black">
-                  <%= link_to "اعدادات الحساب", settings_user_settings_path %>
+                <div class="mt-6 flex flex-col gap-1 text-sm">
+                  <div class="text-blue-400 hover:text-black">
+                    <%= link_to "الإحصائيات", user_stats_path(@user) %>
+                  </div>
+                  <div class="text-blue-400 hover:text-black">
+                    <%= link_to "اعدادات الحساب", settings_user_settings_path %>
+                  </div>
                 </div>
               <% end %>
             </div>

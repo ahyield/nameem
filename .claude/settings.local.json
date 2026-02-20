@@ -26,7 +26,8 @@
       "Bash(bin/rails generate migration:*)",
       "Bash(git stash:*)",
       "Bash(ruby:*)",
-      "Bash(bin/rails runner:*)"
+      "Bash(bin/rails runner:*)",
+      "Bash(bin/rails routes:*)"
     ]
   }
 }

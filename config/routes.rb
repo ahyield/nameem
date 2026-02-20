@@ -52,6 +52,7 @@ Rails.application.routes.draw do
 
     get "articles", action: :articles, as: "articles"
     get "drafts", action: :drafts, as: "drafts"
+    get "stats", action: :stats, as: "stats"
   end
 
   namespace :settings do

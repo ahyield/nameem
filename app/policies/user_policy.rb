@@ -10,4 +10,8 @@ class UserPolicy < ApplicationPolicy
   def drafts?
     user == record
   end
+
+  def stats?
+    user == record
+  end
 end

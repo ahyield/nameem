@@ -92,6 +92,8 @@
                   role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
                 <%= link_to "الصفحة الشخصية", user_path(Current.user), data: { turbo: false }, class: "block px-4 py-2 hover:transition-all hover:duration-300
                 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-0" %>
+                <%= link_to "الإحصائيات", user_stats_path(Current.user), data: { turbo: false }, class: "block px-4 py-2 hover:transition-all hover:duration-300
+                hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-stats" %>
                 <%= link_to settings_user_settings_path, class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500",
                   role: "menuitem", tabindex: "-1", id: "user-menu-item-1", data: { turbo: false }  do %>
                   اعدادات الحساب
@@ -141,6 +143,7 @@
         </div>
         <div class="mt-3 space-y-1">
           <%= link_to "الصفحة الشخصية", user_path(Current.user), data: { turbo: false }, class: "block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6" %>
+          <%= link_to "الإحصائيات", user_stats_path(Current.user), data: { turbo: false }, class: "block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6" %>
           <%= link_to notifications_path, class: "flex items-center gap-x-2 px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6" do %>
             الإشعارات
             <% unread_count = Current.user.notifications.unread.count %>

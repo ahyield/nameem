@@ -1,0 +1,60 @@
+<% title "نميم - إحصائيات #{@user.name}" %>
+
+<%= render "shared/nav" %>
+
+<div class="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
+  <h1 class="text-2xl font-bold text-gray-900 mb-8">الإحصائيات</h1>
+
+  <!-- Aggregate cards -->
+  <div class="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-10">
+    <div class="rounded-lg bg-white px-4 py-5 shadow">
+      <dt class="text-sm font-medium text-gray-500">المشاهدات</dt>
+      <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= number_with_delimiter(@total_views) %></dd>
+    </div>
+    <div class="rounded-lg bg-white px-4 py-5 shadow">
+      <dt class="text-sm font-medium text-gray-500">الزوار</dt>
+      <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= number_with_delimiter(@total_visitors) %></dd>
+    </div>
+    <div class="rounded-lg bg-white px-4 py-5 shadow">
+      <dt class="text-sm font-medium text-gray-500">الإعجابات</dt>
+      <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= number_with_delimiter(@total_likes) %></dd>
+    </div>
+    <div class="rounded-lg bg-white px-4 py-5 shadow">
+      <dt class="text-sm font-medium text-gray-500">التعليقات</dt>
+      <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= number_with_delimiter(@total_comments) %></dd>
+    </div>
+  </div>
+
+  <!-- Per-article table -->
+  <div class="rounded-lg bg-white shadow overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">العنوان</th>
+          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تاريخ النشر</th>
+          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">المشاهدات</th>
+          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الزوار</th>
+          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الإعجابات</th>
+          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">التعليقات</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <% @articles.each do |article| %>
+          <tr class="<%= "bg-yellow-50" if @top_article && article == @top_article %>">
+            <td class="px-6 py-4 text-sm font-medium text-gray-900 max-w-xs truncate">
+              <%= link_to article.title, user_article_path(slug: @user.slug, uuid: article.uuid), class: "hover:text-blue-600" %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= l(article.published_at.to_date, format: :long) %></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= number_with_delimiter(article.views_count) %></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= number_with_delimiter(article.visitors_count) %></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= number_with_delimiter(article.likes_count) %></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= number_with_delimiter(article.comments_count) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% if @articles.empty? %>
+      <div class="px-6 py-12 text-center text-gray-500">لا توجد مقالات منشورة بعد</div>
+    <% end %>
+  </div>
+</div>
