@@ -52,13 +52,20 @@ class UsersController < ApplicationController
     @total_comments = @articles.sum(:comments_count)
     @top_article = @articles.order(views_count: :desc).first
 
-    begin
-      client = PlausibleClient::Plausible.new
-      filters = [["matches", "event:page", ["/#{@user.slug}/*"]]]
-      @timeseries = client.timeseries(filters: filters)
-    rescue KeyError, PlausibleClient::Error, Faraday::Error => e
-      Rails.logger.error "Plausible timeseries error for #{@user.slug}: #{e.message}"
-      @timeseries = nil
+    if Rails.env.development?
+      @timeseries = (29.downto(0)).map do |i|
+        date = i.days.ago.to_date
+        { date: date.to_s, pageviews: rand(20..200), visitors: rand(5..80) }
+      end
+    else
+      begin
+        client = PlausibleClient::Plausible.new
+        filters = [["matches", "event:page", ["/#{@user.slug}/*"]]]
+        @timeseries = client.timeseries(filters: filters)
+      rescue KeyError, PlausibleClient::Error, Faraday::Error => e
+        Rails.logger.error "Plausible timeseries error for #{@user.slug}: #{e.message}"
+        @timeseries = nil
+      end
     end
   end
 

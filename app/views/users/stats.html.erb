@@ -27,13 +27,34 @@
 
   <!-- 30-day chart -->
   <% if @timeseries.present? %>
-    <div class="rounded-lg bg-white p-6 shadow mb-10"
-         data-controller="stats-chart"
-         data-stats-chart-labels-value="<%= @timeseries.map { |d| d[:date] }.to_json %>"
-         data-stats-chart-views-value="<%= @timeseries.map { |d| d[:pageviews] }.to_json %>"
-         data-stats-chart-visitors-value="<%= @timeseries.map { |d| d[:visitors] }.to_json %>">
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">آخر 30 يوم</h2>
-      <canvas data-stats-chart-target="canvas" height="200"></canvas>
+    <% max_val = @timeseries.map { |d| [d[:pageviews], d[:visitors]].max }.max %>
+    <% max_val = 1 if max_val.zero? %>
+    <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 mb-10" data-controller="stats-chart">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-semibold text-gray-900">آخر 30 يوم</h2>
+        <div class="flex items-center gap-4 text-xs text-gray-500">
+          <span class="flex items-center gap-1.5"><span class="inline-block h-2.5 w-2.5 rounded-sm bg-blue-500/70"></span>المشاهدات</span>
+          <span class="flex items-center gap-1.5"><span class="inline-block h-2.5 w-2.5 rounded-sm bg-teal-500/70"></span>الزوار</span>
+        </div>
+      </div>
+
+      <div class="flex items-end gap-px h-48" data-stats-chart-target="chart">
+        <% @timeseries.each do |day| %>
+          <% views_pct = (day[:pageviews].to_f / max_val * 100).round(1) %>
+          <% visitors_pct = (day[:visitors].to_f / max_val * 100).round(1) %>
+          <div class="group relative flex-1 flex items-end gap-px h-full min-w-0">
+            <div class="flex-1 rounded-t bg-blue-500/70 transition-all duration-200 group-hover:bg-blue-500" style="height: <%= views_pct %>%"></div>
+            <div class="flex-1 rounded-t bg-teal-500/70 transition-all duration-200 group-hover:bg-teal-500" style="height: <%= visitors_pct %>%"></div>
+            <div class="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+              <div class="rounded-lg bg-gray-900 text-white text-xs px-3 py-2 whitespace-nowrap shadow-lg">
+                <div class="font-medium mb-1"><%= Date.parse(day[:date]).strftime("%-d/%-m") %></div>
+                <div>المشاهدات: <span class="tabular-nums"><%= day[:pageviews] %></span></div>
+                <div>الزوار: <span class="tabular-nums"><%= day[:visitors] %></span></div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
     </div>
   <% end %>
 
