@@ -25,6 +25,7 @@ class Follow < ApplicationRecord
 
   def notify_followable
     return unless followable_type == "User"
+    return if Notification.exists?(recipient: followable, actor: follower, action: :followed)
 
     Notification.create!(
       recipient:  followable,

@@ -21,7 +21,7 @@ module Settings
     private
 
     def user_params
-      params.expect(user: %i[name avatar slug bio])
+      params.expect(user: %i[name avatar slug bio website_url twitter_handle instagram_handle facebook_handle])
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_20_023758) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_20_044605) do
   create_table "action_text_rich_texts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "body", size: :long
     t.datetime "created_at", null: false
@@ -310,15 +310,19 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_20_023758) do
     t.boolean "editor", default: false, null: false
     t.string "email"
     t.boolean "email_notifications", default: true, null: false
+    t.string "facebook_handle"
     t.boolean "featured", default: false, null: false
     t.string "first_name"
     t.integer "followers_count", default: 0, null: false
     t.integer "following_count", default: 0, null: false
+    t.string "instagram_handle"
     t.string "last_name"
     t.datetime "last_sign_in_at"
     t.boolean "picked", default: false, null: false
     t.string "slug"
+    t.string "twitter_handle"
     t.datetime "updated_at", null: false
+    t.string "website_url"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["featured"], name: "index_users_on_featured"
     t.index ["picked"], name: "index_users_on_picked"

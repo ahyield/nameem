@@ -25,7 +25,8 @@
       "Bash(bin/rails backfill_reading_time:*)",
       "Bash(bin/rails generate migration:*)",
       "Bash(git stash:*)",
-      "Bash(ruby:*)"
+      "Bash(ruby:*)",
+      "Bash(bin/rails runner:*)"
     ]
   }
 }
