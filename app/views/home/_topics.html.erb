@@ -3,9 +3,9 @@
     <h1 class="text-9xl opacity-80 bg-gradient-to-r from-slate-100 to-blue-400 inline-block text-transparent bg-clip-text">المواضيع</h1>
   </div>
 
-  <div class="flex flex-wrap gap-3 py-8">
-    <% @tags.each do |tag| %>
-      <%= link_to topic_path(tag), class: "group flex items-center gap-x-2 rounded-full bg-gray-50 px-5 py-3 text-sm font-medium text-gray-700 ring-1 ring-inset ring-gray-200 hover:bg-gray-100 transition-colors" do %>
+  <div class="grid grid-cols-3 gap-3 py-8">
+    <% @tags.first(6).each do |tag| %>
+      <%= link_to topic_path(tag), class: "group flex items-center justify-center gap-x-2 rounded-full bg-gray-50 px-5 py-3 text-sm font-medium text-gray-700 ring-1 ring-inset ring-gray-200 hover:bg-gray-100 transition-colors" do %>
         <span><%= tag.name %></span>
         <span class="text-xs text-gray-400"><%= tag.articles_count %></span>
       <% end %>
