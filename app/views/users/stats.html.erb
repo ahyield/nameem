@@ -7,53 +7,133 @@
 
   <!-- Aggregate cards -->
   <div class="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-10">
-    <div class="rounded-lg bg-white px-4 py-5 shadow">
+    <div class="relative overflow-hidden rounded-2xl bg-white/60 backdrop-blur-sm px-5 py-6 shadow-sm ring-1 ring-gray-900/5">
+      <div class="absolute -top-6 -left-6 h-24 w-24 rounded-full bg-blue-400/10 blur-2xl"></div>
       <dt class="text-sm font-medium text-gray-500">المشاهدات</dt>
-      <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= number_with_delimiter(@total_views) %></dd>
+      <dd class="mt-2 text-3xl font-bold text-gray-900 tabular-nums"><%= number_with_delimiter(@total_views) %></dd>
     </div>
-    <div class="rounded-lg bg-white px-4 py-5 shadow">
+    <div class="relative overflow-hidden rounded-2xl bg-white/60 backdrop-blur-sm px-5 py-6 shadow-sm ring-1 ring-gray-900/5">
+      <div class="absolute -top-6 -left-6 h-24 w-24 rounded-full bg-teal-400/10 blur-2xl"></div>
       <dt class="text-sm font-medium text-gray-500">الزوار</dt>
-      <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= number_with_delimiter(@total_visitors) %></dd>
+      <dd class="mt-2 text-3xl font-bold text-gray-900 tabular-nums"><%= number_with_delimiter(@total_visitors) %></dd>
     </div>
-    <div class="rounded-lg bg-white px-4 py-5 shadow">
+    <div class="relative overflow-hidden rounded-2xl bg-white/60 backdrop-blur-sm px-5 py-6 shadow-sm ring-1 ring-gray-900/5">
+      <div class="absolute -top-6 -left-6 h-24 w-24 rounded-full bg-rose-400/10 blur-2xl"></div>
       <dt class="text-sm font-medium text-gray-500">الإعجابات</dt>
-      <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= number_with_delimiter(@total_likes) %></dd>
+      <dd class="mt-2 text-3xl font-bold text-gray-900 tabular-nums"><%= number_with_delimiter(@total_likes) %></dd>
     </div>
-    <div class="rounded-lg bg-white px-4 py-5 shadow">
+    <div class="relative overflow-hidden rounded-2xl bg-white/60 backdrop-blur-sm px-5 py-6 shadow-sm ring-1 ring-gray-900/5">
+      <div class="absolute -top-6 -left-6 h-24 w-24 rounded-full bg-amber-400/10 blur-2xl"></div>
       <dt class="text-sm font-medium text-gray-500">التعليقات</dt>
-      <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= number_with_delimiter(@total_comments) %></dd>
+      <dd class="mt-2 text-3xl font-bold text-gray-900 tabular-nums"><%= number_with_delimiter(@total_comments) %></dd>
     </div>
   </div>
 
   <!-- 30-day chart -->
   <% if @timeseries.present? %>
-    <% max_val = @timeseries.map { |d| [d[:pageviews], d[:visitors]].max }.max %>
-    <% max_val = 1 if max_val.zero? %>
+    <%
+      max_val = @timeseries.map { |d| [d[:pageviews], d[:visitors]].max }.max
+      max_val = 1 if max_val.zero?
+
+      # Round up to a nice ceiling for Y-axis
+      magnitude = 10 ** [Math.log10([max_val, 1].max).floor, 0].max
+      y_max = ((max_val.to_f / magnitude).ceil * magnitude).to_i
+      y_max = [y_max, 1].max
+
+      chart_w = 900
+      chart_h = 200
+      count = @timeseries.size
+      step = chart_w.to_f / [count - 1, 1].max
+
+      views_points = @timeseries.each_with_index.map { |d, i| [i * step, chart_h - (d[:pageviews].to_f / y_max * chart_h)] }
+      visitors_points = @timeseries.each_with_index.map { |d, i| [i * step, chart_h - (d[:visitors].to_f / y_max * chart_h)] }
+
+      views_line = views_points.map { |x, y| "#{x.round(1)},#{y.round(1)}" }.join(" ")
+      visitors_line = visitors_points.map { |x, y| "#{x.round(1)},#{y.round(1)}" }.join(" ")
+
+      views_area = "0,#{chart_h} #{views_line} #{chart_w},#{chart_h}"
+      visitors_area = "0,#{chart_h} #{visitors_line} #{chart_w},#{chart_h}"
+
+      y_ticks = 4
+    %>
     <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-900/5 mb-10" data-controller="stats-chart">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-lg font-semibold text-gray-900">آخر 30 يوم</h2>
         <div class="flex items-center gap-4 text-xs text-gray-500">
-          <span class="flex items-center gap-1.5"><span class="inline-block h-2.5 w-2.5 rounded-sm bg-blue-500/70"></span>المشاهدات</span>
-          <span class="flex items-center gap-1.5"><span class="inline-block h-2.5 w-2.5 rounded-sm bg-teal-500/70"></span>الزوار</span>
+          <span class="flex items-center gap-1.5"><span class="inline-block h-2.5 w-2.5 rounded-full bg-blue-500"></span>المشاهدات</span>
+          <span class="flex items-center gap-1.5"><span class="inline-block h-2.5 w-2.5 rounded-full bg-teal-500"></span>الزوار</span>
         </div>
       </div>
 
-      <div class="flex items-end gap-px h-48" data-stats-chart-target="chart">
-        <% @timeseries.each do |day| %>
-          <% views_pct = (day[:pageviews].to_f / max_val * 100).round(1) %>
-          <% visitors_pct = (day[:visitors].to_f / max_val * 100).round(1) %>
-          <div class="group relative flex-1 flex items-end gap-px h-full min-w-0">
-            <div class="flex-1 rounded-t bg-blue-500/70 transition-all duration-200 group-hover:bg-blue-500" style="height: <%= views_pct %>%"></div>
-            <div class="flex-1 rounded-t bg-teal-500/70 transition-all duration-200 group-hover:bg-teal-500" style="height: <%= visitors_pct %>%"></div>
-            <div class="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-              <div class="rounded-lg bg-gray-900 text-white text-xs px-3 py-2 whitespace-nowrap shadow-lg">
-                <div class="font-medium mb-1"><%= Date.parse(day[:date]).strftime("%-d/%-m") %></div>
-                <div>المشاهدات: <span class="tabular-nums"><%= day[:pageviews] %></span></div>
-                <div>الزوار: <span class="tabular-nums"><%= day[:visitors] %></span></div>
+      <div class="relative" data-stats-chart-target="chart">
+        <%# Y-axis labels %>
+        <div class="absolute inset-y-0 right-0 w-10 flex flex-col justify-between pointer-events-none" style="top: 0; bottom: 28px;">
+          <% (0..y_ticks).each do |i| %>
+            <span class="text-[10px] tabular-nums text-gray-400 text-left leading-none"><%= number_with_delimiter((y_max.to_f / y_ticks * (y_ticks - i)).round) %></span>
+          <% end %>
+        </div>
+
+        <%# SVG chart %>
+        <div class="mr-12">
+          <svg viewBox="0 0 <%= chart_w %> <%= chart_h %>" preserveAspectRatio="none" class="w-full" style="height: 200px;">
+            <%# Grid lines %>
+            <% (0..y_ticks).each do |i| %>
+              <% gy = (chart_h.to_f / y_ticks * i).round(1) %>
+              <line x1="0" y1="<%= gy %>" x2="<%= chart_w %>" y2="<%= gy %>" stroke="#f1f5f9" stroke-width="1" vector-effect="non-scaling-stroke"/>
+            <% end %>
+
+            <%# Views area + line %>
+            <polygon points="<%= views_area %>" fill="rgba(59,130,246,0.08)"/>
+            <polyline points="<%= views_line %>" fill="none" stroke="#3b82f6" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/>
+
+            <%# Visitors area + line %>
+            <polygon points="<%= visitors_area %>" fill="rgba(20,184,166,0.08)"/>
+            <polyline points="<%= visitors_line %>" fill="none" stroke="#14b8a6" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/>
+
+            <%# Data points (dots) %>
+            <% views_points.each_with_index do |(x, y), i| %>
+              <circle cx="<%= x.round(1) %>" cy="<%= y.round(1) %>" r="3" fill="#3b82f6" vector-effect="non-scaling-stroke" class="opacity-0 hover:opacity-100" style="transition: opacity 0.15s;"/>
+            <% end %>
+            <% visitors_points.each_with_index do |(x, y), i| %>
+              <circle cx="<%= x.round(1) %>" cy="<%= y.round(1) %>" r="3" fill="#14b8a6" vector-effect="non-scaling-stroke" class="opacity-0 hover:opacity-100" style="transition: opacity 0.15s;"/>
+            <% end %>
+
+            <%# Hover columns with tooltips %>
+            <% @timeseries.each_with_index do |day, i| %>
+              <g class="group">
+                <rect x="<%= (i * step - step / 2).round(1) %>" y="0" width="<%= step.round(1) %>" height="<%= chart_h %>" fill="transparent" class="cursor-pointer"/>
+                <line x1="<%= (i * step).round(1) %>" y1="0" x2="<%= (i * step).round(1) %>" y2="<%= chart_h %>" stroke="#cbd5e1" stroke-width="1" vector-effect="non-scaling-stroke" stroke-dasharray="3,3" class="opacity-0 group-hover:opacity-100" style="transition: opacity 0.15s;"/>
+                <circle cx="<%= views_points[i][0].round(1) %>" cy="<%= views_points[i][1].round(1) %>" r="4" fill="white" stroke="#3b82f6" stroke-width="2" vector-effect="non-scaling-stroke" class="opacity-0 group-hover:opacity-100" style="transition: opacity 0.15s;"/>
+                <circle cx="<%= visitors_points[i][0].round(1) %>" cy="<%= visitors_points[i][1].round(1) %>" r="4" fill="white" stroke="#14b8a6" stroke-width="2" vector-effect="non-scaling-stroke" class="opacity-0 group-hover:opacity-100" style="transition: opacity 0.15s;"/>
+              </g>
+            <% end %>
+          </svg>
+
+          <%# Hover tooltip layer %>
+          <div class="relative" style="height: 0;">
+            <% @timeseries.each_with_index do |day, i| %>
+              <div class="absolute top-0 h-[200px] group" style="right: calc(<%= ((chart_w - i * step).to_f / chart_w * 100).round(2) %>% - <%= (step / 2).round(1) %>px); width: <%= (step).round(1) %>px; transform: translateY(-100%);">
+                <div class="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <div class="rounded-lg bg-gray-900 text-white text-xs px-3 py-2 whitespace-nowrap shadow-lg text-right">
+                    <div class="font-medium mb-1"><%= Date.parse(day[:date]).strftime("%-d/%-m") %></div>
+                    <div>المشاهدات: <span class="tabular-nums font-medium"><%= number_with_delimiter(day[:pageviews]) %></span></div>
+                    <div>الزوار: <span class="tabular-nums font-medium"><%= number_with_delimiter(day[:visitors]) %></span></div>
+                  </div>
+                </div>
               </div>
-            </div>
+            <% end %>
           </div>
-        <% end %>
+
+          <%# X-axis labels %>
+          <div class="flex justify-between mt-2">
+            <% label_indices = [0, (count / 4.0).round, (count / 2.0).round, (count * 3 / 4.0).round, count - 1].uniq %>
+            <% @timeseries.each_with_index do |day, i| %>
+              <% if label_indices.include?(i) %>
+                <span class="text-[10px] tabular-nums text-gray-400"><%= Date.parse(day[:date]).strftime("%-d/%-m") %></span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
       </div>
     </div>
   <% end %>
@@ -78,11 +158,11 @@
         </thead>
         <tbody>
           <% @articles.each_with_index do |article, i| %>
-            <tr class="group border-b border-gray-50 last:border-0 transition-colors hover:bg-gray-50/80 <%= "bg-amber-50/40" if @top_article && article == @top_article %>">
+            <tr class="group border-b border-gray-50 last:border-0 transition-colors hover:bg-gray-50/80 <%= "bg-blue-50/40" if @top_article && article == @top_article %>">
               <td class="px-6 py-4 max-w-xs">
                 <div class="flex items-center gap-2">
                   <% if @top_article && article == @top_article %>
-                    <span class="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-700 whitespace-nowrap">الأكثر مشاهدة</span>
+                    <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-medium text-blue-700 whitespace-nowrap">الأكثر مشاهدة</span>
                   <% end %>
                   <%= link_to article.title, user_article_path(slug: @user.slug, uuid: article.uuid),
                       class: "text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors truncate block" %>
