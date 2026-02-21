@@ -439,13 +439,28 @@ trix-editor .attachment__metadata {
   max-width: 100% !important;
 }
 
-/* Comment form: hide unnecessary toolbar buttons */
-.comment-form trix-toolbar .trix-button-group--file-tools,
-.comment-form trix-toolbar .trix-button-group--history-tools {
-  display: none;
+/* Comment form: hide the entire Trix toolbar (we use custom B/I buttons) */
+.comment-form trix-toolbar,
+.comment-editor-area trix-toolbar {
+  display: none !important;
 }
 
-.comment-form trix-toolbar .trix-button--icon-heading-1,
-.comment-form trix-toolbar .trix-button--icon-code {
-  display: none;
+/* Comment editor area */
+.comment-editor-area trix-editor {
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  min-height: 5em !important;
+  padding: 0.75em 1em !important;
+  outline: none !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+}
+
+.comment-editor-area--reply trix-editor {
+  min-height: 3.5em !important;
+}
+
+.comment-editor-area trix-editor:empty::before {
+  color: #9ca3af;
 }

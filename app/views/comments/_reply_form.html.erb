@@ -1,0 +1,41 @@
+<%= turbo_frame_tag dom_id(parent, :reply_form), class: "hidden mt-3" do %>
+  <div class="flex items-center gap-2 mb-2">
+    <% if current_user.avatar.attached? %>
+      <%= image_tag current_user.avatar.variant(resize_to_fill: [80, 80]), class: "h-6 w-6 rounded-full bg-gray-50" %>
+    <% else %>
+      <span class="inline-block h-6 w-6 overflow-hidden rounded-full bg-gray-100">
+        <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      </span>
+    <% end %>
+    <span class="text-xs font-medium text-gray-900"><%= current_user.name %></span>
+  </div>
+  <%= form_with model: Comment.new, url: user_article_comments_path(slug: article.user, uuid: article), class: "comment-form" do |form| %>
+    <%= form.hidden_field :parent_id, value: parent.id %>
+    <div class="rounded-lg border border-gray-200 bg-gray-50 overflow-hidden">
+      <div class="comment-editor-area comment-editor-area--reply">
+        <%= form.rich_text_area :body, id: "reply_body_#{parent.id}", placeholder: "اكتب ردًا...", class: "comment-trix-editor" %>
+      </div>
+      <div class="flex items-center justify-between px-3 py-2 border-t border-gray-100">
+        <div class="flex items-center gap-1">
+          <button type="button" class="px-2 py-1 text-sm font-bold text-gray-400 hover:text-gray-700 rounded transition-colors cursor-pointer"
+                  onclick="var e=this.closest('form').querySelector('trix-editor').editor; e.attributeIsActive('bold') ? e.deactivateAttribute('bold') : e.activateAttribute('bold')">
+            B
+          </button>
+          <button type="button" class="px-2 py-1 text-sm italic text-gray-400 hover:text-gray-700 rounded transition-colors cursor-pointer"
+                  onclick="var e=this.closest('form').querySelector('trix-editor').editor; e.attributeIsActive('italic') ? e.deactivateAttribute('italic') : e.activateAttribute('italic')">
+            I
+          </button>
+        </div>
+        <div class="flex items-center gap-3">
+          <button type="button" class="text-xs text-gray-500 hover:text-gray-700 cursor-pointer"
+                  onclick="document.getElementById('<%= dom_id(parent, :reply_form) %>').classList.add('hidden')">
+            إلغاء
+          </button>
+          <%= form.submit "رد", class: "rounded-full bg-gray-200 px-4 py-1.5 text-xs font-medium text-gray-500 hover:bg-blue-600 hover:text-white transition-colors cursor-pointer" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>

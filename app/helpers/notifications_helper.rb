@@ -1,10 +1,12 @@
 module NotificationsHelper
   NOTIFICATION_MESSAGES = {
-    "liked"     => "أعجب بمقالك",
-    "commented" => "علّق على مقالك",
-    "featured"  => "تم تمييز مقالك",
-    "picked"    => "تم اختيار مقالك",
-    "followed"  => "بدأ متابعتك"
+    "liked"          => "أعجب بمقالك",
+    "commented"      => "علّق على مقالك",
+    "featured"       => "تم تمييز مقالك",
+    "picked"         => "تم اختيار مقالك",
+    "followed"       => "بدأ متابعتك",
+    "replied"        => "ردّ على تعليقك",
+    "comment_liked"  => "أعجب بتعليقك"
   }.freeze
 
   def notification_message(notification)
@@ -14,7 +16,10 @@ module NotificationsHelper
   def notification_path_for(notification)
     case notification.notifiable_type
     when "ArticleLike", "Comment"
-      article = notification.notifiable.article
+      article = notification.notifiable&.article
+      user_article_path(slug: article.user, uuid: article) if article
+    when "CommentLike"
+      article = notification.notifiable&.comment&.article
       user_article_path(slug: article.user, uuid: article) if article
     when "Article"
       article = notification.notifiable
@@ -27,7 +32,9 @@ module NotificationsHelper
   def notification_article(notification)
     case notification.notifiable_type
     when "ArticleLike", "Comment"
-      notification.notifiable.article
+      notification.notifiable&.article
+    when "CommentLike"
+      notification.notifiable&.comment&.article
     when "Article"
       notification.notifiable
     when "Follow"
@@ -35,15 +42,24 @@ module NotificationsHelper
     end
   end
 
+  def notification_comment(notification)
+    case notification.notifiable_type
+    when "Comment"
+      notification.notifiable
+    when "CommentLike"
+      notification.notifiable&.comment
+    end
+  end
+
   def notification_action_icon(notification)
     case notification.action
-    when "liked"
+    when "liked", "comment_liked"
       tag.span(class: "flex h-5 w-5 items-center justify-center rounded-full bg-red-50 ring-2 ring-white") do
         tag.svg(class: "h-3 w-3 text-red-500", viewBox: "0 0 24 24", fill: "currentColor") do
           tag.path(d: "M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z")
         end
       end
-    when "commented"
+    when "commented", "replied"
       tag.span(class: "flex h-5 w-5 items-center justify-center rounded-full bg-blue-50 ring-2 ring-white") do
         tag.svg(class: "h-3 w-3 text-blue-500", viewBox: "0 0 24 24", fill: "currentColor") do
           tag.path(fill_rule: "evenodd",

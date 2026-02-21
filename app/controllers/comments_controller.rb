@@ -4,6 +4,13 @@ class CommentsController < ApplicationController
   def create
     @comment = @article.comments.build(comment_params)
     @comment.user = current_user
+    @reply_to = @comment.parent
+
+    # Collapse reply-to-reply: if parent itself has a parent, move up to grandparent
+    if @comment.parent&.parent_id.present?
+      @comment.mentioned_user = @comment.parent.user
+      @comment.parent_id = @comment.parent.parent_id
+    end
 
     if @comment.save
       respond_to do |format|
@@ -37,6 +44,6 @@ class CommentsController < ApplicationController
   end
 
   def comment_params
-    params.expect(comment: [:body])
+    params.expect(comment: [:body, :parent_id])
   end
 end

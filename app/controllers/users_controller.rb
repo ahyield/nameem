@@ -13,7 +13,10 @@ class UsersController < ApplicationController
     authorize @article, :show?
 
     @liked = Current.user&.article_likes&.exists?(article: @article)
-    @comments = @article.comments.includes(:user, :rich_text_body).order(created_at: :asc)
+    @comments = @article.comments.top_level
+                        .includes(:user, :rich_text_body, :comment_likes, :mentioned_user,
+                                  replies: [:user, :rich_text_body, :comment_likes, :mentioned_user])
+                        .order(created_at: :asc)
 
     if policy(@article).edit?
       @likers = @article.article_likes

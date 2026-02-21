@@ -1,38 +1,85 @@
 <%= turbo_frame_tag dom_id(comment) do %>
-  <div class="flex gap-3 py-4 border-b border-gray-100">
-    <div class="flex-none">
-      <%= link_to user_path(comment.user), data: { turbo: false } do %>
-        <% if comment.user.avatar.attached? %>
-          <%= image_tag comment.user.avatar.variant(resize_to_fill: [80, 80]), class: "h-8 w-8 rounded-full bg-gray-50" %>
-        <% else %>
-          <span class="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
-            <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-          </span>
-        <% end %>
-      <% end %>
-    </div>
-    <div class="flex-1 min-w-0">
-      <div class="flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2 text-sm">
-          <%= link_to comment.user.name, user_path(comment.user), class: "font-medium text-gray-900 hover:underline", data: { turbo: false } %>
-          <span class="text-gray-400">&middot;</span>
-          <time class="text-gray-400"><%= short_date(comment.created_at) %></time>
-        </div>
-        <% if current_user == comment.user || current_user&.admin? %>
-          <%= button_to user_article_comment_path(slug: comment.article.user, uuid: comment.article, id: comment),
-                method: :delete,
-                class: "text-gray-400 hover:text-red-500 cursor-pointer transition-colors",
-                data: { turbo_confirm: "هل أنت متأكد من حذف التعليق؟" } do %>
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-            </svg>
+  <div class="group/comment py-3 <%= 'pr-4 border-r-2 border-gray-100' if comment.parent_id.present? %>">
+    <div class="flex gap-3">
+      <%# Avatar %>
+      <% avatar_size = comment.parent_id.present? ? "h-5 w-5" : "h-6 w-6" %>
+      <div class="flex-none pt-0.5">
+        <%= link_to user_path(comment.user), data: { turbo: false } do %>
+          <% if comment.user.avatar.attached? %>
+            <%= image_tag comment.user.avatar.variant(resize_to_fill: [56, 56]),
+                  class: "#{avatar_size} rounded-full bg-gray-50 object-cover" %>
+          <% else %>
+            <span class="inline-block <%= avatar_size %> overflow-hidden rounded-full bg-gray-100">
+              <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </span>
           <% end %>
         <% end %>
       </div>
-      <div class="mt-1 text-sm text-gray-700">
-        <%= comment.body %>
+
+      <%# Content %>
+      <div class="flex-1 min-w-0">
+        <%# Header %>
+        <div class="flex items-center gap-1.5 text-xs">
+          <%= link_to comment.user.name, user_path(comment.user),
+                class: "font-semibold text-gray-900 hover:underline", data: { turbo: false } %>
+          <% if comment.mentioned_user.present? %>
+            <span class="inline-flex items-center gap-0.5 text-gray-400">
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+              </svg>
+              <%= link_to comment.mentioned_user.name, user_path(comment.mentioned_user),
+                    class: "text-blue-500 hover:underline", data: { turbo: false } %>
+            </span>
+          <% end %>
+          <span class="text-gray-300">&middot;</span>
+          <time class="text-gray-400"><%= short_date(comment.created_at) %></time>
+        </div>
+
+        <%# Body %>
+        <div class="mt-1 text-sm leading-relaxed text-gray-700">
+          <%= comment.body %>
+        </div>
+
+        <%# Actions %>
+        <div class="mt-1.5 flex items-center gap-3 text-xs">
+          <%= render "comment_likes/button", comment: comment,
+                liked: current_user&.comment_likes&.exists?(comment: comment) %>
+          <% if authenticated? %>
+            <button type="button"
+                    class="text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+                    onclick="document.getElementById('<%= dom_id(comment, :reply_form) %>').classList.toggle('hidden')">
+              رد
+            </button>
+          <% end %>
+          <% if current_user == comment.user || current_user&.admin? %>
+            <%= button_to user_article_comment_path(slug: comment.article.user, uuid: comment.article, id: comment),
+                  method: :delete,
+                  class: "text-gray-300 hover:text-red-500 cursor-pointer transition-colors opacity-0 group-hover/comment:opacity-100",
+                  data: { turbo_confirm: "هل أنت متأكد من حذف التعليق؟" } do %>
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+              </svg>
+            <% end %>
+          <% end %>
+        </div>
+
+        <%# Reply form %>
+        <% if authenticated? %>
+          <%= render "comments/reply_form", parent: comment, article: comment.article %>
+        <% end %>
+
+        <%# Nested replies %>
+        <% if comment.parent_id.nil? && comment.replies.any? %>
+          <div id="<%= dom_id(comment, :replies) %>" class="mt-2 mr-2 space-y-0">
+            <% comment.replies.each do |reply| %>
+              <%= render "comments/comment", comment: reply %>
+            <% end %>
+          </div>
+        <% elsif comment.parent_id.nil? %>
+          <div id="<%= dom_id(comment, :replies) %>"></div>
+        <% end %>
       </div>
     </div>
   </div>

@@ -1,9 +1,17 @@
-<%= turbo_stream.append "comments" do %>
-  <%= render @comment %>
-<% end %>
-
-<%= turbo_stream.replace "comment_form" do %>
-  <%= render "comments/form" %>
+<% if @comment.parent_id.present? %>
+  <%= turbo_stream.append dom_id(@comment.parent, :replies) do %>
+    <%= render @comment %>
+  <% end %>
+  <%= turbo_stream.replace dom_id(@reply_to, :reply_form) do %>
+    <%= render "comments/reply_form", parent: @reply_to, article: @article %>
+  <% end %>
+<% else %>
+  <%= turbo_stream.append "comments" do %>
+    <%= render @comment %>
+  <% end %>
+  <%= turbo_stream.replace "comment_form" do %>
+    <%= render "comments/form" %>
+  <% end %>
 <% end %>
 
 <%= turbo_stream.update "comments_count", @article.reload.comments_count.to_s %>
