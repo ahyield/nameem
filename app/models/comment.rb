@@ -13,6 +13,8 @@ class Comment < ApplicationRecord
   validates :body, presence: true
 
   scope :top_level, -> { where(parent_id: nil) }
+  scope :newest_first, -> { order(created_at: :desc) }
+  scope :oldest_first, -> { order(created_at: :asc) }
 
   after_create :notify_author
 

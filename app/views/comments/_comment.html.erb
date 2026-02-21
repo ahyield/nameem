@@ -73,7 +73,7 @@
         <%# Nested replies %>
         <% if comment.parent_id.nil? && comment.replies.any? %>
           <div id="<%= dom_id(comment, :replies) %>" class="mt-2 mr-2 space-y-0">
-            <% comment.replies.each do |reply| %>
+            <% comment.replies.sort_by(&:created_at).each do |reply| %>
               <%= render "comments/comment", comment: reply %>
             <% end %>
           </div>
