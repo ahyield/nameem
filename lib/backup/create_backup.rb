@@ -40,7 +40,12 @@ module Backup
 
       Rails.logger.debug { "Running mysqldump for #{db_config[:database]}" }
 
-      stderr_output, status = Open3.capture2e(*mysqldump_args, out: backup_file)
+      stderr_output = nil
+      status = Open3.popen3(*mysqldump_args) do |_stdin, stdout, stderr, wait_thr|
+        IO.copy_stream(stdout, backup_file)
+        stderr_output = stderr.read
+        wait_thr.value
+      end
 
       unless status.success?
         FileUtils.rm_f(backup_file)
