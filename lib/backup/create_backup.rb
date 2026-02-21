@@ -1,5 +1,5 @@
-require "English"
 require "fileutils"
+require "open3"
 require "aws-sdk-s3"
 
 module Backup
@@ -22,24 +22,30 @@ module Backup
 
     private
 
-    attr_reader :db_config, :backup_dir, :backup_file, :compressed_file, :timestamp, :bucket_name, :db_url
+    attr_reader :db_config, :backup_dir, :backup_file, :compressed_file, :timestamp, :bucket_name
 
-    def command
-      require "shellwords"
-      password = Shellwords.escape(db_config[:password].to_s)
-      @command ||= "mysqldump --protocol=TCP -u #{db_config[:username]} -h #{db_config[:host]} -p#{password} " \
-                   "-c -q #{db_config[:database]} > #{backup_file}"
+    def mysqldump_args
+      [
+        "mysqldump", "--protocol=TCP",
+        "-u", db_config[:username].to_s,
+        "-h", db_config[:host].to_s,
+        "-p#{db_config[:password]}",
+        "-c", "-q",
+        db_config[:database].to_s
+      ]
     end
 
     def create_backup
       FileUtils.mkdir_p(backup_dir)
 
-      Rails.logger.debug { "Running: #{command}" }
-      output = `#{command} 2>&1`
+      Rails.logger.debug { "Running mysqldump for #{db_config[:database]}" }
 
-      unless $CHILD_STATUS.success?
-        Rails.logger.error "Backup failed: #{output}"
-        raise "Backup failed: #{output}"
+      stderr_output, status = Open3.capture2e(*mysqldump_args, out: backup_file)
+
+      unless status.success?
+        FileUtils.rm_f(backup_file)
+        Rails.logger.error "Backup failed: #{stderr_output}"
+        raise "Backup failed: #{stderr_output}"
       end
 
       Rails.logger.debug { "Backup completed successfully: #{backup_file}" }
