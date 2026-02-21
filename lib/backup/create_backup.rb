@@ -26,7 +26,7 @@ module Backup
 
     def mysqldump_args
       [
-        "mysqldump", "--protocol=TCP",
+        "mysqldump", "--protocol=TCP", "--ssl-mode=DISABLED",
         "-u", db_config[:username].to_s,
         "-h", db_config[:host].to_s,
         "-p#{db_config[:password]}",
