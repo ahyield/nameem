@@ -22,6 +22,7 @@ class ArticlesController < ApplicationController
     @article = @user.articles.find_by(uuid: params[:uuid])
     authorize @article, :update?
 
+    @article.description = params[:description].presence if params.key?(:description)
     @article.published = params[:publish]
     @article.published_at = DateTime.now if @article.published_at.nil? && @article.published?
     @article.save!

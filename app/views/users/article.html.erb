@@ -62,63 +62,91 @@ twitter: {
       <div class="flex items-center gap-6">
         <%= render "article_likes/button", article: @article, liked: @liked %>
         <button type="button" data-action="drawer#open" class="flex items-center gap-1 cursor-pointer group">
-          <svg class="w-6 h-6 text-gray-300 group-hover:text-gray-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <svg class="w-6 h-6 text-gray-300 group-hover:text-gray-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
           </svg>
           <span id="comments_count" class="text-sm text-gray-500"><%= @article.comments_count %></span>
         </button>
       </div>
 
-      <%# Share & Options (left side in RTL) %>
-      <div class="flex items-center gap-4">
+      <%# Share & Options (left side in RTL) — order: share, then ... at the far end %>
+      <div class="flex items-center gap-5">
+        <%# Share dropdown %>
         <div data-controller="dropdown" class="relative">
-          <button type="button" class="text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+          <button type="button" class="text-gray-300 hover:text-gray-600 cursor-pointer transition-colors"
             data-action="click->dropdown#toggle click@window->dropdown#hide">
-            <span class="sr-only">Share</span>
-            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+            <span class="sr-only">مشاركة</span>
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
             </svg>
           </button>
-          <div class="hidden absolute z-50 w-24 mt-2 rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+          <div class="hidden absolute left-0 z-50 w-48 mt-2 py-1 rounded-lg bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
                role="menu" data-dropdown-target="menu">
-            <div data-controller="clipboard" data-clipboard-success-content-value="تم نسخ الرابط">
+            <div data-controller="clipboard" data-clipboard-success-content-value="تم نسخ الرابط ✓">
               <input type="text" value="<%= user_article_url(slug: @user, uuid: @article) %>" class="hidden" data-clipboard-target="source" autocomplete="off">
-              <button type="button" class="block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900"
-              data-action="clipboard#copy" data-clipboard-target="button">رابط المقال</button>
+              <button type="button" class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+              data-action="clipboard#copy" data-clipboard-target="button" role="menuitem">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
+                </svg>
+                نسخ الرابط
+              </button>
             </div>
+            <a href="https://x.com/intent/tweet?url=<%= CGI.escape(user_article_url(slug: @user, uuid: @article)) %>&text=<%= CGI.escape(@article.title.to_s) %>" target="_blank" rel="noopener"
+               class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors" role="menuitem">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+              مشاركة على X
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=<%= CGI.escape(user_article_url(slug: @user, uuid: @article)) %>" target="_blank" rel="noopener"
+               class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors" role="menuitem">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
+              </svg>
+              مشاركة على فيسبوك
+            </a>
           </div>
         </div>
 
+        <%# Options dropdown (... at far end, like Medium) %>
         <% if policy(@article).edit? %>
           <div data-controller="dropdown modal" class="relative">
-            <button type="button" class="text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+            <button type="button" class="text-gray-300 hover:text-gray-600 cursor-pointer transition-colors"
               data-action="click->dropdown#toggle click@window->dropdown#hide">
-              <span class="sr-only">Open options</span>
-              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
+              <span class="sr-only">خيارات</span>
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="5" cy="12" r="1.5" />
+                <circle cx="12" cy="12" r="1.5" />
+                <circle cx="19" cy="12" r="1.5" />
               </svg>
             </button>
-            <div class="hidden absolute z-50 w-20 mt-2 rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+            <div class="hidden absolute left-0 z-50 w-40 mt-2 py-1 rounded-lg bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
                 role="menu" data-dropdown-target="menu">
-              <%= link_to user_edit_article_path(slug: @user, uuid: @article),
-                class: "block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900", role: "menuitem", data: { turbo: false } do %>
-                تعديل
-              <% end %>
-              <button type="button" class="block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900 cursor-pointer"
+              <button type="button" class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer transition-colors"
                 role="menuitem" data-action="modal#open">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                </svg>
                 إحصائيات
               </button>
+              <%= link_to user_edit_article_path(slug: @user, uuid: @article),
+                class: "flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors", role: "menuitem", data: { turbo: false } do %>
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                </svg>
+                تعديل
+              <% end %>
               <%= button_to user_destroy_article_path(slug: @user, uuid: @article), method: :delete,
-                class: "block px-3 py-1 text-sm leading-6 text-red-500 hover:text-gray-900", role: "menuitem", data: { turbo: false } do %>
+                class: "flex items-center gap-2 w-full px-3 py-2 text-sm text-red-500 hover:bg-red-50 hover:text-red-700 transition-colors", role: "menuitem", data: { turbo: false } do %>
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                </svg>
                 حذف
               <% end %>
             </div>
             <%= render "articles/analytics", article: @article, likers: @likers || [], commenters: @commenters || [] %>
           </div>
-        <% else %>
-          <svg class="h-5 w-5 text-gray-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
-          </svg>
         <% end %>
       </div>
     </div>

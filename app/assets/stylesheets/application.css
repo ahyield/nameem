@@ -53,11 +53,17 @@
   font-weight: 600;
 }
 
+.editor-container.editor-empty > p:first-child {
+  position: relative;
+}
+
 .editor-container.editor-empty > p:first-child::before {
   content: "إبدأ بالكتابة...";
-  color: #9ca3af;
+  color: #d1d5db;
   pointer-events: none;
-  float: right;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .editor-container h1 + p,

@@ -1,68 +1,87 @@
 <%= turbo_frame_tag "modal", target: "_top" do %>
   <div class="relative z-10 font-naskh" data-controller="modals--article-modal" aria-labelledby="modal-title" role="dialog" aria-modal="true" dir="rtl">
     <div class="fixed modal inset-0 bg-white transition-opacity"></div>
-      <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <div class="relative modal-panel lg:grid md:grid md:grid-cols-1 transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-1/3 sm:p-6">
-            <div class="absolute left-0 top-0 hidden pl-4 pt-4 sm:block">
-              <button type="button" data-action="click->modals--article-modal#closeModal" class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                <span class="sr-only">Close</span>
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+      <div class="flex min-h-full justify-center px-6 py-10 sm:py-16">
+        <div class="relative modal-panel w-full max-w-4xl">
 
-            <div class="mt-3 text-right sm:mt-5">
-              <h3 class="text-base font-bold leading-6 text-gray-900" id="modal-title">معاينة الموضوع</h3>
-              <div class="mt-2">
-                <div class="w-full h-56 flex justify-center items-center rounded-2xl border-2 border-dashed border-gray-300">
-                  <% if !@article.article_images.empty? %>
-                    <%= image_tag article_cover(@article), class: "p-1 rounded-xl object-cover h-full w-full" %>
-                  <% else %>
-                    <span class="mt-2 text-sm font-semibold text-gray-900">أدرج صورة عالية الجودة في قصتك لجعلها أكثر جاذبية للقراء.</span>
-                  <% end %>
-                </div>
-                <div class="mt-4 title-box">
+          <%# Close button %>
+          <div class="absolute left-0 top-0">
+            <button type="button" data-action="click->modals--article-modal#closeModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+              <span class="sr-only">إغلاق</span>
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <h3 class="text-xl font-bold text-gray-900 mb-6" id="modal-title">معاينة الموضوع</h3>
+
+          <%= form_tag user_update_article_path(slug: params[:slug], uuid: params[:uuid]), method: :put, data: { turbo: false, controller: "tag-input", "tag-input-existing-value": (@article&.tags&.pluck(:name) || []).to_json } do %>
+            <div class="lg:grid lg:grid-cols-2 lg:gap-12">
+
+              <%# Right in RTL — Story Preview %>
+              <div>
+                <%# Cover image / placeholder %>
+                <% if !@article.article_images.empty? %>
+                  <%= image_tag article_cover(@article), class: "w-full aspect-video object-cover bg-gray-100 mb-4" %>
+                <% else %>
+                  <div class="w-full min-h-52 bg-gray-100 flex items-center justify-center mb-4">
+                    <span class="text-sm text-gray-400 px-8 text-center leading-relaxed">أدرج صورة عالية الجودة في موضوعك لجعله أكثر جاذبية للقراء.</span>
+                  </div>
+                <% end %>
+
+                <%# Title (display) %>
+                <div class="title-box border-b border-gray-200 pb-2 mb-2">
                   <% if @article.title.blank? && @article.alternative_titles.blank? %>
-                    <span class="title-needed mt-2 text-sm font-semibold text-gray-400">العنوان مطلوب </span>
+                    <span class="title-needed text-lg text-gray-300">العنوان مطلوب</span>
                   <% else %>
-                    <h3 class="text-base font-extrabold leading-6 text-gray-900 truncate" id="modal-title"><%= @article.title.presence || first_paragraph(@article) %></h3>
+                    <h4 class="text-lg font-bold text-gray-900 leading-snug line-clamp-2"><%= @article.title.presence || first_paragraph(@article) %></h4>
                   <% end %>
                 </div>
-                <hr class="mt-2">
-                <div class="mt-4">
-                  <span class="text-base leading-6 text-gray-400">معاينة الموضوع لن تؤثر على ما يتضمنه الموضوع من محتوى، هي مجرد معاينة لشكل الموضوع عند مشاركته على منصات أخرى أو في الصفحة الرئيسية.</span>
-                </div>
-              </div>
-            </div>
 
-            <%= form_tag user_update_article_path(slug: params[:slug], uuid: params[:uuid]), method: :put, data: { turbo: false, controller: "tag-input", "tag-input-existing-value": (@article&.tags&.pluck(:name) || []).to_json } do %>
-              <div class="mt-4">
-                <label class="block text-sm font-medium text-gray-700 mb-1">المواضيع (حتى ٥)</label>
+                <%# Description (editable, Medium style) %>
+                <div class="mb-4">
+                  <textarea name="description" rows="2" maxlength="160"
+                            data-action="input->modals--article-modal#updateDescription"
+                            data-modals--article-modal-target="description"
+                            placeholder="اكتب وصفاً مختصراً..."
+                            class="block w-full border-0 border-b border-gray-200 bg-transparent p-0 pb-2 text-sm text-gray-600 placeholder:text-gray-300 focus:border-gray-400 focus:ring-0 leading-relaxed resize-none"><%= @article.description %></textarea>
+                  <p class="mt-1 text-xs text-gray-300" dir="ltr">
+                    <span data-modals--article-modal-target="charCount"><%= @article.description&.length || 0 %></span>/160
+                  </p>
+                </div>
+
+                <p class="text-xs text-gray-300 leading-relaxed">التغييرات هنا تؤثر على شكل الموضوع في الصفحة الرئيسية ومنصات التواصل — وليس على محتوى الموضوع نفسه.</p>
+              </div>
+
+              <%# Left in RTL — Publish Details %>
+              <div class="mt-10 lg:mt-0">
+                <h4 class="text-base font-bold text-gray-900 mb-1">المواضيع</h4>
+                <p class="text-sm text-gray-400 mb-3">أضف حتى ٥ مواضيع ليجد القراء موضوعك.</p>
                 <div class="relative">
                   <input type="text" data-tag-input-target="input" data-action="keydown->tag-input#keydown input->tag-input#input"
-                         placeholder="اكتب موضوع واضغط Enter"
-                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6" autocomplete="off">
+                         placeholder="أضف موضوع..."
+                         class="block w-full rounded-lg border-0 py-2.5 px-3 text-sm text-gray-900 bg-gray-50 placeholder:text-gray-300 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-colors" autocomplete="off">
                   <div data-tag-input-target="suggestions" class="hidden absolute z-50 w-full mt-1 bg-white rounded-md shadow-lg ring-1 ring-gray-900/5 max-h-48 overflow-y-auto"></div>
                 </div>
                 <div data-tag-input-target="pills" class="flex flex-wrap gap-2 mt-2"></div>
                 <div data-tag-input-target="hiddenFields"></div>
+
+                <hr class="my-6 border-gray-200">
+
+                <div class="flex items-center gap-4">
+                  <button type="submit" name="publish" value="true" class="rounded-full px-6 py-2.5 text-sm
+                                font-semibold text-white bg-gray-900
+                                publish-btn hover:bg-gray-800 transition-colors
+                                disabled:bg-gray-300 disabled:cursor-not-allowed">نشر</button>
+                  <button type="submit" name="publish" value="false" class="text-sm text-gray-500 hover:text-gray-700 underline decoration-gray-300 underline-offset-4 transition-colors">حفظ كمسودة</button>
+                </div>
               </div>
 
-              <div class="mt-5 sm:mt-6 flex w-2/5 sm:gap-3">
-                <button type="submit" name="publish" value="true" class="flex-1 rounded-lg px-3 py-2 text-sm
-                              font-semibold text-white shadow-sm text-white bg-gradient-to-l from-cyan-400 to-blue-500
-                              publish-btn hover:from-cyan-500 hover:to-blue-600 focus-visible:outline
-                              focus-visible:outline-2 focus-visible:outline-offset-2 text-lg w-24">نشر</button>
+            </div>
+          <% end %>
 
-                <button type="submit" name="publish" value="false" class="flex-1 rounded-md bg-gray-500 px-3 w-24 py-2 text-sm font-semibold
-                              text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2
-                              focus-visible:outline-offset-2 focus-visible:outline-indigo-600">حفظ كمسودة</button>
-              </div>
-            <% end %>
-
-          </div>
         </div>
       </div>
     </div>

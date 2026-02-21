@@ -1,6 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
+  static targets = ["description", "charCount", "previewDescription"]
+
   connect() {
     const modal = document.querySelector(".modal")
     modal.classList.add("ease-out", "duration-300", "opacity-100")
@@ -14,9 +16,12 @@ export default class extends Controller {
 
     if (titleBox.contains(titleNeeded)) {
       publishBtn.disabled = true
-      publishBtn.classList.remove("bg-gradient-to-l", "from-cyan-400", "to-blue-500")
-      publishBtn.classList.add("bg-gray-400")
     }
+  }
+
+  updateDescription() {
+    const value = this.descriptionTarget.value
+    this.charCountTarget.textContent = value.length
   }
 
   closeModal(event) {

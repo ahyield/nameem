@@ -8,7 +8,7 @@ FactoryBot.define do
     confirmed { true }
     featured { false }
     last_sign_in_at { Time.zone.now }
-    slug { Faker::Internet.slug }
+    sequence(:slug) { |n| "#{Faker::Internet.slug}-#{n}" }
 
     after(:create) do |user|
       url = Faker::Avatar.image(slug: Faker::Internet.slug, size: "50x50", format: "jpg")
