@@ -18,7 +18,7 @@ twitter: {
 
 <%= render "shared/nav" %>
 
-<div class="bg-white px-6 py-32 lg:px-8" data-controller="drawer">
+<div class="bg-white px-6 py-32 lg:px-8" data-controller="drawer page-view" data-page-view-viewable-type-value="Article" data-page-view-viewable-id-value="<%= @article.id %>">
   <div class="mx-auto max-w-3xl text-base leading-7 text-gray-700">
     <h1 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"><%= @article.title %></h1>
     <div class="flex space-x-4 text-sm text-gray-500">

@@ -82,6 +82,7 @@ Rails.application.routes.draw do
   get "latest_feed", to: "feed#latest_feed", as: "latest_feed"
   get "popular_feed", to: "feed#popular_feed", as: "popular_feed"
   get "picked_feed", to: "feed#picked_feed", as: "picked_feed"
+  get "trending_feed", to: "feed#trending_feed", as: "trending_feed"
   get "following_feed", to: "feed#following_feed", as: "following_feed"
 
   get 'about-nameem', to: "static_pages#about_nameem"
@@ -91,6 +92,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     delete 'attachments/delete', to: 'attachments#delete'
+    post 'views', to: 'views#create'
 
     post 'articles', to: 'articles#create'
     get 'articles/:slug/:uuid/edit', to: 'articles#edit', as: 'articles_edit'

@@ -83,16 +83,6 @@ RSpec.describe UsersController do
   end
 
   describe "GET #stats" do
-    let(:plausible_client) { instance_double(PlausibleClient::Plausible) }
-
-    before do
-      allow(PlausibleClient::Plausible).to receive(:new).and_return(plausible_client)
-      allow(plausible_client).to receive(:timeseries).and_return([
-        { date: "2026-01-21", pageviews: 10, visitors: 5 },
-        { date: "2026-01-22", pageviews: 20, visitors: 8 }
-      ])
-    end
-
     context "when signed in as the profile owner" do
       before { sign_in user }
 
@@ -103,22 +93,16 @@ RSpec.describe UsersController do
 
       it "assigns aggregate stats" do
         get :stats, params: { slug: user.slug }
-        expect(assigns(:total_views)).to eq(article.views_count)
-        expect(assigns(:total_visitors)).to eq(article.visitors_count)
+        expect(assigns(:total_views)).to eq(article.real_views_count)
         expect(assigns(:total_likes)).to eq(article.likes_count)
         expect(assigns(:total_comments)).to eq(article.comments_count)
+        expect(assigns(:profile_views)).to eq(user.real_views_count)
       end
 
       it "assigns published articles" do
         get :stats, params: { slug: user.slug }
         expect(assigns(:articles)).to include(article)
         expect(assigns(:articles)).not_to include(draft)
-      end
-
-      it "assigns timeseries data" do
-        get :stats, params: { slug: user.slug }
-        expect(assigns(:timeseries)).to be_an(Array)
-        expect(assigns(:timeseries).first[:date]).to eq("2026-01-21")
       end
     end
 
@@ -136,24 +120,6 @@ RSpec.describe UsersController do
       it "redirects to login" do
         get :stats, params: { slug: user.slug }
         expect(response).to redirect_to(login_path)
-      end
-    end
-
-    context "when Plausible API fails" do
-      before do
-        sign_in user
-        allow(plausible_client).to receive(:timeseries)
-          .and_raise(PlausibleClient::ApiError.new("API error"))
-      end
-
-      it "still returns a successful response" do
-        get :stats, params: { slug: user.slug }
-        expect(response).to be_successful
-      end
-
-      it "sets timeseries to nil" do
-        get :stats, params: { slug: user.slug }
-        expect(assigns(:timeseries)).to be_nil
       end
     end
   end

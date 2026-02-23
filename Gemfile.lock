@@ -1,11 +1,4 @@
 GIT
-  remote: https://github.com/ahyield/plausible_api.git
-  revision: f11f97da88c437734c435c3d0b588ecbb212ab68
-  branch: main
-  specs:
-    plausible_api (0.4.2)
-
-GIT
   remote: https://github.com/rails/rails.git
   revision: 12900149d812792f4b7fdf38f591fb6d8800db9f
   branch: main
@@ -546,7 +539,6 @@ DEPENDENCIES
   mysql2
   name_of_person
   pagy
-  plausible_api!
   propshaft
   puma
   pundit
@@ -687,7 +679,6 @@ CHECKSUMS
   pagy (43.2.9) sha256=6a167c8da72388883e8f4c8e29dc8f5577f9f934d8d0b704cb2f39d2cebd276e
   parallel (1.27.0) sha256=4ac151e1806b755fb4e2dc2332cbf0e54f2e24ba821ff2d3dcf86bf6dc4ae130
   parser (3.3.10.2) sha256=6f60c84aa4bdcedb6d1a2434b738fe8a8136807b6adc8f7f53b97da9bc4e9357
-  plausible_api (0.4.2)
   pp (0.6.3) sha256=2951d514450b93ccfeb1df7d021cae0da16e0a7f95ee1e2273719669d0ab9df6
   prettyprint (0.2.0) sha256=2bc9e15581a94742064a3cc8b0fb9d45aae3d03a1baa6ef80922627a0766f193
   prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85

@@ -20,5 +20,6 @@ pin "@lexical/selection", to: "https://esm.sh/@lexical/selection@0.28.0?external
 pin "@lexical/html", to: "https://esm.sh/@lexical/html@0.28.0?external=lexical,@lexical/selection"
 pin "@lexical/utils", to: "https://esm.sh/@lexical/utils@0.28.0?external=lexical,@lexical/selection"
 pin "stimulus-clipboard", to: "https://ga.jspm.io/npm:stimulus-clipboard@4.0.1/dist/stimulus-clipboard.mjs"
+pin "@fingerprintjs/fingerprintjs", to: "https://openfpcdn.io/fingerprintjs/v4/esm.min.js"
 pin "trix"
 pin "@rails/actiontext", to: "actiontext.esm.js"

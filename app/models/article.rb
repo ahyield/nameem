@@ -8,6 +8,7 @@ class Article < ApplicationRecord
   has_many :article_tags, dependent: :destroy
   has_many :tags, through: :article_tags
   has_many :comments, dependent: :destroy
+  has_many :page_views, as: :viewable, dependent: :destroy
 
   belongs_to :user
 
@@ -17,9 +18,7 @@ class Article < ApplicationRecord
   scope :drafts, -> { where(published: false) }
   # lol, easy way to fuck things up, however it works. User.find_by(id: 1) == `nameem`,
   # so we don't want articles from nameem to show up in most reads.
-  scope :most_popular, -> { where("published = ? AND user_id != ?", true, 1).order(views_count: :desc) }
-  scope :most_visited, -> { where("published = ? AND user_id != ?", true, 1).order(visitors_count: :desc) }
-
+  scope :most_popular, -> { where("published = ? AND user_id != ?", true, 1).order(real_views_count: :desc) }
   scope :related_to, ->(article, limit: 4) {
     published
       .joins(:article_tags)
@@ -37,6 +36,12 @@ class Article < ApplicationRecord
   validates :published, inclusion: { in: [true, false] }, allow_nil: false
   validates :picked, inclusion: { in: [true, false] }, allow_nil: false
   validates :uuid, uniqueness: true
+
+  def self.trending(days: 7)
+    where("published = ? AND user_id != ? AND published_at >= ?", true, 1, days.days.ago)
+      .select("articles.*, (real_views_count + likes_count * 3 + comments_count * 5) / POW(TIMESTAMPDIFF(HOUR, published_at, NOW()) + 2, 1.5) AS trending_score")
+      .order(Arel.sql("trending_score DESC, published_at DESC"))
+  end
 
   def to_param
     uuid

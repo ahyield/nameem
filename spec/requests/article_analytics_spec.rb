@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Article Analytics" do
   let(:author) { create(:user) }
-  let(:article) { create(:article, :published, user: author, views_count: 42) }
+  let(:article) { create(:article, :published, user: author, real_views_count: 42) }
 
   def article_path
     "/#{author.slug}/#{article.uuid}"

@@ -3,17 +3,9 @@ production:
     class: BackupJob
     queue: background
     schedule: every 3 hours
-  sync_article_views:
-    class: UpdateArticleViewsJob
-    queue: article_views
-    schedule: every 6 hours
   notification_digest:
     class: SendNotificationDigestJob
     queue: default
     schedule: every day at 9am
 
 development:
-  sync_article_views:
-    class: UpdateArticleViewsJob
-    queue: article_views
-    schedule: every 6 hour

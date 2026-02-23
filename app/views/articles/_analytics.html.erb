@@ -21,7 +21,7 @@
         <%# Stat numbers %>
         <div class="grid grid-cols-3 gap-4 px-6 pt-6">
           <div class="rounded-lg bg-gray-50 p-4 text-center">
-            <p class="text-2xl font-bold text-gray-900"><%= number_with_delimiter(article.views_count.to_i) %></p>
+            <p class="text-2xl font-bold text-gray-900"><%= number_with_delimiter(article.real_views_count) %></p>
             <p class="text-sm text-gray-500">المشاهدات</p>
           </div>
           <div class="rounded-lg bg-gray-50 p-4 text-center">

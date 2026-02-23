@@ -20,7 +20,7 @@ class HomeController < ApplicationController
   end
 
   def published_articles
-    @pagy, @articles = pagy(Article.most_visited)
+    @pagy, @articles = pagy(Article.most_popular)
 
     respond_to do |format|
       format.html

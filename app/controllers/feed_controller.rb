@@ -43,6 +43,14 @@ class FeedController < ApplicationController
     end
   end
 
+  def trending_feed
+    @pagy, @articles = pagy(Article.trending)
+
+    respond_to do |format|
+      format.turbo_stream
+    end
+  end
+
   def following_feed
     followed_user_ids = Current.user.following_users.select(:id)
     followed_tag_ids = Current.user.following_tags.select(:id)

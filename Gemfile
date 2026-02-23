@@ -32,8 +32,6 @@ gem "bcrypt"
 
 gem "pundit"
 
-gem "plausible_api", github: "ahyield/plausible_api", branch: "main"
-
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 

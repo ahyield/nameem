@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_21_180053) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_23_180000) do
   create_table "action_text_rich_texts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "body", size: :long
     t.datetime "created_at", null: false
@@ -78,17 +78,15 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_21_180053) do
     t.boolean "featured", default: false, null: false
     t.integer "likes_count", default: 0, null: false
     t.boolean "picked", default: false, null: false
-    t.datetime "plausible_last_synced_at"
     t.boolean "published", default: false, null: false
     t.datetime "published_at"
     t.integer "reading_time_minutes"
+    t.integer "real_views_count", default: 0, null: false
     t.string "slug"
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.binary "uuid", limit: 16
-    t.integer "views_count"
-    t.integer "visitors_count"
     t.index ["featured"], name: "index_articles_on_featured"
     t.index ["picked"], name: "index_articles_on_picked"
     t.index ["published"], name: "index_articles_on_published"
@@ -186,6 +184,16 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_21_180053) do
     t.index ["recipient_id", "created_at"], name: "index_notifications_on_recipient_id_and_created_at"
     t.index ["recipient_id", "read_at"], name: "index_notifications_on_recipient_id_and_read_at"
     t.index ["recipient_id"], name: "index_notifications_on_recipient_id"
+  end
+
+  create_table "page_views", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "viewable_id", null: false
+    t.string "viewable_type", null: false
+    t.string "visitor_id", null: false
+    t.index ["viewable_type", "viewable_id", "visitor_id"], name: "index_page_views_uniqueness", unique: true
+    t.index ["viewable_type", "viewable_id"], name: "index_page_views_on_viewable_type_and_viewable_id"
   end
 
   create_table "sessions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -346,6 +354,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_21_180053) do
     t.string "last_name"
     t.datetime "last_sign_in_at"
     t.boolean "picked", default: false, null: false
+    t.integer "real_views_count", default: 0, null: false
     t.string "slug"
     t.string "twitter_handle"
     t.datetime "updated_at", null: false

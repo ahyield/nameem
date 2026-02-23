@@ -59,6 +59,7 @@ module Constraints
       featured_feed
       picked_feed
       following_feed
+      trending_feed
       user_articles
       feed
       new-story

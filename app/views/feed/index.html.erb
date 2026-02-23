@@ -25,6 +25,8 @@
                       class: "text-lg whitespace-nowrap border-b-2 py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
                     <%= link_to "الأكثر قراءة", popular_feed_path, data: { turbo_stream: "feed" },
                       class: "text-lg whitespace-nowrap border-b-2 py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
+                    <%= link_to "الرائج", trending_feed_path, data: { turbo_stream: "feed" },
+                      class: "text-lg whitespace-nowrap border-b-2 py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
                     <%= link_to "الأحدث", latest_feed_path, data: { turbo_stream: "feed" },
                       class: "whitespace-nowrap border-b-2 text-lg py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
                     <% if Current.user %>

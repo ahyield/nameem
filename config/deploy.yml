@@ -35,7 +35,6 @@ env:
     - MYSQL_USERNAME
     - MYSQL_ROOT_PASSWORD
     - SENTRY_DSN
-    - PLAUSIBLE_API_KEY
 
 # Use accessory services (secrets come from .env).
 accessories:
