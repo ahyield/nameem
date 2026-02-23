@@ -53,4 +53,31 @@ RSpec.describe "Article.trending" do
 
     expect(Article.trending).to be_empty
   end
+
+  it "accepts a custom days parameter" do
+    old_but_in_range = create(:article, :published, user: author, published_at: 12.days.ago)
+
+    expect(Article.trending(days: 7)).not_to include(old_but_in_range)
+    expect(Article.trending(days: 14)).to include(old_but_in_range)
+  end
+
+  it "weighs likes more than views and comments more than likes" do
+    views_heavy = create(:article, :published, user: author, published_at: 1.day.ago,
+                         real_views_count: 100, likes_count: 0, comments_count: 0)
+    likes_heavy = create(:article, :published, user: author, published_at: 1.day.ago,
+                         real_views_count: 0, likes_count: 34, comments_count: 0)
+    comments_heavy = create(:article, :published, user: author, published_at: 1.day.ago,
+                            real_views_count: 0, likes_count: 0, comments_count: 21)
+
+    results = Article.trending.to_a
+    # comments_count * 5 = 105 > likes_count * 3 = 102 > views_count = 100
+    expect(results.index(comments_heavy)).to be < results.index(likes_heavy)
+    expect(results.index(likes_heavy)).to be < results.index(views_heavy)
+  end
+
+  it "can be chained with limit" do
+    6.times { |i| create(:article, :published, user: author, published_at: i.hours.ago) }
+
+    expect(Article.trending.limit(5).size).to eq(5)
+  end
 end

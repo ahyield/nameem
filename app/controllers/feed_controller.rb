@@ -14,6 +14,8 @@ class FeedController < ApplicationController
                Tag.popular.with_articles.limit(10)
              end
 
+    @trending = Article.trending(days: 7).limit(5).includes(:user)
+
     respond_to do |format|
       format.html
     end
