@@ -27,6 +27,8 @@ export default class extends Controller{
   }
 
   handleTurboClick(event){
+    if (!this.linkTargets.includes(event.target)) return
+
     this.clearFeed()
     this.clearFeedPagination()
     this.linkTargets.forEach(target => {

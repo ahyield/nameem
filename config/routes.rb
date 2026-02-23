@@ -80,7 +80,6 @@ Rails.application.routes.draw do
   end
 
   get "latest_feed", to: "feed#latest_feed", as: "latest_feed"
-  get "popular_feed", to: "feed#popular_feed", as: "popular_feed"
   get "picked_feed", to: "feed#picked_feed", as: "picked_feed"
   get "trending_feed", to: "feed#trending_feed", as: "trending_feed"
   get "following_feed", to: "feed#following_feed", as: "following_feed"

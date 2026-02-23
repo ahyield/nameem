@@ -35,14 +35,6 @@ class FeedController < ApplicationController
     end
   end
 
-  def popular_feed
-    @pagy, @articles = pagy(Article.most_popular)
-
-    respond_to do |format|
-      format.turbo_stream
-    end
-  end
-
   def trending_feed
     @pagy, @articles = pagy(Article.trending)
 

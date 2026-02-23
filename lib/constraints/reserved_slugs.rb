@@ -55,7 +55,6 @@ module Constraints
       uploads
       users
       latest_feed
-      popular_feed
       featured_feed
       picked_feed
       following_feed

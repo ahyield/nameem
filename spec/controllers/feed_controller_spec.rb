@@ -75,16 +75,4 @@ RSpec.describe FeedController do
     end
   end
 
-  describe "GET #popular_feed" do
-    it "returns a successful response in Turbo Stream format" do
-      get :popular_feed, format: :turbo_stream
-      expect(response).to be_successful
-    end
-
-    it "assigns the most viewed articles @articles" do
-      get :popular_feed, format: :turbo_stream
-      expected_articles = Article.most_popular
-      expect(assigns(:articles)).to match_array(expected_articles)
-    end
-  end
 end
