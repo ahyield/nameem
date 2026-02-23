@@ -1,0 +1,5 @@
+<%= turbo_stream.replace "role-badges-#{@user.slug}" do %>
+  <span id="role-badges-<%= @user.slug %>">
+    <%= render "backoffice/users/role_badges", user: @user %>
+  </span>
+<% end %>

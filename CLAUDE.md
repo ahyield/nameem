@@ -58,10 +58,16 @@ spec/
 
 ## Key Models
 
-- **User** — email, slug (friendly_id), name, bio, avatar, roles (admin/editor/featured/picked/confirmed)
-- **Article** — binary UUID, title, content (Lexical JSON), content_html (server-rendered HTML), published/featured/picked, counter caches (likes, comments, views, visitors)
+- **User** — email, slug (friendly_id), name, bio, avatar, roles (admin/editor/featured/picked/confirmed), followers_count, following_count
+- **Article** — binary UUID, title, content (Lexical JSON), content_html (server-rendered HTML), published/featured/picked, reading_time_minutes, counter caches (likes, comments, views, visitors)
 - **ArticleLike** — user + article unique pair, counter cache
-- **Comment** — Action Text body, counter cache
+- **Comment** — Action Text body, parent_id (threaded), replies_count, counter cache
+- **CommentLike** — user + comment unique pair, counter cache
+- **Tag** — name, slug, articles_count counter cache
+- **ArticleTag** — article + tag unique pair
+- **Follow** — follower_id + followed_id unique pair, counter caches
+- **Notification** — recipient_id, actor_id, notifiable (polymorphic), action enum, read_at
+- **Bookmark** — user + article unique pair
 - **Session** — signed cookie auth tokens
 - **MagicLink** — 6-digit code, expires in 15min, purpose enum (sign_in/sign_up/confirm_email)
 
@@ -111,127 +117,9 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 - **Flipper** — feature flags
 - **Turnstile** — CAPTCHA
 
-## TODO
+## Completed Features
 
-### Tags & Topics ✅
-- [x] Create `Tag` model (name, slug, articles_count counter cache)
-- [x] Create `ArticleTag` join model (article + tag, unique pair)
-- [x] Add tag input to the publish modal (Stimulus controller with autocomplete)
-- [x] Build `/topics` browse page listing all tags with article counts
-- [x] Build `/topics/:slug` page showing articles for a tag
-- [x] Add tag pills to article cards in feed and article show page
-- [x] Add popular tags sidebar widget to feed
-- [x] Backoffice: tag management (merge, rename, delete)
-- [x] Specs for Tag, ArticleTag models and topics controller
-
-### Search ✅
-- [x] Add MySQL FULLTEXT index on articles (title, description)
-- [x] Create `SearchController` with LIKE query + Arabic normalization against title/description
-- [x] Build search bar component (Stimulus controller with debounced input)
-- [x] Build `/search?q=` results page with article cards
-- [x] Add search to navbar (expandable input or dedicated icon)
-- [x] Handle Arabic text search quirks (diacritics, alef normalization)
-- [x] Specs for search controller and edge cases
-
-### Follow System ✅
-- [x] Create `Follow` model (follower_id, followed_id, unique pair, counter caches)
-- [x] Add `followers_count` and `following_count` to users
-- [x] Create `FollowsController` (create/destroy via Turbo Stream)
-- [x] Add follow/unfollow button to user profile page
-- [x] Build `/following_feed` — articles from followed authors only
-- [x] Add following feed tab to feed navigation
-- [x] Show follower/following counts on user profile
-- [x] Build `/:slug/followers` and `/:slug/following` pages
-- [x] Specs for Follow model, controller, and feed filtering
-
-### Notifications ✅
-- [x] Create `Notification` model (recipient_id, actor_id, notifiable polymorphic, action enum, read_at)
-- [x] Create `NotificationsController` (index, mark_read, mark_all_read)
-- [x] Add notification bell to navbar with unread count badge (Turbo Stream updates)
-- [x] Generate notifications on: like, comment, new follower, article featured/picked
-- [x] Build notifications dropdown/page with grouped entries
-- [x] Add email digest job (daily/weekly summary of unread notifications)
-- [x] User setting to toggle email notifications
-- [x] Specs for Notification model, creation callbacks, and controller
-
-### Threaded Comments ✅
-- [x] Add `parent_id` (self-referential) to comments
-- [x] Add `replies_count` counter cache to comments
-- [x] Update comment UI to show nested replies (max 2 levels deep)
-- [x] Add "reply" button that opens inline reply form (Turbo Frame)
-- [x] Update `CommentsController` to handle parent_id
-- [x] Add likes on comments (`CommentLike` model, counter cache)
-- [x] Sort comments: top-level by newest/popular, replies by oldest
-- [x] Specs for threaded comments and comment likes
-
-### Author Analytics ✅
-- [x] Build `/:slug/stats` page (behind authentication, own profile only)
-- [x] Show per-article stats: views, visitors, likes, comments over time
-- [x] Show aggregate stats: total views, total likes, top articles
-- [x] Pull time-series data from Plausible for charts
-- [x] Simple chart rendering (Stimulus controller with lightweight chart lib or CSS-only bars)
-- [x] Add "Stats" link to user dropdown menu
-- [x] Specs for stats controller authorization
-
-### Reading Time ✅
-- [x] Add `reading_time_minutes` column to articles
-- [x] Calculate from content_html on save (strip HTML, count words, divide by 200 wpm for Arabic)
-- [x] Display reading time on article cards and article show page
-- [x] Add to Metable concern so it auto-updates with content
-- [x] Backfill existing articles via `rake backfill_reading_time`
-- [x] Specs for reading time calculation
-
-### Bookmarks ✅
-- [x] Create `Bookmark` model (user + article, unique pair, counter cache optional)
-- [x] Create `BookmarksController` (create/destroy via Turbo Stream)
-- [x] Add bookmark icon to article cards and article show page
-- [x] Build `/:slug/bookmarks` page (private, own profile only)
-- [x] Add "Bookmarks" link to user dropdown menu
-- [x] Specs for Bookmark model and controller
-
-### Related Articles
-- [ ] Show 3-4 related articles at the bottom of article show page (matched by shared tags)
-- [ ] "More from this author" section on article page (other articles by same writer)
-- [ ] Specs for related articles query
-
-### Trending
-- [ ] Add trending section to feed (sidebar or top area) showing articles trending this week
-- [ ] Trending algorithm based on views/likes velocity (recent engagement, not just totals)
-- [ ] Specs for trending scope/query
-
-### SEO & Structured Data ✅
-- [x] Add JSON-LD structured data for articles (Article schema)
-- [x] Ensure proper Open Graph and Twitter Card meta tags on all pages
-- [x] Generate XML sitemap (articles, topics, authors)
-- [x] Handle Arabic text SEO (canonical URLs, hreflang)
-
-### RSS Feeds
-- [ ] Add RSS feed for all published articles (`/feed.xml`)
-- [ ] Add per-author RSS feed (`/:slug/feed.xml`)
-- [ ] Add per-topic RSS feed (`/topics/:slug/feed.xml`)
-- [ ] Add RSS autodiscovery link tags to relevant pages
-
-### Personalized Recommendations
-- [ ] "Based on what you've liked" — articles sharing tags with user's liked articles, excluding read
-- [ ] Surface recommendations on feed page or dedicated section
-- [ ] Specs for recommendation query
-
-### Curated Collections
-- [ ] Create `Collection` model (title, description, slug, editor-curated)
-- [ ] Create `CollectionArticle` join model (collection + article, with position/order)
-- [ ] Build `/collections` browse page and `/collections/:slug` detail page
-- [ ] Backoffice: collection management (create, add/remove/reorder articles)
-- [ ] Specs for Collection model and controller
-
-### Test Coverage
-- [ ] Model specs: Article (scopes, Metable, publishing logic), User (roles, slug generation)
-- [ ] Request specs: full auth flow (signup, login, magic link expiry, logout)
-- [ ] Request specs: article CRUD (create, edit, publish, delete, authorization)
-- [ ] Request specs: likes and comments (create, delete, counter caches)
-- [ ] Request specs: feed variants (latest, popular, picked)
-- [ ] Request specs: backoffice access control
-- [ ] Request specs: API endpoints (article JSON, attachments)
-- [ ] Add SimpleCov minimum coverage threshold to CI
+Tags & Topics, Search, Follow System, Notifications, Threaded Comments, Author Analytics, Reading Time, Bookmarks, Related Articles, Trending, SEO & Structured Data
 
 ## Important Notes
 

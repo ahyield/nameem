@@ -1,0 +1,19 @@
+<div class="flex flex-wrap gap-1">
+  <% if user.admin? %>
+    <%= status_badge("مدير", :active) %>
+  <% end %>
+  <% if user.editor? %>
+    <%= status_badge("محرر", :active) %>
+  <% end %>
+  <% if user.featured? %>
+    <%= status_badge("مميز", :active) %>
+  <% end %>
+  <% if user.picked? %>
+    <%= status_badge("مختار", :active) %>
+  <% end %>
+  <% if user.confirmed? %>
+    <%= status_badge("مؤكد", :active) %>
+  <% else %>
+    <%= status_badge("غير مؤكد", :default) %>
+  <% end %>
+</div>

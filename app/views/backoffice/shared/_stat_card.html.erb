@@ -1,0 +1,12 @@
+<%# locals: (label:, value:, link: nil) %>
+<% if link.present? %>
+  <%= link_to link, class: "group block rounded-xl border border-border bg-card p-6 hover:shadow-sm transition-shadow" do %>
+    <dt class="text-[13px] font-medium text-muted-foreground"><%= label %></dt>
+    <dd class="text-2xl font-bold text-card-foreground tabular-nums mt-2"><%= value %></dd>
+  <% end %>
+<% else %>
+  <div class="rounded-xl border border-border bg-card p-6">
+    <dt class="text-[13px] font-medium text-muted-foreground"><%= label %></dt>
+    <dd class="text-2xl font-bold text-card-foreground tabular-nums mt-2"><%= value %></dd>
+  </div>
+<% end %>

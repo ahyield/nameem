@@ -20,23 +20,22 @@
               <div class="block">
                 <div class="border-b border-gray-200">
                   <nav class="-mb-px flex space-x-4 rtl:space-x-reverse" data-controller="feed-active-link" data-turbo-frame="feed" aria-label="Tabs">
-                    <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
                     <%= link_to "اختيارات المحررين", picked_feed_path, data: { turbo_stream: "feed" },
                       class: "text-lg whitespace-nowrap border-b-2 py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
                     <%= link_to "الرائج", trending_feed_path, data: { turbo_stream: "feed" },
                       class: "text-lg whitespace-nowrap border-b-2 py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
                     <%= link_to "الأحدث", latest_feed_path, data: { turbo_stream: "feed" },
-                      class: "whitespace-nowrap border-b-2 text-lg py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
+                      class: "text-lg whitespace-nowrap border-b-2 py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
                     <% if Current.user %>
                       <%= link_to "المتابَعون", following_feed_path, data: { turbo_stream: "feed" },
-                        class: "whitespace-nowrap border-b-2 border-transparent text-gray-400 hover:text-gray-600 text-lg py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
+                        class: "text-lg whitespace-nowrap border-b-2 border-transparent text-gray-400 hover:text-gray-600 py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
                     <% end %>
                   </nav>
                 </div>
               </div>
             </div>
 
-            <div class="my-6 content-center space-y-14 lg:space-y-10">
+            <div class="my-6 content-center">
               <%= turbo_frame_tag "feed", src: picked_feed_path(format: :turbo_stream, page: params[:page]), loading: "lazy" %>
 
               <%= turbo_frame_tag "feed_pagination" %>
@@ -52,15 +51,15 @@
       <section aria-labelledby="section-2-title">
         <h2 class="sr-only" id="section-2-title">اخترنا لك</h2>
         <div class="overflow-hidden rounded-lg bg-white">
-          <div class="p-6">
-            <h1>اخترنا لك</h1>
+          <div class="p-6 pb-3">
+            <h1 class="font-bold text-gray-900">اخترنا لك</h1>
           </div>
 
-          <ul role="list" class="grid p-6 gap-y-4 sm:grid-cols-1 sm:gap-y-8 xl:col-span-1">
+          <ul role="list" class="grid p-6 pt-0 gap-y-8 sm:grid-cols-1 xl:col-span-1">
 
             <% @users.each do |user| %>
               <li>
-                <div class="flex gap-x-3 content-center">
+                <div class="flex gap-x-3 items-start">
                   <div class="shrink-0">
                     <%= link_to user_path(user) do %>
                       <% if user.avatar.attached? %>
@@ -74,10 +73,10 @@
                       <% end %>
                     <% end %>
                   </div>
-                  <div>
+                  <div class="min-w-0">
                     <%= link_to user_path(user) do %>
-                      <h3 class="text-base text-sm font-semibold leading-7 tracking-tight text-gray-900"><%= user.name %></h3>
-                      <p class="text-xs leading-6 text-gray-500"><%= user.bio&.truncate(120) %></p>
+                      <h3 class="text-sm font-semibold leading-6 text-gray-900"><%= user.name %></h3>
+                      <p class="text-xs leading-5 text-gray-500 line-clamp-1"><%= user.bio&.truncate(120) %></p>
                     <% end %>
                   </div>
                 </div>
@@ -93,7 +92,7 @@
           <h2 class="sr-only" id="section-trending-title">الرائج هذا الأسبوع</h2>
           <div class="overflow-hidden rounded-lg bg-white">
             <div class="p-6 pb-2">
-              <h1>الرائج هذا الأسبوع</h1>
+              <h1 class="font-bold text-gray-900">الرائج هذا الأسبوع</h1>
             </div>
             <ol class="px-6 pb-6">
               <% @trending.each_with_index do |article, i| %>
@@ -130,10 +129,10 @@
         <section aria-labelledby="section-topics-title">
           <h2 class="sr-only" id="section-topics-title">المواضيع</h2>
           <div class="overflow-hidden rounded-lg bg-white">
-            <div class="p-6">
-              <h1>المواضيع</h1>
+            <div class="p-6 pb-3">
+              <h1 class="font-bold text-gray-900">المواضيع</h1>
             </div>
-            <div class="px-6 pb-6 flex flex-wrap gap-2">
+            <div class="px-6 pb-4 flex flex-wrap gap-2">
               <% @tags.each do |tag| %>
                 <%= link_to tag.name, topic_path(tag), class: "inline-block rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600 hover:bg-gray-200 transition-colors", data: { turbo: false } %>
               <% end %>

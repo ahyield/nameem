@@ -1,73 +1,91 @@
-<%= render "shared/nav" %>
-<%= render "flashes/alert", alert: flash[:alert] if !flash[:alert].nil? %>
-<%= render "flashes/notice", notice: flash[:notice] if !flash[:notice].nil? %>
-<%= render "flashes/error", error: flash[:error] if !flash[:error].nil? %>
-
-<main class="font-montserrat">
-  <div class="pt-16">
-    <%= render "backoffice/nav" %>
-  </div>
-
-  <div class="mx-auto max-w-2xl space-y-16 sm:space-y-20 lg:mx-0 lg:max-w-none">
-    <div class="">
-      <%= form_with model: @user, url: backoffice_user_path, html: { class: "md:col-span-2" }, method: :put do |form| %>
-        <div>
-          <div class="mt-6 border-t border-gray-100">
-            <dl class="divide-y divide-gray-100">
-              <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <% if @user.avatar.attached? %>
-                  <%= image_tag @user.avatar.variant(resize_to_fill: [600, 600]), class: "h-24 w-24 flex-none rounded-full bg-gray-800" %>
-                <% else %>
-                  <span class="inline-block h-24 w-24 overflow-hidden rounded-full bg-gray-100">
-                    <svg class="image-preview-span h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                  </span>
-              <% end %>
-              </div>
-              <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm font-medium leading-6 text-gray-900">الإسم</dt>
-                <dd class="mt-1 text-2xl leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @user.name %></dd>
-              </div>
-              <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm font-medium leading-6 text-gray-900">البريد الاليكتروني</dt>
-                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @user.email %></dd>
-              </div>
-              <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm font-medium leading-6 text-gray-900">اسم المستخدم</dt>
-                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @user.slug %></dd>
-              </div>
-              <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm font-medium leading-6 text-gray-900">عن <%= @user.name %></dt>
-                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @user.bio %></dd>
-              </div>
-              <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <div class="ml-3 text-sm leading-6">
-                  <label for="comments" class="font-medium text-gray-900">Picked</label>
-                  <p id="comments-description" class="text-gray-500">اخترنا لك</p>
-                </div>
-                <div class="flex h-6 items-center">
-                  <%= form.check_box :picked, class: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" %>
-                </div>
-              </div>
-              <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <div class="ml-3 text-sm leading-6">
-                  <label for="comments" class="font-medium text-gray-900">featured</label>
-                  <p id="comments-description" class="text-gray-500">الصفحة الرئيسية</p>
-                </div>
-                <div class="flex h-6 items-center">
-                  <%= form.check_box :featured, class: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" %>
-                </div>
-              </div>
-            </dl>
-          </div>
-        </div>
-
-        <div class="mt-8 flex gap-8">
-          <%= form.submit "حفظ", class: "rounded-md bg-blue-50 px-3.5 py-2.5 text-sm font-semibold text-blue-600 shadow-sm hover:bg-blue-100" %>
-          <%= link_to "الغاء", backoffice_users_path, class: "rounded-md bg-gray-50 px-3.5 py-2.5 text-sm font-semibold text-gray-600 shadow-sm hover:bg-gray-100 ml-4" %>
-        </div>
+<div class="space-y-6">
+  <!-- User Info Card -->
+  <div class="rounded-xl border border-border bg-card p-6">
+    <div class="flex items-center gap-4 mb-5">
+      <% if @user.avatar.attached? %>
+        <%= image_tag @user.avatar.variant(resize_to_fill: [48, 48]), class: "h-12 w-12 rounded-full" %>
+      <% else %>
+        <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+          <span class="text-base font-medium text-muted-foreground"><%= @user.name&.first %></span>
+        </span>
       <% end %>
+      <div>
+        <h2 class="text-[15px] font-semibold text-foreground"><%= @user.name %></h2>
+        <p class="text-[13px] text-muted-foreground"><%= @user.email %></p>
+      </div>
     </div>
+
+    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <dt class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">اسم المستخدم</dt>
+        <dd class="mt-1 text-[13px] text-foreground">@<%= @user.slug %></dd>
+      </div>
+      <div>
+        <dt class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">النبذة</dt>
+        <dd class="mt-1 text-[13px] text-foreground"><%= @user.bio.presence || "\u2014" %></dd>
+      </div>
+    </dl>
   </div>
-</main>
+
+  <!-- Edit Form Card -->
+  <div class="rounded-xl border border-border bg-card p-6">
+    <h3 class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-4">الأدوار والحالات</h3>
+
+    <%= form_with model: @user, url: backoffice_user_path(@user), method: :put do |form| %>
+      <div class="space-y-4">
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <%= form.check_box :confirmed, class: "h-4 w-4 rounded border-input text-primary focus:ring-ring" %>
+          <div>
+            <span class="text-[13px] font-medium text-foreground">مؤكد</span>
+            <p class="text-[12px] text-muted-foreground">تأكيد حساب المستخدم</p>
+          </div>
+        </label>
+
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <%= form.check_box :featured, class: "h-4 w-4 rounded border-input text-primary focus:ring-ring" %>
+          <div>
+            <span class="text-[13px] font-medium text-foreground">مميز</span>
+            <p class="text-[12px] text-muted-foreground">عرض في الصفحة الرئيسية</p>
+          </div>
+        </label>
+
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <%= form.check_box :picked, class: "h-4 w-4 rounded border-input text-primary focus:ring-ring" %>
+          <div>
+            <span class="text-[13px] font-medium text-foreground">مختار</span>
+            <p class="text-[12px] text-muted-foreground">اختيارات المحررين</p>
+          </div>
+        </label>
+
+        <% if current_user.admin? %>
+          <div class="pt-4 border-t border-border">
+            <p class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-3">صلاحيات متقدمة</p>
+
+            <div class="space-y-4">
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <%= form.check_box :admin, class: "h-4 w-4 rounded border-input text-primary focus:ring-ring" %>
+                <div>
+                  <span class="text-[13px] font-medium text-foreground">مدير</span>
+                  <p class="text-[12px] text-muted-foreground">صلاحيات كاملة</p>
+                </div>
+              </label>
+
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <%= form.check_box :editor, class: "h-4 w-4 rounded border-input text-primary focus:ring-ring" %>
+                <div>
+                  <span class="text-[13px] font-medium text-foreground">محرر</span>
+                  <p class="text-[12px] text-muted-foreground">دخول لوحة التحكم</p>
+                </div>
+              </label>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="mt-6 flex items-center gap-3">
+        <%= form.submit "حفظ", class: "px-4 py-1.5 rounded-md bg-primary text-primary-foreground text-[13px] font-medium hover:bg-primary/90 transition-colors cursor-pointer" %>
+        <%= link_to "إلغاء", backoffice_user_path(@user), class: "text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors" %>
+      </div>
+    <% end %>
+  </div>
+</div>

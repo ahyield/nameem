@@ -31,7 +31,12 @@
       "Bash(bin/rails db:migrate:redo:*)",
       "Bash(bin/rails db:migrate:down:*)",
       "Bash(grep:*)",
-      "Bash(bin/rails middleware:*)"
+      "Bash(bin/rails middleware:*)",
+      "Bash(bin/rails tailwindcss:build:*)",
+      "Bash(bundle exec tailwindcss:*)",
+      "Bash(bundle exec rake:*)",
+      "WebFetch(domain:shadcn.rails-components.com)",
+      "WebFetch(domain:ui.shadcn.com)"
     ]
   }
 }

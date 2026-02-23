@@ -1,42 +1,51 @@
-<%= render "shared/nav" %>
-<%= render "flashes/alert", alert: flash[:alert] if !flash[:alert].nil? %>
-<%= render "flashes/notice", notice: flash[:notice] if !flash[:notice].nil? %>
-<%= render "flashes/error", error: flash[:error] if !flash[:error].nil? %>
-
-<main class="font-montserrat">
-  <div class="pt-16">
-    <%= render "backoffice/nav" %>
+<div class="space-y-6">
+  <!-- Tag Info Card -->
+  <div class="rounded-xl border border-border bg-card p-6">
+    <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div>
+        <dt class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">المعرف</dt>
+        <dd class="mt-1 text-[13px] text-foreground"><%= @tag.slug %></dd>
+      </div>
+      <div>
+        <dt class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">المقالات</dt>
+        <dd class="mt-1 text-[13px] text-foreground tabular-nums"><%= @tag.articles_count %></dd>
+      </div>
+      <div>
+        <dt class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">المتابعين</dt>
+        <dd class="mt-1 text-[13px] text-foreground tabular-nums"><%= @tag.followers.count %></dd>
+      </div>
+    </dl>
   </div>
 
-  <div class="mx-auto max-w-2xl space-y-16 sm:space-y-20 lg:mx-0 lg:max-w-none">
-    <div class="">
-      <%= form_with model: @tag, url: backoffice_tag_path(@tag), html: { class: "md:col-span-2" }, method: :put do |form| %>
-        <div>
-          <div class="mt-6 border-t border-gray-100">
-            <dl class="divide-y divide-gray-100">
-              <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm font-medium leading-6 text-gray-900">Name</dt>
-                <dd class="mt-1 sm:col-span-2 sm:mt-0">
-                  <%= form.text_field :name, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
-                </dd>
-              </div>
-              <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm font-medium leading-6 text-gray-900">Slug</dt>
-                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @tag.slug %></dd>
-              </div>
-              <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm font-medium leading-6 text-gray-900">Articles Count</dt>
-                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @tag.articles_count %></dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-
-        <div class="mt-8 flex gap-8">
-          <%= form.submit "حفظ", class: "rounded-md bg-blue-50 px-3.5 py-2.5 text-sm font-semibold text-blue-600 shadow-sm hover:bg-blue-100" %>
-          <%= link_to "الغاء", backoffice_tags_path, class: "rounded-md bg-gray-50 px-3.5 py-2.5 text-sm font-semibold text-gray-600 shadow-sm hover:bg-gray-100 ml-4" %>
-        </div>
-      <% end %>
-    </div>
+  <!-- Edit Name Card -->
+  <div class="rounded-xl border border-border bg-card p-6">
+    <h3 class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-4">تعديل الاسم</h3>
+    <%= form_with model: @tag, url: backoffice_tag_path(@tag), method: :put do |form| %>
+      <div class="mb-4">
+        <%= form.label :name, "الاسم", class: "block text-[13px] font-medium text-foreground mb-1.5" %>
+        <%= form.text_field :name, class: "w-full sm:w-80 rounded-md border-input bg-transparent text-[13px] focus:outline-none focus:ring-1 focus:ring-ring focus:border-ring transition-colors" %>
+      </div>
+      <div class="flex items-center gap-3">
+        <%= form.submit "حفظ", class: "px-4 py-1.5 rounded-md bg-primary text-primary-foreground text-[13px] font-medium hover:bg-primary/90 transition-colors cursor-pointer" %>
+        <%= link_to "إلغاء", backoffice_tag_path(@tag), class: "text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors" %>
+      </div>
+    <% end %>
   </div>
-</main>
+
+  <!-- Merge Card -->
+  <div class="rounded-xl border border-border bg-card p-6">
+    <h3 class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-1">دمج الموضوع</h3>
+    <p class="text-[12px] text-muted-foreground mb-4">نقل جميع المقالات إلى موضوع آخر وحذف هذا الموضوع</p>
+    <%= form_with url: merge_backoffice_tag_path(@tag), method: :post do |f| %>
+      <div class="mb-4">
+        <%= f.label :target_id, "الموضوع الهدف", class: "block text-[13px] font-medium text-foreground mb-1.5" %>
+        <%= f.select :target_id,
+            options_for_select(@other_tags.map { |t| ["#{t.name} (#{t.articles_count} مقالات)", t.id] }),
+            { prompt: "اختر موضوعًا..." },
+            class: "w-full sm:w-80 rounded-md border-input bg-transparent text-[13px] focus:outline-none focus:ring-1 focus:ring-ring focus:border-ring transition-colors" %>
+      </div>
+      <%= f.submit "دمج", class: "px-4 py-1.5 rounded-md bg-destructive text-destructive-foreground text-[13px] font-medium hover:bg-destructive/90 transition-colors cursor-pointer",
+          data: { turbo_confirm: "هل أنت متأكد؟ سيتم نقل جميع المقالات وحذف هذا الموضوع نهائيًا." } %>
+    <% end %>
+  </div>
+</div>

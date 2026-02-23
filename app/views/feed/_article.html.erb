@@ -1,31 +1,29 @@
-<article class="relative my-6 pb-8 border-gray-200 z-10 border-b isolate gap-x-6 flex flex-1 flex-row">
-  <div class="grow max-h-42">
-    <div class="flex items-center gap-x-4 text-xs">
-      <div class="flex">
-        <div class="relative flex items-center gap-x-4">
-          <% if article.user.avatar.attached? %>
-            <%= image_tag article.user.avatar.variant(resize_to_fill: [600, 600]), class: "h-9 w-9 rounded-full bg-gray-50" %>
-          <% else %>
-            <span class="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
-              <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-            </span>
-          <% end %>
-          <div class="text-sm leading-6">
-            <p class="font-semibold text-gray-900">
+<article class="relative py-[30px] border-gray-100 z-10 border-b isolate gap-x-6 flex flex-1 flex-row items-center">
+  <div class="grow min-w-0 lg:min-h-[160px] flex flex-col justify-center">
+    <div class="flex items-center gap-x-3 text-xs">
+      <div class="relative flex items-center gap-x-3">
+        <% if article.user.avatar.attached? %>
+          <%= image_tag article.user.avatar.variant(resize_to_fill: [600, 600]), class: "h-8 w-8 rounded-full bg-gray-50" %>
+        <% else %>
+          <span class="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
+            <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </span>
+        <% end %>
+        <div class="text-sm leading-6">
+          <p class="font-semibold text-gray-900">
             <%= link_to user_path(article.user), data: { turbo: false } do %>
               <%= article.user.name %>
               <span class="absolute inset-0"></span>
             <% end %>
-            </p>
-          </div>
+          </p>
         </div>
       </div>
     </div>
     <div class="group relative">
       <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false } do %>
-        <h1 class="mt-2 text-2xl font-semibold text-gray-900">
+        <h1 class="mt-2 text-xl font-bold text-gray-900 leading-snug">
           <span class="absolute inset-0"></span>
           <% if article.title.blank? %>
             <%= first_paragraph(article)&.truncate(150) %>
@@ -34,7 +32,7 @@
           <% end %>
         </h1>
       <% end %>
-      <p class="hidden lg:block mt-2 text-sm leading-6 text-gray-600"><%= article.description&.truncate(320) %></p>
+      <p class="hidden lg:block mt-2 text-sm leading-6 text-gray-500 line-clamp-2"><%= article.description&.truncate(320) %></p>
       <% if article.tags.any? %>
         <div class="relative z-10 mt-2 flex flex-wrap gap-1">
           <%= render partial: "tags/tag", collection: article.tags, as: :tag %>
@@ -70,9 +68,8 @@
   </div>
   <% if article_cover(article) %>
     <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false } do %>
-      <div class="relative mt-4 aspect-[112/112] lg:aspect-square w-24 h-24 md:w-24 md:h-24 lg:w-32 lg:h-32">
+      <div class="relative aspect-square w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-lg overflow-hidden shrink-0">
         <%= image_tag article_cover(article), class: "absolute inset-0 h-full w-full bg-gray-50 object-cover" %>
-        <div class="absolute inset-0 ring-inset ring-gray-900/10"></div>
       </div>
     <% end %>
   <% end %>

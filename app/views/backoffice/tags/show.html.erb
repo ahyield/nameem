@@ -1,0 +1,58 @@
+<div class="space-y-6">
+  <!-- Tag Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-[15px] font-semibold text-foreground"><%= @tag.name %></h2>
+      <p class="text-[13px] text-muted-foreground mt-0.5">المعرف: <%= @tag.slug %></p>
+    </div>
+    <div class="flex items-center gap-2">
+      <%= link_to "تعديل", edit_backoffice_tag_path(@tag), class: "px-3 py-1.5 rounded-md bg-primary text-[13px] font-medium text-primary-foreground hover:bg-primary/90 transition-colors" %>
+      <%= button_to "حذف", backoffice_tag_path(@tag), method: :delete,
+          class: "px-3 py-1.5 rounded-md text-[13px] font-medium text-destructive hover:text-destructive/80 transition-colors",
+          data: { turbo_confirm: "هل أنت متأكد من حذف هذا الموضوع؟" } %>
+    </div>
+  </div>
+
+  <!-- Stats Card -->
+  <div class="rounded-xl border border-border bg-card p-6">
+    <p class="text-[13px] text-muted-foreground">
+      <span class="text-foreground font-semibold tabular-nums"><%= @tag.articles_count %></span> مقال
+      <span class="text-border mx-2">&middot;</span>
+      <span class="text-foreground font-semibold tabular-nums"><%= @tag.followers.count %></span> متابع
+    </p>
+  </div>
+
+  <!-- Articles Card -->
+  <div class="rounded-xl border border-border bg-card">
+    <div class="p-6 pb-4">
+      <h3 class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">المقالات المنشورة</h3>
+    </div>
+    <% if @articles.any? %>
+      <div class="px-6 pb-6">
+        <div class="divide-y divide-border">
+          <% @articles.each do |article| %>
+            <div class="flex items-center justify-between gap-3 py-2.5">
+              <div class="min-w-0 flex-1">
+                <%= link_to backoffice_article_path(article), class: "text-[13px] font-medium text-foreground hover:text-muted-foreground truncate block" do %>
+                  <%= article.title.presence || article.uuid %>
+                <% end %>
+                <p class="text-[12px] text-muted-foreground"><%= article.user.name %></p>
+              </div>
+              <div class="flex items-center gap-3 text-[12px] text-muted-foreground shrink-0">
+                <span class="tabular-nums"><%= article.real_views_count || 0 %> مشاهدة</span>
+                <span><%= time_ago_in_words(article.created_at) %></span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        <div class="mt-4">
+          <%== @pagy.series_nav %>
+        </div>
+      </div>
+    <% else %>
+      <div class="px-6 pb-6">
+        <p class="text-[13px] text-muted-foreground">لا توجد مقالات منشورة لهذا الموضوع</p>
+      </div>
+    <% end %>
+  </div>
+</div>

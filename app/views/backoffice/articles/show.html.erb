@@ -1,0 +1,95 @@
+<div class="space-y-6">
+  <!-- Article Header -->
+  <div class="flex items-start justify-between gap-4">
+    <div class="flex-1 min-w-0">
+      <h2 class="text-[15px] font-semibold text-foreground mb-2"><%= @article.title.presence || @article.uuid %></h2>
+      <div class="flex items-center gap-1.5 mb-3">
+        <%= status_badge(@article.published? ? "منشور" : "مسودة", @article.published? ? :active : :default) %>
+        <% if @article.featured? %>
+          <%= status_badge("مميز", :active) %>
+        <% end %>
+        <% if @article.picked? %>
+          <%= status_badge("مختار", :active) %>
+        <% end %>
+      </div>
+      <div class="flex items-center gap-4 text-[13px] text-muted-foreground">
+        <span>الكاتب: <%= link_to @article.user.name, backoffice_user_path(@article.user), class: "text-foreground hover:text-muted-foreground" %></span>
+        <% if @article.published_at.present? %>
+          <span>تاريخ النشر: <%= l(@article.published_at.to_date, format: :short) rescue @article.published_at.to_date %></span>
+        <% end %>
+        <% if @article.reading_time_minutes.present? && @article.reading_time_minutes > 0 %>
+          <span><%= @article.reading_time_minutes %> دقائق قراءة</span>
+        <% end %>
+      </div>
+      <% if @article.description.present? %>
+        <p class="mt-3 text-[13px] text-muted-foreground leading-relaxed"><%= @article.description %></p>
+      <% end %>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <%= link_to "تعديل", edit_backoffice_article_path(@article), class: "px-3 py-1.5 rounded-md bg-primary text-[13px] font-medium text-primary-foreground hover:bg-primary/90 transition-colors" %>
+      <% if @article.published? %>
+        <%= link_to "عرض في الموقع", user_article_path(slug: @article.user.slug, uuid: @article.uuid), class: "px-3 py-1.5 rounded-md border border-input text-[13px] font-medium text-foreground hover:bg-accent transition-colors", target: "_blank" %>
+      <% end %>
+      <%= button_to "حذف", backoffice_article_path(@article), method: :delete,
+          class: "px-3 py-1.5 rounded-md text-[13px] font-medium text-destructive hover:text-destructive/80 transition-colors",
+          data: { turbo_confirm: "هل أنت متأكد من حذف هذا المقال؟" } %>
+    </div>
+  </div>
+
+  <!-- Stats Card -->
+  <div class="rounded-xl border border-border bg-card p-6">
+    <p class="text-[13px] text-muted-foreground">
+      <span class="text-foreground font-semibold tabular-nums"><%= @article.real_views_count || 0 %></span> مشاهدة
+      <span class="text-border mx-2">&middot;</span>
+      <span class="text-foreground font-semibold tabular-nums"><%= @article.reading_time_minutes || 0 %></span> دقيقة قراءة
+      <span class="text-border mx-2">&middot;</span>
+      <span class="text-foreground font-semibold tabular-nums"><%= @article.likes_count %></span> إعجاب
+      <span class="text-border mx-2">&middot;</span>
+      <span class="text-foreground font-semibold tabular-nums"><%= @article.comments_count %></span> تعليق
+      <span class="text-border mx-2">&middot;</span>
+      <span class="text-foreground font-semibold tabular-nums"><%= @article.bookmarks.count %></span> حفظ
+    </p>
+  </div>
+
+  <!-- Tags Card -->
+  <% if @article.tags.any? %>
+    <div class="rounded-xl border border-border bg-card p-6">
+      <h3 class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-3">المواضيع</h3>
+      <div class="flex flex-wrap gap-1.5">
+        <% @article.tags.each do |tag| %>
+          <%= link_to tag.name, backoffice_tag_path(tag), class: "inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground hover:bg-accent transition-colors" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Toggle Controls Card -->
+  <div class="rounded-xl border border-border bg-card p-6">
+    <h3 class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-3">إعدادات المقال</h3>
+    <div class="flex flex-wrap gap-2">
+      <%= form_with model: @article, url: backoffice_article_path(@article), method: :put, class: "contents" do |form| %>
+        <label class="flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-colors <%= @article.published? ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-accent' %>">
+          <span class="text-[13px] font-medium">منشور</span>
+          <%= form.check_box :published, class: "sr-only", onchange: "this.form.requestSubmit()" %>
+          <span class="h-1.5 w-1.5 rounded-full <%= @article.published? ? 'bg-primary-foreground' : 'bg-muted-foreground' %>"></span>
+        </label>
+      <% end %>
+
+      <%= form_with model: @article, url: backoffice_article_path(@article), method: :put, class: "contents" do |form| %>
+        <label class="flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-colors <%= @article.featured? ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-accent' %>">
+          <span class="text-[13px] font-medium">مميز</span>
+          <%= form.check_box :featured, class: "sr-only", onchange: "this.form.requestSubmit()" %>
+          <span class="h-1.5 w-1.5 rounded-full <%= @article.featured? ? 'bg-primary-foreground' : 'bg-muted-foreground' %>"></span>
+        </label>
+      <% end %>
+
+      <%= form_with model: @article, url: backoffice_article_path(@article), method: :put, class: "contents" do |form| %>
+        <label class="flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-colors <%= @article.picked? ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-accent' %>">
+          <span class="text-[13px] font-medium">مختار</span>
+          <%= form.check_box :picked, class: "sr-only", onchange: "this.form.requestSubmit()" %>
+          <span class="h-1.5 w-1.5 rounded-full <%= @article.picked? ? 'bg-primary-foreground' : 'bg-muted-foreground' %>"></span>
+        </label>
+      <% end %>
+    </div>
+  </div>
+</div>

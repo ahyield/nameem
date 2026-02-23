@@ -1,0 +1,27 @@
+<header class="sticky top-0 z-20 bg-background/80 backdrop-blur-xl border-b border-border">
+  <div class="flex items-center justify-between px-8 h-14">
+    <div class="flex items-center gap-4">
+      <!-- Mobile hamburger -->
+      <button data-action="click->backoffice-sidebar#toggle" class="lg:hidden text-muted-foreground hover:text-foreground transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+
+      <% if @page_title.present? %>
+        <h1 class="text-[13px] font-semibold text-foreground"><%= @page_title %></h1>
+      <% end %>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <span class="text-[13px] text-muted-foreground"><%= current_user.name %></span>
+      <% if current_user.avatar.attached? %>
+        <%= image_tag current_user.avatar.variant(resize_to_fill: [28, 28]), class: "h-7 w-7 rounded-full" %>
+      <% else %>
+        <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-muted">
+          <span class="text-[11px] font-medium text-muted-foreground"><%= current_user.name&.first %></span>
+        </span>
+      <% end %>
+    </div>
+  </div>
+</header>
