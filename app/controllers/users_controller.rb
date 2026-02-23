@@ -13,9 +13,18 @@ class UsersController < ApplicationController
     authorize @article, :show?
 
     @liked = Current.user&.article_likes&.exists?(article: @article)
+    @bookmarked = Current.user&.bookmarks&.exists?(article: @article)
     @comments = @article.comments.top_level.newest_first
                         .includes(:user, :rich_text_body, :comment_likes, :mentioned_user,
                                   replies: [:user, :rich_text_body, :comment_likes, :mentioned_user])
+
+    @related_articles = Article.related_to(@article, limit: 3)
+                                .includes(:user, :tags, images_attachments: :blob)
+    @author_articles = @user.articles.published
+                            .where.not(id: @article.id)
+                            .order(published_at: :desc)
+                            .limit(3)
+                            .includes(:tags, images_attachments: :blob)
 
     if policy(@article).edit?
       @likers = @article.article_likes
@@ -78,6 +87,15 @@ class UsersController < ApplicationController
         @timeseries = nil
       end
     end
+  end
+
+  def bookmarks
+    @user = User.friendly.find(params[:slug])
+    authorize @user, :bookmarks?
+
+    @pagy, @articles = pagy(
+      @user.bookmarked_articles.published.order("bookmarks.created_at DESC")
+    )
   end
 
   def followers

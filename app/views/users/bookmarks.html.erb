@@ -1,0 +1,23 @@
+<% title "نميم - المحفوظات" %>
+
+<%= render "shared/nav" %>
+
+<div class="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8">
+  <h1 class="text-2xl font-bold text-gray-900 mb-8">المحفوظات</h1>
+
+  <% if @articles.any? %>
+    <div class="space-y-2">
+      <% @articles.each do |article| %>
+        <%= render "feed/article", article: article %>
+      <% end %>
+    </div>
+
+    <div class="mt-8">
+      <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+    </div>
+  <% else %>
+    <p class="text-gray-500 text-center py-12">لا توجد مقالات محفوظة بعد.</p>
+  <% end %>
+</div>
+
+<%= render "shared/footer" %>

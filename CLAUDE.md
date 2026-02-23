@@ -154,15 +154,15 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 - [x] User setting to toggle email notifications
 - [x] Specs for Notification model, creation callbacks, and controller
 
-### Threaded Comments
-- [ ] Add `parent_id` (self-referential) to comments
-- [ ] Add `replies_count` counter cache to comments
-- [ ] Update comment UI to show nested replies (max 2 levels deep)
-- [ ] Add "reply" button that opens inline reply form (Turbo Frame)
-- [ ] Update `CommentsController` to handle parent_id
-- [ ] Add likes on comments (`CommentLike` model, counter cache)
-- [ ] Sort comments: top-level by newest/popular, replies by oldest
-- [ ] Specs for threaded comments and comment likes
+### Threaded Comments ✅
+- [x] Add `parent_id` (self-referential) to comments
+- [x] Add `replies_count` counter cache to comments
+- [x] Update comment UI to show nested replies (max 2 levels deep)
+- [x] Add "reply" button that opens inline reply form (Turbo Frame)
+- [x] Update `CommentsController` to handle parent_id
+- [x] Add likes on comments (`CommentLike` model, counter cache)
+- [x] Sort comments: top-level by newest/popular, replies by oldest
+- [x] Specs for threaded comments and comment likes
 
 ### Author Analytics ✅
 - [x] Build `/:slug/stats` page (behind authentication, own profile only)
@@ -181,13 +181,13 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 - [x] Backfill existing articles via `rake backfill_reading_time`
 - [x] Specs for reading time calculation
 
-### Bookmarks
-- [ ] Create `Bookmark` model (user + article, unique pair, counter cache optional)
-- [ ] Create `BookmarksController` (create/destroy via Turbo Stream)
-- [ ] Add bookmark icon to article cards and article show page
-- [ ] Build `/:slug/bookmarks` page (private, own profile only)
-- [ ] Add "Bookmarks" link to user dropdown menu
-- [ ] Specs for Bookmark model and controller
+### Bookmarks ✅
+- [x] Create `Bookmark` model (user + article, unique pair, counter cache optional)
+- [x] Create `BookmarksController` (create/destroy via Turbo Stream)
+- [x] Add bookmark icon to article cards and article show page
+- [x] Build `/:slug/bookmarks` page (private, own profile only)
+- [x] Add "Bookmarks" link to user dropdown menu
+- [x] Specs for Bookmark model and controller
 
 ### Related Articles
 - [ ] Show 3-4 related articles at the bottom of article show page (matched by shared tags)

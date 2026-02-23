@@ -69,8 +69,9 @@ twitter: {
         </button>
       </div>
 
-      <%# Share & Options (left side in RTL) — order: share, then ... at the far end %>
-      <div class="flex items-center gap-5">
+      <%# Bookmark & Share & Options (left side in RTL) %>
+      <div class="flex items-center gap-5 [&>turbo-frame]:flex [&>turbo-frame]:items-center">
+        <%= render "bookmarks/button", article: @article, bookmarked: @bookmarked %>
         <%# Share dropdown %>
         <div data-controller="dropdown" class="relative">
           <button type="button" class="text-gray-300 hover:text-gray-600 cursor-pointer transition-colors"
@@ -158,6 +159,24 @@ twitter: {
     </div>
 
   </div>
+
+  <% if @related_articles&.any? || @author_articles&.any? %>
+    <div class="mx-auto max-w-4xl mt-16 border-t border-gray-200 pt-10 px-6">
+      <% if @related_articles&.any? %>
+        <h2 class="text-xl font-bold text-gray-900 mb-6">مقالات ذات صلة</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <%= render partial: "articles/suggestion_card", collection: @related_articles, as: :article %>
+        </div>
+      <% end %>
+
+      <% if @author_articles&.any? %>
+        <h2 class="text-xl font-bold text-gray-900 mb-6 <%= "mt-14 border-t border-gray-200 pt-10" if @related_articles&.any? %>">المزيد من <%= @user.name %></h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <%= render partial: "articles/suggestion_card", collection: @author_articles, as: :article %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
 
   <%# Comments Drawer %>
   <div class="hidden relative z-50" data-drawer-target="container" data-action="keydown@window->drawer#escape" role="dialog" aria-modal="true" aria-label="التعليقات">

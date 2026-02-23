@@ -14,4 +14,8 @@ class UserPolicy < ApplicationPolicy
   def stats?
     user == record
   end
+
+  def bookmarks?
+    user == record
+  end
 end

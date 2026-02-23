@@ -1,0 +1,59 @@
+<article class="flex flex-col">
+  <% cover = article_cover(article) %>
+  <% if cover %>
+    <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false } do %>
+      <div class="aspect-[16/10] w-full overflow-hidden rounded-sm bg-gray-100">
+        <%= image_tag cover, class: "h-full w-full object-cover" %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <div class="flex items-center gap-2 mt-4 text-xs text-gray-500">
+    <%= link_to user_path(article.user), data: { turbo: false }, class: "flex items-center gap-2 hover:underline" do %>
+      <% if article.user.avatar.attached? %>
+        <%= image_tag article.user.avatar.variant(resize_to_fill: [64, 64]), class: "h-5 w-5 rounded-full bg-gray-50" %>
+      <% else %>
+        <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gray-100">
+          <svg class="h-3 w-3 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </span>
+      <% end %>
+      <span class="font-medium text-gray-700"><%= article.user.name %></span>
+    <% end %>
+  </div>
+
+  <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false }, class: "group" do %>
+    <h3 class="mt-2 text-base font-bold text-gray-900 leading-snug group-hover:text-gray-600 transition-colors line-clamp-2">
+      <% if article.title.blank? %>
+        <%= first_paragraph(article)&.truncate(100) %>
+      <% else %>
+        <%= article.title.truncate(100) %>
+      <% end %>
+    </h3>
+    <p class="mt-1 text-sm leading-relaxed text-gray-500 line-clamp-2"><%= article.description&.truncate(120) %></p>
+  <% end %>
+
+  <div class="mt-3 flex items-center gap-3 text-xs text-gray-400">
+    <time><%= short_date(article.published_at || article.created_at) %></time>
+    <% if article.reading_time_minutes.present? %>
+      <span><%= article.reading_time_minutes %> د قراءة</span>
+    <% end %>
+    <% if article.likes_count > 0 %>
+      <span class="flex items-center gap-1">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+        </svg>
+        <%= article.likes_count %>
+      </span>
+    <% end %>
+    <% if article.comments_count > 0 %>
+      <span class="flex items-center gap-1">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+        </svg>
+        <%= article.comments_count %>
+      </span>
+    <% end %>
+  </div>
+</article>

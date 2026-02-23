@@ -37,6 +37,11 @@
         </h1>
       <% end %>
       <p class="hidden lg:block mt-2 text-sm leading-6 text-gray-600"><%= article.description&.truncate(320) %></p>
+      <% if current_user && current_user != article.user %>
+        <div class="relative z-10 mt-2 [&>turbo-frame]:flex [&>turbo-frame]:items-center">
+          <%= render "bookmarks/button", article: article, bookmarked: current_user.bookmarks.exists?(article: article), size: "w-4 h-4" %>
+        </div>
+      <% end %>
     </div>
 
   </div>

@@ -4,6 +4,7 @@ class Article < ApplicationRecord
   has_many_attached :images
 
   has_many :article_likes, dependent: :destroy
+  has_many :bookmarks, dependent: :destroy
   has_many :article_tags, dependent: :destroy
   has_many :tags, through: :article_tags
   has_many :comments, dependent: :destroy
@@ -18,6 +19,17 @@ class Article < ApplicationRecord
   # so we don't want articles from nameem to show up in most reads.
   scope :most_popular, -> { where("published = ? AND user_id != ?", true, 1).order(views_count: :desc) }
   scope :most_visited, -> { where("published = ? AND user_id != ?", true, 1).order(visitors_count: :desc) }
+
+  scope :related_to, ->(article, limit: 4) {
+    published
+      .joins(:article_tags)
+      .where(article_tags: { tag_id: article.tag_ids })
+      .where.not(id: article.id)
+      .select("articles.*, COUNT(article_tags.tag_id) as shared_tags_count")
+      .group("articles.id")
+      .order(Arel.sql("COUNT(article_tags.tag_id) DESC, articles.published_at DESC"))
+      .limit(limit)
+  }
 
   attribute :uuid, MySQLBinUUID::Type.new
 

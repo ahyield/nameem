@@ -7,7 +7,9 @@ class User < ApplicationRecord
   has_many :article_likes, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :comment_likes, dependent: :destroy
+  has_many :bookmarks, dependent: :destroy
   has_many :liked_articles, through: :article_likes, source: :article
+  has_many :bookmarked_articles, through: :bookmarks, source: :article
   has_many :sessions, dependent: :destroy
   has_many :magic_links, dependent: :destroy
   has_many :notifications, foreign_key: :recipient_id, inverse_of: :recipient, dependent: :destroy

@@ -38,6 +38,11 @@ Rails.application.routes.draw do
     delete ":uuid/like", action: :destroy, as: "unlike_article",
            constraints: Constraints::ArticleUuidConstraint.new, controller: "article_likes"
 
+    post ":uuid/bookmark", action: :create, as: "bookmark_article",
+         constraints: Constraints::ArticleUuidConstraint.new, controller: "bookmarks"
+    delete ":uuid/bookmark", action: :destroy, as: "unbookmark_article",
+           constraints: Constraints::ArticleUuidConstraint.new, controller: "bookmarks"
+
     post ":uuid/comments", action: :create, as: "article_comments",
          constraints: Constraints::ArticleUuidConstraint.new, controller: "comments"
     delete ":uuid/comments/:id", action: :destroy, as: "article_comment",
@@ -59,6 +64,7 @@ Rails.application.routes.draw do
 
     get "articles", action: :articles, as: "articles"
     get "drafts", action: :drafts, as: "drafts"
+    get "bookmarks", action: :bookmarks, as: "bookmarks"
     get "stats", action: :stats, as: "stats"
   end
 

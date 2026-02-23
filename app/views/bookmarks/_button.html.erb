@@ -1,0 +1,26 @@
+<% icon_size = local_assigns.fetch(:size, "w-6 h-6") %>
+<%= turbo_frame_tag dom_id(article, :bookmark) do %>
+  <% if current_user %>
+    <% if bookmarked %>
+      <%= button_to user_unbookmark_article_path(slug: article.user, uuid: article),
+            method: :delete,
+            params: { size: icon_size },
+            class: "flex items-center gap-1 cursor-pointer group",
+            data: { turbo_frame: dom_id(article, :bookmark) } do %>
+        <%= heroicon "bookmark", variant: :solid, class: "#{icon_size} text-gray-900 group-hover:scale-110 transition-transform" %>
+      <% end %>
+    <% else %>
+      <%= button_to user_bookmark_article_path(slug: article.user, uuid: article),
+            method: :post,
+            params: { size: icon_size },
+            class: "flex items-center gap-1 cursor-pointer group",
+            data: { turbo_frame: dom_id(article, :bookmark) } do %>
+        <%= heroicon "bookmark", class: "#{icon_size} text-gray-300 group-hover:text-gray-500 transition-colors" %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <div class="flex items-center gap-1">
+      <%= heroicon "bookmark", class: "#{icon_size} text-gray-300" %>
+    </div>
+  <% end %>
+<% end %>
