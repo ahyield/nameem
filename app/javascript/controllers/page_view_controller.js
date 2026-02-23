@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import FingerprintJS from "@fingerprintjs/fingerprintjs"
 
 export default class extends Controller {
   static values = { viewableType: String, viewableId: Number }
@@ -10,7 +9,8 @@ export default class extends Controller {
 
   async trackView() {
     try {
-      const fp = await FingerprintJS.load()
+      const FingerprintJS = await import("@fingerprintjs/fingerprintjs")
+      const fp = await (FingerprintJS.default || FingerprintJS).load()
       const result = await fp.get()
 
       const csrfToken = document.querySelector("meta[name='csrf-token']")?.content
