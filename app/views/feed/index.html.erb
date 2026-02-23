@@ -20,23 +20,23 @@
               <div class="block">
                 <div class="border-b border-gray-200">
                   <nav class="-mb-px flex space-x-4 rtl:space-x-reverse" data-controller="feed-active-link" data-turbo-frame="feed" aria-label="Tabs">
-                    <%= link_to "اختيارات المحررين", picked_feed_path, data: { turbo_stream: "feed" },
-                      class: "text-lg whitespace-nowrap border-b-2 py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
                     <%= link_to "الرائج", trending_feed_path, data: { turbo_stream: "feed" },
                       class: "text-lg whitespace-nowrap border-b-2 py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
-                    <%= link_to "الأحدث", latest_feed_path, data: { turbo_stream: "feed" },
+                    <%= link_to "اختيارات المحررين", picked_feed_path, data: { turbo_stream: "feed" },
                       class: "text-lg whitespace-nowrap border-b-2 py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
                     <% if Current.user %>
                       <%= link_to "المتابَعون", following_feed_path, data: { turbo_stream: "feed" },
                         class: "text-lg whitespace-nowrap border-b-2 border-transparent text-gray-400 hover:text-gray-600 py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
                     <% end %>
+                    <%= link_to "الأحدث", latest_feed_path, data: { turbo_stream: "feed" },
+                      class: "text-lg whitespace-nowrap border-b-2 py-4 px-1 font-medium", "data-feed-active-link-target": "link" %>
                   </nav>
                 </div>
               </div>
             </div>
 
             <div class="my-6 content-center">
-              <%= turbo_frame_tag "feed", src: picked_feed_path(format: :turbo_stream, page: params[:page]), loading: "lazy" %>
+              <%= turbo_frame_tag "feed", src: trending_feed_path(format: :turbo_stream, page: params[:page]), loading: "lazy" %>
 
               <%= turbo_frame_tag "feed_pagination" %>
             </div>
