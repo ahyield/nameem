@@ -30,7 +30,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
               </svg>
               <%= link_to comment.mentioned_user.name, user_path(comment.mentioned_user),
-                    class: "text-blue-500 hover:underline", data: { turbo: false } %>
+                    class: "text-orange-500 hover:underline", data: { turbo: false } %>
             </span>
           <% end %>
           <span class="text-gray-300">&middot;</span>

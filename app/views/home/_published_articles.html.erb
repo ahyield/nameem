@@ -1,6 +1,6 @@
 <div class="relative isolate px-6 pt-8 lg:px-8">
   <div class="grid w-full grid-cols-1 gap-x-16 gap-y-8 border-t">
-    <h1 class="text-9xl opacity-80 bg-gradient-to-r from-slate-100 to-blue-400 inline-block text-transparent bg-clip-text mt-6">كتابات</h1>
+    <h1 class="text-9xl opacity-80 bg-gradient-to-r from-slate-100 to-orange-400 inline-block text-transparent bg-clip-text mt-6">كتابات</h1>
   </div>
 
   <%= turbo_frame_tag "published_articles", src: published_articles_path(format: :turbo_stream, page: params[:page]) %>

@@ -25,9 +25,9 @@
                           <%= notification_message(notification) %>
                         </p>
                         <% if notification.notifiable_type == "Article" %>
-                          <p class="m-0 mt-1 text-sm text-blue-600"><%= notification.notifiable.title %></p>
+                          <p class="m-0 mt-1 text-sm text-orange-600"><%= notification.notifiable.title %></p>
                         <% elsif notification.notifiable.respond_to?(:article) %>
-                          <p class="m-0 mt-1 text-sm text-blue-600"><%= notification.notifiable.article.title %></p>
+                          <p class="m-0 mt-1 text-sm text-orange-600"><%= notification.notifiable.article.title %></p>
                         <% end %>
                       </td>
                     </tr>

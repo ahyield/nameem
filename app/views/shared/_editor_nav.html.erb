@@ -11,8 +11,8 @@
       <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
         <span id="save-status" class="text-sm text-gray-400 ml-3"></span>
         <%= button_to user_publish_modal_path(uuid: params[:uuid] || "", slug: params[:slug] || current_user || ""),
-          form: { id: "publish-form-btn" }, data: { turbo_frame: "modal"}, class: "btn-publish-disabled relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500
-                                                                                   hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", method: :get do %>
+          form: { id: "publish-form-btn" }, data: { turbo_frame: "modal"}, class: "btn-publish-disabled relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-amber-400 to-orange-500
+                                                                                   hover:from-amber-500 hover:to-orange-600 rounded-full focus:outline-none focus:ring-0", method: :get do %>
           <span class="absolute -inset-1.5"></span>
           <span class="btn-publish-text">نشر</span>
         <% end %>
@@ -46,13 +46,13 @@
                class="absolute hidden right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
             <!-- Active: "bg-gray-100", Not Active: "" -->
-            <%= link_to user_path(current_user), class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-1" do %>
+            <%= link_to user_path(current_user), class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-amber-300 hover:to-orange-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-1" do %>
               الصفحة الشخصية
             <% end %>
-            <%= link_to settings_user_settings_path, class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-1" do %>
+            <%= link_to settings_user_settings_path, class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-amber-300 hover:to-orange-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-1" do %>
               اعدادات الحساب
             <% end %>
-            <%= link_to logout_path, class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-2",  method: :delete, 'data-turbo-method': :delete do %>
+            <%= link_to logout_path, class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-amber-300 hover:to-orange-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-2",  method: :delete, 'data-turbo-method': :delete do %>
               خروج
             <% end %>
           </div>

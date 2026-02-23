@@ -100,23 +100,23 @@
                   class="absolute hidden right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                   role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
                 <%= link_to "الصفحة الشخصية", user_path(Current.user), data: { turbo: false }, class: "block px-4 py-2 hover:transition-all hover:duration-300
-                hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-0" %>
+                hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-amber-300 hover:to-orange-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-0" %>
                 <%= link_to "الإحصائيات", user_stats_path(Current.user), data: { turbo: false }, class: "block px-4 py-2 hover:transition-all hover:duration-300
-                hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-stats" %>
+                hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-amber-300 hover:to-orange-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-stats" %>
                 <%= link_to "المحفوظات", user_bookmarks_path(Current.user), data: { turbo: false }, class: "block px-4 py-2 hover:transition-all hover:duration-300
-                hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-bookmarks" %>
-                <%= link_to settings_user_settings_path, class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-cyan-300 hover:to-blue-500",
+                hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-amber-300 hover:to-orange-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-bookmarks" %>
+                <%= link_to settings_user_settings_path, class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-amber-300 hover:to-orange-500",
                   role: "menuitem", tabindex: "-1", id: "user-menu-item-1", data: { turbo: false }  do %>
                   اعدادات الحساب
                 <% end %>
 
                 <%= link_to "تسجيل خروج", logout_path, class: "block px-4 py-2 hover:transition-all hover:duration-300
                                                                           hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr
-                                                                          hover:from-cyan-300 hover:to-blue-500", role: "menuitem", method: :delete, 'data-turbo-method': :delete %>
+                                                                          hover:from-amber-300 hover:to-orange-500", role: "menuitem", method: :delete, 'data-turbo-method': :delete %>
               </div>
             </div>
           <% else %>
-            <%= button_to signup_path, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", data: { turbo: false }, method: :get do %>
+            <%= button_to signup_path, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 rounded-full focus:outline-none focus:ring-0", data: { turbo: false }, method: :get do %>
               <span class="absolute -inset-1.5"></span>
               <span class="btn-publish-text">حساب جديد</span>
             <% end %>
@@ -169,7 +169,7 @@
           <%= link_to "تسجيل الخروج", logout_path, class: "block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6", method: :delete, 'data-turbo-method': :delete %>
         </div>
       <% else %>
-        <%= button_to signup_path, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 rounded-full focus:outline-none focus:ring-0", data: { turbo: false }, method: :get do %>
+        <%= button_to signup_path, class: "relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 rounded-full focus:outline-none focus:ring-0", data: { turbo: false }, method: :get do %>
           <span class="absolute -inset-1.5"></span>
           <span class="btn-publish-text">حساب جديد</span>
         <% end %>
