@@ -10,11 +10,11 @@
   <style>
     @keyframes scroll-rtl {
       0% { transform: translateX(0); }
-      100% { transform: translateX(50%); }
+      100% { transform: translateX(25%); }
     }
     @keyframes scroll-ltr {
       0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+      100% { transform: translateX(-25%); }
     }
     .carousel-row { overflow: hidden; }
     .carousel-track-rtl {
@@ -38,7 +38,7 @@
   <div class="space-y-4 py-8 -mx-6">
     <div class="carousel-row">
       <div class="carousel-track-rtl">
-        <% 2.times do %>
+        <% 4.times do %>
           <% row1.each do |user| %>
             <div class="group relative w-40 shrink-0 overflow-hidden rounded-lg">
               <div class="aspect-square">
@@ -68,7 +68,7 @@
 
     <div class="carousel-row">
       <div class="carousel-track-ltr">
-        <% 2.times do %>
+        <% 4.times do %>
           <% row2.each do |user| %>
             <div class="group relative w-40 shrink-0 overflow-hidden rounded-lg">
               <div class="aspect-square">

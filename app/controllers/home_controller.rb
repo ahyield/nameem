@@ -6,13 +6,7 @@ class HomeController < ApplicationController
     @picked = Article.picked.order(published_at: :desc).limit(6)
     @pagy, @articles = pagy(Article.published.order(published_at: :desc))
     @users = User.featured.order("RAND()").limit(20)
-    @tags = Tag.popular.with_articles.limit(6)
-
-    @stats = {
-      articles_count: Article.published.count,
-      authors_count:  User.confirmed.count,
-      topics_count:   Tag.with_articles.count
-    }
+    @tags = Tag.popular.with_articles.limit(4).includes(:articles)
 
     respond_to do |format|
       format.html
