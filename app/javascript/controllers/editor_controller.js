@@ -4,6 +4,8 @@ import {
   $getRoot,
   $getSelection,
   $isRangeSelection,
+  $createRangeSelection,
+  $setSelection,
   $createParagraphNode,
   $insertNodes,
   FORMAT_TEXT_COMMAND,
@@ -13,7 +15,7 @@ import {
 import { $setBlocksType } from "@lexical/selection"
 import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text"
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html"
-import { TOGGLE_LINK_COMMAND } from "@lexical/link"
+import { $toggleLink } from "@lexical/link"
 
 import { createNamoemEditor } from "lib/lexical/editor_config"
 import { ImageNode, $createImageNode } from "lib/lexical/nodes/image_node"
@@ -325,6 +327,21 @@ export default class extends Controller {
       toolTip.style.display = "none"
       linkTip.style.display = "block"
 
+      // Save the Lexical selection anchor/focus before focus moves to the link input
+      this.editor.getEditorState().read(() => {
+        const selection = $getSelection()
+        if ($isRangeSelection(selection)) {
+          this._savedSelection = {
+            anchorKey:    selection.anchor.key,
+            anchorOffset: selection.anchor.offset,
+            anchorType:   selection.anchor.type,
+            focusKey:     selection.focus.key,
+            focusOffset:  selection.focus.offset,
+            focusType:    selection.focus.type,
+          }
+        }
+      })
+
       // Position link input centered above the selection
       const nativeSelection = window.getSelection()
       if (nativeSelection.rangeCount > 0) {
@@ -346,32 +363,48 @@ export default class extends Controller {
     }
   }
 
-  enterLinkTip() {
+  enterLinkTip(event) {
+    event.preventDefault()
+    event.stopPropagation()
     const linkTip = document.querySelector(".link-tip")
     const toolTip = document.querySelector(".tooltip-controls")
-    const linkValue = document.getElementById("link").value
+    const linkInput = document.getElementById("link")
+    const linkValue = linkInput.value.trim()
 
-    document.getElementById("link").addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        this.editor.dispatchCommand(TOGGLE_LINK_COMMAND, linkValue)
-        document.getElementById("link").value = ""
-        linkTip.style.display = "none"
-        toolTip.style.display = "none"
-      }
-    })
+    if (!linkValue) return
+
+    this._applyLink(linkValue)
+    linkInput.value = ""
+    linkTip.style.display = "none"
+    toolTip.style.display = "none"
   }
 
   hideLinkTip(event) {
     const linkTip = document.querySelector(".link-tip")
-    const linkValue = document.getElementById("link").value
+    const linkInput = document.getElementById("link")
+    const linkValue = linkInput.value.trim()
 
     if (this.element === event.target || this.element.contains(event.target)) return
     if (linkValue) {
-      this.editor.dispatchCommand(TOGGLE_LINK_COMMAND, linkValue)
-      document.getElementById("link").value = ""
+      this._applyLink(linkValue)
+      linkInput.value = ""
     }
     linkTip.style.display = "none"
     this.hideToolTip(event)
+  }
+
+  _applyLink(url) {
+    const saved = this._savedSelection
+    if (!saved) return
+
+    this.editor.update(() => {
+      const selection = $createRangeSelection()
+      selection.anchor.set(saved.anchorKey, saved.anchorOffset, saved.anchorType)
+      selection.focus.set(saved.focusKey, saved.focusOffset, saved.focusType)
+      $setSelection(selection)
+      $toggleLink(url)
+    })
+    this._savedSelection = null
   }
 
   hideToolTip(event) {

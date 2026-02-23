@@ -74,7 +74,8 @@
 .editor-hr {
   border: none;
   border-top: 1px solid #e2e8f0;
-  margin: 1.5em 0;
+  margin: 1.5em auto;
+  width: 50%;
 }
 
 /* Article content (server-rendered) */
@@ -123,7 +124,8 @@
 .article-content hr {
   border: none;
   border-top: 1px solid #e2e8f0;
-  margin: 1.5em 0;
+  margin: 1.5em auto;
+  width: 50%;
 }
 
 @media (width <= 640px) {
