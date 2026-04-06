@@ -9,9 +9,11 @@ RSpec.describe "Article.trending" do
     expect(Article.trending).to include(recent)
   end
 
-  it "excludes articles older than 7 days" do
+  it "excludes articles older than 7 days when recent ones exist" do
+    recent = create(:article, :published, user: author, published_at: 1.day.ago)
     old = create(:article, :published, user: author, published_at: 8.days.ago)
 
+    expect(Article.trending).to include(recent)
     expect(Article.trending).not_to include(old)
   end
 
@@ -48,17 +50,29 @@ RSpec.describe "Article.trending" do
     expect(results.index(viral)).to be < results.index(quiet)
   end
 
-  it "returns empty when no recent articles exist" do
-    create(:article, :published, user: author, published_at: 10.days.ago)
+  it "falls back to 30 days when no articles in last 7 days" do
+    older = create(:article, :published, user: author, published_at: 10.days.ago)
 
-    expect(Article.trending).to be_empty
+    expect(Article.trending).to include(older)
   end
 
-  it "accepts a custom days parameter" do
+  it "falls back to 90 days when no articles in last 30 days" do
+    old = create(:article, :published, user: author, published_at: 60.days.ago)
+
+    expect(Article.trending).to include(old)
+  end
+
+  it "returns empty when no articles in last 90 days" do
+    ancient = create(:article, :published, user: author, published_at: 91.days.ago)
+
+    expect(Article.trending).not_to include(ancient)
+  end
+
+  it "trending_within respects the exact days parameter without fallback" do
     old_but_in_range = create(:article, :published, user: author, published_at: 12.days.ago)
 
-    expect(Article.trending(days: 7)).not_to include(old_but_in_range)
-    expect(Article.trending(days: 14)).to include(old_but_in_range)
+    expect(Article.trending_within(7)).not_to include(old_but_in_range)
+    expect(Article.trending_within(14)).to include(old_but_in_range)
   end
 
   it "weighs likes more than views and comments more than likes" do

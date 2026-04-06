@@ -38,6 +38,13 @@ class Article < ApplicationRecord
   validates :uuid, uniqueness: true
 
   def self.trending(days: 7)
+    results = trending_within(days)
+    return results if days >= 90 || results.exists?
+
+    trending(days: days == 7 ? 30 : 90)
+  end
+
+  def self.trending_within(days)
     where("published = ? AND user_id != ? AND published_at >= ?", true, 1, days.days.ago)
       .select("articles.*, (real_views_count + likes_count * 3 + comments_count * 5) / POW(TIMESTAMPDIFF(HOUR, published_at, NOW()) + 2, 1.5) AS trending_score")
       .order(Arel.sql("trending_score DESC, published_at DESC"))
