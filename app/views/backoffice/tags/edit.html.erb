@@ -1,50 +1,50 @@
 <div class="space-y-6">
   <!-- Tag Info Card -->
-  <div class="rounded-xl border border-border bg-card p-6">
+  <div class="rounded-xl border border-gray-200 bg-white p-6">
     <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div>
-        <dt class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">المعرف</dt>
-        <dd class="mt-1 text-[13px] text-foreground"><%= @tag.slug %></dd>
+        <dt class="text-[11px] font-medium text-gray-500 uppercase tracking-wider">المعرف</dt>
+        <dd class="mt-1 text-[13px] text-gray-950"><%= @tag.slug %></dd>
       </div>
       <div>
-        <dt class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">المقالات</dt>
-        <dd class="mt-1 text-[13px] text-foreground tabular-nums"><%= @tag.articles_count %></dd>
+        <dt class="text-[11px] font-medium text-gray-500 uppercase tracking-wider">المقالات</dt>
+        <dd class="mt-1 text-[13px] text-gray-950 tabular-nums"><%= @tag.articles_count %></dd>
       </div>
       <div>
-        <dt class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">المتابعين</dt>
-        <dd class="mt-1 text-[13px] text-foreground tabular-nums"><%= @tag.followers.count %></dd>
+        <dt class="text-[11px] font-medium text-gray-500 uppercase tracking-wider">المتابعين</dt>
+        <dd class="mt-1 text-[13px] text-gray-950 tabular-nums"><%= @tag.followers.count %></dd>
       </div>
     </dl>
   </div>
 
   <!-- Edit Name Card -->
-  <div class="rounded-xl border border-border bg-card p-6">
-    <h3 class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-4">تعديل الاسم</h3>
+  <div class="rounded-xl border border-gray-200 bg-white p-6">
+    <h3 class="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-4">تعديل الاسم</h3>
     <%= form_with model: @tag, url: backoffice_tag_path(@tag), method: :put do |form| %>
       <div class="mb-4">
-        <%= form.label :name, "الاسم", class: "block text-[13px] font-medium text-foreground mb-1.5" %>
-        <%= form.text_field :name, class: "w-full sm:w-80 rounded-md border-input bg-transparent text-[13px] focus:outline-none focus:ring-1 focus:ring-ring focus:border-ring transition-colors" %>
+        <%= form.label :name, "الاسم", class: "block text-[13px] font-medium text-gray-950 mb-1.5" %>
+        <%= form.text_field :name, class: "w-full sm:w-80 rounded-md border-gray-200 bg-transparent text-[13px] focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition-colors" %>
       </div>
       <div class="flex items-center gap-3">
-        <%= form.submit "حفظ", class: "px-4 py-1.5 rounded-md bg-primary text-primary-foreground text-[13px] font-medium hover:bg-primary/90 transition-colors cursor-pointer" %>
-        <%= link_to "إلغاء", backoffice_tag_path(@tag), class: "text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors" %>
+        <%= form.submit "حفظ", class: "px-4 py-1.5 rounded-md bg-gray-900 text-white text-[13px] font-medium hover:bg-gray-900/90 transition-colors cursor-pointer" %>
+        <%= link_to "إلغاء", backoffice_tag_path(@tag), class: "text-[13px] font-medium text-gray-500 hover:text-gray-950 transition-colors" %>
       </div>
     <% end %>
   </div>
 
   <!-- Merge Card -->
-  <div class="rounded-xl border border-border bg-card p-6">
-    <h3 class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-1">دمج الموضوع</h3>
-    <p class="text-[12px] text-muted-foreground mb-4">نقل جميع المقالات إلى موضوع آخر وحذف هذا الموضوع</p>
+  <div class="rounded-xl border border-gray-200 bg-white p-6">
+    <h3 class="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-1">دمج الموضوع</h3>
+    <p class="text-[12px] text-gray-500 mb-4">نقل جميع المقالات إلى موضوع آخر وحذف هذا الموضوع</p>
     <%= form_with url: merge_backoffice_tag_path(@tag), method: :post do |f| %>
       <div class="mb-4">
-        <%= f.label :target_id, "الموضوع الهدف", class: "block text-[13px] font-medium text-foreground mb-1.5" %>
+        <%= f.label :target_id, "الموضوع الهدف", class: "block text-[13px] font-medium text-gray-950 mb-1.5" %>
         <%= f.select :target_id,
             options_for_select(@other_tags.map { |t| ["#{t.name} (#{t.articles_count} مقالات)", t.id] }),
             { prompt: "اختر موضوعًا..." },
-            class: "w-full sm:w-80 rounded-md border-input bg-transparent text-[13px] focus:outline-none focus:ring-1 focus:ring-ring focus:border-ring transition-colors" %>
+            class: "w-full sm:w-80 rounded-md border-gray-200 bg-transparent text-[13px] focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition-colors" %>
       </div>
-      <%= f.submit "دمج", class: "px-4 py-1.5 rounded-md bg-destructive text-destructive-foreground text-[13px] font-medium hover:bg-destructive/90 transition-colors cursor-pointer",
+      <%= f.submit "دمج", class: "px-4 py-1.5 rounded-md bg-red-500 text-white text-[13px] font-medium hover:bg-red-500/90 transition-colors cursor-pointer",
           data: { turbo_confirm: "هل أنت متأكد؟ سيتم نقل جميع المقالات وحذف هذا الموضوع نهائيًا." } %>
     <% end %>
   </div>

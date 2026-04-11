@@ -1,23 +1,23 @@
 <% if flash[:notice].present? %>
   <div class="px-8 mt-4">
-    <div class="bg-muted border-r-2 border-foreground px-4 py-3">
-      <p class="text-[13px] text-foreground"><%= flash[:notice] %></p>
+    <div class="bg-gray-100 border-r-2 border-gray-950 px-4 py-3">
+      <p class="text-[13px] text-gray-950"><%= flash[:notice] %></p>
     </div>
   </div>
 <% end %>
 
 <% if flash[:alert].present? %>
   <div class="px-8 mt-4">
-    <div class="bg-muted border-r-2 border-foreground px-4 py-3">
-      <p class="text-[13px] text-foreground"><%= flash[:alert] %></p>
+    <div class="bg-gray-100 border-r-2 border-gray-950 px-4 py-3">
+      <p class="text-[13px] text-gray-950"><%= flash[:alert] %></p>
     </div>
   </div>
 <% end %>
 
 <% if flash[:error].present? %>
   <div class="px-8 mt-4">
-    <div class="bg-destructive/10 border-r-2 border-destructive px-4 py-3">
-      <p class="text-[13px] text-destructive"><%= flash[:error] %></p>
+    <div class="bg-red-500/10 border-r-2 border-red-500 px-4 py-3">
+      <p class="text-[13px] text-red-500"><%= flash[:error] %></p>
     </div>
   </div>
 <% end %>

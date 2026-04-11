@@ -4,7 +4,7 @@
     <%= render "shared/head" %>
     <%= Sentry.get_trace_propagation_meta.html_safe %>
   </head>
-  <body class="font-montserrat bg-background min-h-screen antialiased" data-controller="backoffice-sidebar">
+  <body class="font-montserrat bg-white min-h-screen antialiased" data-controller="backoffice-sidebar">
     <div class="flex min-h-screen">
       <%= render "backoffice/shared/sidebar" %>
 
@@ -13,7 +13,7 @@
 
         <!-- Mobile hamburger -->
         <div class="lg:hidden flex items-center px-8 pt-6">
-          <button data-action="click->backoffice-sidebar#toggle" class="text-muted-foreground hover:text-foreground transition-colors">
+          <button data-action="click->backoffice-sidebar#toggle" class="text-gray-500 hover:text-gray-950 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
@@ -31,6 +31,6 @@
     <!-- Mobile overlay -->
     <div data-backoffice-sidebar-target="overlay"
          data-action="click->backoffice-sidebar#close"
-         class="fixed inset-0 bg-foreground/50 backdrop-blur-sm z-30 hidden lg:hidden"></div>
+         class="fixed inset-0 bg-gray-950/50 backdrop-blur-sm z-30 hidden lg:hidden"></div>
   </body>
 </html>

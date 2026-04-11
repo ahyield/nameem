@@ -1,7 +1,7 @@
 module BackofficeHelper
   BADGE_COLORS = {
-    active:  "bg-primary text-primary-foreground",
-    default: "bg-secondary text-secondary-foreground"
+    active:  "bg-gray-900 text-white",
+    default: "bg-gray-100 text-gray-900"
   }.freeze
 
   def status_badge(label, style = :default)
@@ -19,9 +19,9 @@ module BackofficeHelper
 
   def active_backoffice_nav(controller)
     if controller_name == controller
-      "bg-sidebar-accent text-sidebar-foreground"
+      "bg-gray-200/60 text-gray-950"
     else
-      "text-sidebar-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+      "text-gray-500 hover:bg-gray-200/60 hover:text-gray-900"
     end
   end
 
@@ -31,9 +31,9 @@ module BackofficeHelper
 
   def active_filter_tab(current, tab)
     if current.to_s == tab.to_s
-      "bg-background text-foreground shadow-sm rounded-md"
+      "bg-white text-gray-950 shadow-sm rounded-md"
     else
-      "text-muted-foreground hover:text-foreground rounded-md"
+      "text-gray-500 hover:text-gray-950 rounded-md"
     end
   end
 end

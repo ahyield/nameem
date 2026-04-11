@@ -4,78 +4,78 @@
     <% if @user.avatar.attached? %>
       <%= image_tag @user.avatar.variant(resize_to_fill: [64, 64]), class: "h-16 w-16 rounded-full" %>
     <% else %>
-      <span class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-        <span class="text-lg font-medium text-muted-foreground"><%= @user.name&.first %></span>
+      <span class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+        <span class="text-lg font-medium text-gray-500"><%= @user.name&.first %></span>
       </span>
     <% end %>
     <div class="flex-1 min-w-0">
       <div class="flex items-center gap-2 mb-1">
-        <h2 class="text-[15px] font-semibold text-foreground"><%= @user.name %></h2>
+        <h2 class="text-[15px] font-semibold text-gray-950"><%= @user.name %></h2>
         <span id="role-badges-<%= @user.slug %>">
           <%= render "backoffice/users/role_badges", user: @user %>
         </span>
       </div>
-      <p class="text-[13px] text-muted-foreground mb-0.5"><%= @user.email %></p>
-      <p class="text-[13px] text-muted-foreground">@<%= @user.slug %></p>
+      <p class="text-[13px] text-gray-500 mb-0.5"><%= @user.email %></p>
+      <p class="text-[13px] text-gray-500">@<%= @user.slug %></p>
       <% if @user.bio.present? %>
-        <p class="text-[13px] text-muted-foreground mt-2"><%= @user.bio %></p>
+        <p class="text-[13px] text-gray-500 mt-2"><%= @user.bio %></p>
       <% end %>
     </div>
     <div class="flex items-center gap-2 shrink-0">
-      <%= link_to "تعديل", edit_backoffice_user_path(@user), class: "px-3 py-1.5 rounded-md bg-primary text-[13px] font-medium text-primary-foreground hover:bg-primary/90 transition-colors" %>
-      <%= link_to "عرض الملف", user_path(@user), class: "px-3 py-1.5 rounded-md border border-input text-[13px] font-medium text-foreground hover:bg-accent transition-colors", target: "_blank" %>
+      <%= link_to "تعديل", edit_backoffice_user_path(@user), class: "px-3 py-1.5 rounded-md bg-gray-900 text-[13px] font-medium text-white hover:bg-gray-900/90 transition-colors" %>
+      <%= link_to "عرض الملف", user_path(@user), class: "px-3 py-1.5 rounded-md border border-gray-200 text-[13px] font-medium text-gray-950 hover:bg-gray-100 transition-colors", target: "_blank" %>
     </div>
   </div>
 
   <!-- Stats Card -->
-  <div class="rounded-xl border border-border bg-card p-6">
-    <p class="text-[13px] text-muted-foreground">
-      <span class="text-foreground font-semibold tabular-nums"><%= @user.articles.count %></span> مقال
-      <span class="text-border mx-2">&middot;</span>
-      <span class="text-foreground font-semibold tabular-nums"><%= @user.followers_count %></span> متابع
-      <span class="text-border mx-2">&middot;</span>
-      <span class="text-foreground font-semibold tabular-nums"><%= @user.following_count %></span> يتابع
-      <span class="text-border mx-2">&middot;</span>
-      <span class="text-foreground font-semibold tabular-nums"><%= @user.article_likes.count %></span> إعجاب
-      <span class="text-border mx-2">&middot;</span>
-      <span class="text-foreground font-semibold tabular-nums"><%= @user.comments.count %></span> تعليق
+  <div class="rounded-xl border border-gray-200 bg-white p-6">
+    <p class="text-[13px] text-gray-500">
+      <span class="text-gray-950 font-semibold tabular-nums"><%= @user.articles.count %></span> مقال
+      <span class="text-gray-200 mx-2">&middot;</span>
+      <span class="text-gray-950 font-semibold tabular-nums"><%= @user.followers_count %></span> متابع
+      <span class="text-gray-200 mx-2">&middot;</span>
+      <span class="text-gray-950 font-semibold tabular-nums"><%= @user.following_count %></span> يتابع
+      <span class="text-gray-200 mx-2">&middot;</span>
+      <span class="text-gray-950 font-semibold tabular-nums"><%= @user.article_likes.count %></span> إعجاب
+      <span class="text-gray-200 mx-2">&middot;</span>
+      <span class="text-gray-950 font-semibold tabular-nums"><%= @user.comments.count %></span> تعليق
     </p>
   </div>
 
   <!-- Role Toggles Card -->
-  <div class="rounded-xl border border-border bg-card p-6">
-    <h3 class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-3">الأدوار والحالات</h3>
+  <div class="rounded-xl border border-gray-200 bg-white p-6">
+    <h3 class="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-3">الأدوار والحالات</h3>
     <div class="flex flex-wrap gap-2">
       <% roles = %w[confirmed featured picked] %>
       <% roles += %w[admin editor] if current_user.admin? %>
       <% role_labels = { "confirmed" => "مؤكد", "featured" => "مميز", "picked" => "مختار", "admin" => "مدير", "editor" => "محرر" } %>
       <% roles.each do |role| %>
-        <%= button_to toggle_role_backoffice_user_path(@user), params: { role: role }, class: "flex items-center gap-2 px-3 py-1.5 rounded-md transition-colors #{@user.send(role) ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-accent'}" do %>
+        <%= button_to toggle_role_backoffice_user_path(@user), params: { role: role }, class: "flex items-center gap-2 px-3 py-1.5 rounded-md transition-colors #{@user.send(role) ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-100'}" do %>
           <span class="text-[13px] font-medium"><%= role_labels[role] %></span>
-          <span class="h-1.5 w-1.5 rounded-full <%= @user.send(role) ? 'bg-primary-foreground' : 'bg-muted-foreground' %>"></span>
+          <span class="h-1.5 w-1.5 rounded-full <%= @user.send(role) ? 'bg-white' : 'bg-gray-500' %>"></span>
         <% end %>
       <% end %>
     </div>
   </div>
 
   <!-- Recent Articles Card -->
-  <div class="rounded-xl border border-border bg-card">
+  <div class="rounded-xl border border-gray-200 bg-white">
     <div class="p-6 pb-4">
-      <h3 class="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">أحدث المقالات</h3>
+      <h3 class="text-[11px] font-medium text-gray-500 uppercase tracking-wider">أحدث المقالات</h3>
     </div>
     <% if @recent_articles.any? %>
       <div class="px-6 pb-6">
-        <div class="divide-y divide-border">
+        <div class="divide-y divide-gray-200">
           <% @recent_articles.each do |article| %>
             <div class="flex items-center justify-between gap-3 py-2.5">
               <div class="min-w-0 flex-1">
-                <%= link_to backoffice_article_path(article), class: "text-[13px] font-medium text-foreground hover:text-muted-foreground truncate block" do %>
+                <%= link_to backoffice_article_path(article), class: "text-[13px] font-medium text-gray-950 hover:text-gray-500 truncate block" do %>
                   <%= article.title.presence || article.uuid %>
                 <% end %>
               </div>
               <div class="flex items-center gap-2 shrink-0">
                 <%= status_badge(article.published? ? "منشور" : "مسودة", article.published? ? :active : :default) %>
-                <span class="text-[12px] text-muted-foreground"><%= time_ago_in_words(article.created_at) %></span>
+                <span class="text-[12px] text-gray-500"><%= time_ago_in_words(article.created_at) %></span>
               </div>
             </div>
           <% end %>
@@ -83,7 +83,7 @@
       </div>
     <% else %>
       <div class="px-6 pb-6">
-        <p class="text-[13px] text-muted-foreground">لا توجد مقالات</p>
+        <p class="text-[13px] text-gray-500">لا توجد مقالات</p>
       </div>
     <% end %>
   </div>

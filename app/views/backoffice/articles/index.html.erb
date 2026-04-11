@@ -1,6 +1,6 @@
 <!-- Filter Tabs + Search -->
 <div class="flex items-center justify-between gap-4 mb-6">
-  <div class="inline-flex items-center rounded-lg bg-muted p-1 gap-0.5">
+  <div class="inline-flex items-center rounded-lg bg-gray-100 p-1 gap-0.5">
     <% [
       ["all", "الكل"],
       ["published", "منشورة"],
@@ -18,13 +18,13 @@
       <%= f.hidden_field :filter, value: @filter %>
       <div class="relative">
         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-          <svg class="h-3.5 w-3.5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="h-3.5 w-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
           </svg>
         </div>
         <%= f.text_field :q, value: params[:q],
             placeholder: "بحث...",
-            class: "block w-72 border border-input bg-transparent rounded-md py-1.5 pr-9 pl-3 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring focus:border-ring transition-colors",
+            class: "block w-72 border border-gray-200 bg-transparent rounded-md py-1.5 pr-9 pl-3 text-[13px] text-gray-950 placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition-colors",
             data: { action: "input->backoffice-search#search" } %>
       </div>
     <% end %>
@@ -33,33 +33,33 @@
 
 <!-- Table Card -->
 <% if @articles.any? %>
-  <div class="rounded-xl border border-border bg-card">
+  <div class="rounded-xl border border-gray-200 bg-white">
     <div class="overflow-x-auto">
       <table class="min-w-full">
         <thead>
-          <tr class="border-b border-border">
-            <th class="px-6 py-3 text-right text-[11px] font-medium text-muted-foreground uppercase tracking-wider">العنوان</th>
-            <th class="px-4 py-3 text-right text-[11px] font-medium text-muted-foreground uppercase tracking-wider">الكاتب</th>
-            <th class="px-4 py-3 text-right text-[11px] font-medium text-muted-foreground uppercase tracking-wider">الحالة</th>
-            <th class="px-4 py-3 text-right text-[11px] font-medium text-muted-foreground uppercase tracking-wider">مشاهدات</th>
-            <th class="px-4 py-3 text-right text-[11px] font-medium text-muted-foreground uppercase tracking-wider">إعجابات</th>
-            <th class="px-4 py-3 text-right text-[11px] font-medium text-muted-foreground uppercase tracking-wider">تعليقات</th>
-            <th class="px-4 py-3 text-right text-[11px] font-medium text-muted-foreground uppercase tracking-wider">التاريخ</th>
-            <th class="px-6 py-3 text-left text-[11px] font-medium text-muted-foreground uppercase tracking-wider"></th>
+          <tr class="border-b border-gray-200">
+            <th class="px-6 py-3 text-right text-[11px] font-medium text-gray-500 uppercase tracking-wider">العنوان</th>
+            <th class="px-4 py-3 text-right text-[11px] font-medium text-gray-500 uppercase tracking-wider">الكاتب</th>
+            <th class="px-4 py-3 text-right text-[11px] font-medium text-gray-500 uppercase tracking-wider">الحالة</th>
+            <th class="px-4 py-3 text-right text-[11px] font-medium text-gray-500 uppercase tracking-wider">مشاهدات</th>
+            <th class="px-4 py-3 text-right text-[11px] font-medium text-gray-500 uppercase tracking-wider">إعجابات</th>
+            <th class="px-4 py-3 text-right text-[11px] font-medium text-gray-500 uppercase tracking-wider">تعليقات</th>
+            <th class="px-4 py-3 text-right text-[11px] font-medium text-gray-500 uppercase tracking-wider">التاريخ</th>
+            <th class="px-6 py-3 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wider"></th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-border">
+        <tbody class="divide-y divide-gray-200">
           <% @articles.each do |article| %>
-            <tr class="group hover:bg-muted/50 transition-colors">
+            <tr class="group hover:bg-gray-100/50 transition-colors">
               <td class="px-6 py-3">
                 <div class="max-w-xs">
-                  <%= link_to backoffice_article_path(article), class: "text-[13px] font-medium text-foreground hover:text-muted-foreground line-clamp-1" do %>
+                  <%= link_to backoffice_article_path(article), class: "text-[13px] font-medium text-gray-950 hover:text-gray-500 line-clamp-1" do %>
                     <%= article.title.presence || article.uuid %>
                   <% end %>
                 </div>
               </td>
-              <td class="px-4 py-3 whitespace-nowrap text-[13px] text-muted-foreground">
-                <%= link_to article.user.name, backoffice_user_path(article.user), class: "hover:text-foreground" %>
+              <td class="px-4 py-3 whitespace-nowrap text-[13px] text-gray-500">
+                <%= link_to article.user.name, backoffice_user_path(article.user), class: "hover:text-gray-950" %>
               </td>
               <td class="px-4 py-3 whitespace-nowrap">
                 <div class="flex gap-1">
@@ -72,19 +72,19 @@
                   <% end %>
                 </div>
               </td>
-              <td class="px-4 py-3 whitespace-nowrap text-[13px] text-muted-foreground tabular-nums"><%= article.real_views_count || 0 %></td>
-              <td class="px-4 py-3 whitespace-nowrap text-[13px] text-muted-foreground tabular-nums"><%= article.likes_count %></td>
-              <td class="px-4 py-3 whitespace-nowrap text-[13px] text-muted-foreground tabular-nums"><%= article.comments_count %></td>
-              <td class="px-4 py-3 whitespace-nowrap text-[12px] text-muted-foreground"><%= l(article.created_at.to_date, format: :short) rescue article.created_at.to_date %></td>
+              <td class="px-4 py-3 whitespace-nowrap text-[13px] text-gray-500 tabular-nums"><%= article.real_views_count || 0 %></td>
+              <td class="px-4 py-3 whitespace-nowrap text-[13px] text-gray-500 tabular-nums"><%= article.likes_count %></td>
+              <td class="px-4 py-3 whitespace-nowrap text-[13px] text-gray-500 tabular-nums"><%= article.comments_count %></td>
+              <td class="px-4 py-3 whitespace-nowrap text-[12px] text-gray-500"><%= l(article.created_at.to_date, format: :short) rescue article.created_at.to_date %></td>
               <td class="px-6 py-3 whitespace-nowrap text-left">
                 <div class="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <%= link_to backoffice_article_path(article), class: "text-muted-foreground hover:text-foreground", title: "عرض" do %>
+                  <%= link_to backoffice_article_path(article), class: "text-gray-500 hover:text-gray-950", title: "عرض" do %>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                   <% end %>
-                  <%= link_to edit_backoffice_article_path(article), class: "text-muted-foreground hover:text-foreground", title: "تعديل" do %>
+                  <%= link_to edit_backoffice_article_path(article), class: "text-gray-500 hover:text-gray-950", title: "تعديل" do %>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                   <% end %>
-                  <%= button_to backoffice_article_path(article), method: :delete, class: "text-muted-foreground hover:text-destructive", title: "حذف", data: { turbo_confirm: "هل أنت متأكد من حذف هذا المقال؟" } do %>
+                  <%= button_to backoffice_article_path(article), method: :delete, class: "text-gray-500 hover:text-red-500", title: "حذف", data: { turbo_confirm: "هل أنت متأكد من حذف هذا المقال؟" } do %>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                   <% end %>
                 </div>
@@ -94,7 +94,7 @@
         </tbody>
       </table>
     </div>
-    <div class="border-t border-border px-6 py-3">
+    <div class="border-t border-gray-200 px-6 py-3">
       <%== @pagy.series_nav %>
     </div>
   </div>
