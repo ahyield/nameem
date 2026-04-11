@@ -86,7 +86,4 @@ Rails.application.configure do
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
   config.action_mailer.default_url_options = { host: "https://nameem.com" }
   config.action_mailer.delivery_method = :resend
-  config.action_mailer.resend_settings = {
-    api_key: Rails.application.credentials.dig(:resend, :api_key)
-  }
 end
