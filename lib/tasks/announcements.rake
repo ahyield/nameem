@@ -1,15 +1,8 @@
 namespace :announcements do
-  desc "Send new features announcement (Feb 2026) to all confirmed users via Mailgun batch API"
+  desc "Send new features announcement (Feb 2026) to all confirmed users via Resend batch API"
   task february_2026: :environment do
-    api_key = Rails.application.credentials.dig(:mailgun, :api_key)
-    domain = "mail.nameem.com"
-
-    mg_client = Mailgun::Client.new(api_key)
-    batch = Mailgun::BatchMessage.new(mg_client, domain)
-
-    batch.from("نميم <noreply@nameem.com>")
-    batch.subject("جديد نميم — ميزات جديدة في فبراير")
-    batch.body_html(february_2026_html)
+    api_key = Rails.application.credentials.dig(:resend, :api_key)
+    Resend.api_key = api_key
 
     users = User.confirmed.where.not(email: nil)
     total = users.count
@@ -18,16 +11,27 @@ namespace :announcements do
 
     puts "Sending announcement to #{total} users..."
 
-    users.find_each do |user|
-      batch.add_recipient(:to, user.email, { "name" => user.name.to_s })
+    sent = 0
+    users.find_each.each_slice(100) do |batch|
+      emails = batch.map do |user|
+        {
+          from:    "نميم <noreply@nameem.com>",
+          to:      user.email,
+          subject: "جديد نميم — ميزات جديدة في فبراير",
+          html:    february_2026_html(user.name.to_s)
+        }
+      end
+
+      Resend::Batch.send(emails)
+      sent += emails.size
+      puts "  Sent #{sent}/#{total}..."
     end
 
-    batch.finalize
-    puts "Done! #{total} emails queued with Mailgun."
+    puts "Done! #{total} emails queued with Resend."
   end
 end
 
-def february_2026_html
+def february_2026_html(name)
   <<~HTML
     <!DOCTYPE html>
     <html lang="ar" dir="rtl" xmlns:v="urn:schemas-microsoft-com:vml">
@@ -84,7 +88,7 @@ def february_2026_html
                     </h1>
 
                     <p style="margin: 0 0 8px; line-height: 1.6;">
-                      مرحبًا %recipient.name%،
+                      مرحبًا #{name}،
                     </p>
 
                     <p style="margin: 0 0 32px; line-height: 1.6;">

@@ -74,7 +74,7 @@ spec/
 ## Auth
 
 Passwordless magic link system:
-1. User enters email → 6-digit code generated and emailed (Mailgun)
+1. User enters email → 6-digit code generated and emailed (Resend)
 2. User enters code → session created with signed cookie
 3. `Current.user` / `Current.session` via thread-local `Current` attributes
 4. Pundit policies for authorization
@@ -112,7 +112,7 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 
 - **Plausible Analytics** — article view/visitor tracking, synced via background job
 - **AWS S3** — production file storage (avatars, article images)
-- **Mailgun** — magic link emails
+- **Resend** — transactional emails
 - **Sentry** — error tracking
 - **Flipper** — feature flags
 - **Turnstile** — CAPTCHA

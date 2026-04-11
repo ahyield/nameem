@@ -51,7 +51,7 @@ gem "name_of_person"
 gem "image_processing", ">= 1.13"
 gem "mini_magick"
 
-gem "mailgun-ruby"
+gem "resend"
 
 gem "dotenv-rails"
 

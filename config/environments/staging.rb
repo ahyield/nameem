@@ -87,9 +87,8 @@ Rails.application.configure do
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   config.action_mailer.default_url_options = { host: 'https://staging.nameem.com' }
-  config.action_mailer.delivery_method = :mailgun
-  config.action_mailer.mailgun_settings = {
-    api_key: Rails.application.credentials.dig(:mailgun, :api_key),
-    domain: 'sandbox7dab7bdaf36b433dad1dd6cafc796c6e.mailgun.org',
+  config.action_mailer.delivery_method = :resend
+  config.action_mailer.resend_settings = {
+    api_key: Rails.application.credentials.dig(:resend, :api_key)
   }
 end
