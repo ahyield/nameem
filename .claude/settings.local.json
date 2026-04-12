@@ -37,7 +37,8 @@
       "Bash(bundle exec rake:*)",
       "WebFetch(domain:shadcn.rails-components.com)",
       "WebFetch(domain:ui.shadcn.com)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "WebFetch(domain:horizon-ui.com)"
     ]
   }
 }

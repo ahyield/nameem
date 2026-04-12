@@ -1,12 +1,26 @@
 <%# locals: (label:, value:, link: nil) %>
 <% if link.present? %>
-  <%= link_to link, class: "group block rounded-xl border border-gray-200 bg-white p-6 hover:shadow-sm transition-shadow" do %>
-    <dt class="text-[13px] font-medium text-gray-500"><%= label %></dt>
-    <dd class="text-2xl font-bold text-gray-950 tabular-nums mt-2"><%= value %></dd>
+  <%= link_to link, class: "group block rounded-[20px] bg-white shadow-xl shadow-gray-100/60 p-6 hover:shadow-2xl hover:shadow-gray-200/60 transition-shadow" do %>
+    <div class="flex items-center gap-3 mb-2">
+      <div class="flex items-center justify-center h-8 w-8 rounded-xl bg-indigo-600/10">
+        <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+      </div>
+      <dt class="text-[13px] font-medium text-gray-400"><%= label %></dt>
+    </div>
+    <dd class="text-2xl font-bold text-gray-950 tabular-nums"><%= value %></dd>
   <% end %>
 <% else %>
-  <div class="rounded-xl border border-gray-200 bg-white p-6">
-    <dt class="text-[13px] font-medium text-gray-500"><%= label %></dt>
-    <dd class="text-2xl font-bold text-gray-950 tabular-nums mt-2"><%= value %></dd>
+  <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60 p-6">
+    <div class="flex items-center gap-3 mb-2">
+      <div class="flex items-center justify-center h-8 w-8 rounded-xl bg-indigo-600/10">
+        <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+      </div>
+      <dt class="text-[13px] font-medium text-gray-400"><%= label %></dt>
+    </div>
+    <dd class="text-2xl font-bold text-gray-950 tabular-nums"><%= value %></dd>
   </div>
 <% end %>

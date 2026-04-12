@@ -1,52 +1,52 @@
 <div class="space-y-6">
   <!-- Article Info Card -->
-  <div class="rounded-xl border border-gray-200 bg-white p-6">
+  <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60 p-6">
     <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
-        <dt class="text-[11px] font-medium text-gray-500 uppercase tracking-wider">العنوان</dt>
+        <dt class="text-[11px] font-medium text-gray-400 uppercase tracking-wider">العنوان</dt>
         <dd class="mt-1 text-[13px] font-medium text-gray-950"><%= @article.title.presence || @article.uuid %></dd>
       </div>
       <div>
-        <dt class="text-[11px] font-medium text-gray-500 uppercase tracking-wider">الكاتب</dt>
-        <dd class="mt-1 text-[13px] text-gray-950"><%= link_to @article.user.name, backoffice_user_path(@article.user), class: "text-gray-950 hover:text-gray-500" %></dd>
+        <dt class="text-[11px] font-medium text-gray-400 uppercase tracking-wider">الكاتب</dt>
+        <dd class="mt-1 text-[13px] text-gray-950"><%= link_to @article.user.name, backoffice_user_path(@article.user), class: "text-gray-950 hover:text-gray-400" %></dd>
       </div>
     </dl>
   </div>
 
   <!-- Edit Form Card -->
-  <div class="rounded-xl border border-gray-200 bg-white p-6">
-    <h3 class="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-4">إعدادات المقال</h3>
+  <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60 p-6">
+    <h3 class="text-[11px] font-medium text-gray-400 uppercase tracking-wider mb-4">إعدادات المقال</h3>
 
     <%= form_with model: @article, url: backoffice_article_path(@article), method: :put do |form| %>
       <div class="space-y-4">
         <label class="flex items-center gap-3 cursor-pointer group">
-          <%= form.check_box :published, class: "h-4 w-4 rounded border-gray-200 text-gray-900 focus:ring-gray-400" %>
+          <%= form.check_box :published, class: "h-4 w-4 rounded border-gray-200 text-indigo-600 focus:ring-indigo-600" %>
           <div>
             <span class="text-[13px] font-medium text-gray-950">منشور</span>
-            <p class="text-[12px] text-gray-500">نشر المقال للجمهور</p>
+            <p class="text-[12px] text-gray-400">نشر المقال للجمهور</p>
           </div>
         </label>
 
         <label class="flex items-center gap-3 cursor-pointer group">
-          <%= form.check_box :featured, class: "h-4 w-4 rounded border-gray-200 text-gray-900 focus:ring-gray-400" %>
+          <%= form.check_box :featured, class: "h-4 w-4 rounded border-gray-200 text-indigo-600 focus:ring-indigo-600" %>
           <div>
             <span class="text-[13px] font-medium text-gray-950">مميز</span>
-            <p class="text-[12px] text-gray-500">عرض في الصفحة الرئيسية</p>
+            <p class="text-[12px] text-gray-400">عرض في الصفحة الرئيسية</p>
           </div>
         </label>
 
         <label class="flex items-center gap-3 cursor-pointer group">
-          <%= form.check_box :picked, class: "h-4 w-4 rounded border-gray-200 text-gray-900 focus:ring-gray-400" %>
+          <%= form.check_box :picked, class: "h-4 w-4 rounded border-gray-200 text-indigo-600 focus:ring-indigo-600" %>
           <div>
             <span class="text-[13px] font-medium text-gray-950">مختار</span>
-            <p class="text-[12px] text-gray-500">اختيارات المحررين</p>
+            <p class="text-[12px] text-gray-400">اختيارات المحررين</p>
           </div>
         </label>
       </div>
 
       <div class="mt-6 flex items-center gap-3">
-        <%= form.submit "حفظ", class: "px-4 py-1.5 rounded-md bg-gray-900 text-white text-[13px] font-medium hover:bg-gray-900/90 transition-colors cursor-pointer" %>
-        <%= link_to "إلغاء", backoffice_article_path(@article), class: "text-[13px] font-medium text-gray-500 hover:text-gray-950 transition-colors" %>
+        <%= form.submit "حفظ", class: "px-4 py-1.5 rounded-xl bg-indigo-600 text-white text-[13px] font-medium hover:bg-indigo-700 transition-colors cursor-pointer" %>
+        <%= link_to "إلغاء", backoffice_article_path(@article), class: "text-[13px] font-medium text-gray-400 hover:text-gray-950 transition-colors" %>
       </div>
     <% end %>
   </div>
