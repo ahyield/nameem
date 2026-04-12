@@ -57,3 +57,7 @@ package.json
 /coverage
 
 /public/assets_test
+
+# Ignore key files for decrypting credentials and more.
+/config/credentials/*.key
+
