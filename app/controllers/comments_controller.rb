@@ -2,6 +2,8 @@ class CommentsController < ApplicationController
   before_action :set_article
 
   def create
+    return head :forbidden unless @article.comments_enabled?
+
     @comment = @article.comments.build(comment_params)
     @comment.user = current_user
     @reply_to = @comment.parent

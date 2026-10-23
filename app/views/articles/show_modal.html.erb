@@ -68,6 +68,14 @@
                 <div data-tag-input-target="pills" class="flex flex-wrap gap-2 mt-2"></div>
                 <div data-tag-input-target="hiddenFields"></div>
 
+                <h4 class="mt-8 text-base font-bold text-gray-900 mb-3">التعليقات</h4>
+                <%= hidden_field_tag "comments_enabled", "0", id: nil %>
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <%= check_box_tag "comments_enabled", "1", @article.comments_enabled,
+                                    class: "h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-orange-500" %>
+                  <span class="text-sm text-gray-700">السماح بالتعليقات على هذا الموضوع</span>
+                </label>
+
                 <hr class="my-6 border-gray-200">
 
                 <div class="flex items-center gap-4">

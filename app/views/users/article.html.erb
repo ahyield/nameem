@@ -215,7 +215,11 @@ twitter: {
             </div>
 
             <%# Comment form (sticky footer) %>
-            <% if authenticated? %>
+            <% if !@article.comments_enabled? %>
+              <div class="border-t border-gray-200 px-4 py-4 sm:px-6">
+                <p id="comments_closed" class="text-sm text-gray-400 text-center">التعليقات مغلقة على هذا الموضوع</p>
+              </div>
+            <% elsif authenticated? %>
               <div class="border-t border-gray-200 px-4 py-4 sm:px-6">
                 <%= render "comments/form" %>
               </div>
