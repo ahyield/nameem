@@ -62,4 +62,13 @@ RSpec.describe ApplicationHelper do
       expect(helper.short_date(date)).to eq(I18n.l(date, format: :short, locale: :ar))
     end
   end
+
+  describe "#reading_time_label" do
+    it "uses the right Arabic form for each count" do
+      expect(helper.reading_time_label(1)).to eq("قراءة دقيقة")
+      expect(helper.reading_time_label(2)).to eq("قراءة دقيقتين")
+      expect(helper.reading_time_label(5)).to eq("قراءة 5 دقائق")
+      expect(helper.reading_time_label(12)).to eq("قراءة 12 دقيقة")
+    end
+  end
 end

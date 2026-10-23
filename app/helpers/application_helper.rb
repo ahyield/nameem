@@ -1,4 +1,14 @@
 module ApplicationHelper
+  # "قراءة دقيقة", "قراءة دقيقتين", "قراءة ٥ دقائق", "قراءة ١٢ دقيقة"
+  def reading_time_label(minutes)
+    case minutes
+    when 1 then "قراءة دقيقة"
+    when 2 then "قراءة دقيقتين"
+    when 3..10 then "قراءة #{minutes} دقائق"
+    else "قراءة #{minutes} دقيقة"
+    end
+  end
+
   def active_nav_class(path)
     if request.path == path
       "border-blue-500 text-gray-900"
