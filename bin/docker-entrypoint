@@ -1,8 +1,5 @@
 #!/bin/bash -e
 
-# If running the rails server then create or migrate existing database
-if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
-  ./bin/rails db:prepare
-fi
+# Migrations run from the Kamal pre-deploy hook (.kamal/hooks/pre-deploy), before new containers boot.
 
 exec "${@}"
