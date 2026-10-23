@@ -49,6 +49,7 @@ gem "friendly_id"
 gem "name_of_person"
 
 gem "image_processing", ">= 1.13"
+gem "ruby-vips"
 gem "mini_magick"
 
 gem "resend"
