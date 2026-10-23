@@ -100,12 +100,13 @@
                   <div class="flex gap-x-3">
                     <span class="text-2xl font-bold text-gray-200 leading-none mt-1"><%= format("%02d", i + 1) %></span>
                     <div class="min-w-0">
-                      <div class="flex items-center gap-x-2 mb-1">
+                      <%= link_to user_path(article.user), data: { turbo: false },
+                          class: "group mb-1 flex min-w-0 items-center gap-x-2" do %>
                         <% if article.user.avatar.attached? %>
-                          <%= image_tag article.user.avatar.variant(resize_to_fill: [64, 64]), class: "h-5 w-5 rounded-full bg-gray-50" %>
+                          <%= image_tag article.user.avatar.variant(resize_to_fill: [64, 64]), class: "h-5 w-5 rounded-full bg-gray-50", alt: "" %>
                         <% end %>
-                        <span class="text-xs text-gray-500 truncate"><%= article.user.name %></span>
-                      </div>
+                        <span class="text-xs text-gray-500 truncate group-hover:text-gray-900 transition-colors"><%= article.user.name %></span>
+                      <% end %>
                       <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false },
                           class: "text-sm font-semibold text-gray-900 hover:text-gray-600 transition-colors line-clamp-2" do %>
                         <%= article.title&.truncate(80) %>
