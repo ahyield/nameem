@@ -32,9 +32,11 @@ class User < ApplicationRecord
 
   scope :featured, -> { where(featured: true) }
   scope :confirmed, -> { where(confirmed: true) }
+  scope :unconfirmed, -> { where(confirmed: false) }
   scope :picked, -> { where(picked: true) }
   scope :editors, -> { where(editor: true) }
   scope :admins, -> { where(admin: true) }
+  scope :suspended, -> { where.not(suspended_at: nil) }
 
   SOCIAL_HANDLES = %i[twitter_handle instagram_handle facebook_handle].freeze
   SOCIAL_PROFILE_URLS = {
@@ -112,6 +114,19 @@ class User < ApplicationRecord
 
   def editor?
     editor
+  end
+
+  # Suspended users can sign in and read, but not publish, comment or like
+  def suspended?
+    suspended_at.present?
+  end
+
+  def suspend!(reason)
+    update!(suspended_at: Time.current, suspension_reason: reason)
+  end
+
+  def unsuspend!
+    update!(suspended_at: nil, suspension_reason: nil)
   end
 
   def make_admin

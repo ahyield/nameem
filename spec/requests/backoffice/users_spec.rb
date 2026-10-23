@@ -163,4 +163,58 @@ RSpec.describe "Backoffice::Users", type: :request do
       end
     end
   end
+
+  describe "suspending" do
+    let(:user) { create(:user) }
+
+    it "lets an admin suspend and lift it" do
+      authenticate_user(admin)
+
+      post suspend_backoffice_user_path(user), params: { reason: "إساءة" }
+      expect(user.reload).to be_suspended
+      expect(user.suspension_reason).to eq("إساءة")
+
+      get backoffice_user_path(user)
+      expect(response.body).to include("رفع الإيقاف")
+
+      post unsuspend_backoffice_user_path(user)
+      expect(user.reload).not_to be_suspended
+    end
+
+    it "uses a default reason" do
+      authenticate_user(admin)
+
+      post suspend_backoffice_user_path(user)
+      expect(user.reload.suspension_reason).to eq("مخالفة إرشادات النشر")
+    end
+
+    it "does not let an admin suspend themselves" do
+      authenticate_user(admin)
+
+      post suspend_backoffice_user_path(admin)
+      expect(admin.reload).not_to be_suspended
+    end
+
+    it "is admin only" do
+      authenticate_user(editor)
+
+      post suspend_backoffice_user_path(user)
+      expect(response).to redirect_to(backoffice_root_path)
+      expect(user.reload).not_to be_suspended
+    end
+
+    it "lists suspended users and the reports against a user" do
+      suspended = create(:user, :suspended, first_name: "موقوف")
+      create(:report, reportable: create(:comment, user: suspended, body: "تعليق مُبلّغ عنه"))
+      authenticate_user(admin)
+
+      get backoffice_users_path(filter: "suspended")
+      expect(response.body).to include(suspended.name)
+      expect(response.body).not_to include(user.name)
+
+      get backoffice_user_path(suspended)
+      expect(response.body).to include("تعليق مُبلّغ عنه")
+      expect(response.body).to include("إيقاف الحساب")
+    end
+  end
 end

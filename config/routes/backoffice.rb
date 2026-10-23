@@ -2,6 +2,8 @@ namespace :backoffice do
   resources :users, param: :slug, only: %i[index show update destroy] do
     member do
       post :toggle_role
+      post :suspend
+      post :unsuspend
     end
   end
   resources :articles, param: :uuid, only: %i[index show update destroy]

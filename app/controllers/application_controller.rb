@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   include Authentication
   include Pagy::Method
   include Pundit::Authorization
+  include SuspensionGuard
 
   before_action :set_canonical_url
 

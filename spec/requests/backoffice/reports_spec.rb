@@ -127,6 +127,20 @@ RSpec.describe "Backoffice::Reports" do
       expect(flash[:notice]).to eq("تمت مراجعة هذا البلاغ مسبقاً")
     end
 
+    it "lets an admin suspend the author" do
+      authenticate_user(create(:admin))
+      get backoffice_report_path(article_report)
+      expect(response.body).to include("إيقاف حساب الكاتب")
+
+      post resolve_backoffice_report_path(article_report), params: { decision: "action", suspend_author: "1" }
+      expect(author.reload).to be_suspended
+    end
+
+    it "does not offer suspension to editors" do
+      get backoffice_report_path(article_report)
+      expect(response.body).not_to include("إيقاف حساب الكاتب")
+    end
+
     it "asks for a decision" do
       post resolve_backoffice_report_path(article_report), params: { decision: "" }
 

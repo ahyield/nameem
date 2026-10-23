@@ -1,5 +1,6 @@
 class ArticlesController < ApplicationController
   # require_authentication is inherited from ApplicationController
+  before_action :refuse_suspended_user, only: :update
 
   def new
     redirect_to settings_security_path unless current_user&.confirmed?

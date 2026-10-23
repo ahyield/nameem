@@ -1,4 +1,5 @@
 class CommentLikesController < ApplicationController
+  before_action :refuse_suspended_user, only: :create
   before_action :set_comment
 
   def create

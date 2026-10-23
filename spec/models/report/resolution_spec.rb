@@ -48,6 +48,26 @@ RSpec.describe Report::Resolution do
     expect(first.reload).to be_actioned
   end
 
+  it "suspends the author when an admin asks" do
+    admin = create(:admin)
+    described_class.new(first, reviewer: admin, decision: "action", note: "إساءة متكررة", suspend_author: true).call
+
+    expect(author.reload).to be_suspended
+    expect(author.suspension_reason).to eq("إساءة متكررة")
+  end
+
+  it "skips the author when their account is gone" do
+    first.update_column(:reported_user_id, nil)
+
+    expect { resolve(decision: "action", warn_author: true) }.not_to change(Notification.content_removed, :count)
+    expect(first.reload).to be_actioned
+  end
+
+  it "ignores suspension from an editor" do
+    resolve(decision: "action", suspend_author: true)
+    expect(author.reload).not_to be_suspended
+  end
+
   it "can act without removing or notifying" do
     expect { resolve(decision: "action") }.not_to change(Notification, :count)
     expect(Comment.exists?(comment.id)).to be(true)

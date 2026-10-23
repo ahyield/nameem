@@ -34,7 +34,8 @@ module Backoffice
         note:             params[:note],
         remove_content:   params[:remove_content] == "1",
         warn_author:      params[:warn_author] == "1",
-        notify_reporters: params[:notify_reporters] == "1"
+        notify_reporters: params[:notify_reporters] == "1",
+        suspend_author:   params[:suspend_author] == "1"
       )
 
       if resolution.valid?
