@@ -48,44 +48,46 @@
 
     <!-- Left column -->
     <div class="grid my-6 grid-cols-1 gap-4 self-start sticky top-0">
-      <section aria-labelledby="section-2-title">
-        <h2 class="sr-only" id="section-2-title">اخترنا لك</h2>
-        <div class="overflow-hidden rounded-lg bg-white">
-          <div class="p-6 pb-3">
-            <h1 class="font-bold text-gray-900">اخترنا لك</h1>
-          </div>
+      <% if @users.any? %>
+        <section aria-labelledby="section-2-title">
+          <h2 class="sr-only" id="section-2-title">اخترنا لك</h2>
+          <div class="overflow-hidden rounded-lg bg-white">
+            <div class="p-6 pb-3">
+              <h1 class="font-bold text-gray-900">اخترنا لك</h1>
+            </div>
 
-          <ul role="list" class="grid p-6 pt-0 gap-y-8 sm:grid-cols-1 xl:col-span-1">
+            <ul role="list" class="grid p-6 pt-0 gap-y-8 sm:grid-cols-1 xl:col-span-1">
 
-            <% @users.each do |user| %>
-              <li>
-                <div class="flex gap-x-3 items-start">
-                  <div class="shrink-0">
-                    <%= link_to user_path(user) do %>
-                      <% if user.avatar.attached? %>
-                        <%= image_tag user.avatar.variant(resize_to_fill: [600, 600]), class: "h-8 w-8 inline-block overflow-hidden rounded-full" %>
-                      <% else %>
-                        <span class="inline-block h-8 w-8 flex-shrink-0 overflow-hidden rounded-full bg-gray-100">
-                          <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                          </svg>
-                        </span>
+              <% @users.each do |user| %>
+                <li>
+                  <div class="flex gap-x-3 items-start">
+                    <div class="shrink-0">
+                      <%= link_to user_path(user) do %>
+                        <% if user.avatar.attached? %>
+                          <%= image_tag user.avatar.variant(resize_to_fill: [600, 600]), class: "h-8 w-8 inline-block overflow-hidden rounded-full" %>
+                        <% else %>
+                          <span class="inline-block h-8 w-8 flex-shrink-0 overflow-hidden rounded-full bg-gray-100">
+                            <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                          </span>
+                        <% end %>
                       <% end %>
-                    <% end %>
+                    </div>
+                    <div class="min-w-0">
+                      <%= link_to user_path(user) do %>
+                        <h3 class="text-sm font-semibold leading-6 text-gray-900"><%= user.name %></h3>
+                        <p class="text-xs leading-5 text-gray-500 line-clamp-1"><%= user.bio&.truncate(120) %></p>
+                      <% end %>
+                    </div>
                   </div>
-                  <div class="min-w-0">
-                    <%= link_to user_path(user) do %>
-                      <h3 class="text-sm font-semibold leading-6 text-gray-900"><%= user.name %></h3>
-                      <p class="text-xs leading-5 text-gray-500 line-clamp-1"><%= user.bio&.truncate(120) %></p>
-                    <% end %>
-                  </div>
-                </div>
-              </li>
-            <% end %>
+                </li>
+              <% end %>
 
-          </ul>
-        </div>
-      </section>
+            </ul>
+          </div>
+        </section>
+      <% end %>
 
       <% if @trending.any? %>
         <section aria-labelledby="section-trending-title">

@@ -116,6 +116,27 @@ class User < ApplicationRecord
     editor
   end
 
+  # Writers to suggest following: editors' picks first, then featured writers, then the most-followed
+  # writers with published articles. Skips the reader and anyone they already follow.
+  def self.suggested_for(reader, limit: 4)
+    candidates = where.not(id: reader.following_users.select(:id)).where.not(id: reader.id)
+
+    suggestion_tiers(candidates).each_with_object([]) do |tier, suggested|
+      break suggested if suggested.size >= limit
+
+      suggested.concat(tier.where.not(id: suggested.map(&:id)).limit(limit - suggested.size).to_a)
+    end
+  end
+
+  def self.suggestion_tiers(candidates)
+    [
+      candidates.picked.order(Arel.sql("RAND()")),
+      candidates.featured.order(Arel.sql("RAND()")),
+      candidates.where(id: Article.published.select(:user_id)).order(followers_count: :desc)
+    ]
+  end
+  private_class_method :suggestion_tiers
+
   # Suspended users can sign in and read, but not publish, comment or like
   def suspended?
     suspended_at.present?

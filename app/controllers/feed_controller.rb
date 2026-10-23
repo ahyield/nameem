@@ -2,8 +2,7 @@ class FeedController < ApplicationController
   def index
     @pagy, @articles = pagy(Article.published.order(published_at: :desc))
     # The feed requires signing in, so suggestions always skip what the reader already follows
-    followed_ids = Current.user.following_users.pluck(:id) + [Current.user.id]
-    @users = User.picked.where.not(id: followed_ids).order("RAND()").limit(4)
+    @users = User.suggested_for(Current.user)
     @tags = Tag.popular.with_articles.where.not(id: Current.user.following_tags.select(:id)).limit(10)
 
     @trending = Article.trending(days: 7).limit(5).includes(:user)

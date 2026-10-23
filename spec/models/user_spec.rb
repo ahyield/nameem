@@ -231,4 +231,37 @@ RSpec.describe User do
       expect(user.suspension_reason).to be_nil
     end
   end
+
+  describe ".suggested_for" do
+    let(:reader) { create(:user) }
+
+    def writer(*traits, followers: 0)
+      create(:user, *traits, followers_count: followers).tap { |user| create(:article, :published, user:) }
+    end
+
+    it "prefers picked, then featured, then the most-followed writers" do
+      picked = create(:user, :picked)
+      featured = create(:user, :featured)
+      popular = writer(followers: 50)
+      writer(followers: 5)
+
+      expect(described_class.suggested_for(reader, limit: 3)).to eq([picked, featured, popular])
+    end
+
+    it "skips the reader, people they follow, and writers without published articles" do
+      followed = create(:user, :picked)
+      create(:follow, follower: reader, followable: followed)
+      create(:user, followers_count: 99)
+      reader.update!(picked: true)
+
+      expect(described_class.suggested_for(reader)).to be_empty
+    end
+
+    it "never suggests the same writer twice" do
+      both = create(:user, :picked, :featured)
+      writer(followers: 10)
+
+      expect(described_class.suggested_for(reader).count(both)).to eq(1)
+    end
+  end
 end
