@@ -130,4 +130,16 @@ RSpec.describe "Search" do
       expect(topic).to have_key("slug")
     end
   end
+
+  describe "GET /search/autocomplete media" do
+    it "includes avatar and cover image URLs when they exist" do
+      create(:user, :with_avatar, first_name: "مريم")
+      create(:article, :published, title: "مريم والبحر", content_html: '<p>نص</p><img src="/cover.jpg">')
+
+      get "/search/autocomplete", params: { q: "مريم" }
+
+      expect(response.parsed_body["people"].first["avatar_url"]).to start_with("/rails/active_storage/blobs/")
+      expect(response.parsed_body["articles"].first["cover_url"]).to eq("/cover.jpg")
+    end
+  end
 end

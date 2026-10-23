@@ -27,6 +27,8 @@ module SystemHelpers
     visit login_path
     fill_in "email", with: user.email
     click_on "تسجيل دخول"
+    # Wait for the code screen, which only renders after the server has created the link
+    expect(page).to have_field("code")
 
     code = MagicLink.where(user:).order(:created_at).last.code
     fill_in "code", with: code # the form submits itself once six characters are entered
