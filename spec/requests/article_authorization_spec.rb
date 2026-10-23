@@ -77,7 +77,7 @@ RSpec.describe "Article authorization" do
       authenticate_user(author)
       get user_publish_modal_path(slug: author.slug, uuid: untitled.uuid)
 
-      expect(response.body).to match(/<button type="submit" name="publish" value="true" disabled/)
+      expect(response.body).to include('<button type="submit" name="publish" value="true" disabled')
       expect(response.body).to include("أضف عنواناً لموضوعك لتتمكن من نشره")
     end
 
