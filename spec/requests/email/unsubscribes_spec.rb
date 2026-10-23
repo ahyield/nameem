@@ -20,12 +20,15 @@ RSpec.describe "Email unsubscribe" do
     expect(user.email_comments).to be(true)
   end
 
-  it "accepts the one-click POST that mail clients send" do
-    post email_unsubscribe_path(token:), params:  "List-Unsubscribe=One-Click",
-                                         headers: { "CONTENT_TYPE" => "application/x-www-form-urlencoded" }
+  it "accepts the one-click POST that mail clients send, with no session or form token" do
+    post email_one_click_unsubscribe_path(token:), params:  "List-Unsubscribe=One-Click",
+                                                   headers: { "CONTENT_TYPE" => "application/x-www-form-urlencoded" }
 
     expect(response).to have_http_status(:ok)
     expect(user.reload.email_weekly).to be(false)
+
+    post email_one_click_unsubscribe_path(token: "forged")
+    expect(response).to have_http_status(:not_found)
   end
 
   it "rejects a tampered token" do

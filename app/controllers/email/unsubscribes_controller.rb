@@ -2,8 +2,6 @@ module Email
   # Unsubscribe links in emails work without signing in; the signed token names the user and category
   class UnsubscribesController < ApplicationController
     skip_before_action :require_authentication
-    # Mail clients POST here for one-click unsubscribe (RFC 8058), without a form token
-    skip_forgery_protection only: :create
     before_action :set_subscription
 
     def show; end

@@ -17,7 +17,7 @@ RSpec.describe WeeklyDigestMailer do
     expect(mail.subject).to eq("الأفضل على نميم هذا الأسبوع")
     expect(body).to include("الأكثر قراءة", "وصف قصير", "قراءة 4 دقائق", "اختيار المحرر", writer.name)
     expect(body).not_to include(picked.user.email)
-    expect(mail["List-Unsubscribe"].to_s).to include("/email/unsubscribe?token=")
+    expect(mail["List-Unsubscribe"].to_s).to include("/email/unsubscribe/one-click?token=")
   end
 
   it "falls back to the opening text for untitled articles and skips empty sections" do

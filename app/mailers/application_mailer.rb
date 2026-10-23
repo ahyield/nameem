@@ -15,8 +15,9 @@ class ApplicationMailer < ActionMailer::Base
     @email_category = category.to_s
     # Set before mail() renders the template, so the footer can link to it
     if @email_category != "account"
-      @unsubscribe_url = email_unsubscribe_url(token: user.unsubscribe_token(category))
-      headers["List-Unsubscribe"] = "<#{@unsubscribe_url}>"
+      token = user.unsubscribe_token(category)
+      @unsubscribe_url = email_unsubscribe_url(token:)
+      headers["List-Unsubscribe"] = "<#{email_one_click_unsubscribe_url(token:)}>"
       headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
     end
 

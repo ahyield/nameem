@@ -27,7 +27,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "offers one-click unsubscribe from the digest" do
-      expect(mail["List-Unsubscribe"].to_s).to include("/email/unsubscribe?token=")
+      expect(mail["List-Unsubscribe"].to_s).to include("/email/unsubscribe/one-click?token=")
       expect(mail["List-Unsubscribe-Post"].to_s).to eq("List-Unsubscribe=One-Click")
       expect(mail.html_part.body.decoded).to include("إلغاء الاشتراك في هذه الرسائل")
     end
