@@ -2,23 +2,29 @@ module Metable
   extend ActiveSupport::Concern
 
   included do
-    after_update :update_description, :update_reading_time
+    # Derived fields are set before saving, so an autosave writes one UPDATE
+    before_save :refresh_content_metadata, if: :content_html_changed?
 
-    def update_description
-      return if content_html.blank?
-
-      doc = Nokogiri::HTML.fragment(content_html)
-      text = doc.text.squish
-      update_column(:description, text.truncate(100)) if text.present?
-    end
-
-    def update_reading_time
+    def refresh_content_metadata
       return if content_html.blank?
 
       doc = Nokogiri::HTML.fragment(content_html)
       words = doc.text.split(/\s+/).count { |w| w.length > 1 }
-      minutes = [(words / 200.0).ceil, 1].max
-      update_column(:reading_time_minutes, minutes)
+      self.reading_time_minutes = [(words / 200.0).ceil, 1].max
+
+      summary = content_summary(doc)
+      self.description = summary if summary.present? && description_follows_content?
+    end
+
+    # The description tracks the content until the author writes their own
+    def description_follows_content?
+      return false if description_changed? && description.present?
+
+      description.blank? || description == content_summary(Nokogiri::HTML.fragment(content_html_was.to_s))
+    end
+
+    def content_summary(doc)
+      doc.text.squish.truncate(100).presence
     end
 
     def alternative_titles

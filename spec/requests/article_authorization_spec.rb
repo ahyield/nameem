@@ -34,6 +34,17 @@ RSpec.describe "Article authorization" do
     end
   end
 
+  describe "PUT /:slug/:uuid (publish dialog)" do
+    it "keeps the description the author wrote" do
+      article.update(content_html: "<p>نص المقال الطويل هنا</p>")
+      authenticate_user(author)
+
+      put user_update_article_path(slug: author.slug, uuid: article.uuid),
+          params: { publish: true, description: "وصف كتبه الكاتب" }
+      expect(article.reload.description).to eq("وصف كتبه الكاتب")
+    end
+  end
+
   describe "GET /:slug/publish_modal/:uuid" do
     let(:draft) { create(:article, :draft, user: author) }
 
