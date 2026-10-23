@@ -46,7 +46,7 @@
         <div class="mt-1.5 flex items-center gap-3 text-xs">
           <%= render "comment_likes/button", comment: comment,
                 liked: current_user&.comment_likes&.exists?(comment: comment) %>
-          <% if authenticated? %>
+          <% if authenticated? && comment.article.comments_enabled? %>
             <button type="button"
                     class="text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
                     onclick="document.getElementById('<%= dom_id(comment, :reply_form) %>').classList.toggle('hidden')">
@@ -66,7 +66,7 @@
         </div>
 
         <%# Reply form %>
-        <% if authenticated? %>
+        <% if authenticated? && comment.article.comments_enabled? %>
           <%= render "comments/reply_form", parent: comment, article: comment.article %>
         <% end %>
 
