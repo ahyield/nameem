@@ -19,6 +19,9 @@ env:
     - RAILS_MASTER_KEY
     - MYSQL_USERNAME
     - MYSQL_ROOT_PASSWORD
+    - RESEND_API_KEY
+    - RESEND_WEBHOOK_SECRET
+    - MAILER_POSTAL_ADDRESS
 
 builder:
   dockerfile: Dockerfile

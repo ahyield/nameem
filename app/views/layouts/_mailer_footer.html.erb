@@ -13,7 +13,7 @@
     <br>
     <%= link_to "الدعم", "mailto:support@nameem.com" %>
   </p>
-  <% if @unsubscribe_url && (address = Rails.application.credentials.dig(:mailer, :postal_address)).present? %>
+  <% if @unsubscribe_url && (address = Email::Settings.postal_address).present? %>
     <p><%= address %></p>
   <% end %>
 </div>
