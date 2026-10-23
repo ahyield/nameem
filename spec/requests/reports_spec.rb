@@ -79,13 +79,22 @@ RSpec.describe "Reporting content" do
       expect(response.body).to include("<dialog")
     end
 
+    it "offers reporting to staff alongside their editing tools" do
+      authenticate_user(create(:editor))
+
+      get user_article_path(slug: author.slug, uuid: article.uuid)
+
+      expect(response.body).to include("تعديل")
+      expect(response.body).to include('data-report-type-param="Article"')
+    end
+
     it "offers no reporting to the author" do
       create(:comment, article:, user: author)
       authenticate_user(author)
 
       get user_article_path(slug: author.slug, uuid: article.uuid)
 
-      expect(response.body).not_to include("الإبلاغ عن الموضوع")
+      expect(response.body).not_to include('data-report-type-param="Article"')
       expect(response.body).not_to include('data-report-type-param="Comment"')
     end
   end
