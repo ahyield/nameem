@@ -10,6 +10,7 @@ module Signups
       @user.confirmed = true unless @user.name.blank? || @user.slug.blank?
 
       if @user.save
+        UserMailer.welcome(@user).deliver_later if @user.saved_change_to_confirmed?(to: true)
         redirect_to root_path
       else
         flash.now[:error] = @user.errors.full_messages.to_sentence

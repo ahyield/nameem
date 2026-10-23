@@ -24,6 +24,14 @@ RSpec.describe Signups::CompletionsController do
         expect(user.confirmed).to be true
         expect(response).to redirect_to(root_path)
       end
+
+      it "sends the welcome email once", :queued_jobs do
+        expect { post :create, params: { user: { name: "عبدالله", slug: "abdullah" } } }
+          .to have_enqueued_mail(UserMailer, :welcome).with(user)
+
+        expect { post :create, params: { user: { name: "عبدالله بن", slug: "abdullah" } } }
+          .not_to have_enqueued_mail(UserMailer, :welcome)
+      end
     end
 
     context "with invalid data" do

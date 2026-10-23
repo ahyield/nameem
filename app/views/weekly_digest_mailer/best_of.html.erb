@@ -1,0 +1,48 @@
+<% content_for :title, "الأفضل على نميم هذا الأسبوع" %>
+<% content_for :preheader, @trending.first(2).map { |article| article.title.presence || first_paragraph(article) }.join(" · ") %>
+
+<h1 class="h1">الأفضل هذا الأسبوع</h1>
+<p class="muted">أكثر ما قرأه الناس على نميم في الأيام السبعة الماضية.</p>
+
+<% @trending.each_with_index do |article, index| %>
+  <div class="item">
+    <p class="muted small" style="margin: 0 0 2px;"><%= index + 1 %> · <%= article.user.name %></p>
+    <%= link_to article.title.presence || first_paragraph(article).to_s.truncate(80), user_article_url(slug: article.user, uuid: article),
+                class: "item-title" %>
+    <% if article.description.present? %>
+      <p class="muted small" style="margin: 4px 0 0;"><%= article.description.truncate(140) %></p>
+    <% end %>
+    <% if article.reading_time_minutes.present? %>
+      <p class="muted small" style="margin: 4px 0 0;"><%= reading_time_label(article.reading_time_minutes) %></p>
+    <% end %>
+  </div>
+<% end %>
+
+<% if @picks.any? %>
+  <div class="divider"></div>
+  <h2 class="h2">اختيارات المحررين</h2>
+  <% @picks.each do |article| %>
+    <div class="item">
+      <%= link_to article.title.presence || first_paragraph(article).to_s.truncate(80), user_article_url(slug: article.user, uuid: article),
+                  class: "item-title" %>
+      <p class="muted small" style="margin: 2px 0 0;"><%= article.user.name %></p>
+    </div>
+  <% end %>
+<% end %>
+
+<% if @writers.any? %>
+  <div class="divider"></div>
+  <h2 class="h2">كتّاب قد يعجبونك</h2>
+  <% @writers.each do |writer| %>
+    <div class="item">
+      <%= link_to writer.name, user_url(writer), class: "item-title" %>
+      <% if writer.bio.present? %>
+        <p class="muted small" style="margin: 2px 0 0;"><%= writer.bio.truncate(110) %></p>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
+
+<p style="margin: 28px 0 0; text-align: center;">
+  <%= link_to "اقرأ المزيد على نميم", root_url, class: "button" %>
+</p>

@@ -22,4 +22,20 @@ RSpec.describe "Settings: notifications" do
 
     expect(user.reload.admin).to be(false)
   end
+
+  it "saves each email category separately" do
+    put settings_update_notifications_path,
+        params: { user: { email_notifications: "1", email_comments: "0", email_editorial: "1", email_weekly: "0" } }
+
+    expect(user.reload).to have_attributes(email_notifications: true, email_comments: false, email_editorial: true,
+                                           email_weekly: false)
+  end
+
+  it "lists every category and explains a suppressed address" do
+    user.suppress_email!("bounce")
+    get settings_notifications_path
+
+    Email::Categories::OPTIONAL.each { |category| expect(response.body).to include(Email::Categories::ALL[category][:label]) }
+    expect(response.body).to include("توقّفنا عن مراسلة هذا العنوان")
+  end
 end

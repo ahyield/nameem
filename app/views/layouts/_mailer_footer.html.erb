@@ -1,0 +1,19 @@
+<div class="footer">
+  <% if @unsubscribe_url %>
+    <p>
+      <%= Email::Categories.reason(@email_category) %>
+      <br>
+      <%= link_to "إلغاء الاشتراك في هذه الرسائل", @unsubscribe_url %>
+      &nbsp;·&nbsp;
+      <%= link_to "إعدادات البريد", settings_notifications_url %>
+    </p>
+  <% end %>
+  <p>
+    نميم — جرح طفيف في ذراع الحاضر العبثي
+    <br>
+    <%= link_to "الدعم", "mailto:support@nameem.com" %>
+  </p>
+  <% if @unsubscribe_url && (address = Rails.application.credentials.dig(:mailer, :postal_address)).present? %>
+    <p><%= address %></p>
+  <% end %>
+</div>

@@ -21,7 +21,7 @@ module Settings
     private
 
     def user_params
-      params.expect(user: [:email_notifications])
+      params.expect(user: Email::Categories::OPTIONAL.map { |category| Email::Categories.column(category) })
     end
   end
 end

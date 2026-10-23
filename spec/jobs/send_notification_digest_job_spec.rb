@@ -11,7 +11,7 @@ RSpec.describe SendNotificationDigestJob, type: :job do
   describe "#perform" do
     it "sends digest to users with recent unread notifications" do
       user = create(:user, email_notifications: true)
-      create(:notification, recipient: user, created_at: 1.hour.ago)
+      create(:notification, :liked, recipient: user, created_at: 1.hour.ago)
 
       expect do
         described_class.perform_now
@@ -20,7 +20,7 @@ RSpec.describe SendNotificationDigestJob, type: :job do
 
     it "skips users with email_notifications disabled" do
       user = create(:user, email_notifications: false)
-      create(:notification, recipient: user, created_at: 1.hour.ago)
+      create(:notification, :liked, recipient: user, created_at: 1.hour.ago)
 
       expect do
         described_class.perform_now
@@ -29,7 +29,7 @@ RSpec.describe SendNotificationDigestJob, type: :job do
 
     it "skips users with no recent unread notifications" do
       user = create(:user, email_notifications: true)
-      create(:notification, recipient: user, created_at: 2.days.ago)
+      create(:notification, :liked, recipient: user, created_at: 2.days.ago)
 
       expect do
         described_class.perform_now
@@ -43,6 +43,26 @@ RSpec.describe SendNotificationDigestJob, type: :job do
       expect do
         described_class.perform_now
       end.not_to have_enqueued_mail(NotificationMailer, :digest)
+    end
+  end
+
+  describe "deduplication" do
+    it "skips notifications already sent in an instant email and stamps the ones it sends" do
+      user = create(:user)
+      emailed = create(:notification, :liked, recipient: user, created_at: 1.hour.ago, emailed_at: 30.minutes.ago)
+      pending = create(:notification, :liked, recipient: user, created_at: 1.hour.ago)
+
+      expect { described_class.perform_now }
+        .to have_enqueued_mail(NotificationMailer, :digest).with(user, [pending])
+      expect(pending.reload.emailed_at).to be_present
+      expect(emailed.reload.emailed_at).to be < 10.minutes.ago
+    end
+
+    it "skips suppressed addresses and users whose notifications were all emailed" do
+      create(:notification, :liked, recipient: create(:user, email_suppressed_at: Time.current), created_at: 1.hour.ago)
+      create(:notification, :liked, recipient: create(:user), created_at: 1.hour.ago, emailed_at: Time.current)
+
+      expect { described_class.perform_now }.not_to have_enqueued_mail(NotificationMailer, :digest)
     end
   end
 end

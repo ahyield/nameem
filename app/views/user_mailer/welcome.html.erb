@@ -1,0 +1,23 @@
+<% content_for :title, "أهلاً بك في نميم" %>
+<% content_for :preheader, "حسابك جاهز. هنا تكتب وتقرأ بالعربية، بلا ضجيج." %>
+
+<h1 class="h1">أهلاً بك في نميم، <%= @user.first_name %></h1>
+<p>نميم مساحة للكتابة والقراءة بالعربية: مقالات وقصص وأفكار، بلا إعلانات ولا ضجيج.</p>
+<p>ابدأ بما تحب. اكتب موضوعك الأول، أو تابع كتّاباً يصلك جديدهم في صفحتك.</p>
+
+<p style="margin: 28px 0; text-align: center;">
+  <%= link_to "اكتب موضوعك الأول", new_story_url, class: "button" %>
+</p>
+
+<% if @writers.any? %>
+  <div class="divider"></div>
+  <h2 class="h2">كتّاب قد يعجبونك</h2>
+  <% @writers.each do |writer| %>
+    <div class="item">
+      <%= link_to writer.name, user_url(writer), class: "item-title" %>
+      <% if writer.bio.present? %>
+        <p class="muted small" style="margin: 2px 0 0;"><%= writer.bio.truncate(110) %></p>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

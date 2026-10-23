@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   extend FriendlyId
+  include EmailPreferences
 
   friendly_id :email, use: :slugged
 
@@ -144,10 +145,12 @@ class User < ApplicationRecord
 
   def suspend!(reason)
     update!(suspended_at: Time.current, suspension_reason: reason)
+    AccountMailer.suspended(self).deliver_later
   end
 
   def unsuspend!
     update!(suspended_at: nil, suspension_reason: nil)
+    AccountMailer.reinstated(self).deliver_later
   end
 
   def make_admin

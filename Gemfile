@@ -52,6 +52,7 @@ gem "image_processing", ">= 1.13"
 gem "mini_magick"
 gem "ruby-vips", require: false # loaded by Active Storage when it processes images
 
+gem "premailer-rails" # inlines email CSS and adds plain-text parts
 gem "resend"
 
 gem "dotenv-rails"

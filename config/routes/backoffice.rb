@@ -4,6 +4,7 @@ namespace :backoffice do
       post :toggle_role
       post :suspend
       post :unsuspend
+      post :unsuppress_email
     end
   end
   resources :articles, param: :uuid, only: %i[index show update destroy]

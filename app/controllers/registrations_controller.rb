@@ -19,6 +19,8 @@ class RegistrationsController < ApplicationController
       render :new, status: :unprocessable_content
     elsif valid_captcha?(model: @user)
       user = User.find_or_create_by(email: sign_up_params[:email])
+      # The profile isn't complete yet, so set the flag without running profile validations
+      user.update_column(:email_weekly, sign_up_params[:email_weekly] != "0")
       magic_link = user.send_magic_link(purpose: :sign_up)
       redirect_to_magic_link_verification(magic_link)
     else
