@@ -2,7 +2,7 @@
 
 > A minor wound on the arm of the absurd present.
 
-![Nameem home page](docs/screenshot.png)
+![Nameem home page](docs/social-preview.png)
 
 Nameem is an Arabic-first, right-to-left article publishing platform. Writers publish long-form articles; readers follow authors and topics, like, bookmark, and discuss them in threaded comments.
 
