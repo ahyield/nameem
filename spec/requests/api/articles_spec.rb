@@ -62,6 +62,19 @@ RSpec.describe "Api::Articles" do
           expect(response).to have_http_status(:success)
           expect(json["title"]).to eq("Updated Title")
         end
+
+        it "saves an editor autosave without unpermitted parameter warnings" do
+          content = { "root" => { "children" => [], "type" => "root", "version" => 1 } }
+          allow(ActiveSupport::Notifications).to receive(:instrument).and_call_original
+
+          put "/api/articles/#{user.slug}/#{article.uuid}",
+              params: { article: { content:, content_html: "<p>نص المقال</p>" } }, as: :json
+
+          expect(article.reload.content).to eq(content)
+          expect(article.content_html).to eq("<p>نص المقال</p>")
+          expect(ActiveSupport::Notifications).not_to have_received(:instrument)
+            .with("unpermitted_parameters.action_controller", anything)
+        end
       end
     end
 

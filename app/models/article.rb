@@ -86,25 +86,22 @@ class Article < ApplicationRecord
   private
 
   def notify_on_feature_or_pick
+    actions = editorial_actions
+    return if actions.empty?
+
     system_user = User.find_by(id: 1)
     return unless system_user
 
-    if saved_change_to_featured? && featured?
-      Notification.create!(
-        recipient:  user,
-        actor:      system_user,
-        notifiable: self,
-        action:     :featured
-      )
+    actions.each do |action|
+      Notification.create!(recipient: user, actor: system_user, notifiable: self, action:)
     end
+  end
 
-    if saved_change_to_picked? && picked?
-      Notification.create!(
-        recipient:  user,
-        actor:      system_user,
-        notifiable: self,
-        action:     :picked
-      )
-    end
+  # Notifications owed to the author for being featured or picked in this save
+  def editorial_actions
+    actions = []
+    actions << :featured if saved_change_to_featured? && featured?
+    actions << :picked if saved_change_to_picked? && picked?
+    actions
   end
 end

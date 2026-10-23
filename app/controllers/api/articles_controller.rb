@@ -33,7 +33,8 @@ module Api
     def article_params
       return {} unless params[:article]
 
-      permitted = params[:article].permit(:title, :content_html)
+      # content is free-form Lexical JSON, permitted whole below
+      permitted = params[:article].except(:content).permit(:title, :content_html)
       permitted[:content] = params[:article][:content].permit!.to_h if params[:article][:content].present?
       permitted
     end

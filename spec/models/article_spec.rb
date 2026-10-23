@@ -45,10 +45,11 @@ RSpec.describe Article do
   describe "metable" do
     context "when updating content_html" do
       before do
+        article.update_column(:description, nil)
         article.update(content_html: "<p>Updated Article</p>")
       end
 
-      it "has a description" do
+      it "fills the description from the content" do
         expect(article.description).to eq("Updated Article")
       end
 
@@ -68,7 +69,42 @@ RSpec.describe Article do
       end
     end
 
-    describe "#update_reading_time" do
+    describe "description" do
+      let(:article) { create(:article, description: nil) }
+
+      it "follows the content while the author hasn't written one" do
+        article.update(content_html: "<p>البداية</p>")
+        expect(article.description).to eq("البداية")
+
+        article.update(content_html: "<p>البداية والمزيد</p>")
+        expect(article.reload.description).to eq("البداية والمزيد")
+      end
+
+      it "keeps a description the author wrote through later edits" do
+        article.update(content_html: "<p>البداية</p>")
+        article.update(description: "وصف كتبه الكاتب")
+
+        article.update(content_html: "<p>نص جديد تماماً</p>")
+        expect(article.reload.description).to eq("وصف كتبه الكاتب")
+      end
+
+      it "keeps a description written in the same save as the content" do
+        article.update(content_html: "<p>نص</p>", description: "وصف خاص")
+        expect(article.reload.description).to eq("وصف خاص")
+      end
+
+      it "saves derived fields in a single UPDATE" do
+        updates = []
+        callback = ->(*, payload) { updates << payload[:sql] if payload[:sql].start_with?("UPDATE `articles`") }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          article.update(content_html: "<p>نص المقال</p>")
+        end
+
+        expect(updates.size).to eq(1)
+      end
+    end
+
+    describe "reading time" do
       it "calculates reading time from content_html on update" do
         words = (["كلمة"] * 400).join(" ")
         article.update(content_html: "<p>#{words}</p>")
