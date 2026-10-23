@@ -4,6 +4,8 @@
 
 ![Nameem home page](docs/social-preview.png)
 
+[![Deploy to Railyard](https://app.railyard.run/deploy/badge)](https://app.railyard.run/deploy?repo=https://github.com/ahyield/nameem)
+
 Nameem is an Arabic-first, right-to-left article publishing platform. Writers publish long-form articles; readers follow authors and topics, like, bookmark, and discuss them in threaded comments.
 
 ## Features
