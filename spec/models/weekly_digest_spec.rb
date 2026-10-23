@@ -7,12 +7,12 @@ RSpec.describe WeeklyDigest do
     create(:article, :published, published_at: 2.days.ago, **attributes)
   end
 
-  it "lists this week's trending articles, most read first" do
-    quiet = article(real_views_count: 1)
-    popular = article(real_views_count: 500)
-    article(published_at: 3.weeks.ago, real_views_count: 9000)
+  it "lists the top trending articles in ranking order" do
+    second = article(trending_rank: 2)
+    first = article(trending_rank: 1)
+    article(trending_rank: nil)
 
-    expect(digest.trending).to eq([popular, quiet])
+    expect(digest.trending).to eq([first, second])
   end
 
   it "adds this week's editors' picks that aren't already trending" do

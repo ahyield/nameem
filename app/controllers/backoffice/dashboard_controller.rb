@@ -14,7 +14,7 @@ module Backoffice
       ]
 
       @activity = recent_activity.first(12)
-      @trending_articles = Article.trending(days: 7).includes(:user).limit(5)
+      @trending_articles = Article.trending.includes(:user).limit(5)
     end
 
     private

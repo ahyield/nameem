@@ -44,4 +44,33 @@ RSpec.describe "POST /api/views" do
     record_view(viewable_type: "Article", viewable_id: 0, visitor_id: "visitor-1")
     expect(response).to have_http_status(:not_found)
   end
+
+  describe "reads" do
+    it "marks the visitor's view as a read once" do
+      record_view(viewable_type: "Article", viewable_id: article.id, visitor_id: "visitor-1")
+      record_view(viewable_type: "Article", viewable_id: article.id, visitor_id: "visitor-1", read: true)
+
+      view = PageView.find_by!(visitor_id: "visitor-1")
+      expect(response).to have_http_status(:ok)
+      expect(view.read_at).to be_present
+
+      expect { record_view(viewable_type: "Article", viewable_id: article.id, visitor_id: "visitor-1", read: true) }
+        .not_to(change { view.reload.read_at })
+    end
+
+    it "can't record a read without a view" do
+      record_view(viewable_type: "Article", viewable_id: article.id, visitor_id: "stranger", read: true)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(PageView.count).to eq(0)
+    end
+  end
+
+  it "remembers the signed-in reader, so authors' own visits can be ignored" do
+    reader = create(:user)
+    authenticate_user(reader)
+
+    record_view(viewable_type: "Article", viewable_id: article.id, visitor_id: "visitor-1")
+    expect(PageView.find_by!(visitor_id: "visitor-1").user).to eq(reader)
+  end
 end

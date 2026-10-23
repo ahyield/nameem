@@ -7,6 +7,10 @@ production:
     class: SendNotificationDigestJob
     queue: default
     schedule: every day at 9am Africa/Cairo
+  trending:
+    class: RefreshTrendingJob
+    queue: default
+    schedule: every 15 minutes
   weekly_digest:
     class: SendWeeklyDigestJob
     queue: default

@@ -45,19 +45,10 @@ class Article < ApplicationRecord
   validates :comments_enabled, inclusion: { in: [true, false] }, allow_nil: false
   validates :uuid, uniqueness: true
 
-  def self.trending(days: 7)
-    results = trending_within(days)
-    return results if days >= 90 || results.exists?
-
-    trending(days: days == 7 ? 30 : 90)
-  end
-
-  def self.trending_within(days)
-    where("published = ? AND user_id != ? AND published_at >= ?", true, RANKING_EXCLUDED_USER_ID, days.days.ago)
-      .select("articles.*, (real_views_count + likes_count * 3 + comments_count * 5) / " \
-              "POW(TIMESTAMPDIFF(HOUR, published_at, NOW()) + 2, 1.5) AS trending_score")
-      .order(Arel.sql("trending_score DESC, published_at DESC"))
-  end
+  # Ranked by recent engagement (see Trending); only articles that are trending right now
+  scope :trending, -> { published.where.not(trending_rank: nil).order(:trending_rank) }
+  # The الرائج tab: trending articles first, then everything else newest first, so it never runs dry
+  scope :by_trending, -> { published.order(Arel.sql("trending_rank IS NULL, trending_rank, published_at DESC")) }
 
   def to_param
     uuid

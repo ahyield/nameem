@@ -54,7 +54,9 @@
                 <span class="block truncate text-sm font-medium"><%= article.title.presence || article.uuid %></span>
                 <span class="block truncate text-xs text-gray-500"><%= article.user.name %></span>
               </span>
-              <span class="shrink-0 text-xs text-gray-500 tabular-nums"><%= number_with_delimiter(article.real_views_count || 0) %> مشاهدة</span>
+              <span class="shrink-0 text-xs text-gray-500 tabular-nums" title="درجة الرواج: تفاعل الأيام الأخيرة، والأحدث أثقل وزناً">
+                <%= number_with_precision(article.trending_score, precision: 1) %> نقطة · <%= number_with_delimiter(article.real_views_count || 0) %> مشاهدة
+              </span>
             <% end %>
           </li>
         <% end %>
