@@ -13,6 +13,5 @@ CI.run do
   step "Security: Importmap audit", "bin/importmap audit"
 
   step "Tests: JavaScript", "npm test --silent"
-  step "Tests: Ruby", "env COVERAGE_FLOOR=1 bundle exec rspec --tag ~type:system"
-  step "Tests: System", "bundle exec rspec spec/system"
+  step "Tests: Ruby", "env COVERAGE_FLOOR=1 bundle exec rspec"
 end

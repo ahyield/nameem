@@ -99,8 +99,6 @@ group :development, :rubocop do
 end
 
 group :test do
-  gem "capybara"
-  gem "cuprite"
   gem "faker"
   gem "rails-controller-testing"
   gem "shoulda-matchers"
