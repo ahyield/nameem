@@ -4,10 +4,10 @@ Arabic-language article publishing platform. "A minor wound on the arm of the ab
 
 ## Tech Stack
 
-- **Ruby 4.0.1 / Rails 8.2** (edge, from GitHub main)
+- **Ruby 4.0.8 / Rails 8.2** (edge, from GitHub main)
 - **MySQL 8.0** with binary UUIDs for articles
 - **Hotwire** (Turbo + Stimulus) — no SPA, no React
-- **Tailwind CSS 4.0** with RTL layout (`dir="rtl"`)
+- **Tailwind CSS 3.4** (`tailwindcss-rails`, `config/tailwind.config.js`) with RTL layout (`dir="rtl"`)
 - **Lexical** (Meta) for article editor (EditorState JSON + HTML dual storage)
 - **ImportMap** for JS modules (no bundler)
 - **Solid Queue** for background jobs

@@ -22,7 +22,7 @@ Nameem is an Arabic-first, right-to-left article publishing platform. Writers pu
 - Ruby 4.0 / Rails 8.2 (edge)
 - MySQL 8.0
 - Hotwire (Turbo + Stimulus), ImportMap, no JS bundler
-- Tailwind CSS 4
+- Tailwind CSS 3
 - Solid Queue for background jobs
 - Kamal for deployment
 
