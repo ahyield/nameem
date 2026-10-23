@@ -31,13 +31,14 @@ RSpec.describe Trending do
 
   it "ranks fresh activity above the same activity days ago" do
     today = article.tap { |a| 2.times { like(a) } }
-    last_week = article.tap { |a| 2.times { like(a, at: 5.days.ago) } }
+    # Six likes five days ago have faded to about 3 points; two likes today are worth about 6
+    last_week = article.tap { |a| 6.times { like(a, at: 5.days.ago) } }
 
     expect(ranked).to eq([today, last_week])
   end
 
   it "lets an old article with readers today outrank a new one nobody touched" do
-    old = article(published_at: 1.year.ago).tap { |a| 2.times { view(a) } }
+    old = article(published_at: 1.year.ago).tap { |a| 2.times { view(a, read_at: 1.hour.ago) } }
     article(published_at: 1.hour.ago)
 
     expect(ranked).to eq([old])
@@ -45,7 +46,7 @@ RSpec.describe Trending do
 
   it "weights reads over opens and saves over likes" do
     read = article.tap { |a| 2.times { view(a, read_at: 1.hour.ago) } }
-    opened = article.tap { |a| 2.times { view(a) } }
+    opened = article.tap { |a| 4.times { view(a) } }
     saved = article.tap { |a| 2.times { save(a) } }
     liked = article.tap { |a| 2.times { like(a) } }
 
@@ -88,17 +89,22 @@ RSpec.describe Trending do
     expect(ranked).not_to include(stale)
   end
 
-  it "keeps any author to two of the top twenty" do
+  it "keeps any author to two trending articles" do
     prolific = create(:user)
     theirs = Array.new(3) { |i| article(prolific).tap { |a| (5 - i).times { like(a) } } }
     other = article.tap { |a| 2.times { like(a) } }
 
-    expect(ranked).to eq([theirs[0], theirs[1], other, theirs[2]])
+    expect(ranked).to eq([theirs[0], theirs[1], other])
   end
 
-  it "ranks everything that qualifies when more than twenty articles do" do
-    articles = Array.new(21) { article.tap { |a| 2.times { like(a) } } }
-    expect(ranked).to match_array(articles)
+  it "skips articles people only passed by" do
+    article.tap { |a| 2.times { view(a) } }
+    expect(ranked).to be_empty
+  end
+
+  it "ranks at most twenty articles" do
+    articles = Array.new(21) { |i| article.tap { |a| (i.zero? ? 2 : 3).times { like(a) } } }
+    expect(ranked).to match_array(articles.drop(1))
   end
 
   it "leaves out the site account and drafts" do

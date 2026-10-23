@@ -8,9 +8,11 @@ class Trending
   WEIGHTS = { open: 1, read: 3, like: 3, save: 4, comment: 5 }.freeze
   # People who engaged with an article before it can trend, so one visitor can't make a trend
   MIN_PEOPLE = 2
-  # In the top CAPPED_TOP, at most AUTHOR_CAP articles per author
+  # Below this an article is just being passed by: two opens score about 2, one real read 4, a like 3
+  MIN_SCORE = 3
+  # At most this many articles are ranked as trending; any one author gets at most AUTHOR_CAP of them
+  MAX_RANKED = 20
   AUTHOR_CAP = 2
-  CAPPED_TOP = 20
 
   # Decayed score per signal: weight × 0.5 ^ (minutes since the event ÷ half-life). Filled in with
   # sanitize_sql_array, so the only SQL here is these constants.
@@ -35,7 +37,7 @@ class Trending
   # Returns the ranked article ids, best first
   def compute!
     scores, people = tally
-    eligible = scores.select { |id, score| score.positive? && people[id] >= MIN_PEOPLE }
+    eligible = scores.select { |id, score| score >= MIN_SCORE && people[id] >= MIN_PEOPLE }
     ranked = diversify(eligible.sort_by { |id, score| [-score, -id] }.map(&:first))
     store(ranked, eligible)
     ranked
@@ -100,18 +102,17 @@ class Trending
     Arel.sql(ActiveRecord::Base.sanitize_sql_array([SCORE_SQL.fetch(signal), binds]))
   end
 
-  # Keeps any one author to AUTHOR_CAP of the top CAPPED_TOP; their other articles follow in score order
+  # The top MAX_RANKED in score order, with any one author kept to AUTHOR_CAP of them
   def diversify(ids)
     authors = Article.where(id: ids).pluck(:id, :user_id).to_h
     counts = Hash.new(0)
-    top = ids.each_with_object([]) do |id, picked|
-      break picked if picked.size == CAPPED_TOP
+    ids.each_with_object([]) do |id, picked|
+      break picked if picked.size == MAX_RANKED
       next if counts[authors[id]] >= AUTHOR_CAP
 
       counts[authors[id]] += 1
       picked << id
     end
-    top + (ids - top)
   end
 
   def store(ranked, scores)
