@@ -78,6 +78,16 @@ RSpec.describe RegistrationsController do
         expect(user.magic_links.count).to eq(1)
         expect(response).to redirect_to(session_magic_link_path)
       end
+
+      it "subscribes to the weekly email when the box is ticked" do
+        post :create, params: { sign_up: { email: "weekly@example.com", email_weekly: "1" } }
+        expect(User.find_by(email: "weekly@example.com").email_weekly).to be(true)
+      end
+
+      it "leaves the weekly email off when the box is unticked" do
+        post :create, params: { sign_up: { email: "noweekly@example.com", email_weekly: "0" } }
+        expect(User.find_by(email: "noweekly@example.com").email_weekly).to be(false)
+      end
     end
   end
 end

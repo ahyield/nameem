@@ -7,5 +7,9 @@ production:
     class: SendNotificationDigestJob
     queue: default
     schedule: every day at 9am Africa/Cairo
+  weekly_digest:
+    class: SendWeeklyDigestJob
+    queue: default
+    schedule: every friday at 10am Africa/Cairo
 
 development:

@@ -1,25 +1,35 @@
-# Preview at /rails/mailers in development; uses existing notifications when there are any
+# Preview at /rails/mailers in development; uses existing notifications, or unsaved samples when there are none
 class ActivityMailerPreview < ActionMailer::Preview
   def comment
-    notification = Notification.where(action: :commented, notifiable_type: "Comment").last ||
-      Notification.new(action: :commented, recipient: User.first!, actor: User.last!, notifiable: Comment.last!)
-    ActivityMailer.comment(notification)
+    ActivityMailer.comment(comment_notification(:commented))
   end
 
   def reply
-    notification = Notification.where(action: :replied, notifiable_type: "Comment").last ||
-      Notification.new(action: :replied, recipient: User.first!, actor: User.last!, notifiable: Comment.last!)
-    ActivityMailer.comment(notification)
+    ActivityMailer.comment(comment_notification(:replied))
   end
 
   def featured
-    article = Article.published.last!
-    ActivityMailer.editorial(Notification.new(action: :featured, recipient: article.user, actor: User.first!,
-                                              notifiable: article))
+    ActivityMailer.editorial(article_notification(:featured))
   end
 
   def picked
+    ActivityMailer.editorial(article_notification(:picked))
+  end
+
+  private
+
+  def comment_notification(action)
+    Notification.where(action:, notifiable_type: "Comment").last ||
+      Notification.new(action:, recipient: User.first!, actor: User.last!, notifiable: sample_comment)
+  end
+
+  def article_notification(action)
     article = Article.published.last!
-    ActivityMailer.editorial(Notification.new(action: :picked, recipient: article.user, actor: User.first!, notifiable: article))
+    Notification.new(action:, recipient: article.user, actor: User.first!, notifiable: article)
+  end
+
+  def sample_comment
+    Comment.last || Comment.new(article: Article.published.last!, user: User.last!,
+                                body: "قرأت موضوعك مرتين. الفقرة الأخيرة تحديداً بقيت معي طوال اليوم، شكراً لك.")
   end
 end
