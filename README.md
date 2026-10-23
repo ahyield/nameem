@@ -64,6 +64,9 @@ Expected structure:
 ```yaml
 resend:
   api_key: ...
+  webhook_secret: whsec_...   # bounce/complaint webhook (see Email below)
+mailer:
+  postal_address: ...         # shown in marketing email footers
 aws:
   access_key_id: ...
   secret_access_key: ...
@@ -75,6 +78,20 @@ digitup:              # optional, production only
 ```
 
 None of these are needed to run the app locally or to run the specs.
+
+### Email
+
+Mail goes through [Resend](https://resend.com). The email settings can also come from environment variables in `.env.production`, which `scripts/deploy.sh` loads and Kamal passes to the app (`.kamal/secrets-common`, `env.secret` in `config/deploy*.yml`). A variable that's set wins over the credential:
+
+| Variable | Credential | What it's for |
+|---|---|---|
+| `RESEND_API_KEY` | `resend.api_key` | Sending email |
+| `RESEND_WEBHOOK_SECRET` | `resend.webhook_secret` | Verifying the bounce/complaint webhook |
+| `MAILER_POSTAL_ADDRESS` | `mailer.postal_address` | Footer of marketing email (the weekly digest) |
+
+In the Resend dashboard, add a webhook to `https://<your host>/webhooks/resend` for `email.bounced` and `email.complained`. Its signing secret (`whsec_...`) is `RESEND_WEBHOOK_SECRET`. Without it the endpoint rejects every call, and bounced addresses keep getting mail.
+
+Preview every email at `/rails/mailers` in development.
 
 ## Tests and linting
 

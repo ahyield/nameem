@@ -34,7 +34,7 @@ module Webhooks
     end
 
     def signed_by_resend?
-      secret = Rails.application.credentials.dig(:resend, :webhook_secret)
+      secret = Email::Settings.resend_webhook_secret
       id, timestamp, signatures = %w[svix-id svix-timestamp svix-signature].map { |name| request.headers[name] }
       return false if [secret, id, timestamp, signatures].any?(&:blank?)
       return false if (Time.current.to_i - timestamp.to_i).abs > TOLERANCE
