@@ -1,8 +1,8 @@
 <%= render "backoffice/shared/page_header" %>
 
-<dl class="mb-8 grid grid-cols-2 sm:grid-cols-5 gap-px overflow-hidden rounded-xl border border-gray-200/70 bg-gray-200/70">
+<dl class="mb-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-px overflow-hidden rounded-xl border border-gray-200/70 bg-gray-200/70">
   <% @stats.each_with_index do |stat, index| %>
-    <div class="bg-white p-5 <%= "col-span-2 sm:col-span-1" if index == @stats.size - 1 %>">
+    <div class="bg-white p-5 <%= "col-span-2 sm:col-span-1" if @stats.size.odd? && index == @stats.size - 1 %>">
       <dt class="bo-label"><%= stat[:label] %></dt>
       <dd class="mt-1 text-2xl font-semibold text-gray-900 tabular-nums"><%= number_with_delimiter(stat[:value]) %></dd>
       <% if stat[:week].to_i.positive? %>

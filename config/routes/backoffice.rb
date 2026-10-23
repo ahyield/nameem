@@ -11,6 +11,11 @@ namespace :backoffice do
     end
   end
   resources :comments, only: %i[index show destroy]
+  resources :reports, only: %i[index show] do
+    member do
+      post :resolve
+    end
+  end
 
   get "dashboard", to: "dashboard#index"
   root "dashboard#index"

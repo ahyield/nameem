@@ -9,8 +9,13 @@ module BackofficeHelper
     ["articles", :backoffice_articles_path, "المقالات"],
     ["users", :backoffice_users_path, "المستخدمين"],
     ["tags", :backoffice_tags_path, "المواضيع"],
-    ["comments", :backoffice_comments_path, "التعليقات"]
+    ["comments", :backoffice_comments_path, "التعليقات"],
+    ["reports", :backoffice_reports_path, "البلاغات"]
   ].freeze
+
+  def pending_reports_count
+    @pending_reports_count ||= Report.pending.count
+  end
 
   def status_badge(label, style = :default)
     classes = BADGE_COLORS.fetch(style.to_sym, BADGE_COLORS[:default])

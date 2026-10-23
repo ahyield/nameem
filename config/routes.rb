@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       delete :unfollow, to: "follows#destroy", defaults: { followable_type: "Tag" }
     end
   end
+  resources :reports, only: [:create]
   resources :notifications, only: [:index] do
     member do
       post :mark_read

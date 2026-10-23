@@ -12,6 +12,8 @@ class Article < ApplicationRecord
   has_many :tags, through: :article_tags
   has_many :comments, dependent: :destroy
   has_many :page_views, as: :viewable, dependent: :destroy
+  # Reports outlive the content so moderators keep the evidence
+  has_many :reports, as: :reportable, dependent: nil
 
   belongs_to :user
 

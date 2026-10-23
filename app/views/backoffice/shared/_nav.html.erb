@@ -4,9 +4,14 @@
 
     <nav class="flex h-full flex-1 items-stretch gap-5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       <% BackofficeHelper::NAV_ITEMS.each do |ctrl, path, label| %>
-        <%= link_to label, public_send(path),
-            class: "relative flex items-center whitespace-nowrap text-sm font-medium #{active_backoffice_nav(ctrl)}",
-            aria: { current: (controller_name == ctrl ? "page" : nil) } %>
+        <%= link_to public_send(path),
+            class: "relative flex items-center gap-1.5 whitespace-nowrap text-sm font-medium #{active_backoffice_nav(ctrl)}",
+            aria: { current: (controller_name == ctrl ? "page" : nil) } do %>
+          <%= label %>
+          <% if ctrl == "reports" && pending_reports_count.positive? %>
+            <span class="rounded-full bg-orange-600 px-1.5 text-xs font-medium text-white tabular-nums"><%= pending_reports_count %></span>
+          <% end %>
+        <% end %>
       <% end %>
     </nav>
 

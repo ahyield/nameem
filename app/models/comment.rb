@@ -7,6 +7,8 @@ class Comment < ApplicationRecord
   has_many :replies, class_name: "Comment", foreign_key: :parent_id, inverse_of: :parent, dependent: :destroy
   has_many :comment_likes, dependent: :destroy
   has_many :notifications, as: :notifiable, dependent: :destroy
+  # Reports outlive the content so moderators keep the evidence
+  has_many :reports, as: :reportable, dependent: nil
 
   has_rich_text :body
 

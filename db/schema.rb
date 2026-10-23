@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_10_23_200000) do
+ActiveRecord::Schema[8.2].define(version: 2026_10_23_210000) do
   create_table "action_text_rich_texts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.text "body", size: :long
@@ -195,6 +195,28 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_23_200000) do
     t.datetime "updated_at", null: false
     t.index ["viewable_type", "viewable_id", "visitor_id"], name: "index_page_views_uniqueness", unique: true
     t.index ["viewable_type", "viewable_id"], name: "index_page_views_on_viewable_type_and_viewable_id"
+  end
+
+  create_table "reports", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "reporter_id", null: false
+    t.string "reportable_type", null: false
+    t.bigint "reportable_id", null: false
+    t.bigint "reported_user_id"
+    t.integer "reason", null: false
+    t.text "details"
+    t.text "snapshot"
+    t.integer "status", default: 0, null: false
+    t.bigint "reviewer_id"
+    t.datetime "reviewed_at"
+    t.text "resolution_note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reportable_type", "reportable_id"], name: "index_reports_on_reportable_type_and_reportable_id"
+    t.index ["reported_user_id"], name: "index_reports_on_reported_user_id"
+    t.index ["reporter_id", "reportable_type", "reportable_id"], name: "index_reports_on_reporter_and_reportable", unique: true
+    t.index ["reporter_id"], name: "index_reports_on_reporter_id"
+    t.index ["reviewer_id"], name: "index_reports_on_reviewer_id"
+    t.index ["status", "created_at"], name: "index_reports_on_status_and_created_at"
   end
 
   create_table "sessions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -385,6 +407,9 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_23_200000) do
   add_foreign_key "magic_links", "users"
   add_foreign_key "notifications", "users", column: "actor_id"
   add_foreign_key "notifications", "users", column: "recipient_id"
+  add_foreign_key "reports", "users", column: "reported_user_id", on_delete: :nullify
+  add_foreign_key "reports", "users", column: "reporter_id"
+  add_foreign_key "reports", "users", column: "reviewer_id", on_delete: :nullify
   add_foreign_key "sessions", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
