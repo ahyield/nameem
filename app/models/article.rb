@@ -1,4 +1,7 @@
 class Article < ApplicationRecord
+  # The site's own account; its articles are left out of popularity rankings
+  RANKING_EXCLUDED_USER_ID = 1
+
   include Metable
 
   has_many_attached :images
@@ -18,7 +21,9 @@ class Article < ApplicationRecord
   scope :drafts, -> { where(published: false) }
   # lol, easy way to fuck things up, however it works. User.find_by(id: 1) == `nameem`,
   # so we don't want articles from nameem to show up in most reads.
-  scope :most_popular, -> { where("published = ? AND user_id != ?", true, 1).order(real_views_count: :desc) }
+  scope :most_popular, lambda {
+    where("published = ? AND user_id != ?", true, RANKING_EXCLUDED_USER_ID).order(real_views_count: :desc)
+  }
   scope :related_to, lambda { |article, limit: 4|
     published
       .joins(:article_tags)
@@ -45,7 +50,7 @@ class Article < ApplicationRecord
   end
 
   def self.trending_within(days)
-    where("published = ? AND user_id != ? AND published_at >= ?", true, 1, days.days.ago)
+    where("published = ? AND user_id != ? AND published_at >= ?", true, RANKING_EXCLUDED_USER_ID, days.days.ago)
       .select("articles.*, (real_views_count + likes_count * 3 + comments_count * 5) / " \
               "POW(TIMESTAMPDIFF(HOUR, published_at, NOW()) + 2, 1.5) AS trending_score")
       .order(Arel.sql("trending_score DESC, published_at DESC"))

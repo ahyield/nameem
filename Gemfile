@@ -50,7 +50,7 @@ gem "name_of_person"
 
 gem "image_processing", ">= 1.13"
 gem "mini_magick"
-gem "ruby-vips"
+gem "ruby-vips", require: false # loaded by Active Storage when it processes images
 
 gem "resend"
 

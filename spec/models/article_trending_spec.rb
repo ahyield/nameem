@@ -3,6 +3,17 @@ require "rails_helper"
 RSpec.describe Article, ".trending" do
   let(:author) { create(:user) }
 
+  # The excluded account is identified by ID; keep it from matching test users by accident
+  before { stub_const("Article::RANKING_EXCLUDED_USER_ID", 0) }
+
+  it "leaves out the site's own account" do
+    site_account = create(:user)
+    stub_const("Article::RANKING_EXCLUDED_USER_ID", site_account.id)
+    create(:article, :published, user: site_account, published_at: 1.day.ago)
+
+    expect(described_class.trending).to be_empty
+  end
+
   it "returns articles published within the last 7 days" do
     recent = create(:article, :published, user: author, published_at: 3.days.ago)
 
@@ -21,13 +32,6 @@ RSpec.describe Article, ".trending" do
     draft = create(:article, :draft, user: author, published_at: 1.day.ago)
 
     expect(described_class.trending).not_to include(draft)
-  end
-
-  it "excludes system user articles (user_id: 1)" do
-    system_user = create(:user, id: 1)
-    system_article = create(:article, :published, user: system_user, published_at: 1.day.ago)
-
-    expect(described_class.trending).not_to include(system_article)
   end
 
   it "favors newer articles with equal engagement over older ones" do
