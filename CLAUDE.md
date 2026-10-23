@@ -111,7 +111,6 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 
 - **AWS S3** — production file storage (avatars, article images)
 - **Resend** — transactional emails
-- **Sentry** — error tracking
 - **Flipper** — feature flags
 - **Turnstile** — CAPTCHA on sign-up
 

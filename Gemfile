@@ -65,9 +65,6 @@ gem "flipper"
 gem "mission_control-jobs"
 gem "solid_queue"
 
-gem "sentry-rails"
-gem "sentry-ruby"
-
 gem "english"
 
 gem "turnstile-captcha", require: "turnstile"

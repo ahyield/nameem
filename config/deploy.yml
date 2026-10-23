@@ -34,7 +34,6 @@ env:
     - RAILS_MASTER_KEY
     - MYSQL_USERNAME
     - MYSQL_ROOT_PASSWORD
-    - SENTRY_DSN
 
 # Use accessory services (secrets come from .env).
 accessories:
