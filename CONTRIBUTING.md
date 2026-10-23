@@ -10,7 +10,7 @@ Thanks for your interest in Nameem. Bug reports, fixes and improvements are welc
 4. Run `bin/ci` and make sure it passes. It runs the same checks as GitHub Actions.
 5. Open a pull request using the template, and attach screenshots for UI changes.
 
-`main` only accepts pull requests with all checks green (`lint`, `security`, `js`, `specs`).
+`main` only accepts pull requests with all checks green (`lint`, `security`, `js`, `specs`). Checks skip themselves when a pull request doesn't touch their files, so docs- or script-only changes merge without running the suite.
 
 ## Tests
 
