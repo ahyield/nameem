@@ -91,44 +91,9 @@ jobs:
       - name: Prepare
         run: bin/rails tailwindcss:build db:prepare
       - name: Specs (with coverage floor)
-        run: bundle exec rspec --tag ~type:system
+        run: bundle exec rspec
         env:
           COVERAGE_FLOOR: 1
       - name: Changed code is covered
         if: github.event_name == 'pull_request'
         run: bundle exec undercover --lcov coverage/lcov.info --compare origin/${{ github.base_ref }}
-
-  system:
-    name: system
-    runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root # throwaway CI database, not a secret
-        ports: ["3306:3306"]
-        options: --health-cmd="mysqladmin ping -proot" --health-interval=5s --health-timeout=5s --health-retries=20
-    env:
-      RAILS_ENV: test
-      MYSQL_USERNAME: root
-      MYSQL_ROOT_PASSWORD: root
-      DATABASE_HOST: 127.0.0.1
-      DB_PORT: 3306
-    steps:
-      - uses: actions/checkout@v7
-      - name: Install system packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libvips
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-      - name: Prepare
-        run: bin/rails tailwindcss:build db:prepare
-      - name: System specs
-        run: bundle exec rspec spec/system
-      - name: Keep screenshots of failures
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: screenshots
-          path: tmp/capybara
-          if-no-files-found: ignore
