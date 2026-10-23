@@ -1,5 +1,7 @@
 # Instant emails for comments, replies and editorial picks; see Notification#deliver_instant_email
 class ActivityMailer < ApplicationMailer
+  helper EmailHelper
+
   def comment(notification)
     @notification = notification
     @comment = notification.notifiable

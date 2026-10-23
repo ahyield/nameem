@@ -8,7 +8,7 @@ RSpec.describe "Email unsubscribe" do
     get email_unsubscribe_path(token:)
 
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("الأفضل هذا الأسبوع")
+    expect(response.body).to include("حصاد الأسبوع")
     expect(user.reload.email_weekly).to be(true)
   end
 

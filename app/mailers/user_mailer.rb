@@ -1,4 +1,6 @@
 class UserMailer < ApplicationMailer
+  helper EmailHelper
+
   def welcome(user)
     @user = user
     @writers = User.suggested_for(user, limit: 3)
