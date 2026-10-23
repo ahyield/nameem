@@ -5,7 +5,9 @@
     <div class="flex items-start gap-x-3">
       <%# Avatar %>
       <div class="flex-shrink-0">
-        <% if notification.actor.avatar.attached? %>
+        <% if notification.moderation? %>
+          <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-900 text-sm font-bold text-white">ن</span>
+        <% elsif notification.actor.avatar.attached? %>
           <%= image_tag notification.actor.avatar.variant(resize_to_fill: [100, 100]), class: "h-10 w-10 rounded-full bg-gray-50" %>
         <% else %>
           <span class="inline-block h-10 w-10 overflow-hidden rounded-full bg-gray-100">
@@ -19,12 +21,18 @@
       <%# Content %>
       <div class="flex-1 min-w-0 pt-0.5">
         <p class="text-sm text-gray-700 flex items-center gap-x-1.5">
-          <%= link_to notification.actor.name, user_path(slug: notification.actor), class: "font-semibold text-gray-900 hover:underline", data: { turbo: false } %>
+          <% if notification.moderation? %>
+            <span class="font-semibold text-gray-900"><%= notification_actor_name(notification) %></span>
+          <% else %>
+            <%= link_to notification.actor.name, user_path(slug: notification.actor), class: "font-semibold text-gray-900 hover:underline", data: { turbo: false } %>
+          <% end %>
           <%= notification_message(notification) %>
           <%= notification_action_icon(notification) %>
         </p>
         <% comment = notification_comment(notification) %>
-        <% if comment %>
+        <% if notification.content_removed? %>
+          <p class="mt-1 text-sm text-gray-500 truncate"><%= notification.notifiable.snapshot.to_s.truncate(80) %></p>
+        <% elsif comment %>
           <p class="mt-1 text-sm text-gray-500 truncate"><%= comment.body.to_plain_text.truncate(80) %></p>
         <% end %>
         <% if article %>

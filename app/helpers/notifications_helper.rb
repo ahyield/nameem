@@ -1,13 +1,22 @@
 module NotificationsHelper
   NOTIFICATION_MESSAGES = {
-    "liked"         => "أعجب بمقالك",
-    "commented"     => "علّق على مقالك",
-    "featured"      => "تم تمييز مقالك",
-    "picked"        => "تم اختيار مقالك",
-    "followed"      => "بدأ متابعتك",
-    "replied"       => "ردّ على تعليقك",
-    "comment_liked" => "أعجب بتعليقك"
+    "liked"           => "أعجب بمقالك",
+    "commented"       => "علّق على مقالك",
+    "featured"        => "تم تمييز مقالك",
+    "picked"          => "تم اختيار مقالك",
+    "followed"        => "بدأ متابعتك",
+    "replied"         => "ردّ على تعليقك",
+    "comment_liked"   => "أعجب بتعليقك",
+    "report_actioned" => "راجع بلاغك واتخذ إجراءً بشأنه",
+    "content_removed" => "أزال محتوى لك لمخالفته إرشادات النشر"
   }.freeze
+
+  MODERATION_SENDER = "فريق نميم".freeze
+
+  # Moderation notices are signed by the team, never by the reviewer
+  def notification_actor_name(notification)
+    notification.moderation? ? MODERATION_SENDER : notification.actor.name
+  end
 
   def notification_message(notification)
     NOTIFICATION_MESSAGES[notification.action]
@@ -15,7 +24,7 @@ module NotificationsHelper
 
   def notification_path_for(notification)
     case notification.notifiable_type
-    when "ArticleLike", "Comment"
+    when "ArticleLike", "Comment", "Report"
       article = notification.notifiable&.article
       user_article_path(slug: article.user, uuid: article) if article
     when "CommentLike"
@@ -31,14 +40,12 @@ module NotificationsHelper
 
   def notification_article(notification)
     case notification.notifiable_type
-    when "ArticleLike", "Comment"
+    when "ArticleLike", "Comment", "Report"
       notification.notifiable&.article
     when "CommentLike"
       notification.notifiable&.comment&.article
     when "Article"
       notification.notifiable
-    when "Follow"
-      nil
     end
   end
 
@@ -80,6 +87,14 @@ module NotificationsHelper
         tag.svg(class: "h-3 w-3 text-emerald-500", viewBox: "0 0 24 24", fill: "currentColor") do
           tag.path(fill_rule: "evenodd",
                    d:         "M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z",
+                   clip_rule: "evenodd")
+        end
+      end
+    when "report_actioned", "content_removed"
+      tag.span(class: "flex h-5 w-5 items-center justify-center rounded-full bg-gray-100 ring-2 ring-white") do
+        tag.svg(class: "h-3 w-3 text-gray-500", viewBox: "0 0 24 24", fill: "currentColor") do
+          tag.path(fill_rule: "evenodd",
+                   d:         "M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 00-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08z",
                    clip_rule: "evenodd")
         end
       end

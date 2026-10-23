@@ -53,6 +53,14 @@
               رد
             </button>
           <% end %>
+          <% if authenticated? && current_user != comment.user %>
+            <button type="button"
+                    class="text-gray-400 hover:text-gray-600 cursor-pointer transition-colors sm:opacity-0 sm:group-hover/comment:opacity-100 focus:opacity-100"
+                    data-action="report#open" data-report-type-param="Comment" data-report-id-param="<%= comment.id %>"
+                    data-report-title-param="الإبلاغ عن التعليق">
+              إبلاغ
+            </button>
+          <% end %>
           <% if current_user == comment.user || current_user&.admin? %>
             <%= button_to user_article_comment_path(slug: comment.article.user, uuid: comment.article, id: comment),
                   method: :delete,

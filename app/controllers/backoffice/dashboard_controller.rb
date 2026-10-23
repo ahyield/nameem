@@ -9,7 +9,8 @@ module Backoffice
         { label: "المستخدمين", value: User.count, week: User.where(created_at: week_ago..).count },
         { label: "التعليقات", value: Comment.count, week: Comment.where(created_at: week_ago..).count },
         { label: "الإعجابات", value: ArticleLike.count, week: ArticleLike.where(created_at: week_ago..).count },
-        { label: "المواضيع", value: Tag.count, week: nil }
+        { label: "المواضيع", value: Tag.count, week: nil },
+        { label: "بلاغات معلقة", value: Report.pending.count, week: nil }
       ]
 
       @activity = recent_activity.first(12)

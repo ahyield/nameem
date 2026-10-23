@@ -1,0 +1,39 @@
+<%= render "backoffice/shared/page_header", count: @pagy.count %>
+
+<%= render "backoffice/shared/toolbar", url: backoffice_reports_path, current: @filter, filters: [
+  ["pending", "بانتظار المراجعة"],
+  ["comments", "تعليقات"],
+  ["articles", "مواضيع"],
+  ["resolved", "تمت مراجعتها"],
+  ["all", "الكل"]
+] %>
+
+<% if @items.any? %>
+  <ul class="bo-panel divide-y divide-gray-200/70">
+    <% @items.each do |item| %>
+      <% sample = @samples[item.id] %>
+      <% reasons = @reasons[[item.reportable_type, item.reportable_id]].tally.sort_by { |_, count| -count } %>
+      <li>
+        <%= link_to backoffice_report_path(item.id), class: "bo-row items-start" do %>
+          <span class="w-14 shrink-0 pt-0.5">
+            <%= status_badge(item.reportable_type == "Comment" ? "تعليق" : "موضوع", sample.pending? ? :active : :default) %>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-sm line-clamp-2"><%= sample.snapshot.to_s.truncate(160) %></span>
+            <span class="mt-0.5 block truncate text-xs text-gray-500">
+              <%= sample.reported_user&.name || "مستخدم محذوف" %> ·
+              <%= reasons.map { |reason, count| count > 1 ? "#{Report::REASONS[reason]} (#{count})" : Report::REASONS[reason] }.join("، ") %> ·
+              <%= time_ago_in_words(item.first_reported_at) %>
+            </span>
+          </span>
+          <span class="shrink-0 text-xs text-gray-500 tabular-nums"><%= item.reports_count %> بلاغ</span>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+  <% if @pagy.last > 1 %>
+    <div class="mt-4"><%== @pagy.series_nav %></div>
+  <% end %>
+<% else %>
+  <%= render "backoffice/shared/empty_state", message: @filter == "pending" ? "لا توجد بلاغات بانتظار المراجعة" : "لا توجد بلاغات" %>
+<% end %>

@@ -1,0 +1,117 @@
+<% reportable = @report.reportable %>
+
+<div class="mb-6 flex items-center gap-3">
+  <% if @author %>
+    <%= backoffice_avatar(@author, size: 40) %>
+  <% end %>
+  <div class="min-w-0 flex-1">
+    <h1 class="text-base font-semibold text-gray-900">
+      <% if @author %>
+        <%= link_to @author.name, backoffice_user_path(@author), class: "hover:underline" %>
+      <% else %>
+        مستخدم محذوف
+      <% end %>
+    </h1>
+    <p class="text-sm text-gray-500">
+      <%= @report.reportable_type == "Comment" ? "تعليق" : "موضوع" %> ·
+      <%= @reports.size %> بلاغ ·
+      <% if @author_actioned_count.positive? %>
+        <span class="text-orange-700">سبق اتخاذ إجراء ضد <%= @author_actioned_count %> من محتواه</span>
+      <% else %>
+        لا مخالفات سابقة
+      <% end %>
+    </p>
+  </div>
+</div>
+
+<div class="bo-panel p-5">
+  <% case reportable %>
+  <% when Comment %>
+    <div class="prose prose-sm max-w-none text-gray-900"><%= reportable.body %></div>
+    <p class="mt-4 text-xs text-gray-500">
+      على <%= link_to reportable.article.title.presence || "بدون عنوان", user_article_path(slug: reportable.article.user, uuid: reportable.article),
+                      class: "text-gray-900 hover:underline", target: "_blank", rel: "noopener" %>
+    </p>
+  <% when Article %>
+    <p class="text-sm font-semibold text-gray-900"><%= reportable.title.presence || "بدون عنوان" %></p>
+    <p class="mt-1 text-sm text-gray-600"><%= reportable.description %></p>
+    <p class="mt-4 flex items-center gap-2 text-xs text-gray-500">
+      <%= status_badge(reportable.published? ? "منشور" : "غير منشور", reportable.published? ? :active : :default) %>
+      <%= link_to "فتح الموضوع", user_article_path(slug: reportable.user, uuid: reportable), class: "text-gray-900 hover:underline",
+                  target: "_blank", rel: "noopener" %>
+    </p>
+  <% else %>
+    <p class="text-sm text-gray-900 whitespace-pre-line"><%= @report.snapshot %></p>
+    <p class="mt-4 text-xs text-gray-500">حُذف هذا المحتوى. النص أعلاه نسخة محفوظة وقت الإبلاغ.</p>
+  <% end %>
+</div>
+
+<section class="mt-8">
+  <h2 class="mb-3 text-sm font-semibold text-gray-900">البلاغات <span class="font-normal text-gray-400 tabular-nums"><%= @reports.size %></span></h2>
+  <ul class="bo-panel divide-y divide-gray-200/70">
+    <% @reports.each do |report| %>
+      <li id="<%= dom_id(report) %>" class="flex items-start gap-3 px-4 py-3">
+        <%= backoffice_avatar(report.reporter, size: 28) %>
+        <div class="min-w-0 flex-1 text-sm">
+          <p>
+            <span class="font-medium text-gray-900"><%= report.reporter.name %></span>
+            <span class="text-gray-700"><%= report.reason_label %></span>
+            <span class="text-xs text-gray-500"><%= time_ago_in_words(report.created_at) %></span>
+          </p>
+          <% if report.details.present? %>
+            <p class="mt-0.5 text-gray-600"><%= report.details %></p>
+          <% end %>
+          <% unless report.pending? %>
+            <p class="mt-1 text-xs text-gray-500">
+              <%= report.actioned? ? "اتُّخذ إجراء" : "رُفض" %> ·
+              <%= report.reviewer&.name %> · <%= time_ago_in_words(report.reviewed_at) %>
+              <% if report.resolution_note.present? %>· <%= report.resolution_note %><% end %>
+            </p>
+          <% end %>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</section>
+
+<% if @pending.any? %>
+  <section class="mt-12 border-t border-gray-200/70 pt-6">
+    <h2 class="text-sm font-semibold text-gray-900">القرار</h2>
+    <p class="mt-1 mb-4 text-sm text-gray-500">ينطبق على كل البلاغات المعلقة عن هذا المحتوى (<%= @pending.size %>).</p>
+
+    <%= form_with url: resolve_backoffice_report_path(@report), method: :post, class: "space-y-4" do %>
+      <fieldset class="space-y-2">
+        <legend class="sr-only">القرار</legend>
+        <label class="flex items-center gap-3 text-sm text-gray-900 cursor-pointer">
+          <%= radio_button_tag :decision, "action", false, required: true %>
+          البلاغ صحيح: اتخاذ إجراء
+        </label>
+        <div class="mr-7 space-y-2 text-sm text-gray-700">
+          <% if reportable %>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <%= check_box_tag :remove_content, "1", true %>
+              <%= reportable.is_a?(Comment) ? "حذف التعليق" : "إلغاء نشر الموضوع (يمكن التراجع)" %>
+            </label>
+          <% end %>
+          <label class="flex items-center gap-3 cursor-pointer">
+            <%= check_box_tag :warn_author, "1", true %>
+            إشعار الكاتب بإزالة محتواه
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer">
+            <%= check_box_tag :notify_reporters, "1", true %>
+            إشعار المُبلِّغين باتخاذ إجراء
+          </label>
+        </div>
+        <label class="flex items-center gap-3 text-sm text-gray-900 cursor-pointer">
+          <%= radio_button_tag :decision, "dismiss", false %>
+          البلاغ غير صحيح: رفض
+        </label>
+      </fieldset>
+
+      <%= text_field_tag :note, nil, placeholder: "ملاحظة داخلية (اختياري)", class: "bo-input", autocomplete: "off",
+                         aria: { label: "ملاحظة داخلية" } %>
+
+      <%= submit_tag "حفظ القرار", class: "bo-btn bo-btn-primary", data: { turbo_confirm: "هل أنت متأكد من هذا القرار؟" } %>
+    <% end %>
+  </section>
+<% end %>

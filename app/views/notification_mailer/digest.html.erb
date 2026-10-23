@@ -21,13 +21,11 @@
                     <tr>
                       <td class="py-3 border-b border-slate-100">
                         <p class="m-0 text-sm text-slate-700">
-                          <strong><%= notification.actor.name %></strong>
+                          <strong><%= notification_actor_name(notification) %></strong>
                           <%= notification_message(notification) %>
                         </p>
-                        <% if notification.notifiable_type == "Article" %>
-                          <p class="m-0 mt-1 text-sm text-orange-600"><%= notification.notifiable.title %></p>
-                        <% elsif notification.notifiable.respond_to?(:article) %>
-                          <p class="m-0 mt-1 text-sm text-orange-600"><%= notification.notifiable.article.title %></p>
+                        <% if (article = notification_article(notification)) %>
+                          <p class="m-0 mt-1 text-sm text-orange-600"><%= article.title %></p>
                         <% end %>
                       </td>
                     </tr>

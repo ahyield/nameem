@@ -18,7 +18,7 @@ twitter: {
 
 <%= render "shared/nav" %>
 
-<div class="bg-white px-6 py-32 lg:px-8" data-controller="drawer page-view" data-page-view-viewable-type-value="Article" data-page-view-viewable-id-value="<%= @article.id %>">
+<div class="bg-white px-6 py-32 lg:px-8" data-controller="drawer page-view report" data-page-view-viewable-type-value="Article" data-page-view-viewable-id-value="<%= @article.id %>">
   <div class="mx-auto max-w-3xl text-base leading-7 text-gray-700">
     <h1 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"><%= @article.title %></h1>
     <div class="flex space-x-4 text-sm text-gray-500">
@@ -148,6 +148,30 @@ twitter: {
             </div>
             <%= render "articles/analytics", article: @article, likers: @likers || [], commenters: @commenters || [] %>
           </div>
+        <% elsif authenticated? %>
+          <div data-controller="dropdown" class="relative">
+            <button type="button" class="text-gray-300 hover:text-gray-600 cursor-pointer transition-colors"
+              data-action="click->dropdown#toggle click@window->dropdown#hide">
+              <span class="sr-only">خيارات</span>
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.5" />
+                <circle cx="12" cy="12" r="1.5" />
+                <circle cx="19" cy="12" r="1.5" />
+              </svg>
+            </button>
+            <div class="hidden absolute left-0 z-50 w-44 mt-2 py-1 rounded-lg bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+                role="menu" data-dropdown-target="menu">
+              <button type="button" class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer transition-colors"
+                role="menuitem" data-action="report#open"
+                data-report-type-param="Article" data-report-id-param="<%= @article.uuid %>"
+                data-report-title-param="الإبلاغ عن الموضوع">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0 1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5" />
+                </svg>
+                الإبلاغ عن الموضوع
+              </button>
+            </div>
+          </div>
         <% end %>
       </div>
     </div>
@@ -176,6 +200,10 @@ twitter: {
         </div>
       <% end %>
     </div>
+  <% end %>
+
+  <% if authenticated? %>
+    <%= render "reports/dialog" %>
   <% end %>
 
   <%# Comments Drawer %>
