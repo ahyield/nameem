@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+require_relative "../config/boot"
+require "bundler/audit/cli"
+
+# With no arguments, refresh the advisory database and check Gemfile.lock
+ARGV.replace(%w[check --update --config config/bundler-audit.yml]) if ARGV.empty?
+
+Bundler::Audit::CLI.start

@@ -1,5 +1,4 @@
-require "simplecov"
-SimpleCov.start
+require "simplecov" # configured in .simplecov
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

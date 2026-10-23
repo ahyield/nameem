@@ -109,6 +109,20 @@ RSpec.describe "Backoffice::Users", type: :request do
   describe "POST /backoffice/users/:slug/toggle_role" do
     let(:user) { create(:user) }
 
+    context "with a forged role parameter" do
+      before { authenticate_user(admin) }
+
+      %w[destroy delete! update_column email].each do |forged|
+        it "refuses #{forged.inspect} and leaves the user intact" do
+          post toggle_role_backoffice_user_path(user), params: { role: forged }
+
+          expect(response).to redirect_to(backoffice_user_path(user))
+          expect(flash[:error]).to be_present
+          expect(User.exists?(user.id)).to be(true)
+        end
+      end
+    end
+
     context "as editor" do
       before { authenticate_user(editor) }
 

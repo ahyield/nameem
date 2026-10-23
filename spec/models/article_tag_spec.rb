@@ -24,17 +24,17 @@ RSpec.describe ArticleTag do
   describe "counter cache" do
     it "increments articles_count on tag when created" do
       tag = create(:tag)
-      expect {
+      expect do
         create(:article_tag, tag: tag)
-      }.to change { tag.reload.articles_count }.from(0).to(1)
+      end.to change { tag.reload.articles_count }.from(0).to(1)
     end
 
     it "decrements articles_count on tag when destroyed" do
       article_tag = create(:article_tag)
       tag = article_tag.tag
-      expect {
+      expect do
         article_tag.destroy
-      }.to change { tag.reload.articles_count }.by(-1)
+      end.to change { tag.reload.articles_count }.by(-1)
     end
   end
 end

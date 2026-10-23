@@ -1,17 +1,15 @@
-# frozen_string_literal: true
-
 # Pin npm packages by running ./bin/importmap
 
-pin 'application', preload: true
-pin '@hotwired/turbo-rails', to: 'turbo.min.js', preload: true
-pin '@hotwired/stimulus', to: 'https://ga.jspm.io/npm:@hotwired/stimulus@3.2.2/dist/stimulus.js'
-pin '@hotwired/stimulus-loading', to: 'stimulus-loading.js', preload: true
-pin_all_from 'app/javascript/controllers', under: 'controllers'
+pin "application", preload: true
+pin "@hotwired/turbo-rails", to: "turbo.min.js", preload: true
+pin "@hotwired/stimulus", to: "https://ga.jspm.io/npm:@hotwired/stimulus@3.2.2/dist/stimulus.js"
+pin "@hotwired/stimulus-loading", to: "stimulus-loading.js", preload: true
+pin_all_from "app/javascript/controllers", under: "controllers"
 pin_all_from "app/javascript/lib", under: "lib"
 pin_all_from "app/javascript/api", under: "api"
-pin '@fortawesome/fontawesome-free', to: 'https://ga.jspm.io/npm:@fortawesome/fontawesome-free@6.1.1/js/all.js'
-pin 'tailwindcss-stimulus-components', to: 'https://ga.jspm.io/npm:tailwindcss-stimulus-components@4.0.4/dist/tailwindcss-stimulus-components.module.js'
-pin '@rails/activestorage', to: 'https://ga.jspm.io/npm:@rails/activestorage@7.1.1/app/assets/javascripts/activestorage.esm.js'
+pin "@fortawesome/fontawesome-free", to: "https://ga.jspm.io/npm:@fortawesome/fontawesome-free@6.1.1/js/all.js"
+pin "tailwindcss-stimulus-components", to: "https://ga.jspm.io/npm:tailwindcss-stimulus-components@4.0.4/dist/tailwindcss-stimulus-components.module.js"
+pin "@rails/activestorage", to: "https://ga.jspm.io/npm:@rails/activestorage@7.1.1/app/assets/javascripts/activestorage.esm.js"
 pin "lexical", to: "https://esm.sh/lexical@0.28.0"
 pin "@lexical/rich-text", to: "https://esm.sh/@lexical/rich-text@0.28.0?external=lexical"
 pin "@lexical/link", to: "https://esm.sh/@lexical/link@0.28.0?external=lexical"

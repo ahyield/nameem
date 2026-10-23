@@ -33,10 +33,6 @@
 
 /public/assets
 /node_modules
-package-lock.json
-package.json
-.eslintrc.js
-.stylelintrc.json
 
 .pre-commit-config.yaml
 

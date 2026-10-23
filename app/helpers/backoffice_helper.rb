@@ -40,8 +40,9 @@ module BackofficeHelper
     if user.avatar.attached?
       image_tag user.avatar.variant(resize_to_fill: [size * 2, size * 2]), class: classes, style: style, alt: ""
     else
-      tag.span user.name.to_s.first, class: "#{classes} inline-flex items-center justify-center bg-orange-50 font-medium text-orange-700",
-                                     style: "#{style}; font-size: #{(size * 0.4).round}px"
+      tag.span user.name.to_s.first,
+               class: "#{classes} inline-flex items-center justify-center bg-orange-50 font-medium text-orange-700",
+               style: "#{style}; font-size: #{(size * 0.4).round}px"
     end
   end
 end

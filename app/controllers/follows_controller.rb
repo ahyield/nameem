@@ -6,7 +6,7 @@ class FollowsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream
-      format.html { redirect_back fallback_location: root_path }
+      format.html { redirect_back_or_to(root_path) }
     end
   end
 
@@ -18,7 +18,7 @@ class FollowsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream { render :create }
-      format.html { redirect_back fallback_location: root_path }
+      format.html { redirect_back_or_to(root_path) }
     end
   end
 

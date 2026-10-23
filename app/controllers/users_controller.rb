@@ -23,10 +23,10 @@ class UsersController < ApplicationController
     @bookmarked = Current.user&.bookmarks&.exists?(article: @article)
     @comments = @article.comments.top_level.newest_first
                         .includes(:user, :rich_text_body, :comment_likes, :mentioned_user,
-                                  replies: [:user, :rich_text_body, :comment_likes, :mentioned_user])
+                                  replies: %i[user rich_text_body comment_likes mentioned_user])
 
     @related_articles = Article.related_to(@article, limit: 3)
-                                .includes(:user, :tags, images_attachments: :blob)
+                               .includes(:user, :tags, images_attachments: :blob)
     @author_articles = @user.articles.published
                             .where.not(id: @article.id)
                             .order(published_at: :desc)
@@ -77,7 +77,7 @@ class UsersController < ApplicationController
 
     @sort = STATS_SORTS.key?(params[:sort]) ? params[:sort] : "date"
     @direction = params[:direction] == "asc" ? :asc : :desc
-    @articles = articles.reorder(STATS_SORTS[@sort] => @direction, id: :desc)
+    @articles = articles.reorder(STATS_SORTS[@sort] => @direction, :id => :desc)
 
     @total_views = articles.sum(:real_views_count)
     @total_likes = articles.sum(:likes_count)
@@ -119,7 +119,8 @@ class UsersController < ApplicationController
 
   def destroy
     @user = User.friendly.find(params[:slug])
-    @article = @user.articles.find_by(uuid: params[:uuid])
+    @article = @user.articles.find_by!(uuid: params[:uuid])
+    authorize @article, :destroy?
 
     @article.destroy
 

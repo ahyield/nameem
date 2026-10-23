@@ -17,7 +17,7 @@ module Metable
 
       doc = Nokogiri::HTML.fragment(content_html)
       words = doc.text.split(/\s+/).count { |w| w.length > 1 }
-      minutes = [ (words / 200.0).ceil, 1 ].max
+      minutes = [(words / 200.0).ceil, 1].max
       update_column(:reading_time_minutes, minutes)
     end
 

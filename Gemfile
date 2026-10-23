@@ -49,8 +49,8 @@ gem "friendly_id"
 gem "name_of_person"
 
 gem "image_processing", ">= 1.13"
-gem "ruby-vips"
 gem "mini_magick"
+gem "ruby-vips"
 
 gem "resend"
 
@@ -73,7 +73,9 @@ gem "thruster"
 
 group :development, :test do
   gem "debug", platforms: %i[mri windows]
-  gem "rspec-rails"
+  # Pinned to the fix for edge Rails' frozen default_url_options (rspec/rspec-rails@9fb6f4f).
+  # Switch back to the released gem once 8.1 ships.
+  gem "rspec-rails", github: "rspec/rspec-rails", ref: "9fb6f4f0a3"
 
   gem "factory_bot_rails"
 end
@@ -82,9 +84,11 @@ group :development, :rubocop do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 
+  gem "brakeman", require: false
+  gem "bundler-audit", require: false
   gem "erb_lint", require: false
   gem "rack-mini-profiler"
-  gem "rubocop", github: "rubocop/rubocop"
+  gem "rubocop", "~> 1.92", require: false
   gem "rubocop-lsp", "~> 0.1.6"
   gem "rubocop-rails", require: false
   gem "rubocop-rspec", require: false
@@ -95,10 +99,15 @@ group :development, :rubocop do
 end
 
 group :test do
+  gem "capybara"
+  gem "cuprite"
   gem "faker"
   gem "rails-controller-testing"
   gem "shoulda-matchers"
   gem "simplecov", require: false
   gem "simplecov-console", require: false
+  gem "simplecov-lcov", require: false
   gem "timecop"
+  gem "undercover", require: false
+  gem "webmock"
 end

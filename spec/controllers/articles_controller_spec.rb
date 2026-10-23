@@ -53,10 +53,9 @@ RSpec.describe ArticlesController do
         sign_in another_user
       end
 
-      it "raises a Pundit::NotAuthorizedError" do
-        expect do
-          get :edit, params: { slug: user.slug, uuid: article.uuid }
-        end.to raise_error(Pundit::NotAuthorizedError)
+      it "responds with not found" do
+        get :edit, params: { slug: user.slug, uuid: article.uuid }
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -83,10 +82,9 @@ RSpec.describe ArticlesController do
         sign_in another_user
       end
 
-      it "raises a Pundit::NotAuthorizedError" do
-        expect do
-          patch :update, params: { slug: user.slug, uuid: article.uuid, publish: true }
-        end.to raise_error(Pundit::NotAuthorizedError)
+      it "responds with not found" do
+        patch :update, params: { slug: user.slug, uuid: article.uuid, publish: true }
+        expect(response).to have_http_status(:not_found)
       end
     end
   end

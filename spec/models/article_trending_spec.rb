@@ -1,33 +1,33 @@
 require "rails_helper"
 
-RSpec.describe "Article.trending" do
+RSpec.describe Article, ".trending" do
   let(:author) { create(:user) }
 
   it "returns articles published within the last 7 days" do
     recent = create(:article, :published, user: author, published_at: 3.days.ago)
 
-    expect(Article.trending).to include(recent)
+    expect(described_class.trending).to include(recent)
   end
 
   it "excludes articles older than 7 days when recent ones exist" do
     recent = create(:article, :published, user: author, published_at: 1.day.ago)
     old = create(:article, :published, user: author, published_at: 8.days.ago)
 
-    expect(Article.trending).to include(recent)
-    expect(Article.trending).not_to include(old)
+    expect(described_class.trending).to include(recent)
+    expect(described_class.trending).not_to include(old)
   end
 
   it "excludes unpublished articles" do
     draft = create(:article, :draft, user: author, published_at: 1.day.ago)
 
-    expect(Article.trending).not_to include(draft)
+    expect(described_class.trending).not_to include(draft)
   end
 
   it "excludes system user articles (user_id: 1)" do
     system_user = create(:user, id: 1)
     system_article = create(:article, :published, user: system_user, published_at: 1.day.ago)
 
-    expect(Article.trending).not_to include(system_article)
+    expect(described_class.trending).not_to include(system_article)
   end
 
   it "favors newer articles with equal engagement over older ones" do
@@ -36,7 +36,7 @@ RSpec.describe "Article.trending" do
     fresh = create(:article, :published, user: author, published_at: 2.hours.ago,
                    real_views_count: 50, likes_count: 5, comments_count: 2)
 
-    results = Article.trending.to_a
+    results = described_class.trending.to_a
     expect(results.index(fresh)).to be < results.index(old)
   end
 
@@ -46,33 +46,33 @@ RSpec.describe "Article.trending" do
     quiet = create(:article, :published, user: author, published_at: 1.hour.ago,
                    real_views_count: 2, likes_count: 0, comments_count: 0)
 
-    results = Article.trending.to_a
+    results = described_class.trending.to_a
     expect(results.index(viral)).to be < results.index(quiet)
   end
 
   it "falls back to 30 days when no articles in last 7 days" do
     older = create(:article, :published, user: author, published_at: 10.days.ago)
 
-    expect(Article.trending).to include(older)
+    expect(described_class.trending).to include(older)
   end
 
   it "falls back to 90 days when no articles in last 30 days" do
     old = create(:article, :published, user: author, published_at: 60.days.ago)
 
-    expect(Article.trending).to include(old)
+    expect(described_class.trending).to include(old)
   end
 
   it "returns empty when no articles in last 90 days" do
     ancient = create(:article, :published, user: author, published_at: 91.days.ago)
 
-    expect(Article.trending).not_to include(ancient)
+    expect(described_class.trending).not_to include(ancient)
   end
 
   it "trending_within respects the exact days parameter without fallback" do
     old_but_in_range = create(:article, :published, user: author, published_at: 12.days.ago)
 
-    expect(Article.trending_within(7)).not_to include(old_but_in_range)
-    expect(Article.trending_within(14)).to include(old_but_in_range)
+    expect(described_class.trending_within(7)).not_to include(old_but_in_range)
+    expect(described_class.trending_within(14)).to include(old_but_in_range)
   end
 
   it "weighs likes more than views and comments more than likes" do
@@ -83,7 +83,7 @@ RSpec.describe "Article.trending" do
     comments_heavy = create(:article, :published, user: author, published_at: 1.day.ago,
                             real_views_count: 0, likes_count: 0, comments_count: 21)
 
-    results = Article.trending.to_a
+    results = described_class.trending.to_a
     # comments_count * 5 = 105 > likes_count * 3 = 102 > views_count = 100
     expect(results.index(comments_heavy)).to be < results.index(likes_heavy)
     expect(results.index(likes_heavy)).to be < results.index(views_heavy)
@@ -92,6 +92,6 @@ RSpec.describe "Article.trending" do
   it "can be chained with limit" do
     6.times { |i| create(:article, :published, user: author, published_at: i.hours.ago) }
 
-    expect(Article.trending.limit(5).size).to eq(5)
+    expect(described_class.trending.limit(5).size).to eq(5)
   end
 end

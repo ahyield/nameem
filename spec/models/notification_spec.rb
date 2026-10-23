@@ -20,7 +20,8 @@ RSpec.describe Notification do
 
   describe "enums" do
     it "defines action enum" do
-      expect(described_class.actions).to eq("liked" => 0, "commented" => 1, "featured" => 2, "picked" => 3, "followed" => 4, "replied" => 5, "comment_liked" => 6)
+      expect(described_class.actions).to eq("liked" => 0, "commented" => 1, "featured" => 2, "picked" => 3, "followed" => 4,
+                                            "replied" => 5, "comment_liked" => 6)
     end
   end
 

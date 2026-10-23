@@ -10,24 +10,24 @@ RSpec.describe ArticleLikesController do
       before { sign_in user }
 
       it "creates a like and returns turbo_stream" do
-        expect {
+        expect do
           post :create, params: { slug: author.slug, uuid: article.uuid }, format: :turbo_stream
-        }.to change(ArticleLike, :count).by(1)
+        end.to change(ArticleLike, :count).by(1)
         expect(response.media_type).to eq("text/vnd.turbo-stream.html")
       end
 
       it "prevents duplicate likes" do
         create(:article_like, user: user, article: article)
-        expect {
+        expect do
           post :create, params: { slug: author.slug, uuid: article.uuid }, format: :turbo_stream
-        }.not_to change(ArticleLike, :count)
+        end.not_to change(ArticleLike, :count)
       end
 
       it "prevents self-likes" do
         sign_in author
-        expect {
+        expect do
           post :create, params: { slug: author.slug, uuid: article.uuid }, format: :turbo_stream
-        }.not_to change(ArticleLike, :count)
+        end.not_to change(ArticleLike, :count)
         expect(response).to have_http_status(:unprocessable_content)
       end
     end
@@ -46,9 +46,9 @@ RSpec.describe ArticleLikesController do
 
       it "removes the like and returns turbo_stream" do
         create(:article_like, user: user, article: article)
-        expect {
+        expect do
           delete :destroy, params: { slug: author.slug, uuid: article.uuid }, format: :turbo_stream
-        }.to change(ArticleLike, :count).by(-1)
+        end.to change(ArticleLike, :count).by(-1)
         expect(response.media_type).to eq("text/vnd.turbo-stream.html")
       end
     end

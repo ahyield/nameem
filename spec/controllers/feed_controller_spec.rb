@@ -74,5 +74,4 @@ RSpec.describe FeedController do
       expect(assigns(:articles)).to match_array(expected_articles)
     end
   end
-
 end

@@ -14,7 +14,7 @@ module Signups
       else
         flash.now[:error] = @user.errors.full_messages.to_sentence
         @user.avatar = nil
-        render :new, status: :unprocessable_entity
+        render :new, status: :unprocessable_content
       end
     end
 

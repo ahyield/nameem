@@ -65,9 +65,9 @@ RSpec.describe "Backoffice::Articles", type: :request do
 
   describe "DELETE /backoffice/articles/:uuid" do
     it "deletes the article" do
-      expect {
+      expect do
         delete backoffice_article_path(article)
-      }.to change(Article, :count).by(-1)
+      end.to change(Article, :count).by(-1)
       expect(response).to redirect_to(backoffice_articles_path)
     end
   end

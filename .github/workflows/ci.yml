@@ -1,0 +1,134 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  CI: true
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: RuboCop
+        run: bin/rubocop -f github
+      - name: ERB lint
+        run: bin/erb_lint --lint-all
+      - name: ESLint
+        run: npm run lint:js
+
+  security:
+    name: security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Brakeman
+        run: bin/brakeman --quiet --no-pager --exit-on-warn --exit-on-error
+      - name: Gem audit
+        run: bin/bundler-audit
+      - name: Importmap audit
+        run: bin/importmap audit
+
+  js:
+    name: js
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  specs:
+    name: specs
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root # throwaway CI database, not a secret
+        ports: ["3306:3306"]
+        options: --health-cmd="mysqladmin ping -proot" --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      RAILS_ENV: test
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: root
+      DATABASE_HOST: 127.0.0.1
+      DB_PORT: 3306
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # undercover compares against the base branch
+      - name: Install system packages
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libvips
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Prepare
+        run: bin/rails tailwindcss:build db:prepare
+      - name: Specs (with coverage floor)
+        run: bundle exec rspec --tag ~type:system
+        env:
+          COVERAGE_FLOOR: 1
+      - name: Changed code is covered
+        if: github.event_name == 'pull_request'
+        run: bundle exec undercover --lcov coverage/lcov.info --compare origin/${{ github.base_ref }}
+
+  system:
+    name: system
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root # throwaway CI database, not a secret
+        ports: ["3306:3306"]
+        options: --health-cmd="mysqladmin ping -proot" --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      RAILS_ENV: test
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: root
+      DATABASE_HOST: 127.0.0.1
+      DB_PORT: 3306
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install system packages
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libvips
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Prepare
+        run: bin/rails tailwindcss:build db:prepare
+      - name: System specs
+        run: bundle exec rspec spec/system
+      - name: Keep screenshots of failures
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: screenshots
+          path: tmp/capybara
+          if-no-files-found: ignore

@@ -12,7 +12,7 @@ RSpec.describe "Threaded Comments" do
       expect do
         post user_article_comments_path(slug: author, uuid: article),
              params: { comment: { body: "تعليق جديد" } },
-             as: :turbo_stream
+             as:     :turbo_stream
       end.to change(Comment, :count).by(1)
 
       comment = Comment.last
@@ -24,7 +24,7 @@ RSpec.describe "Threaded Comments" do
       expect do
         post user_article_comments_path(slug: author, uuid: article),
              params: { comment: { body: "تعليق" } },
-             as: :turbo_stream
+             as:     :turbo_stream
       end.to change { article.reload.comments_count }.by(1)
     end
 
@@ -32,7 +32,7 @@ RSpec.describe "Threaded Comments" do
       expect do
         post user_article_comments_path(slug: author, uuid: article),
              params: { comment: { body: "تعليق" } },
-             as: :turbo_stream
+             as:     :turbo_stream
       end.to change { Notification.where(action: :commented).count }.by(1)
 
       notification = Notification.where(action: :commented).last
@@ -46,7 +46,7 @@ RSpec.describe "Threaded Comments" do
       expect do
         post user_article_comments_path(slug: author, uuid: article),
              params: { comment: { body: "تعليقي" } },
-             as: :turbo_stream
+             as:     :turbo_stream
       end.not_to change(Notification, :count)
     end
 
@@ -54,7 +54,7 @@ RSpec.describe "Threaded Comments" do
       expect do
         post user_article_comments_path(slug: author, uuid: article),
              params: { comment: { body: "" } },
-             as: :turbo_stream
+             as:     :turbo_stream
       end.not_to change(Comment, :count)
 
       expect(response).to have_http_status(:unprocessable_content)
@@ -70,7 +70,7 @@ RSpec.describe "Threaded Comments" do
       expect do
         post user_article_comments_path(slug: author, uuid: article),
              params: { comment: { body: "رد على التعليق", parent_id: parent.id } },
-             as: :turbo_stream
+             as:     :turbo_stream
       end.to change(Comment, :count).by(1)
 
       reply = Comment.last
@@ -83,7 +83,7 @@ RSpec.describe "Threaded Comments" do
       expect do
         post user_article_comments_path(slug: author, uuid: article),
              params: { comment: { body: "رد", parent_id: parent.id } },
-             as: :turbo_stream
+             as:     :turbo_stream
       end.to change { parent.reload.replies_count }.by(1)
     end
 
@@ -91,7 +91,7 @@ RSpec.describe "Threaded Comments" do
       expect do
         post user_article_comments_path(slug: author, uuid: article),
              params: { comment: { body: "رد", parent_id: parent.id } },
-             as: :turbo_stream
+             as:     :turbo_stream
       end.to change { Notification.where(action: :replied).count }.by(1)
 
       notification = Notification.where(action: :replied).last
@@ -105,8 +105,8 @@ RSpec.describe "Threaded Comments" do
       expect do
         post user_article_comments_path(slug: author, uuid: article),
              params: { comment: { body: "رد على نفسي", parent_id: own_comment.id } },
-             as: :turbo_stream
-      end.not_to change { Notification.where(action: :replied).count }
+             as:     :turbo_stream
+      end.not_to(change { Notification.where(action: :replied).count })
     end
   end
 
@@ -123,7 +123,7 @@ RSpec.describe "Threaded Comments" do
       expect do
         post user_article_comments_path(slug: author, uuid: article),
              params: { comment: { body: "رد على الرد", parent_id: parent_reply.id } },
-             as: :turbo_stream
+             as:     :turbo_stream
       end.to change(Comment, :count).by(1)
 
       collapsed = Comment.last
@@ -139,7 +139,7 @@ RSpec.describe "Threaded Comments" do
       expect do
         post user_article_comments_path(slug: author, uuid: article),
              params: { comment: { body: "رد على الرد", parent_id: parent_reply.id } },
-             as: :turbo_stream
+             as:     :turbo_stream
       end.to change { Notification.where(action: :replied).count }.by(1)
 
       notification = Notification.where(action: :replied).last
@@ -154,8 +154,8 @@ RSpec.describe "Threaded Comments" do
       expect do
         post user_article_comments_path(slug: author, uuid: article),
              params: { comment: { body: "رد على ردي", parent_id: parent_reply.id } },
-             as: :turbo_stream
-      end.not_to change { Notification.where(action: :replied).count }
+             as:     :turbo_stream
+      end.not_to(change { Notification.where(action: :replied).count })
     end
 
     it "increments replies_count on grandparent (not on the reply)" do
@@ -168,7 +168,7 @@ RSpec.describe "Threaded Comments" do
       expect do
         post user_article_comments_path(slug: author, uuid: article),
              params: { comment: { body: "رد", parent_id: parent_reply.id } },
-             as: :turbo_stream
+             as:     :turbo_stream
       end.to change { grandparent.reload.replies_count }.by(1)
 
       expect(parent_reply.reload.replies_count).to eq(0)

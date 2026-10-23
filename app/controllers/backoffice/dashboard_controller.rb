@@ -5,10 +5,10 @@ module Backoffice
 
       week_ago = 1.week.ago
       @stats = [
-        { label: "المقالات المنشورة", value: Article.published.count, week: Article.where("created_at >= ?", week_ago).count },
-        { label: "المستخدمين", value: User.count, week: User.where("created_at >= ?", week_ago).count },
-        { label: "التعليقات", value: Comment.count, week: Comment.where("created_at >= ?", week_ago).count },
-        { label: "الإعجابات", value: ArticleLike.count, week: ArticleLike.where("created_at >= ?", week_ago).count },
+        { label: "المقالات المنشورة", value: Article.published.count, week: Article.where(created_at: week_ago..).count },
+        { label: "المستخدمين", value: User.count, week: User.where(created_at: week_ago..).count },
+        { label: "التعليقات", value: Comment.count, week: Comment.where(created_at: week_ago..).count },
+        { label: "الإعجابات", value: ArticleLike.count, week: ArticleLike.where(created_at: week_ago..).count },
         { label: "المواضيع", value: Tag.count, week: nil }
       ]
 

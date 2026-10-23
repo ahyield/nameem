@@ -4,8 +4,9 @@ FactoryBot.define do
     user
     body { "هذا تعليق تجريبي" }
 
+    # A reply lives on the same article as the comment it answers
     trait :reply do
-      association :parent, factory: :comment
+      parent { association :comment, article: }
     end
   end
 end

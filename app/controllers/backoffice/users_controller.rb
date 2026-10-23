@@ -3,7 +3,7 @@ module Backoffice
     EDITOR_ROLES = %w[featured picked confirmed].freeze
     ADMIN_ROLES = %w[admin editor].freeze
 
-    before_action :set_user, only: [:show, :update, :destroy, :toggle_role]
+    before_action :set_user, only: %i[show update destroy toggle_role]
     before_action :require_admin!, only: [:destroy]
 
     def index

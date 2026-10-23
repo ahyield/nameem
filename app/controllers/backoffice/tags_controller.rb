@@ -1,6 +1,6 @@
 module Backoffice
   class TagsController < BaseController
-    before_action :set_tag, only: [:show, :update, :destroy, :merge]
+    before_action :set_tag, only: %i[show update destroy merge]
 
     def index
       @page_title = "المواضيع"

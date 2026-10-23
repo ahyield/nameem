@@ -1,0 +1,9 @@
+---
+EnableDefaultLinters: true
+exclude:
+  - "**/vendor/**/*"
+  - "**/node_modules/**/*"
+linters:
+  # Ruby inside templates is linted later; start with markup and ERB formatting
+  Rubocop:
+    enabled: false

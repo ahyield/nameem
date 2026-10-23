@@ -12,7 +12,7 @@ module Settings
 
       if user_by_email&.confirmed?
         flash.now[:error] = "هذا المستخدم موجود بالفعل"
-        render :edit, status: :unprocessable_entity
+        render :edit, status: :unprocessable_content
       else
         @user.update(confirmed: false)
         @user.update(email: user_params[:email])

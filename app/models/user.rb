@@ -16,7 +16,7 @@ class User < ApplicationRecord
   has_many :notifications, foreign_key: :recipient_id, inverse_of: :recipient, dependent: :destroy
   has_many :sent_notifications, class_name: "Notification", foreign_key: :actor_id, inverse_of: :actor, dependent: :destroy
 
-  has_many :follows_as_follower, class_name: "Follow", foreign_key: :follower_id, dependent: :destroy
+  has_many :follows_as_follower, class_name: "Follow", foreign_key: :follower_id, inverse_of: :follower, dependent: :destroy
   has_many :follows_as_followed, class_name: "Follow", as: :followable, dependent: :destroy
 
   has_many :following_users, through: :follows_as_follower, source: :followable, source_type: "User"
@@ -39,7 +39,6 @@ class User < ApplicationRecord
     instagram_handle: "https://instagram.com/",
     facebook_handle:  "https://facebook.com/"
   }.freeze
-
 
   normalizes :email, with: ->(email) { email.downcase.strip }
   # Accept "@name" or a pasted profile URL, and store just the handle
@@ -64,12 +63,14 @@ class User < ApplicationRecord
 
   # Only http(s) links, so a profile can't carry a javascript: URL. Validated only when
   # changed, so older records with bad values don't block unrelated updates.
-  validates :website_url, format:      { with: %r{\Ahttps?://[^\s<>"']+\z}i, message: "يجب أن يكون رابطًا يبدأ بـ http أو https" },
+  validates :website_url, format:      { with:    %r{\Ahttps?://[^\s<>"']+\z}i,
+                                         message: "يجب أن يكون رابطًا يبدأ بـ http أو https" },
                           length:      { maximum: 255 },
                           allow_blank: true,
                           if:          :website_url_changed?
   SOCIAL_HANDLES.each do |handle|
-    validates handle, format:      { with: /\A[A-Za-z0-9_.]{1,50}\z/, message: "يجب أن يحتوي على أحرف إنجليزية وأرقام و _ و . فقط" },
+    validates handle, format:      { with:    /\A[A-Za-z0-9_.]{1,50}\z/,
+                                     message: "يجب أن يحتوي على أحرف إنجليزية وأرقام و _ و . فقط" },
                       allow_blank: true,
                       if:          :"#{handle}_changed?"
   end
@@ -125,9 +126,7 @@ class User < ApplicationRecord
   # Website URL safe to use as a link: only http(s) with a host, even for older unvalidated values
   def website_link
     uri = URI.parse(website_url.to_s.strip)
-    if uri.is_a?(URI::HTTP) && uri.host.present?
-      uri.to_s
-    end
+    uri.to_s if uri.is_a?(URI::HTTP) && uri.host.present?
   rescue URI::InvalidURIError
     nil
   end
@@ -136,9 +135,7 @@ class User < ApplicationRecord
   def social_link(handle)
     # Normalize on read too, so handles saved before normalization still link correctly
     value = self.class.normalize_value_for(handle, public_send(handle)).to_s
-    if value.match?(/\A[A-Za-z0-9_.]{1,50}\z/)
-      "#{SOCIAL_PROFILE_URLS.fetch(handle)}#{ERB::Util.url_encode(value)}"
-    end
+    "#{SOCIAL_PROFILE_URLS.fetch(handle)}#{ERB::Util.url_encode(value)}" if value.match?(/\A[A-Za-z0-9_.]{1,50}\z/)
   end
 
   private

@@ -20,7 +20,7 @@ module Api
     end
 
     def render_unprocessable(exception)
-      render json: { error: exception.message }, status: :unprocessable_entity
+      render json: { error: exception.message }, status: :unprocessable_content
     end
 
     def render_forbidden

@@ -1,6 +1,6 @@
 module Backoffice
   class ArticlesController < BaseController
-    before_action :set_article, only: [:show, :update, :destroy]
+    before_action :set_article, only: %i[show update destroy]
 
     def index
       @page_title = "المقالات"
@@ -18,12 +18,8 @@ module Backoffice
     end
 
     def update
-      if @article.update(article_params)
-        redirect_to backoffice_article_path(@article)
-      else
-        flash[:error] = "حدث خطأ أثناء تحديث البيانات"
-        redirect_to backoffice_article_path(@article)
-      end
+      flash[:error] = "حدث خطأ أثناء تحديث البيانات" unless @article.update(article_params)
+      redirect_to backoffice_article_path(@article)
     end
 
     def destroy
@@ -39,7 +35,7 @@ module Backoffice
     end
 
     def article_params
-      params.expect(article: [:picked, :featured, :published])
+      params.expect(article: %i[picked featured published])
     end
 
     def filter_articles(articles)

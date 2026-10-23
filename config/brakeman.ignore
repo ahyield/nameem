@@ -1,0 +1,61 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "SQL Injection",
+      "fingerprint": "00ea991db17fa5e3f19fa707de19b44f2faef9ee013df7e1ab40c94dbe9edd3d",
+      "file": "app/controllers/search_controller.rb",
+      "line": 41,
+      "note": "False positive: only the hardcoded NORMALIZE_SQL template and literal column names are interpolated; the search terms are bound as :ft and :like parameters."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "fingerprint": "0771374bc3871ffab45fae870a9845680505b4fc2cbac487c14e134b369f6de4",
+      "file": "app/controllers/search_controller.rb",
+      "line": 92,
+      "note": "False positive: only the hardcoded NORMALIZE_SQL template and literal column names are interpolated; the search terms are bound as :ft and :like parameters."
+    },
+    {
+      "warning_type": "Mass Assignment",
+      "fingerprint": "0a69ae33831c5cc2927ff37e34f6c71393fcf4131421ee6d69ad157f22ac3870",
+      "file": "app/controllers/api/articles_controller.rb",
+      "line": 37,
+      "note": "Article content is the Lexical editor state, an arbitrary JSON tree stored as-is in the content column; no other attributes are assigned from it."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "fingerprint": "66388bd665c4d95f1cc066736fd763953e7bf24c0bef04832ccc27aa5c51010d",
+      "file": "app/controllers/search_controller.rb",
+      "line": 87,
+      "note": "False positive: only the hardcoded NORMALIZE_SQL template and literal column names are interpolated; the search terms are bound as :ft and :like parameters."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "fingerprint": "7e64e6ce827da4fcc3edd27a068009867a94671826202b4bb5cf0bd0ad0be22a",
+      "file": "app/controllers/search_controller.rb",
+      "line": 79,
+      "note": "False positive: only the hardcoded NORMALIZE_SQL template and literal column names are interpolated; the search terms are bound as :ft and :like parameters."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "fingerprint": "aa798d567bf04fb6ce6d7f677548cf2cfba566a03b2fdc9ddda2141d6dae098c",
+      "file": "app/controllers/search_controller.rb",
+      "line": 35,
+      "note": "False positive: only the hardcoded NORMALIZE_SQL template and literal column names are interpolated; the search terms are bound as :ft and :like parameters."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "fingerprint": "d797b3230d862f594ec3b96fd532a6dc14e0619e2e64688635155653df763727",
+      "file": "app/controllers/search_controller.rb",
+      "line": 46,
+      "note": "False positive: only the hardcoded NORMALIZE_SQL template and literal column names are interpolated; the search terms are bound as :ft and :like parameters."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "fingerprint": "eb623e2840ae076fb2bef145818cb8bcd37c84322ac666f63629c21826fbd672",
+      "file": "app/controllers/search_controller.rb",
+      "line": 32,
+      "note": "False positive: only the hardcoded NORMALIZE_SQL template and literal column names are interpolated; the search terms are bound as :ft and :like parameters."
+    }
+  ],
+  "brakeman_version": "8.1.0"
+}

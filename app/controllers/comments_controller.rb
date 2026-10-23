@@ -44,6 +44,6 @@ class CommentsController < ApplicationController
   end
 
   def comment_params
-    params.expect(comment: [:body, :parent_id])
+    params.expect(comment: %i[body parent_id])
   end
 end

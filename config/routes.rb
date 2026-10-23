@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Rails.application.routes.draw do
   constraints(Constraints::AdminConstraint.new) do
     mount MissionControl::Jobs::Engine, at: "/backoffice/jobs"
@@ -9,7 +7,7 @@ Rails.application.routes.draw do
   get "search", to: "search#index", as: "search"
   get "search/autocomplete", to: "search#autocomplete", as: "search_autocomplete"
   resources :feed, only: [:index]
-  resources :topics, only: [:index, :show], param: :slug do
+  resources :topics, only: %i[index show], param: :slug do
     collection do
       get :search
     end
@@ -27,8 +25,8 @@ Rails.application.routes.draw do
       post :mark_all_read
     end
   end
-  scope(path: ':slug', as: :user, constraints: Constraints::RootNamespaceRoutesConstraint.new, controller: :users) do
-    get '/', action: :show
+  scope(path: ":slug", as: :user, constraints: Constraints::RootNamespaceRoutesConstraint.new, controller: :users) do
+    get "/", action: :show
 
     get ":uuid", action: :article, as: "article", constraints: Constraints::ArticleUuidConstraint.new
     delete ":uuid", action: :destroy, as: "destroy_article", constraints: Constraints::ArticleUuidConstraint.new
@@ -55,7 +53,7 @@ Rails.application.routes.draw do
     put ":uuid", to: "articles#update", as: "update_article"
     get ":uuid/edit", to: "articles#edit", as: "edit_article"
 
-    get 'publish_modal/:uuid', to: "articles#show_modal", as: "publish_modal"
+    get "publish_modal/:uuid", to: "articles#show_modal", as: "publish_modal"
 
     post "follow", action: :create, as: "follow", controller: "follows"
     delete "follow", action: :destroy, as: "unfollow", controller: "follows"
@@ -84,45 +82,43 @@ Rails.application.routes.draw do
   get "trending_feed", to: "feed#trending_feed", as: "trending_feed"
   get "following_feed", to: "feed#following_feed", as: "following_feed"
 
-  get 'about-nameem', to: "static_pages#about_nameem"
-  get 'terms', to: "static_pages#terms"
-  get 'privacy', to: "static_pages#privacy"
-
+  get "about-nameem", to: "static_pages#about_nameem"
+  get "terms", to: "static_pages#terms"
+  get "privacy", to: "static_pages#privacy"
 
   namespace :api do
-    delete 'attachments/delete', to: 'attachments#delete'
-    post 'views', to: 'views#create'
+    post "views", to: "views#create"
 
-    post 'articles', to: 'articles#create'
-    get 'articles/:slug/:uuid/edit', to: 'articles#edit', as: 'articles_edit'
-    get 'articles/:slug/:uuid', to: 'articles#show', as: 'show_article'
+    post "articles", to: "articles#create"
+    get "articles/:slug/:uuid/edit", to: "articles#edit", as: "articles_edit"
+    get "articles/:slug/:uuid", to: "articles#show", as: "show_article"
 
-    put 'articles/:slug/:uuid', to: 'articles#update', as: 'articles_update'
+    put "articles/:slug/:uuid", to: "articles#update", as: "articles_update"
   end
 
   ################### Auth ####################
-  get  'login',  to: 'sessions#new',     as: 'login'
-  post 'login',  to: 'sessions#create'
-  delete 'logout', to: 'sessions#destroy', as: 'logout'
+  get  "login",  to: "sessions#new", as: "login"
+  post "login",  to: "sessions#create"
+  delete "logout", to: "sessions#destroy", as: "logout"
 
   resource :session, only: [] do
     scope module: :sessions do
-      resource :magic_link, only: [:show, :create]
+      resource :magic_link, only: %i[show create]
     end
   end
 
-  get  'signup', to: 'registrations#new',    as: 'signup'
-  post 'signup', to: 'registrations#create'
+  get  "signup", to: "registrations#new", as: "signup"
+  post "signup", to: "registrations#create"
 
   namespace :signups do
-    resource :completion, only: [:new, :create]
+    resource :completion, only: %i[new create]
   end
   ################################################
 
-  get 'new-story', to: 'articles#new', as: 'new-story'
+  get "new-story", to: "articles#new", as: "new-story"
 
   # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get 'up' => 'rails/health#show', as: :rails_health_check
+  get "up" => "rails/health#show", :as => :rails_health_check
 
   # When user signed in, we root to the feed
   constraints(Constraints::SignedInConstraint.new) do

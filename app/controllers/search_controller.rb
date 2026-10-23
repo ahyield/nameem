@@ -4,7 +4,13 @@ class SearchController < ApplicationController
   skip_before_action :require_authentication
   before_action :resume_session
 
-  NORMALIZE_SQL = "REPLACE(REPLACE(REPLACE(%s, 'أ', 'ا'), 'إ', 'ا'), 'آ', 'ا')"
+  NORMALIZE_SQL = "REPLACE(REPLACE(REPLACE(%s, 'أ', 'ا'), 'إ', 'ا'), 'آ', 'ا')".freeze
+  # Full-text match, or a hamza-insensitive LIKE on title, description or body.
+  # Search terms are always bound as :ft and :like, never interpolated.
+  ARTICLE_MATCH_SQL = [
+    "MATCH(title, description, content_html) AGAINST(:ft IN BOOLEAN MODE)",
+    *%w[title description content_html].map { |column| "#{format(NORMALIZE_SQL, column)} LIKE :like" }
+  ].join(" OR ").freeze
 
   def index
     @query = params[:q].to_s.strip
@@ -15,7 +21,6 @@ class SearchController < ApplicationController
 
       title_norm = format(NORMALIZE_SQL, "title")
       desc_norm = format(NORMALIZE_SQL, "description")
-      body_norm = format(NORMALIZE_SQL, "content_html")
       quoted_like = Article.connection.quote("%#{sanitized}%")
       ft_score = "MATCH(title, description, content_html) AGAINST(#{Article.connection.quote(ft_query)} IN BOOLEAN MODE)"
       rank = "((#{title_norm} LIKE #{quoted_like}) * 10 + (#{desc_norm} LIKE #{quoted_like}) * 5 + #{ft_score})"
@@ -24,7 +29,7 @@ class SearchController < ApplicationController
         Article.published
                .includes(:user, :tags)
                .where(
-                 "MATCH(title, description, content_html) AGAINST(:ft IN BOOLEAN MODE) OR #{title_norm} LIKE :like OR #{desc_norm} LIKE :like OR #{body_norm} LIKE :like",
+                 ARTICLE_MATCH_SQL,
                  ft: ft_query, like: "%#{sanitized}%"
                )
                .order(Arel.sql("#{rank} DESC")),
@@ -56,9 +61,7 @@ class SearchController < ApplicationController
 
   def autocomplete
     query = params[:q].to_s.strip
-    if query.blank?
-      return render json: { people: [], articles: [], topics: [] }
-    end
+    return render json: { people: [], articles: [], topics: [] } if query.blank?
 
     normalized = self.class.normalize_arabic(query)
     sanitized = Article.sanitize_sql_like(normalized)
@@ -66,7 +69,6 @@ class SearchController < ApplicationController
 
     title_norm = format(NORMALIZE_SQL, "title")
     desc_norm = format(NORMALIZE_SQL, "description")
-    body_norm = format(NORMALIZE_SQL, "content_html")
     quoted_like = Article.connection.quote("%#{sanitized}%")
     ft_score = "MATCH(title, description, content_html) AGAINST(#{Article.connection.quote(ft_query)} IN BOOLEAN MODE)"
     rank = "((#{title_norm} LIKE #{quoted_like}) * 10 + (#{desc_norm} LIKE #{quoted_like}) * 5 + #{ft_score})"
@@ -74,7 +76,7 @@ class SearchController < ApplicationController
     articles = Article.published
                       .includes(:user)
                       .where(
-                        "MATCH(title, description, content_html) AGAINST(:ft IN BOOLEAN MODE) OR #{title_norm} LIKE :like OR #{desc_norm} LIKE :like OR #{body_norm} LIKE :like",
+                        ARTICLE_MATCH_SQL,
                         ft: ft_query, like: "%#{sanitized}%"
                       )
                       .order(Arel.sql("#{rank} DESC"))
@@ -101,15 +103,11 @@ class SearchController < ApplicationController
   private
 
   def avatar_url(user)
-    if user.avatar.attached?
-      Rails.application.routes.url_helpers.rails_blob_path(user.avatar, only_path: true)
-    end
+    Rails.application.routes.url_helpers.rails_blob_path(user.avatar, only_path: true) if user.avatar.attached?
   end
 
   def article_cover_url(article)
     images = article.article_images
-    if images.any?
-      images.first
-    end
+    images.first if images.any?
   end
 end

@@ -27,7 +27,7 @@ export default class extends Controller {
           visitor_id: result.visitorId,
         }),
       })
-    } catch (e) {
+    } catch {
       // Silently fail — view tracking is non-critical
     }
   }

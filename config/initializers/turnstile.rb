@@ -8,4 +8,7 @@ Turnstile.configure do |config|
     config.site_key = "1x00000000000000000000AA"
     config.secret_key = "1x0000000000000000000000000000000AA"
   end
+
+  # Tests never call Cloudflare; specs that cover the captcha stub valid_captcha? instead
+  config.enabled = !Rails.env.test?
 end

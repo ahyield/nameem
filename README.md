@@ -78,12 +78,16 @@ None of these are needed to run the app locally or to run the specs.
 
 ## Tests and linting
 
+`bin/ci` runs everything CI runs: RuboCop, ERB lint, ESLint, Brakeman, bundler-audit, the importmap audit, the JavaScript tests, the specs and the browser tests.
+
 ```bash
-bundle exec rspec
-bundle exec rubocop
+bin/ci                               # the full check, run it before opening a pull request
+bundle exec rspec --tag ~type:system # fast specs
+bundle exec rspec spec/system        # browser tests (headless Chrome via Cuprite; HEADFUL=1 to watch)
+npm test                             # JavaScript unit tests (Vitest)
 ```
 
-Specs need a MySQL database; set `MYSQL_USERNAME`, `MYSQL_ROOT_PASSWORD`, `DATABASE_HOST` and `DB_PORT` as needed.
+Specs need a MySQL database; set `MYSQL_USERNAME`, `MYSQL_ROOT_PASSWORD`, `DATABASE_HOST` and `DB_PORT` as needed. Browser tests need Chrome installed.
 
 ## Deployment
 

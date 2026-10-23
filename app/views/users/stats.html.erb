@@ -66,10 +66,10 @@
         <thead>
           <tr class="border-b border-gray-100">
             <th scope="col" class="px-6 py-3.5 text-right text-xs font-semibold text-gray-500">العنوان</th>
-            <%= stats_sort_header("تاريخ النشر", "date") %>
-            <%= stats_sort_header("المشاهدات", "views") %>
-            <%= stats_sort_header("الإعجابات", "likes") %>
-            <%= stats_sort_header("التعليقات", "comments") %>
+            <%= stats_sort_header("تاريخ النشر", "date", user: @user, sort: @sort, direction: @direction) %>
+            <%= stats_sort_header("المشاهدات", "views", user: @user, sort: @sort, direction: @direction) %>
+            <%= stats_sort_header("الإعجابات", "likes", user: @user, sort: @sort, direction: @direction) %>
+            <%= stats_sort_header("التعليقات", "comments", user: @user, sort: @sort, direction: @direction) %>
           </tr>
         </thead>
         <tbody>

@@ -158,7 +158,7 @@ RSpec.describe Comment do
     it "a collapsed reply-to-reply stores mentioned_user" do
       parent = create(:comment, article: article)
       reply_user = create(:user)
-      reply = create(:comment, article: article, parent: parent, user: reply_user)
+      create(:comment, article: article, parent: parent, user: reply_user)
       collapsed = create(:comment, article: article, parent: parent, mentioned_user: reply_user)
       expect(collapsed.mentioned_user).to eq(reply_user)
       expect(collapsed.parent).to eq(parent)
@@ -166,7 +166,7 @@ RSpec.describe Comment do
   end
 
   describe "notifications" do
-    context "top-level comment" do
+    context "with a top-level comment" do
       it "creates a :commented notification to article author" do
         article = create(:article)
         commenter = create(:user)
@@ -191,7 +191,7 @@ RSpec.describe Comment do
       end
     end
 
-    context "reply to top-level" do
+    context "with a reply to a top-level comment" do
       it "creates a :replied notification to parent comment author" do
         parent = create(:comment)
         replier = create(:user)
@@ -228,7 +228,7 @@ RSpec.describe Comment do
       end
     end
 
-    context "reply with mentioned_user (collapsed reply-to-reply)" do
+    context "with a reply that mentions a user (collapsed reply-to-reply)" do
       it "creates a :replied notification to mentioned_user" do
         parent = create(:comment)
         mentioned = create(:user)
@@ -275,7 +275,7 @@ RSpec.describe Comment do
       create(:comment, parent: parent, article: parent.article)
       create(:comment, parent: parent, article: parent.article)
 
-      expect { parent.destroy }.to change(Comment, :count).by(-3)
+      expect { parent.destroy }.to change(described_class, :count).by(-3)
     end
 
     it "destroys comment_likes when comment is destroyed" do
