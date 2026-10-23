@@ -50,6 +50,17 @@ class Article < ApplicationRecord
   # The الرائج tab: trending articles first, then everything else newest first, so it never runs dry
   scope :by_trending, -> { published.order(Arel.sql("trending_rank IS NULL, trending_rank, published_at DESC")) }
 
+  NEWCOMER_WINDOW = 24.hours
+
+  # Articles from the last day that aren't trending yet, one per author, newest first. They get labelled
+  # «جديد» slots in الرائج so they can be found before they have any engagement.
+  def self.newcomers(limit:)
+    published.where(published_at: NEWCOMER_WINDOW.ago.., trending_rank: nil)
+             .where.not(user_id: RANKING_EXCLUDED_USER_ID)
+             .includes(:user).order(published_at: :desc)
+             .to_a.uniq(&:user_id).first(limit)
+  end
+
   def to_param
     uuid
   end

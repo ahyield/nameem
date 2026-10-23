@@ -5,7 +5,10 @@ class FeedController < ApplicationController
     @users = User.suggested_for(Current.user)
     @tags = Tag.popular.with_articles.where.not(id: Current.user.following_tags.select(:id)).limit(10)
 
-    @trending = Article.trending.limit(5).includes(:user)
+    newcomers = Article.newcomers(limit: Trending::Newcomers::SIDEBAR_SLOTS.size)
+    @newcomer_ids = newcomers.map(&:id)
+    trending = Article.trending.limit(5).includes(:user).to_a
+    @trending = Trending::Newcomers.interleave(trending, newcomers, at: Trending::Newcomers::SIDEBAR_SLOTS).first(5)
 
     respond_to do |format|
       format.html
@@ -29,7 +32,10 @@ class FeedController < ApplicationController
   end
 
   def trending_feed
-    @pagy, @articles = pagy(Article.by_trending)
+    newcomers = Article.newcomers(limit: Trending::Newcomers::TAB_SLOTS.size)
+    @newcomer_ids = newcomers.map(&:id)
+    @pagy, @articles = pagy(Article.by_trending.where.not(id: @newcomer_ids))
+    @articles = Trending::Newcomers.interleave(@articles.to_a, newcomers, at: Trending::Newcomers::TAB_SLOTS) if @pagy.page == 1
 
     respond_to do |format|
       format.turbo_stream
