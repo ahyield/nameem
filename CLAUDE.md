@@ -106,7 +106,6 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 - `authenticate_user(user)` helper in request specs
 - `json` helper to parse response body
 - Transactional fixtures enabled
-- CI: GitHub Actions with MySQL service container
 
 ## Integrations
 
