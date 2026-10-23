@@ -5,7 +5,7 @@ class FeedController < ApplicationController
     @users = User.suggested_for(Current.user)
     @tags = Tag.popular.with_articles.where.not(id: Current.user.following_tags.select(:id)).limit(10)
 
-    @trending = Article.trending(days: 7).limit(5).includes(:user)
+    @trending = Article.trending.limit(5).includes(:user)
 
     respond_to do |format|
       format.html
@@ -29,7 +29,7 @@ class FeedController < ApplicationController
   end
 
   def trending_feed
-    @pagy, @articles = pagy(Article.trending)
+    @pagy, @articles = pagy(Article.by_trending)
 
     respond_to do |format|
       format.turbo_stream

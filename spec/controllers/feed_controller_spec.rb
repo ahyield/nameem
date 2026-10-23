@@ -68,10 +68,15 @@ RSpec.describe FeedController do
       expect(response).to be_successful
     end
 
-    it "assigns trending articles to @articles" do
+    it "lists trending articles first, then everything else newest first" do
+      Article.delete_all
+      older = create(:article, :published, published_at: 3.days.ago)
+      newer = create(:article, :published, published_at: 1.day.ago)
+      second = create(:article, :published, published_at: 9.days.ago, trending_rank: 2)
+      first = create(:article, :published, published_at: 30.days.ago, trending_rank: 1)
+
       get :trending_feed, format: :turbo_stream
-      expected_articles = Article.trending.limit(20)
-      expect(assigns(:articles)).to match_array(expected_articles)
+      expect(assigns(:articles)).to eq([first, second, newer, older])
     end
   end
 end

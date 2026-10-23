@@ -11,7 +11,7 @@ class WeeklyDigest
   end
 
   def trending
-    @trending ||= Article.trending_within(7).includes(:user, images_attachments: :blob).limit(5).to_a
+    @trending ||= Article.trending.includes(:user, images_attachments: :blob).limit(5).to_a
   end
 
   # This week's editors' picks that aren't already in the trending list
