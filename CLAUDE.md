@@ -18,9 +18,8 @@ Arabic-language article publishing platform. "A minor wound on the arm of the ab
 ```bash
 bin/dev                    # Start dev (web + css + jobs via Foreman)
 bin/rails server           # Rails only
-bin/ci                     # Everything CI runs (lint, security, JS tests, specs, browser tests)
-bundle exec rspec --tag ~type:system           # Fast specs
-bundle exec rspec spec/system                  # Browser tests (Cuprite, headless Chrome)
+bin/ci                     # Everything CI runs (lint, security, JS tests, specs)
+bundle exec rspec          # All specs
 bundle exec rspec spec/models/article_spec.rb  # Run specific spec
 npm test                   # Vitest (spec/javascript)
 bin/rubocop -a             # Lint Ruby and auto-fix
@@ -106,11 +105,10 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 ## Testing
 
 - **RSpec** with FactoryBot, Shoulda Matchers, Faker, Timecop, WebMock (no outside HTTP)
-- `sign_in(user)` / `authenticate_user(user)` in request and controller specs; `system_sign_in(user)` in system specs
+- `sign_in(user)` / `authenticate_user(user)` in request and controller specs
 - `json` helper to parse response body
-- System specs: Capybara + Cuprite; the app server runs on port 3001 to match the test `asset_host`
 - Coverage: SimpleCov floor in `.simplecov` (only goes up); `undercover` fails PRs whose changed lines aren't covered
-- CI: `.github/workflows/ci.yml` (jobs `lint`, `security`, `js`, `specs`, `system`); `main` only accepts PRs with all checks green
+- CI: `.github/workflows/ci.yml` (jobs `lint`, `security`, `js`, `specs`); `main` only accepts PRs with all checks green
 
 ## Integrations
 

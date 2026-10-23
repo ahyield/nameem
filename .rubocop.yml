@@ -164,12 +164,11 @@ RSpec/NestedGroups:
 Rails/StrongParametersExpect:
   Enabled: false
 
-# Request and system specs describe flows, not classes
+# Request specs describe flows, not classes
 RSpec/DescribeClass:
   Exclude:
     - spec/views/**/*
     - spec/requests/**/*
-    - spec/system/**/*
     - spec/factories_spec.rb
 
 RSpec/ContextWording:

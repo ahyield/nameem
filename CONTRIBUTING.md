@@ -10,12 +10,11 @@ Thanks for your interest in Nameem. Bug reports, fixes and improvements are welc
 4. Run `bin/ci` and make sure it passes. It runs the same checks as GitHub Actions.
 5. Open a pull request using the template, and attach screenshots for UI changes.
 
-`main` only accepts pull requests with all checks green (`lint`, `security`, `js`, `specs`, `system`).
+`main` only accepts pull requests with all checks green (`lint`, `security`, `js`, `specs`).
 
 ## Tests
 
 - **Request specs** (`spec/requests`) for controller behavior, **model specs** for domain logic, **policy specs** for authorization.
-- **Browser tests** (`spec/system`) for flows that need JavaScript, like the editor, comments and the backoffice. Use `system_sign_in(user)` to sign in through the real login flow.
 - **JavaScript unit tests** (`spec/javascript/*.test.js`) for plain modules in `app/javascript/lib`.
 - Specs never reach the internet: WebMock blocks outside HTTP, and factories use local fixture files.
 
