@@ -2,7 +2,23 @@
   <%= backoffice_avatar(@user, size: 56) %>
   <div class="min-w-0 flex-1">
     <h1 class="text-xl font-semibold text-gray-900"><%= @user.name %></h1>
-    <p class="mt-0.5 truncate text-sm text-gray-500"><%= @user.email %> · @<%= @user.slug %></p>
+    <div class="mt-2 flex flex-wrap gap-1.5">
+      <% [
+        ["@#{@user.slug}", "اسم المستخدم", "M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"],
+        [@user.email, "البريد الإلكتروني", "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"]
+      ].each do |value, label, icon| %>
+        <span data-controller="clipboard" data-clipboard-success-content-value="تم النسخ ✓" class="contents">
+          <input type="hidden" value="<%= value %>" data-clipboard-target="source">
+          <button type="button" data-action="clipboard#copy" data-clipboard-target="button" title="نسخ <%= label %>"
+                  class="bo-btn inline-flex max-w-full items-center gap-1.5 rounded-md bg-gray-100 px-2 py-1 text-xs font-normal text-gray-700 hover:bg-gray-200">
+            <svg class="h-3.5 w-3.5 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="<%= icon %>"/>
+            </svg>
+            <bdi dir="ltr" class="truncate font-montserrat"><%= value %></bdi>
+          </button>
+        </span>
+      <% end %>
+    </div>
     <% if @user.bio.present? %>
       <p class="mt-2 max-w-prose text-sm text-gray-600"><%= @user.bio %></p>
     <% end %>
