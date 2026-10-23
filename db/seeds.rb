@@ -43,25 +43,16 @@ User.all.each do |user|
       # Save the article to persist the image attachment
       article.save!
 
-      # Use the attached image URL in the article content
+      # Use the attached image URL in the article content. The editor loads
+      # articles that only have content_html, so no Lexical JSON is needed.
+      image_url = Rails.application.routes.url_helpers.rails_blob_url(image_attachment, only_path: true)
+      paragraphs = Array.new(4) do
+        "<p>#{ERB::Util.html_escape(Faker::Lorem.sentence(word_count: 50))} " \
+          "#{ERB::Util.html_escape(Faker::Lorem.sentence(word_count: 100))}</p>"
+      end
+
       article.update!(
-        content: {
-          ops: [
-            { insert: { customImage: { url: Rails.application.routes.url_helpers.rails_blob_url(image_attachment, only_path: true) } } },
-            { insert: "\n" },
-            { insert: Faker::Lorem.sentence(word_count: 50) },
-            { insert: Faker::Lorem.sentence(word_count: 100) },
-            { insert: "\n" },
-            { insert: Faker::Lorem.sentence(word_count: 50) },
-            { insert: Faker::Lorem.sentence(word_count: 100) },
-            { insert: "\n" },
-            { insert: Faker::Lorem.sentence(word_count: 50) },
-            { insert: Faker::Lorem.sentence(word_count: 100) },
-            { insert: "\n" },
-            { insert: Faker::Lorem.sentence(word_count: 50) },
-            { insert: Faker::Lorem.sentence(word_count: 100) }
-          ]
-        },
+        content_html: %(<figure><img src="#{image_url}" alt="" class="py-4"></figure>#{paragraphs.join}),
         published: true,
         uuid: SecureRandom.uuid,
         featured: [true, false].sample,
