@@ -13,6 +13,7 @@ class FollowsController < ApplicationController
   def destroy
     @followable = find_followable
     Current.user.follows_as_follower.find_by(followable: @followable)&.destroy
+    @followable.reload
     @following = false
 
     respond_to do |format|

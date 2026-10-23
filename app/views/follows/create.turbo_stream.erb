@@ -3,7 +3,7 @@
     <%= render "follows/user_button", user: @followable, following: @following %>
   <% end %>
   <%= turbo_stream.replace dom_id(@followable, :followers_count) do %>
-    <%= render "follows/followers_count", user: @followable %>
+    <%= render "follows/followers_count", user: @followable, animate: true %>
   <% end %>
 <% else %>
   <%= turbo_stream.replace dom_id(@followable, :follow) do %>

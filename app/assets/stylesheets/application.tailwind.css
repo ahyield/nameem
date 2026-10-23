@@ -21,6 +21,27 @@
   }
 }
 
+/* Follower count: the number eases in when a follow/unfollow updates it.
+   Only rendered with this class from the Turbo Stream, so page loads don't animate. */
+.count-changed {
+  display: inline-block;
+  transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1), transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@starting-style {
+  .count-changed {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @starting-style {
+    .count-changed {
+      transform: translateY(3px);
+    }
+  }
+}
+
 /* Backoffice */
 
 @layer components {

@@ -103,7 +103,10 @@ twitter: {
             </div>
             <div class="mt-6">
               <h3 class="text-lg font-medium text-gray-900"><%= @user.name %></h3>
-              <p class="mt-2 text-sm text-gray-500"><%= @user.bio&.truncate(400) %></p>
+              <div class="mt-1">
+                <%= render "follows/followers_count", user: @user %>
+              </div>
+              <p class="mt-3 text-sm text-gray-500"><%= @user.bio&.truncate(400) %></p>
 
               <% if @user.website_url.present? || @user.twitter_handle.present? || @user.instagram_handle.present? || @user.facebook_handle.present? %>
                 <div class="mt-3 flex items-center gap-x-2">
