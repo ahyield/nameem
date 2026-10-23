@@ -4,6 +4,10 @@ ar:
       user:
         slug: "اسم المستخدم"
         name: "الاسم"
+        website_url: "الموقع الإلكتروني"
+        twitter_handle: "حساب إكس"
+        instagram_handle: "حساب إنستغرام"
+        facebook_handle: "حساب فيسبوك"
       article:
         featured: "مميز"
   errors:

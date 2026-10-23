@@ -33,7 +33,46 @@ class User < ApplicationRecord
   scope :editors, -> { where(editor: true) }
   scope :admins, -> { where(admin: true) }
 
+  SOCIAL_HANDLES = %i[twitter_handle instagram_handle facebook_handle].freeze
+  SOCIAL_PROFILE_URLS = {
+    twitter_handle:   "https://x.com/",
+    instagram_handle: "https://instagram.com/",
+    facebook_handle:  "https://facebook.com/"
+  }.freeze
+
+
   normalizes :email, with: ->(email) { email.downcase.strip }
+  # Accept "@name" or a pasted profile URL, and store just the handle
+  normalizes(*SOCIAL_HANDLES, with: lambda { |handle|
+    handle.gsub(/[[:space:]]/, "")
+          .sub(%r{\A(?:https?://)?(?:(?:www|m)\.)?(?:x|twitter|instagram|facebook)\.com/}i, "")
+          .delete_prefix("@")
+          .split(%r{[?#/]}).first
+          .presence
+  })
+  # Add https:// when no scheme was typed, so "example.com" works
+  normalizes :website_url, with: lambda { |url|
+    url = url.strip
+    if url.blank?
+      nil
+    elsif url.match?(/\A[a-z][a-z0-9+.-]*:/i)
+      url
+    else
+      "https://#{url}"
+    end
+  }
+
+  # Only http(s) links, so a profile can't carry a javascript: URL. Validated only when
+  # changed, so older records with bad values don't block unrelated updates.
+  validates :website_url, format:      { with: %r{\Ahttps?://[^\s<>"']+\z}i, message: "يجب أن يكون رابطًا يبدأ بـ http أو https" },
+                          length:      { maximum: 255 },
+                          allow_blank: true,
+                          if:          :website_url_changed?
+  SOCIAL_HANDLES.each do |handle|
+    validates handle, format:      { with: /\A[A-Za-z0-9_.]{1,50}\z/, message: "يجب أن يحتوي على أحرف إنجليزية وأرقام و _ و . فقط" },
+                      allow_blank: true,
+                      if:          :"#{handle}_changed?"
+  end
 
   validates :email, uniqueness: true, presence: true,
                     allow_blank: false, format: { with: URI::MailTo::EMAIL_REGEXP }
@@ -81,6 +120,25 @@ class User < ApplicationRecord
 
   def following?(record)
     follows_as_follower.exists?(followable: record)
+  end
+
+  # Website URL safe to use as a link: only http(s) with a host, even for older unvalidated values
+  def website_link
+    uri = URI.parse(website_url.to_s.strip)
+    if uri.is_a?(URI::HTTP) && uri.host.present?
+      uri.to_s
+    end
+  rescue URI::InvalidURIError
+    nil
+  end
+
+  # Profile URL for a social handle, built only from a well-formed handle
+  def social_link(handle)
+    # Normalize on read too, so handles saved before normalization still link correctly
+    value = self.class.normalize_value_for(handle, public_send(handle)).to_s
+    if value.match?(/\A[A-Za-z0-9_.]{1,50}\z/)
+      "#{SOCIAL_PROFILE_URLS.fetch(handle)}#{ERB::Util.url_encode(value)}"
+    end
   end
 
   private

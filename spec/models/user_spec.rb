@@ -179,4 +179,42 @@ RSpec.describe User do
       expect(user).to be_editor
     end
   end
+
+  describe "profile links" do
+    let(:user) { build(:user) }
+
+    it "rejects non-http website URLs" do
+      %w[javascript:alert(1) JaVaScRiPt:alert(1) data:text/html,x].each do |url|
+        user.website_url = url
+        expect(user).not_to be_valid
+        expect(user.website_link).to be_nil
+      end
+    end
+
+    it "adds https:// to a website without a scheme" do
+      user.website_url = "nameem.com"
+      expect(user.website_url).to eq("https://nameem.com")
+      expect(user.website_link).to eq("https://nameem.com")
+    end
+
+    it "never links an unsafe website saved before validation existed" do
+      user.save!
+      user.update_column(:website_url, "javascript:alert(1)")
+      expect(user.reload.website_link).to be_nil
+    end
+
+    it "stores handles without @, profile URLs or query strings" do
+      user.twitter_handle = "@nameem"
+      user.instagram_handle = "https://www.instagram.com/nameem?igsh=abc"
+      expect(user.twitter_handle).to eq("nameem")
+      expect(user.instagram_handle).to eq("nameem")
+      expect(user.social_link(:instagram_handle)).to eq("https://instagram.com/nameem")
+    end
+
+    it "rejects handles with unsafe characters" do
+      user.twitter_handle = "evil\"><script>"
+      expect(user).not_to be_valid
+      expect(user.social_link(:twitter_handle)).to be_nil
+    end
+  end
 end
