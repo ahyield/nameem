@@ -1,13 +1,15 @@
 module Backoffice
   class UsersController < BaseController
-    before_action :set_user, only: [:show, :edit, :update, :destroy, :toggle_role]
+    before_action :set_user, only: [:show, :update, :destroy, :toggle_role]
     before_action :require_admin!, only: [:destroy]
 
     def index
       @page_title = "المستخدمين"
       @filter = params[:filter] || "all"
 
-      users = User.order(created_at: :desc)
+      users = User.select("users.*, (SELECT COUNT(*) FROM articles WHERE articles.user_id = users.id) AS articles_total")
+                  .with_attached_avatar
+                  .order(created_at: :desc)
       users = filter_users(users)
       users = search_users(users) if params[:q].present?
 
@@ -19,21 +21,16 @@ module Backoffice
       @recent_articles = @user.articles.order(created_at: :desc).limit(5)
     end
 
-    def edit
-      @page_title = "تعديل #{@user.name}"
-    end
-
     def update
       permitted = [:featured, :picked, :confirmed]
       permitted += [:admin, :editor] if current_user.admin?
 
       if @user.update(params.expect(user: permitted))
         flash[:notice] = "تم تحديث البيانات بنجاح"
-        redirect_to backoffice_user_path(@user)
       else
-        flash[:alert] = @user.errors.full_messages.join("، ")
-        render :edit, status: :unprocessable_entity
+        flash[:error] = @user.errors.full_messages.join("، ")
       end
+      redirect_to backoffice_user_path(@user)
     end
 
     def destroy
@@ -53,11 +50,7 @@ module Backoffice
       end
 
       @user.update!(role => !@user.send(role))
-
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to backoffice_user_path(@user), notice: "تم تحديث الدور بنجاح" }
-      end
+      redirect_to backoffice_user_path(@user)
     end
 
     private

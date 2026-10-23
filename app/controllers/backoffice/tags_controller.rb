@@ -1,6 +1,6 @@
 module Backoffice
   class TagsController < BaseController
-    before_action :set_tag, only: [:show, :edit, :update, :destroy, :merge]
+    before_action :set_tag, only: [:show, :update, :destroy, :merge]
 
     def index
       @page_title = "المواضيع"
@@ -14,10 +14,6 @@ module Backoffice
     def show
       @page_title = @tag.name
       @pagy, @articles = pagy(@tag.articles.published.includes(:user).order(created_at: :desc))
-    end
-
-    def edit
-      @page_title = "تعديل: #{@tag.name}"
       @other_tags = Tag.where.not(id: @tag.id).popular.limit(50)
     end
 
@@ -27,8 +23,7 @@ module Backoffice
         redirect_to backoffice_tag_path(@tag)
       else
         flash[:error] = @tag.errors.full_messages.join("، ")
-        @other_tags = Tag.where.not(id: @tag.id).popular.limit(50)
-        render :edit, status: :unprocessable_entity
+        redirect_to backoffice_tag_path(@tag.slug_was)
       end
     end
 

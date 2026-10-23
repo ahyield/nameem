@@ -21,36 +21,23 @@ RSpec.describe Backoffice::UsersController do
     end
   end
 
-  describe "GET #edit" do
-    it "assigns the requested user to @user" do
-      get :edit, params: { slug: user.slug }
-      expect(assigns(:user)).to eq(user)
-    end
-
-    it "returns a successful response" do
-      get :edit, params: { slug: user.slug }
-      expect(response).to be_successful
-    end
-  end
-
   describe "PATCH #update" do
     context "with valid parameters" do
       it "updates the user and redirects" do
         patch :update, params: { slug: user.slug, user: { featured: true } }
         user.reload
         expect(user.featured).to be_truthy
-        expect(response).to redirect_to(backoffice_users_path)
+        expect(response).to redirect_to(backoffice_user_path(user))
         expect(flash[:notice]).to eq("تم تحديث البيانات بنجاح")
       end
     end
 
     context "with invalid parameters" do
-      it "renders the edit template with an error" do
+      it "redirects back to the user with an error" do
         patch :update, params: { slug: user.slug, user: { featured: nil } }
 
-        expect(response).to render_template(:edit)
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(flash[:alert]).not_to be_nil
+        expect(response).to redirect_to(backoffice_user_path(user))
+        expect(flash[:error]).not_to be_nil
       end
     end
   end

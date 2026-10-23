@@ -1,0 +1,20 @@
+<%# locals: (count: nil, subtitle: nil) %>
+<div class="mb-6 flex flex-wrap items-end justify-between gap-3">
+  <div class="min-w-0">
+    <h1 class="text-xl font-semibold text-gray-900 break-words">
+      <%= @page_title %>
+      <% if count %>
+        <span class="mr-1.5 text-base font-normal text-gray-400 tabular-nums"><%= number_with_delimiter(count) %></span>
+      <% end %>
+    </h1>
+    <% if subtitle.present? %>
+      <p class="mt-1 text-sm text-gray-500"><%= subtitle %></p>
+    <% end %>
+  </div>
+
+  <% if content_for?(:page_actions) %>
+    <div class="flex flex-wrap items-center gap-2">
+      <%= yield :page_actions %>
+    </div>
+  <% end %>
+</div>

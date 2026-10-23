@@ -1,110 +1,62 @@
-<div class="space-y-6">
-  <!-- Comment Header Card -->
-  <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60 p-6">
-    <div class="flex items-start justify-between gap-4">
-      <div class="flex-1 min-w-0">
-        <div class="flex items-center gap-3 mb-4">
-          <% if @comment.user.avatar.attached? %>
-            <%= image_tag @comment.user.avatar.variant(resize_to_fill: [36, 36]), class: "h-9 w-9 rounded-full" %>
-          <% else %>
-            <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100">
-              <span class="text-[11px] font-medium text-indigo-600"><%= @comment.user.name&.first %></span>
-            </span>
-          <% end %>
-          <div>
-            <div class="text-[13px] font-medium text-gray-950">
-              <%= link_to @comment.user.name, backoffice_user_path(@comment.user), class: "hover:text-gray-400" %>
-            </div>
-            <div class="text-[12px] text-gray-400"><%= time_ago_in_words(@comment.created_at) %></div>
-          </div>
-          <% if @comment.parent_id.nil? %>
-            <%= status_badge("تعليق رئيسي", :active) %>
-          <% else %>
-            <%= status_badge("رد", :default) %>
-          <% end %>
-        </div>
-
-        <div class="text-[13px] text-gray-950/90 leading-relaxed prose prose-sm max-w-none">
-          <%= @comment.body %>
-        </div>
-      </div>
-      <div class="shrink-0">
-        <%= button_to "حذف", backoffice_comment_path(@comment), method: :delete,
-            class: "px-3 py-1.5 rounded-xl text-[13px] font-medium text-red-500 hover:text-red-500/80 transition-colors",
-            data: { turbo_confirm: "هل أنت متأكد من حذف هذا التعليق؟" } %>
-      </div>
-    </div>
-  </div>
-
-  <!-- Context Card -->
-  <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60 p-6">
-    <h3 class="text-[11px] font-medium text-gray-400 uppercase tracking-wider mb-3">السياق</h3>
-    <p class="text-[13px] text-gray-400">
-      المقال: <%= link_to (@comment.article.title.presence || @comment.article.uuid), backoffice_article_path(@comment.article), class: "text-gray-950 hover:text-gray-400" %>
-      <span class="text-gray-200 mx-2">&middot;</span>
-      الكاتب: <%= link_to @comment.user.name, backoffice_user_path(@comment.user), class: "text-gray-950 hover:text-gray-400" %>
-      <span class="text-gray-200 mx-2">&middot;</span>
-      <span class="text-gray-950 font-semibold tabular-nums"><%= @comment.comment_likes.count %></span> إعجاب
-      <span class="text-gray-200 mx-2">&middot;</span>
-      <span class="text-gray-950 font-semibold tabular-nums"><%= @comment.replies_count %></span> رد
+<div class="mb-6 flex items-center gap-3">
+  <%= backoffice_avatar(@comment.user, size: 40) %>
+  <div class="min-w-0 flex-1">
+    <h1 class="text-base font-semibold text-gray-900">
+      <%= link_to @comment.user.name, backoffice_user_path(@comment.user), class: "hover:underline" %>
+    </h1>
+    <p class="truncate text-sm text-gray-500">
+      <%= @comment.parent_id.nil? ? "علّق على" : "ردّ على" %>
+      <%= link_to (@comment.article.title.presence || @comment.article.uuid), backoffice_article_path(@comment.article),
+          class: "text-gray-900 hover:underline" %>
+      · <%= time_ago_in_words(@comment.created_at) %>
     </p>
   </div>
-
-  <!-- Parent Comment Card (if reply) -->
-  <% if @comment.parent.present? %>
-    <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60 p-6">
-      <h3 class="text-[11px] font-medium text-gray-400 uppercase tracking-wider mb-3">التعليق الأصلي</h3>
-      <div class="flex items-start gap-3">
-        <% if @comment.parent.user.avatar.attached? %>
-          <%= image_tag @comment.parent.user.avatar.variant(resize_to_fill: [28, 28]), class: "h-7 w-7 rounded-full" %>
-        <% else %>
-          <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100">
-            <span class="text-[10px] font-medium text-indigo-600"><%= @comment.parent.user.name&.first %></span>
-          </span>
-        <% end %>
-        <div class="flex-1 min-w-0">
-          <div class="text-[13px] font-medium text-gray-950"><%= @comment.parent.user.name %></div>
-          <div class="text-[13px] text-gray-400 mt-1"><%= @comment.parent.body.to_plain_text.truncate(200) %></div>
-          <%= link_to "عرض التعليق", backoffice_comment_path(@comment.parent), class: "text-[12px] text-gray-400 hover:text-gray-950 mt-2 inline-block" %>
-        </div>
-      </div>
-    </div>
-  <% end %>
-
-  <!-- Replies Card (if top-level) -->
-  <% if @comment.parent_id.nil? && @replies.present? && @replies.any? %>
-    <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60">
-      <div class="p-6 pb-4">
-        <h3 class="text-[11px] font-medium text-gray-400 uppercase tracking-wider">الردود (<%= @replies.count %>)</h3>
-      </div>
-      <div class="px-6 pb-6">
-        <div class="divide-y divide-gray-100">
-          <% @replies.each do |reply| %>
-            <div class="flex items-start gap-3 py-3">
-              <% if reply.user.avatar.attached? %>
-                <%= image_tag reply.user.avatar.variant(resize_to_fill: [28, 28]), class: "h-7 w-7 rounded-full" %>
-              <% else %>
-                <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100">
-                  <span class="text-[10px] font-medium text-indigo-600"><%= reply.user.name&.first %></span>
-                </span>
-              <% end %>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center justify-between">
-                  <div class="text-[13px] font-medium text-gray-950"><%= reply.user.name %></div>
-                  <span class="text-[12px] text-gray-400"><%= time_ago_in_words(reply.created_at) %></span>
-                </div>
-                <div class="text-[13px] text-gray-400 mt-1"><%= reply.body.to_plain_text.truncate(200) %></div>
-                <div class="flex items-center gap-3 mt-2">
-                  <%= link_to "عرض", backoffice_comment_path(reply), class: "text-[12px] text-gray-400 hover:text-gray-950" %>
-                  <%= button_to "حذف", backoffice_comment_path(reply), method: :delete,
-                      class: "text-[12px] text-gray-400 hover:text-red-500",
-                      data: { turbo_confirm: "هل أنت متأكد من حذف هذا الرد؟" } %>
-                </div>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  <% end %>
 </div>
+
+<% if @comment.parent.present? %>
+  <div class="mb-3 flex gap-3 rounded-xl bg-gray-50 p-4">
+    <%= backoffice_avatar(@comment.parent.user, size: 24) %>
+    <div class="min-w-0 text-sm">
+      <span class="font-medium text-gray-900"><%= @comment.parent.user.name %></span>
+      <p class="mt-0.5 text-gray-600"><%= @comment.parent.body.to_plain_text.truncate(200) %></p>
+    </div>
+  </div>
+<% end %>
+
+<div class="bo-panel p-5">
+  <div class="prose prose-sm max-w-none text-gray-900"><%= @comment.body %></div>
+  <p class="mt-4 text-xs text-gray-500 tabular-nums">
+    <%= @comment.likes_count %> إعجاب · <%= @comment.replies_count %> رد
+  </p>
+</div>
+
+<% if @replies.present? %>
+  <section class="mt-8">
+    <h2 class="mb-3 text-sm font-semibold text-gray-900">الردود <span class="font-normal text-gray-400 tabular-nums"><%= @replies.size %></span></h2>
+    <ul class="bo-panel divide-y divide-gray-200/70">
+      <% @replies.each do |reply| %>
+        <li class="flex items-start gap-3 px-4 py-3">
+          <%= backoffice_avatar(reply.user, size: 28) %>
+          <div class="min-w-0 flex-1 text-sm">
+            <p>
+              <span class="font-medium text-gray-900"><%= reply.user.name %></span>
+              <span class="text-xs text-gray-500"><%= time_ago_in_words(reply.created_at) %></span>
+            </p>
+            <p class="mt-0.5 text-gray-700"><%= reply.body.to_plain_text.truncate(200) %></p>
+          </div>
+          <%= button_to "حذف", backoffice_comment_path(reply), method: :delete, class: "bo-btn bo-btn-danger shrink-0 px-2 py-1 text-xs",
+              data: { turbo_confirm: "هل أنت متأكد من حذف هذا الرد؟" } %>
+        </li>
+      <% end %>
+    </ul>
+  </section>
+<% end %>
+
+<section class="mt-12 border-t border-gray-200/70 pt-6">
+  <h2 class="text-sm font-semibold text-gray-900">حذف التعليق</h2>
+  <p class="mt-1 mb-3 text-sm text-gray-500">
+    <%= @comment.parent_id.nil? ? "يحذف التعليق وكل الردود عليه." : "يحذف هذا الرد." %> لا يمكن التراجع عن ذلك.
+  </p>
+  <%= button_to "حذف التعليق", backoffice_comment_path(@comment), method: :delete, class: "bo-btn bo-btn-danger -mr-3",
+      data: { turbo_confirm: "هل أنت متأكد من حذف هذا التعليق؟" } %>
+</section>

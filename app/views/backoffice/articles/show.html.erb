@@ -1,95 +1,74 @@
-<div class="space-y-6">
-  <!-- Article Header -->
-  <div class="flex items-start justify-between gap-4">
-    <div class="flex-1 min-w-0">
-      <h2 class="text-[15px] font-semibold text-gray-950 mb-2"><%= @article.title.presence || @article.uuid %></h2>
-      <div class="flex items-center gap-1.5 mb-3">
-        <%= status_badge(@article.published? ? "منشور" : "مسودة", @article.published? ? :active : :default) %>
-        <% if @article.featured? %>
-          <%= status_badge("مميز", :active) %>
-        <% end %>
-        <% if @article.picked? %>
-          <%= status_badge("مختار", :active) %>
-        <% end %>
-      </div>
-      <div class="flex items-center gap-4 text-[13px] text-gray-400">
-        <span>الكاتب: <%= link_to @article.user.name, backoffice_user_path(@article.user), class: "text-gray-950 hover:text-gray-400" %></span>
-        <% if @article.published_at.present? %>
-          <span>تاريخ النشر: <%= l(@article.published_at.to_date, format: :short) rescue @article.published_at.to_date %></span>
-        <% end %>
-        <% if @article.reading_time_minutes.present? && @article.reading_time_minutes > 0 %>
-          <span><%= @article.reading_time_minutes %> دقائق قراءة</span>
-        <% end %>
-      </div>
-      <% if @article.description.present? %>
-        <p class="mt-3 text-[13px] text-gray-400 leading-relaxed"><%= @article.description %></p>
+<div class="mb-8 flex flex-wrap items-start justify-between gap-4">
+  <div class="min-w-0 flex-1">
+    <h1 class="text-xl font-semibold text-gray-900 break-words"><%= @article.title.presence || @article.uuid %></h1>
+    <p class="mt-1 text-sm text-gray-500">
+      <%= link_to @article.user.name, backoffice_user_path(@article.user), class: "text-gray-900 hover:underline" %>
+      <% if @article.published_at.present? %>
+        · نُشر <%= l(@article.published_at.to_date, format: :long) %>
+      <% else %>
+        · مسودة
       <% end %>
-    </div>
-    <div class="flex items-center gap-2 shrink-0">
-      <%= link_to "تعديل", edit_backoffice_article_path(@article), class: "px-3 py-1.5 rounded-xl bg-indigo-600 text-[13px] font-medium text-white hover:bg-indigo-700 transition-colors" %>
-      <% if @article.published? %>
-        <%= link_to "عرض في الموقع", user_article_path(slug: @article.user.slug, uuid: @article.uuid), class: "px-3 py-1.5 rounded-xl border border-gray-200 text-[13px] font-medium text-gray-950 hover:bg-gray-50 transition-colors", target: "_blank" %>
-      <% end %>
-      <%= button_to "حذف", backoffice_article_path(@article), method: :delete,
-          class: "px-3 py-1.5 rounded-xl text-[13px] font-medium text-red-500 hover:text-red-500/80 transition-colors",
-          data: { turbo_confirm: "هل أنت متأكد من حذف هذا المقال؟" } %>
-    </div>
-  </div>
-
-  <!-- Stats Card -->
-  <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60 p-6">
-    <p class="text-[13px] text-gray-400">
-      <span class="text-gray-950 font-semibold tabular-nums"><%= @article.real_views_count || 0 %></span> مشاهدة
-      <span class="text-gray-200 mx-2">&middot;</span>
-      <span class="text-gray-950 font-semibold tabular-nums"><%= @article.reading_time_minutes || 0 %></span> دقيقة قراءة
-      <span class="text-gray-200 mx-2">&middot;</span>
-      <span class="text-gray-950 font-semibold tabular-nums"><%= @article.likes_count %></span> إعجاب
-      <span class="text-gray-200 mx-2">&middot;</span>
-      <span class="text-gray-950 font-semibold tabular-nums"><%= @article.comments_count %></span> تعليق
-      <span class="text-gray-200 mx-2">&middot;</span>
-      <span class="text-gray-950 font-semibold tabular-nums"><%= @article.bookmarks.count %></span> حفظ
     </p>
+    <% if @article.description.present? %>
+      <p class="mt-3 max-w-prose text-sm leading-relaxed text-gray-600"><%= @article.description %></p>
+    <% end %>
   </div>
+  <% if @article.published? %>
+    <%= link_to "عرض في الموقع", user_article_path(slug: @article.user.slug, uuid: @article.uuid),
+        class: "bo-btn bo-btn-ghost", target: "_blank", rel: "noopener" %>
+  <% end %>
+</div>
 
-  <!-- Tags Card -->
-  <% if @article.tags.any? %>
-    <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60 p-6">
-      <h3 class="text-[11px] font-medium text-gray-400 uppercase tracking-wider mb-3">المواضيع</h3>
-      <div class="flex flex-wrap gap-1.5">
-        <% @article.tags.each do |tag| %>
-          <%= link_to tag.name, backoffice_tag_path(tag), class: "inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-[11px] font-medium text-gray-500 hover:bg-gray-100 transition-colors" %>
-        <% end %>
-      </div>
+<dl class="mb-8 flex flex-wrap gap-x-8 gap-y-3">
+  <% [
+    ["مشاهدة", @article.real_views_count || 0],
+    ["إعجاب", @article.likes_count],
+    ["تعليق", @article.comments_count],
+    ["حفظ", @article.bookmarks.count],
+    ["دقائق قراءة", @article.reading_time_minutes || 0]
+  ].each do |label, value| %>
+    <div class="flex items-baseline gap-1.5">
+      <dt class="order-2 text-sm text-gray-500"><%= label %></dt>
+      <dd class="order-1 text-lg font-semibold text-gray-900 tabular-nums"><%= number_with_delimiter(value) %></dd>
     </div>
   <% end %>
+</dl>
 
-  <!-- Toggle Controls Card -->
-  <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60 p-6">
-    <h3 class="text-[11px] font-medium text-gray-400 uppercase tracking-wider mb-3">إعدادات المقال</h3>
-    <div class="flex flex-wrap gap-2">
-      <%= form_with model: @article, url: backoffice_article_path(@article), method: :put, class: "contents" do |form| %>
-        <label class="flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer transition-colors <%= @article.published? ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-100' %>">
-          <span class="text-[13px] font-medium">منشور</span>
-          <%= form.check_box :published, class: "sr-only", onchange: "this.form.requestSubmit()" %>
-          <span class="h-1.5 w-1.5 rounded-full <%= @article.published? ? 'bg-white' : 'bg-gray-400' %>"></span>
-        </label>
-      <% end %>
-
-      <%= form_with model: @article, url: backoffice_article_path(@article), method: :put, class: "contents" do |form| %>
-        <label class="flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer transition-colors <%= @article.featured? ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-100' %>">
-          <span class="text-[13px] font-medium">مميز</span>
-          <%= form.check_box :featured, class: "sr-only", onchange: "this.form.requestSubmit()" %>
-          <span class="h-1.5 w-1.5 rounded-full <%= @article.featured? ? 'bg-white' : 'bg-gray-400' %>"></span>
-        </label>
-      <% end %>
-
-      <%= form_with model: @article, url: backoffice_article_path(@article), method: :put, class: "contents" do |form| %>
-        <label class="flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer transition-colors <%= @article.picked? ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-100' %>">
-          <span class="text-[13px] font-medium">مختار</span>
-          <%= form.check_box :picked, class: "sr-only", onchange: "this.form.requestSubmit()" %>
-          <span class="h-1.5 w-1.5 rounded-full <%= @article.picked? ? 'bg-white' : 'bg-gray-400' %>"></span>
-        </label>
+<div class="grid gap-8 lg:grid-cols-5">
+  <section class="lg:col-span-2">
+    <h2 class="mb-3 text-sm font-semibold text-gray-900">الإعدادات</h2>
+    <div class="bo-panel divide-y divide-gray-200/70 px-4">
+      <% [
+        ["published", "منشور", "ظاهر للقراء"],
+        ["featured", "مميز", "يظهر في الصفحة الرئيسية"],
+        ["picked", "مختار", "ضمن اختيارات المحررين"]
+      ].each do |field, label, description| %>
+        <%= render "backoffice/shared/switch",
+            id: "article-#{field}", label: label, description: description, on: @article.public_send(field),
+            url: backoffice_article_path(@article), method: :put,
+            params: { article: { field => !@article.public_send(field) } } %>
       <% end %>
     </div>
-  </div>
+  </section>
+
+  <section class="lg:col-span-3">
+    <h2 class="mb-3 text-sm font-semibold text-gray-900">المواضيع</h2>
+    <% if @article.tags.any? %>
+      <div class="flex flex-wrap gap-1.5">
+        <% @article.tags.each do |tag| %>
+          <%= link_to tag.name, backoffice_tag_path(tag),
+              class: "rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-700 hover:bg-gray-200" %>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm text-gray-500">بدون مواضيع</p>
+    <% end %>
+  </section>
 </div>
+
+<section class="mt-12 border-t border-gray-200/70 pt-6">
+  <h2 class="text-sm font-semibold text-gray-900">حذف المقال</h2>
+  <p class="mt-1 mb-3 text-sm text-gray-500">يحذف المقال وتعليقاته نهائيًا. لا يمكن التراجع عن ذلك.</p>
+  <%= button_to "حذف المقال", backoffice_article_path(@article), method: :delete, class: "bo-btn bo-btn-danger -mr-3",
+      data: { turbo_confirm: "هل أنت متأكد من حذف هذا المقال؟" } %>
+</section>

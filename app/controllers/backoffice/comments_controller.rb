@@ -6,7 +6,7 @@ module Backoffice
       @page_title = "التعليقات"
       @filter = params[:filter] || "all"
 
-      comments = Comment.includes(:user, :article).order(created_at: :desc)
+      comments = Comment.with_rich_text_body.includes(:article, user: { avatar_attachment: :blob }).order(created_at: :desc)
       comments = filter_comments(comments)
       comments = search_comments(comments) if params[:q].present?
 

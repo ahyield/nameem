@@ -1,87 +1,66 @@
-<!-- Stat Cards -->
-<div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-  <%= render "backoffice/shared/stat_card", label: "المقالات المنشورة", value: @stats[:published_articles] %>
-  <%= render "backoffice/shared/stat_card", label: "المستخدمين", value: @stats[:total_users] %>
-  <%= render "backoffice/shared/stat_card", label: "التعليقات", value: @stats[:total_comments] %>
-  <%= render "backoffice/shared/stat_card", label: "الإعجابات", value: @stats[:total_likes] %>
-  <%= render "backoffice/shared/stat_card", label: "المواضيع", value: @stats[:total_tags] %>
-</div>
+<%= render "backoffice/shared/page_header" %>
 
-<!-- New this week -->
-<div class="mb-6">
-  <span class="text-[13px] text-gray-400"><span class="text-gray-950 font-semibold tabular-nums"><%= @this_week[:new_users] %></span> مستخدم جديد هذا الأسبوع</span>
-</div>
-
-<!-- Activity Feed -->
-<div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60">
-  <div class="p-6 pb-4">
-    <h2 class="text-[15px] font-semibold text-gray-950">النشاط الأخير</h2>
-  </div>
-  <div class="px-6 pb-6">
-    <%
-      activity = []
-      @recent_users.each { |u| activity << { type: :user, obj: u, time: u.created_at } }
-      @recent_articles.each { |a| activity << { type: :article, obj: a, time: a.published_at || a.created_at } }
-      @recent_comments.each { |c| activity << { type: :comment, obj: c, time: c.created_at } }
-      activity.sort_by! { |a| -a[:time].to_i }
-    %>
-    <div class="divide-y divide-gray-100">
-      <% activity.first(20).each do |item| %>
-        <div class="flex items-center gap-4 py-2.5">
-          <% case item[:type] %>
-          <% when :user %>
-            <span class="text-[11px] font-medium text-gray-400 uppercase tracking-wider w-14 shrink-0">مستخدم</span>
-            <div class="flex-1 min-w-0">
-              <%= link_to backoffice_user_path(item[:obj]), class: "text-[13px] text-gray-950 hover:text-gray-400 truncate block" do %>
-                <%= item[:obj].name %>
-              <% end %>
-            </div>
-            <span class="text-[12px] text-gray-400 shrink-0"><%= item[:obj].email %></span>
-          <% when :article %>
-            <span class="text-[11px] font-medium text-gray-400 uppercase tracking-wider w-14 shrink-0">مقال</span>
-            <div class="flex-1 min-w-0">
-              <%= link_to backoffice_article_path(item[:obj]), class: "text-[13px] text-gray-950 hover:text-gray-400 truncate block" do %>
-                <%= item[:obj].title.presence || item[:obj].uuid %>
-              <% end %>
-            </div>
-            <span class="text-[12px] text-gray-400 shrink-0"><%= item[:obj].user.name %></span>
-          <% when :comment %>
-            <span class="text-[11px] font-medium text-gray-400 uppercase tracking-wider w-14 shrink-0">تعليق</span>
-            <div class="flex-1 min-w-0">
-              <%= link_to backoffice_comment_path(item[:obj]), class: "text-[13px] text-gray-950 hover:text-gray-400 truncate block" do %>
-                <%= item[:obj].body.to_plain_text.truncate(60) %>
-              <% end %>
-            </div>
-            <span class="text-[12px] text-gray-400 shrink-0"><%= item[:obj].user.name %></span>
-          <% end %>
-          <span class="text-[12px] text-gray-400 shrink-0 tabular-nums"><%= time_ago_in_words(item[:time]) %></span>
-        </div>
+<dl class="mb-8 grid grid-cols-2 sm:grid-cols-5 gap-px overflow-hidden rounded-xl border border-gray-200/70 bg-gray-200/70">
+  <% @stats.each_with_index do |stat, index| %>
+    <div class="bg-white p-5 <%= "col-span-2 sm:col-span-1" if index == @stats.size - 1 %>">
+      <dt class="bo-label"><%= stat[:label] %></dt>
+      <dd class="mt-1 text-2xl font-semibold text-gray-900 tabular-nums"><%= number_with_delimiter(stat[:value]) %></dd>
+      <% if stat[:week].to_i.positive? %>
+        <dd class="mt-0.5 text-xs text-gray-500"><span class="text-orange-700 tabular-nums">+<%= number_with_delimiter(stat[:week]) %></span> هذا الأسبوع</dd>
       <% end %>
     </div>
-  </div>
-</div>
+  <% end %>
+</dl>
 
-<!-- Trending -->
-<% if @trending_articles.any? %>
-  <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60 mt-6">
-    <div class="p-6 pb-4">
-      <h2 class="text-[15px] font-semibold text-gray-950">الرائجة</h2>
-    </div>
-    <div class="px-6 pb-6">
-      <div class="divide-y divide-gray-100">
-        <% @trending_articles.each_with_index do |article, index| %>
-          <div class="flex items-center gap-4 py-2.5">
-            <span class="text-[13px] font-semibold text-gray-400 tabular-nums w-5 shrink-0 text-center"><%= index + 1 %></span>
-            <div class="flex-1 min-w-0">
-              <%= link_to backoffice_article_path(article), class: "text-[13px] text-gray-950 hover:text-gray-400 truncate block" do %>
-                <%= article.title.presence || article.uuid %>
-              <% end %>
-            </div>
-            <span class="text-[12px] text-gray-400 shrink-0"><%= article.user.name %></span>
-            <span class="text-[12px] text-gray-400 shrink-0 tabular-nums"><%= article.real_views_count || 0 %> مشاهدة</span>
-          </div>
+<div class="grid gap-8 lg:grid-cols-5">
+  <section class="lg:col-span-3">
+    <h2 class="mb-3 text-sm font-semibold text-gray-900">النشاط الأخير</h2>
+    <div class="bo-panel divide-y divide-gray-200/70">
+      <% @activity.each do |item| %>
+        <% record = item[:record] %>
+        <% case item[:type] %>
+        <% when :user %>
+          <%= link_to backoffice_user_path(record), class: "bo-row" do %>
+            <%= backoffice_avatar(record, size: 24) %>
+            <span class="min-w-0 flex-1 truncate text-sm"><span class="font-medium"><%= record.name %></span> <span class="text-gray-500">انضم</span></span>
+            <span class="shrink-0 text-xs text-gray-500"><%= time_ago_in_words(item[:time]) %></span>
+          <% end %>
+        <% when :article %>
+          <%= link_to backoffice_article_path(record), class: "bo-row" do %>
+            <%= backoffice_avatar(record.user, size: 24) %>
+            <span class="min-w-0 flex-1 truncate text-sm"><span class="text-gray-500">نشر</span> <span class="font-medium"><%= record.title.presence || record.uuid %></span></span>
+            <span class="shrink-0 text-xs text-gray-500"><%= time_ago_in_words(item[:time]) %></span>
+          <% end %>
+        <% when :comment %>
+          <%= link_to backoffice_comment_path(record), class: "bo-row" do %>
+            <%= backoffice_avatar(record.user, size: 24) %>
+            <span class="min-w-0 flex-1 truncate text-sm"><span class="text-gray-500">علّق:</span> <%= record.body.to_plain_text.truncate(80) %></span>
+            <span class="shrink-0 text-xs text-gray-500"><%= time_ago_in_words(item[:time]) %></span>
+          <% end %>
         <% end %>
-      </div>
+      <% end %>
     </div>
-  </div>
-<% end %>
+  </section>
+
+  <section class="lg:col-span-2">
+    <h2 class="mb-3 text-sm font-semibold text-gray-900">الرائجة هذا الأسبوع</h2>
+    <% if @trending_articles.any? %>
+      <ol class="bo-panel divide-y divide-gray-200/70">
+        <% @trending_articles.each_with_index do |article, index| %>
+          <li>
+            <%= link_to backoffice_article_path(article), class: "bo-row" do %>
+              <span class="w-4 shrink-0 text-center text-sm font-semibold text-gray-400 tabular-nums"><%= index + 1 %></span>
+              <span class="min-w-0 flex-1">
+                <span class="block truncate text-sm font-medium"><%= article.title.presence || article.uuid %></span>
+                <span class="block truncate text-xs text-gray-500"><%= article.user.name %></span>
+              </span>
+              <span class="shrink-0 text-xs text-gray-500 tabular-nums"><%= number_with_delimiter(article.real_views_count || 0) %> مشاهدة</span>
+            <% end %>
+          </li>
+        <% end %>
+      </ol>
+    <% else %>
+      <%= render "backoffice/shared/empty_state", message: "لا توجد مقالات رائجة هذا الأسبوع" %>
+    <% end %>
+  </section>
+</div>

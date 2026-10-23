@@ -44,17 +44,6 @@ RSpec.describe "Backoffice::Users", type: :request do
     end
   end
 
-  describe "GET /backoffice/users/:slug/edit" do
-    let(:user) { create(:user) }
-
-    before { authenticate_user(editor) }
-
-    it "returns success" do
-      get edit_backoffice_user_path(user)
-      expect(response).to have_http_status(:ok)
-    end
-  end
-
   describe "PUT /backoffice/users/:slug" do
     let(:user) { create(:user) }
 

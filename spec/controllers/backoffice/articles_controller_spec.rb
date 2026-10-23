@@ -37,36 +37,6 @@ RSpec.describe Backoffice::ArticlesController do
     end
   end
 
-  describe "GET #edit" do
-    context "when user is an admin" do
-      before do
-        sign_in admin_user
-      end
-
-      it "assigns the requested article to @article" do
-        get :edit, params: { user_slug: article_user.slug, uuid: article.uuid }
-        expect(assigns(:article)).to eq(article)
-      end
-
-      it "returns a successful response" do
-        get :edit, params: { user_slug: article_user.slug, uuid: article.uuid }
-        expect(response).to be_successful
-      end
-    end
-
-    context "when user is not an admin" do
-      before do
-        sign_in regular_user
-      end
-
-      it "redirects to the home page with an error" do
-        get :edit, params: { user_slug: article_user.slug, uuid: article.uuid }
-        expect(response).to redirect_to("/")
-        expect(flash[:error]).to eq("غير مسموح لك بالدخول إلى هذه الصفحة")
-      end
-    end
-  end
-
   describe "PATCH #update" do
     context "when user is an admin" do
       before do
@@ -78,17 +48,15 @@ RSpec.describe Backoffice::ArticlesController do
           patch :update, params: { user_slug: article_user.slug, uuid: article.uuid, article: { picked: true } }
           article.reload
           expect(article.picked).to be_truthy
-          expect(response).to redirect_to(backoffice_articles_path)
-          expect(flash[:notice]).to eq("تم تحديث البيانات بنجاح")
+          expect(response).to redirect_to(backoffice_article_path(article))
         end
       end
 
       context "with invalid parameters" do
-        it "renders the edit template with an error" do
+        it "redirects back to the article with an error" do
           patch :update, params: { user_slug: article_user.slug, uuid: article.uuid, article: { featured: nil } }
 
-          expect(response).to render_template(:edit)
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to redirect_to(backoffice_article_path(article))
           expect(flash[:error]).to eq("حدث خطأ أثناء تحديث البيانات")
         end
       end

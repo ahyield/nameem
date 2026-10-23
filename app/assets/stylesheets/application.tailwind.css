@@ -21,6 +21,130 @@
   }
 }
 
+/* Backoffice */
+
+@layer components {
+  .bo {
+    --bo-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .bo-btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium whitespace-nowrap cursor-pointer select-none;
+    transition: transform 160ms var(--bo-ease-out), background-color 150ms ease, color 150ms ease;
+  }
+
+  .bo-btn:active {
+    transform: scale(0.97);
+  }
+
+  .bo-btn-primary {
+    @apply bg-orange-600 text-white;
+  }
+
+  .bo-btn-ghost {
+    @apply border border-gray-200 bg-white text-gray-900;
+  }
+
+  .bo-btn-danger {
+    @apply text-red-600;
+  }
+
+  .bo-panel {
+    @apply rounded-xl border border-gray-200/70 bg-white;
+  }
+
+  .bo-label {
+    @apply text-xs font-medium text-gray-500;
+  }
+
+  .bo-input {
+    @apply block w-full rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-orange-600 focus:outline-none focus:ring-1 focus:ring-orange-600;
+  }
+
+  .bo-row {
+    @apply flex items-center gap-4 px-4 py-3;
+    transition: background-color 150ms ease;
+  }
+
+  .bo-switch {
+    @apply relative inline-flex h-5 w-9 shrink-0 items-center rounded-full bg-gray-200 p-0.5 cursor-pointer;
+    transition: background-color 150ms ease, transform 160ms var(--bo-ease-out);
+  }
+
+  .bo-switch:active {
+    transform: scale(0.97);
+  }
+
+  .bo-switch[aria-checked="true"] {
+    @apply bg-orange-600;
+  }
+
+  .bo-switch-thumb {
+    @apply block h-4 w-4 rounded-full bg-white shadow-sm;
+    transition: transform 200ms var(--bo-ease-out);
+  }
+
+  .bo-switch[aria-checked="true"] .bo-switch-thumb {
+    transform: translateX(16px);
+  }
+
+  [dir="rtl"] .bo-switch[aria-checked="true"] .bo-switch-thumb {
+    transform: translateX(-16px);
+  }
+
+  .bo-flash {
+    @apply rounded-lg border px-4 py-2.5 text-sm;
+    transition: opacity 200ms var(--bo-ease-out), transform 200ms var(--bo-ease-out);
+  }
+
+  .bo .pagy {
+    @apply flex flex-wrap gap-1 text-sm font-medium text-gray-500;
+  }
+
+  .bo .pagy > :not([hidden]) ~ :not([hidden]) {
+    @apply mx-0;
+  }
+
+  .bo .pagy a:not(.gap) {
+    @apply block rounded-lg bg-transparent px-2.5 py-1 tabular-nums;
+  }
+
+  .bo .pagy a:not(.gap):not([href]) {
+    @apply bg-transparent text-gray-300 cursor-default;
+  }
+
+  .bo .pagy a:not(.gap)[aria-current="page"] {
+    @apply bg-gray-900 text-white;
+  }
+}
+
+@starting-style {
+  .bo-flash {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bo-btn-primary:hover { @apply bg-orange-700; }
+  .bo-btn-ghost:hover { @apply bg-gray-50; }
+  .bo-btn-danger:hover { @apply bg-red-50; }
+  .bo-row:hover { @apply bg-gray-50; }
+  .bo .pagy a:not(.gap)[href]:hover { @apply bg-gray-100 text-gray-900; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bo-btn:active,
+  .bo-switch:active {
+    transform: none;
+  }
+
+  .bo-switch-thumb,
+  .bo-flash {
+    transition-property: opacity;
+  }
+}
+
 .pagy {
   @apply flex space-x-1 font-semibold text-sm text-gray-500;
   a:not(.gap) {

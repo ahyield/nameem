@@ -1,6 +1,6 @@
 module Backoffice
   class ArticlesController < BaseController
-    before_action :set_article, only: [:show, :edit, :update, :destroy]
+    before_action :set_article, only: [:show, :update, :destroy]
 
     def index
       @page_title = "المقالات"
@@ -17,17 +17,12 @@ module Backoffice
       @page_title = @article.title.presence || @article.uuid
     end
 
-    def edit
-      @page_title = "تعديل: #{@article.title.presence || @article.uuid}"
-    end
-
     def update
       if @article.update(article_params)
-        flash[:notice] = "تم تحديث المقال بنجاح"
         redirect_to backoffice_article_path(@article)
       else
         flash[:error] = "حدث خطأ أثناء تحديث البيانات"
-        render :edit, status: :unprocessable_entity
+        redirect_to backoffice_article_path(@article)
       end
     end
 

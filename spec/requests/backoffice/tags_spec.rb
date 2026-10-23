@@ -25,13 +25,6 @@ RSpec.describe "Backoffice::Tags", type: :request do
     end
   end
 
-  describe "GET /backoffice/tags/:slug/edit" do
-    it "returns success" do
-      get edit_backoffice_tag_path(tag)
-      expect(response).to have_http_status(:ok)
-    end
-  end
-
   describe "PUT /backoffice/tags/:slug" do
     it "updates the tag name" do
       put backoffice_tag_path(tag), params: { tag: { name: "اسم-جديد" } }

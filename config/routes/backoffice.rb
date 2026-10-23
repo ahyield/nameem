@@ -1,11 +1,11 @@
 namespace :backoffice do
-  resources :users, param: :slug do
+  resources :users, param: :slug, only: [:index, :show, :update, :destroy] do
     member do
       post :toggle_role
     end
   end
-  resources :articles, param: :uuid
-  resources :tags, param: :slug do
+  resources :articles, param: :uuid, only: [:index, :show, :update, :destroy]
+  resources :tags, param: :slug, only: [:index, :show, :update, :destroy] do
     member do
       post :merge
     end

@@ -1,96 +1,33 @@
-<!-- Filter Tabs + Search -->
-<div class="flex items-center justify-between gap-4 mb-6">
-  <div class="inline-flex items-center rounded-lg bg-gray-100 p-1 gap-0.5">
-    <% [
-      ["all", "الكل"],
-      ["top_level", "تعليقات رئيسية"],
-      ["replies", "ردود"]
-    ].each do |key, label| %>
-      <%= link_to label, backoffice_comments_path(filter: key, q: params[:q]),
-          class: "px-3 py-1.5 text-[13px] font-medium transition-all #{active_filter_tab(@filter, key)}" %>
-    <% end %>
-  </div>
+<%= render "backoffice/shared/page_header", count: @pagy.count %>
 
-  <div data-controller="backoffice-search">
-    <%= form_with url: backoffice_comments_path, method: :get, data: { backoffice_search_target: "form" } do |f| %>
-      <%= f.hidden_field :filter, value: @filter %>
-      <div class="relative">
-        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-          <svg class="h-3.5 w-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-          </svg>
-        </div>
-        <%= f.text_field :q, value: params[:q],
-            placeholder: "بحث...",
-            class: "block w-72 border border-gray-200 bg-gray-50 rounded-xl py-1.5 pr-9 pl-3 text-[13px] text-gray-950 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-indigo-600 focus:border-indigo-600 transition-colors",
-            data: { action: "input->backoffice-search#search" } %>
-      </div>
-    <% end %>
-  </div>
-</div>
+<%= render "backoffice/shared/toolbar", url: backoffice_comments_path, current: @filter, filters: [
+  ["all", "الكل"],
+  ["top_level", "تعليقات رئيسية"],
+  ["replies", "ردود"]
+] %>
 
-<!-- Table Card -->
 <% if @comments.any? %>
-  <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60">
-    <div class="overflow-x-auto">
-      <table class="min-w-full">
-        <thead>
-          <tr class="border-b border-gray-100">
-            <th class="px-6 py-3 text-right text-[11px] font-medium text-gray-400 uppercase tracking-wider">التعليق</th>
-            <th class="px-4 py-3 text-right text-[11px] font-medium text-gray-400 uppercase tracking-wider">الكاتب</th>
-            <th class="px-4 py-3 text-right text-[11px] font-medium text-gray-400 uppercase tracking-wider">المقال</th>
-            <th class="px-4 py-3 text-right text-[11px] font-medium text-gray-400 uppercase tracking-wider">النوع</th>
-            <th class="px-4 py-3 text-right text-[11px] font-medium text-gray-400 uppercase tracking-wider">إعجابات</th>
-            <th class="px-4 py-3 text-right text-[11px] font-medium text-gray-400 uppercase tracking-wider">ردود</th>
-            <th class="px-4 py-3 text-right text-[11px] font-medium text-gray-400 uppercase tracking-wider">التاريخ</th>
-            <th class="px-6 py-3 text-left text-[11px] font-medium text-gray-400 uppercase tracking-wider"></th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100">
-          <% @comments.each do |comment| %>
-            <tr class="group hover:bg-gray-50 transition-colors">
-              <td class="px-6 py-3">
-                <div class="max-w-xs">
-                  <%= link_to backoffice_comment_path(comment), class: "text-[13px] text-gray-950 hover:text-gray-400 line-clamp-1" do %>
-                    <%= comment.body.to_plain_text.truncate(80) %>
-                  <% end %>
-                </div>
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap text-[13px] text-gray-400">
-                <%= link_to comment.user.name, backoffice_user_path(comment.user), class: "hover:text-gray-950" %>
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap text-[13px] text-gray-400">
-                <%= link_to (comment.article.title.presence || comment.article.uuid).truncate(30), backoffice_article_path(comment.article), class: "hover:text-gray-950" %>
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap">
-                <% if comment.parent_id.nil? %>
-                  <%= status_badge("تعليق", :active) %>
-                <% else %>
-                  <%= status_badge("رد", :default) %>
-                <% end %>
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap text-[13px] text-gray-400 tabular-nums"><%= comment.comment_likes.count %></td>
-              <td class="px-4 py-3 whitespace-nowrap text-[13px] text-gray-400 tabular-nums"><%= comment.replies_count %></td>
-              <td class="px-4 py-3 whitespace-nowrap text-[12px] text-gray-400"><%= time_ago_in_words(comment.created_at) %></td>
-              <td class="px-6 py-3 whitespace-nowrap text-left">
-                <div class="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <%= link_to backoffice_comment_path(comment), class: "text-gray-400 hover:text-gray-950", title: "عرض" do %>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                  <% end %>
-                  <%= button_to backoffice_comment_path(comment), method: :delete, class: "text-gray-400 hover:text-red-500", title: "حذف", data: { turbo_confirm: "هل أنت متأكد من حذف هذا التعليق؟" } do %>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                  <% end %>
-                </div>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-    <div class="border-t border-gray-100 px-6 py-3">
-      <%== @pagy.series_nav %>
-    </div>
-  </div>
+  <ul class="bo-panel divide-y divide-gray-200/70">
+    <% @comments.each do |comment| %>
+      <li>
+        <%= link_to backoffice_comment_path(comment), class: "bo-row items-start" do %>
+          <%= backoffice_avatar(comment.user, size: 28) %>
+          <span class="min-w-0 flex-1">
+            <span class="block text-sm line-clamp-2"><%= comment.body.to_plain_text.truncate(160) %></span>
+            <span class="mt-0.5 block truncate text-xs text-gray-500">
+              <%= comment.user.name %> · <%= comment.parent_id.nil? ? "على" : "رد على" %>
+              <%= comment.article&.title.presence || "مقال محذوف" %> · <%= time_ago_in_words(comment.created_at) %>
+            </span>
+          </span>
+          <span class="hidden sm:block w-16 shrink-0 text-xs text-gray-500 tabular-nums"><%= comment.likes_count %> إعجاب</span>
+          <span class="hidden sm:block w-14 shrink-0 text-xs text-gray-500 tabular-nums"><%= comment.replies_count %> رد</span>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+  <% if @pagy.last > 1 %>
+    <div class="mt-4"><%== @pagy.series_nav %></div>
+  <% end %>
 <% else %>
   <%= render "backoffice/shared/empty_state", message: "لا توجد تعليقات" %>
 <% end %>

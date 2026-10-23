@@ -1,90 +1,80 @@
-<div class="space-y-6">
-  <!-- User Header -->
-  <div class="flex items-start gap-5">
-    <% if @user.avatar.attached? %>
-      <%= image_tag @user.avatar.variant(resize_to_fill: [64, 64]), class: "h-16 w-16 rounded-full" %>
-    <% else %>
-      <span class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100">
-        <span class="text-lg font-medium text-indigo-600"><%= @user.name&.first %></span>
-      </span>
-    <% end %>
-    <div class="flex-1 min-w-0">
-      <div class="flex items-center gap-2 mb-1">
-        <h2 class="text-[15px] font-semibold text-gray-950"><%= @user.name %></h2>
-        <span id="role-badges-<%= @user.slug %>">
-          <%= render "backoffice/users/role_badges", user: @user %>
-        </span>
-      </div>
-      <p class="text-[13px] text-gray-400 mb-0.5"><%= @user.email %></p>
-      <p class="text-[13px] text-gray-400">@<%= @user.slug %></p>
-      <% if @user.bio.present? %>
-        <p class="text-[13px] text-gray-400 mt-2"><%= @user.bio %></p>
-      <% end %>
-    </div>
-    <div class="flex items-center gap-2 shrink-0">
-      <%= link_to "تعديل", edit_backoffice_user_path(@user), class: "px-3 py-1.5 rounded-xl bg-indigo-600 text-[13px] font-medium text-white hover:bg-indigo-700 transition-colors" %>
-      <%= link_to "عرض الملف", user_path(@user), class: "px-3 py-1.5 rounded-xl border border-gray-200 text-[13px] font-medium text-gray-950 hover:bg-gray-50 transition-colors", target: "_blank" %>
-    </div>
-  </div>
-
-  <!-- Stats Card -->
-  <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60 p-6">
-    <p class="text-[13px] text-gray-400">
-      <span class="text-gray-950 font-semibold tabular-nums"><%= @user.articles.count %></span> مقال
-      <span class="text-gray-200 mx-2">&middot;</span>
-      <span class="text-gray-950 font-semibold tabular-nums"><%= @user.followers_count %></span> متابع
-      <span class="text-gray-200 mx-2">&middot;</span>
-      <span class="text-gray-950 font-semibold tabular-nums"><%= @user.following_count %></span> يتابع
-      <span class="text-gray-200 mx-2">&middot;</span>
-      <span class="text-gray-950 font-semibold tabular-nums"><%= @user.article_likes.count %></span> إعجاب
-      <span class="text-gray-200 mx-2">&middot;</span>
-      <span class="text-gray-950 font-semibold tabular-nums"><%= @user.comments.count %></span> تعليق
-    </p>
-  </div>
-
-  <!-- Role Toggles Card -->
-  <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60 p-6">
-    <h3 class="text-[11px] font-medium text-gray-400 uppercase tracking-wider mb-3">الأدوار والحالات</h3>
-    <div class="flex flex-wrap gap-2">
-      <% roles = %w[confirmed featured picked] %>
-      <% roles += %w[admin editor] if current_user.admin? %>
-      <% role_labels = { "confirmed" => "مؤكد", "featured" => "مميز", "picked" => "مختار", "admin" => "مدير", "editor" => "محرر" } %>
-      <% roles.each do |role| %>
-        <%= button_to toggle_role_backoffice_user_path(@user), params: { role: role }, class: "flex items-center gap-2 px-3 py-1.5 rounded-xl transition-colors #{@user.send(role) ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-400 hover:bg-gray-100'}" do %>
-          <span class="text-[13px] font-medium"><%= role_labels[role] %></span>
-          <span class="h-1.5 w-1.5 rounded-full <%= @user.send(role) ? 'bg-white' : 'bg-gray-400' %>"></span>
-        <% end %>
-      <% end %>
-    </div>
-  </div>
-
-  <!-- Recent Articles Card -->
-  <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60">
-    <div class="p-6 pb-4">
-      <h3 class="text-[11px] font-medium text-gray-400 uppercase tracking-wider">أحدث المقالات</h3>
-    </div>
-    <% if @recent_articles.any? %>
-      <div class="px-6 pb-6">
-        <div class="divide-y divide-gray-100">
-          <% @recent_articles.each do |article| %>
-            <div class="flex items-center justify-between gap-3 py-2.5">
-              <div class="min-w-0 flex-1">
-                <%= link_to backoffice_article_path(article), class: "text-[13px] font-medium text-gray-950 hover:text-gray-400 truncate block" do %>
-                  <%= article.title.presence || article.uuid %>
-                <% end %>
-              </div>
-              <div class="flex items-center gap-2 shrink-0">
-                <%= status_badge(article.published? ? "منشور" : "مسودة", article.published? ? :active : :default) %>
-                <span class="text-[12px] text-gray-400"><%= time_ago_in_words(article.created_at) %></span>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    <% else %>
-      <div class="px-6 pb-6">
-        <p class="text-[13px] text-gray-400">لا توجد مقالات</p>
-      </div>
+<div class="mb-8 flex flex-wrap items-start gap-4">
+  <%= backoffice_avatar(@user, size: 56) %>
+  <div class="min-w-0 flex-1">
+    <h1 class="text-xl font-semibold text-gray-900"><%= @user.name %></h1>
+    <p class="mt-0.5 truncate text-sm text-gray-500"><%= @user.email %> · @<%= @user.slug %></p>
+    <% if @user.bio.present? %>
+      <p class="mt-2 max-w-prose text-sm text-gray-600"><%= @user.bio %></p>
     <% end %>
   </div>
+  <%= link_to "عرض الملف", user_path(@user), class: "bo-btn bo-btn-ghost", target: "_blank", rel: "noopener" %>
 </div>
+
+<dl class="mb-8 flex flex-wrap gap-x-8 gap-y-3">
+  <% [
+    ["مقال", @user.articles.count],
+    ["متابع", @user.followers_count],
+    ["يتابع", @user.following_count],
+    ["إعجاب", @user.article_likes.count],
+    ["تعليق", @user.comments.count]
+  ].each do |label, value| %>
+    <div class="flex items-baseline gap-1.5">
+      <dt class="order-2 text-sm text-gray-500"><%= label %></dt>
+      <dd class="order-1 text-lg font-semibold text-gray-900 tabular-nums"><%= number_with_delimiter(value) %></dd>
+    </div>
+  <% end %>
+</dl>
+
+<div class="grid gap-8 lg:grid-cols-5">
+  <section class="lg:col-span-2">
+    <h2 class="mb-3 text-sm font-semibold text-gray-900">الأدوار</h2>
+    <div class="bo-panel divide-y divide-gray-200/70 px-4">
+      <% roles = [
+        ["confirmed", "مؤكد", "تأكيد حساب المستخدم"],
+        ["featured", "مميز", "يظهر في الصفحة الرئيسية"],
+        ["picked", "مختار", "ضمن اختيارات المحررين"]
+      ] %>
+      <% if current_user.admin? %>
+        <% roles += [
+          ["editor", "محرر", "يدخل لوحة التحكم"],
+          ["admin", "مدير", "صلاحيات كاملة"]
+        ] %>
+      <% end %>
+      <% roles.each do |role, label, description| %>
+        <%= render "backoffice/shared/switch",
+            id: "role-#{role}", label: label, description: description, on: @user.public_send(role),
+            url: toggle_role_backoffice_user_path(@user), params: { role: role } %>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="lg:col-span-3">
+    <h2 class="mb-3 text-sm font-semibold text-gray-900">أحدث المقالات</h2>
+    <% if @recent_articles.any? %>
+      <ul class="bo-panel divide-y divide-gray-200/70">
+        <% @recent_articles.each do |article| %>
+          <li>
+            <%= link_to backoffice_article_path(article), class: "bo-row" do %>
+              <span class="min-w-0 flex-1 truncate text-sm font-medium"><%= article.title.presence || article.uuid %></span>
+              <% if !article.published? %>
+                <%= status_badge("مسودة") %>
+              <% end %>
+              <span class="shrink-0 text-xs text-gray-500"><%= time_ago_in_words(article.created_at) %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <%= render "backoffice/shared/empty_state", message: "لا توجد مقالات" %>
+    <% end %>
+  </section>
+</div>
+
+<% if current_user.admin? && @user != current_user %>
+  <section class="mt-12 border-t border-gray-200/70 pt-6">
+    <h2 class="text-sm font-semibold text-gray-900">حذف المستخدم</h2>
+    <p class="mt-1 mb-3 text-sm text-gray-500">يحذف الحساب وكل مقالاته وتعليقاته. لا يمكن التراجع عن ذلك.</p>
+    <%= button_to "حذف المستخدم", backoffice_user_path(@user), method: :delete, class: "bo-btn bo-btn-danger -mr-3",
+        data: { turbo_confirm: "هل أنت متأكد من حذف هذا المستخدم؟" } %>
+  </section>
+<% end %>

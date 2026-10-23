@@ -1,0 +1,19 @@
+<%# locals: (id:, label:, on:, url:, params:, method: :post, description: nil) %>
+<div class="flex items-center justify-between gap-4 py-3">
+  <label for="<%= id %>" class="min-w-0 cursor-pointer">
+    <span class="block text-sm font-medium text-gray-900"><%= label %></span>
+    <% if description.present? %>
+      <span class="block text-xs text-gray-500"><%= description %></span>
+    <% end %>
+  </label>
+
+  <%= button_to url, method: method, params: params,
+      id: id,
+      class: "bo-switch",
+      role: "switch",
+      aria: { checked: on.to_s, label: label },
+      form: { data: { controller: "backoffice-switch",
+                      action: "turbo:submit-start->backoffice-switch#flip turbo:submit-end->backoffice-switch#settle" } } do %>
+    <span class="bo-switch-thumb" aria-hidden="true"></span>
+  <% end %>
+</div>

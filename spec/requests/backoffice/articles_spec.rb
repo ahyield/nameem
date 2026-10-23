@@ -41,13 +41,6 @@ RSpec.describe "Backoffice::Articles", type: :request do
     end
   end
 
-  describe "GET /backoffice/articles/:uuid/edit" do
-    it "returns success" do
-      get edit_backoffice_article_path(article)
-      expect(response).to have_http_status(:ok)
-    end
-  end
-
   describe "PUT /backoffice/articles/:uuid" do
     it "updates featured" do
       put backoffice_article_path(article), params: { article: { featured: true } }

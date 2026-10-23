@@ -1,0 +1,32 @@
+<%# locals: (url:, filters: [], current: nil) %>
+<div class="mb-4 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+  <% if filters.any? %>
+    <div class="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div class="inline-flex gap-0.5 rounded-lg bg-gray-100 p-0.5">
+        <% filters.each do |key, label| %>
+          <%= link_to label, "#{url}?#{{ filter: key, q: params[:q].presence }.compact.to_query}",
+              class: "whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium #{active_filter_tab(current, key)}",
+              aria: { current: (current.to_s == key ? "page" : nil) } %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div></div>
+  <% end %>
+
+  <div data-controller="backoffice-search" class="sm:w-64">
+    <%= form_with url: url, method: :get, data: { backoffice_search_target: "form", turbo_action: "replace" } do |f| %>
+      <% if current.present? %>
+        <%= f.hidden_field :filter, value: current %>
+      <% end %>
+      <div class="relative">
+        <svg class="pointer-events-none absolute inset-y-0 right-3 my-auto h-3.5 w-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <%= f.search_field :q, value: params[:q], placeholder: "بحث…", aria: { label: "بحث" },
+            class: "bo-input pr-8",
+            data: { backoffice_search_target: "input", action: "input->backoffice-search#search" } %>
+      </div>
+    <% end %>
+  </div>
+</div>

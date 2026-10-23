@@ -1,58 +1,67 @@
-<div class="space-y-6">
-  <!-- Tag Header -->
-  <div class="flex items-center justify-between">
+<div class="mb-8">
+  <h1 class="text-xl font-semibold text-gray-900"><%= @tag.name %></h1>
+  <p class="mt-1 text-sm text-gray-500">
+    <span class="tabular-nums"><%= number_with_delimiter(@tag.articles_count) %></span> مقال ·
+    <span class="tabular-nums"><%= number_with_delimiter(@tag.followers_count) %></span> متابع
+  </p>
+</div>
+
+<div class="grid gap-8 lg:grid-cols-5">
+  <section class="lg:col-span-3">
+    <h2 class="mb-3 text-sm font-semibold text-gray-900">المقالات المنشورة</h2>
+    <% if @articles.any? %>
+      <ul class="bo-panel divide-y divide-gray-200/70">
+        <% @articles.each do |article| %>
+          <li>
+            <%= link_to backoffice_article_path(article), class: "bo-row" do %>
+              <span class="min-w-0 flex-1">
+                <span class="block truncate text-sm font-medium"><%= article.title.presence || article.uuid %></span>
+                <span class="block truncate text-xs text-gray-500"><%= article.user.name %> · <%= time_ago_in_words(article.created_at) %></span>
+              </span>
+              <span class="shrink-0 text-xs text-gray-500 tabular-nums"><%= number_with_delimiter(article.real_views_count || 0) %> مشاهدة</span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <% if @pagy.last > 1 %>
+        <div class="mt-4"><%== @pagy.series_nav %></div>
+      <% end %>
+    <% else %>
+      <%= render "backoffice/shared/empty_state", message: "لا توجد مقالات منشورة لهذا الموضوع" %>
+    <% end %>
+  </section>
+
+  <section class="lg:col-span-2">
+    <h2 class="mb-3 text-sm font-semibold text-gray-900">إعادة التسمية</h2>
+    <%= form_with model: @tag, url: backoffice_tag_path(@tag), method: :put, class: "flex gap-2" do |form| %>
+      <%= form.text_field :name, class: "bo-input", aria: { label: "اسم الموضوع" }, required: true %>
+      <%= form.submit "حفظ", class: "bo-btn bo-btn-primary" %>
+    <% end %>
+  </section>
+</div>
+
+<section class="mt-12 border-t border-gray-200/70 pt-6">
+  <h2 class="text-sm font-semibold text-gray-900">منطقة الخطر</h2>
+
+  <div class="mt-4 grid gap-6 sm:grid-cols-2">
     <div>
-      <h2 class="text-[15px] font-semibold text-gray-950"><%= @tag.name %></h2>
-      <p class="text-[13px] text-gray-400 mt-0.5">المعرف: <%= @tag.slug %></p>
+      <h3 class="text-sm font-medium text-gray-900">دمج في موضوع آخر</h3>
+      <p class="mt-1 mb-3 text-sm text-gray-500">تنتقل كل المقالات إلى الموضوع المختار، ثم يُحذف هذا الموضوع.</p>
+      <%= form_with url: merge_backoffice_tag_path(@tag), method: :post, class: "flex gap-2" do |f| %>
+        <%= f.select :target_id,
+            options_for_select(@other_tags.map { |t| ["#{t.name} (#{t.articles_count})", t.id] }),
+            { prompt: "اختر موضوعًا…" },
+            class: "bo-input pl-8 bg-[position:left_0.5rem_center]", required: true, aria: { label: "الموضوع الهدف" } %>
+        <%= f.submit "دمج", class: "bo-btn bo-btn-ghost",
+            data: { turbo_confirm: "سيتم نقل جميع المقالات وحذف هذا الموضوع نهائيًا. متابعة؟" } %>
+      <% end %>
     </div>
-    <div class="flex items-center gap-2">
-      <%= link_to "تعديل", edit_backoffice_tag_path(@tag), class: "px-3 py-1.5 rounded-xl bg-indigo-600 text-[13px] font-medium text-white hover:bg-indigo-700 transition-colors" %>
-      <%= button_to "حذف", backoffice_tag_path(@tag), method: :delete,
-          class: "px-3 py-1.5 rounded-xl text-[13px] font-medium text-red-500 hover:text-red-500/80 transition-colors",
+
+    <div>
+      <h3 class="text-sm font-medium text-gray-900">حذف الموضوع</h3>
+      <p class="mt-1 mb-3 text-sm text-gray-500">يُزال الموضوع من كل المقالات. لا يمكن التراجع عن ذلك.</p>
+      <%= button_to "حذف الموضوع", backoffice_tag_path(@tag), method: :delete, class: "bo-btn bo-btn-danger -mr-3",
           data: { turbo_confirm: "هل أنت متأكد من حذف هذا الموضوع؟" } %>
     </div>
   </div>
-
-  <!-- Stats Card -->
-  <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60 p-6">
-    <p class="text-[13px] text-gray-400">
-      <span class="text-gray-950 font-semibold tabular-nums"><%= @tag.articles_count %></span> مقال
-      <span class="text-gray-200 mx-2">&middot;</span>
-      <span class="text-gray-950 font-semibold tabular-nums"><%= @tag.followers.count %></span> متابع
-    </p>
-  </div>
-
-  <!-- Articles Card -->
-  <div class="rounded-[20px] bg-white shadow-xl shadow-gray-100/60">
-    <div class="p-6 pb-4">
-      <h3 class="text-[11px] font-medium text-gray-400 uppercase tracking-wider">المقالات المنشورة</h3>
-    </div>
-    <% if @articles.any? %>
-      <div class="px-6 pb-6">
-        <div class="divide-y divide-gray-100">
-          <% @articles.each do |article| %>
-            <div class="flex items-center justify-between gap-3 py-2.5">
-              <div class="min-w-0 flex-1">
-                <%= link_to backoffice_article_path(article), class: "text-[13px] font-medium text-gray-950 hover:text-gray-400 truncate block" do %>
-                  <%= article.title.presence || article.uuid %>
-                <% end %>
-                <p class="text-[12px] text-gray-400"><%= article.user.name %></p>
-              </div>
-              <div class="flex items-center gap-3 text-[12px] text-gray-400 shrink-0">
-                <span class="tabular-nums"><%= article.real_views_count || 0 %> مشاهدة</span>
-                <span><%= time_ago_in_words(article.created_at) %></span>
-              </div>
-            </div>
-          <% end %>
-        </div>
-        <div class="mt-4">
-          <%== @pagy.series_nav %>
-        </div>
-      </div>
-    <% else %>
-      <div class="px-6 pb-6">
-        <p class="text-[13px] text-gray-400">لا توجد مقالات منشورة لهذا الموضوع</p>
-      </div>
-    <% end %>
-  </div>
-</div>
+</section>
