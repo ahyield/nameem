@@ -10,6 +10,7 @@ set +a
 PROGRESS_FILE=tmp/deploy-progress
 STEPS=(
   "Build and push app image"
+  "Run database migrations"
   "Ensure kamal-proxy is running"
   "Detect stale containers"
   "Start container"

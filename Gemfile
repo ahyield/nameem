@@ -25,7 +25,7 @@ gem "stimulus-rails"
 
 # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
 gem "font-awesome-rails"
-gem "rails_heroicon"
+gem "rails_heroicon", require: false # loaded by config/initializers/rails_heroicon.rb
 gem "tailwindcss-rails", "~> 3.3.1"
 
 gem "bcrypt"
