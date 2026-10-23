@@ -17,12 +17,11 @@ RSpec.describe "Author stats" do
     within("tr", text: "الأكثر قراءة") { expect(page).to have_content("الأكثر مشاهدة") }
     within("tr", text: "الأحدث") { expect(page).to have_no_content("الأكثر مشاهدة") }
 
+    # have_css retries until the re-sorted table renders; all(...) would read the old one
     click_on "المشاهدات"
-    titles = all("tbody tr td:first-child").map(&:text)
-    expect(titles.first).to include("الأكثر قراءة")
+    expect(page).to have_css("tbody tr:first-child td:first-child", text: "الأكثر قراءة")
 
     click_on "المشاهدات"
-    titles = all("tbody tr td:first-child").map(&:text)
-    expect(titles.first).to include("الأحدث")
+    expect(page).to have_css("tbody tr:first-child td:first-child", text: "الأحدث")
   end
 end
