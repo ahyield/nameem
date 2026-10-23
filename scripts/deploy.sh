@@ -34,6 +34,16 @@ kamal deploy -d production 2>&1 | while IFS= read -r line; do
       progress running
     fi
   done
+  # The build is most of the deploy, so show Docker's own stage progress, e.g. "(build 3/6)"
+  if [ "$step" -eq 1 ]; then
+    if [[ "$line" =~ \[([a-z0-9-]+)\ +([0-9]+/[0-9]+)\] ]]; then
+      label="${STEPS[0]} (${BASH_REMATCH[1]} ${BASH_REMATCH[2]})"
+      progress running
+    elif [[ "$line" == *"exporting to image"* ]]; then
+      label="${STEPS[0]} (pushing)"
+      progress running
+    fi
+  fi
 done
 status=${PIPESTATUS[0]}
 set -e
