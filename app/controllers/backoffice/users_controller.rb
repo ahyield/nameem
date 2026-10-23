@@ -1,5 +1,8 @@
 module Backoffice
   class UsersController < BaseController
+    EDITOR_ROLES = %w[featured picked confirmed].freeze
+    ADMIN_ROLES = %w[admin editor].freeze
+
     before_action :set_user, only: [:show, :update, :destroy, :toggle_role]
     before_action :require_admin!, only: [:destroy]
 
@@ -22,8 +25,8 @@ module Backoffice
     end
 
     def update
-      permitted = [:featured, :picked, :confirmed]
-      permitted += [:admin, :editor] if current_user.admin?
+      permitted = EDITOR_ROLES.map(&:to_sym)
+      permitted += ADMIN_ROLES.map(&:to_sym) if current_user.admin?
 
       if @user.update(params.expect(user: permitted))
         flash[:notice] = "تم تحديث البيانات بنجاح"
@@ -40,16 +43,15 @@ module Backoffice
     end
 
     def toggle_role
-      role = params[:role]
-      allowed_roles = %w[featured picked confirmed]
-      allowed_roles += %w[admin editor] if current_user.admin?
+      allowed_roles = current_user.admin? ? EDITOR_ROLES + ADMIN_ROLES : EDITOR_ROLES
+      # Pick the role from our own list, so request data never names an attribute directly
+      role = allowed_roles.find { |allowed| allowed == params[:role] }
 
-      unless allowed_roles.include?(role)
+      if role
+        @user.update!(role => !@user[role])
+      else
         flash[:error] = "غير مسموح بتعديل هذا الدور"
-        redirect_to backoffice_user_path(@user) and return
       end
-
-      @user.update!(role => !@user.send(role))
       redirect_to backoffice_user_path(@user)
     end
 
