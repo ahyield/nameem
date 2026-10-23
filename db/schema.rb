@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_10_23_220000) do
+ActiveRecord::Schema[8.2].define(version: 2026_10_24_090000) do
   create_table "action_text_rich_texts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.text "body", size: :long
@@ -180,6 +180,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_23_220000) do
     t.datetime "read_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "emailed_at"
     t.index ["actor_id"], name: "index_notifications_on_actor_id"
     t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
     t.index ["recipient_id", "created_at"], name: "index_notifications_on_recipient_id_and_created_at"
@@ -384,6 +385,11 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_23_220000) do
     t.integer "real_views_count", default: 0, null: false
     t.datetime "suspended_at"
     t.string "suspension_reason"
+    t.boolean "email_comments", default: true, null: false
+    t.boolean "email_editorial", default: true, null: false
+    t.boolean "email_weekly", default: true, null: false
+    t.datetime "email_suppressed_at"
+    t.string "email_suppression_reason"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["featured"], name: "index_users_on_featured"
     t.index ["picked"], name: "index_users_on_picked"

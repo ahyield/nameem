@@ -12,8 +12,8 @@ module Backoffice
       "suspended"   => :suspended
     }.freeze
 
-    before_action :set_user, only: %i[show update destroy toggle_role suspend unsuspend]
-    before_action :require_admin!, only: %i[destroy suspend unsuspend]
+    before_action :set_user, only: %i[show update destroy toggle_role suspend unsuspend unsuppress_email]
+    before_action :require_admin!, only: %i[destroy suspend unsuspend unsuppress_email]
 
     def index
       @page_title = "المستخدمين"
@@ -78,6 +78,12 @@ module Backoffice
     def unsuspend
       @user.unsuspend!
       flash[:notice] = "تم رفع الإيقاف"
+      redirect_to backoffice_user_path(@user)
+    end
+
+    def unsuppress_email
+      @user.unsuppress_email!
+      flash[:notice] = "عاد البريد للعمل"
       redirect_to backoffice_user_path(@user)
     end
 

@@ -18,11 +18,31 @@ RSpec.describe NotificationMailer do
 
     it "counts the notifications in the subject" do
       expect(mail.subject).to include("2")
+      expect(described_class.digest(user, notifications.first(1)).subject).to eq("لديك إشعار جديد على نميم")
     end
 
     it "mentions who acted" do
-      body = mail.html_part&.body&.decoded || mail.body.decoded
+      body = mail.html_part.body.decoded
       notifications.each { |notification| expect(body).to include(notification.actor.name) }
+    end
+
+    it "offers one-click unsubscribe from the digest" do
+      expect(mail["List-Unsubscribe"].to_s).to include("/email/unsubscribe?token=")
+      expect(mail["List-Unsubscribe-Post"].to_s).to eq("List-Unsubscribe=One-Click")
+      expect(mail.html_part.body.decoded).to include("إلغاء الاشتراك في هذه الرسائل")
+    end
+
+    it "is not delivered once the reader switches the digest off" do
+      user.update!(email_notifications: false)
+
+      expect { mail.deliver_now }.not_to change(ActionMailer::Base.deliveries, :count)
+    end
+
+    it "shows the postal address when one is configured" do
+      allow(Rails.application.credentials).to receive(:dig).and_call_original
+      allow(Rails.application.credentials).to receive(:dig).with(:mailer, :postal_address).and_return("ص.ب ١٢٣، القاهرة")
+
+      expect(mail.html_part.body.decoded).to include("ص.ب ١٢٣، القاهرة")
     end
   end
 end

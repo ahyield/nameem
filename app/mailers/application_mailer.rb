@@ -1,10 +1,26 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "noreply@nameem.com"
+  default from: "نميم <noreply@nameem.com>", reply_to: "support@nameem.com"
   layout "mailer"
 
   before_action :attach_logo
 
   private
+
+  # Sends to a user under an email category (see Email::Categories). Mail the user switched off, or mail to
+  # a suppressed address, isn't delivered. Everything but account mail carries one-click unsubscribe.
+  def mail_user(user, category:, subject:, **)
+    @email_category = category.to_s
+    # Set before mail() renders the template, so the footer can link to it
+    if @email_category != "account"
+      @unsubscribe_url = email_unsubscribe_url(token: user.unsubscribe_token(category))
+      headers["List-Unsubscribe"] = "<#{@unsubscribe_url}>"
+      headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
+    end
+
+    mail(to: user.email, subject:, **).tap do |message|
+      message.perform_deliveries = user.emailable?(category)
+    end
+  end
 
   def attach_logo
     attachments.inline["logo.png"] = Rails.root.join("app/assets/images/brand/logo.png").read

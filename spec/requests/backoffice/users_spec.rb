@@ -217,4 +217,34 @@ RSpec.describe "Backoffice::Users", type: :request do
       expect(response.body).to include("إيقاف الحساب")
     end
   end
+
+  describe "suppressed email" do
+    let(:user) { create(:user, email_suppressed_at: 1.day.ago, email_suppression_reason: "complaint") }
+
+    it "shows the reason and lets an admin turn email back on" do
+      authenticate_user(admin)
+
+      get backoffice_user_path(user)
+      expect(response.body).to include("البريد موقوف")
+      expect(response.body).to include("تعليم رسالة كمزعجة")
+
+      post unsuppress_email_backoffice_user_path(user)
+      expect(user.reload).not_to be_email_suppressed
+    end
+
+    it "describes a bounce" do
+      user.update!(email_suppression_reason: "bounce")
+      authenticate_user(admin)
+
+      get backoffice_user_path(user)
+      expect(response.body).to include("ارتداد الرسائل")
+    end
+
+    it "is admin only" do
+      authenticate_user(editor)
+
+      post unsuppress_email_backoffice_user_path(user)
+      expect(user.reload).to be_email_suppressed
+    end
+  end
 end

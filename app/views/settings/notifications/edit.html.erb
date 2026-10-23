@@ -14,19 +14,45 @@
   <main class="px-4 py-16 sm:px-6 lg:flex-auto lg:px-0 lg:py-20">
     <div class="mx-auto max-w-2xl space-y-16 sm:space-y-20 lg:mx-0 lg:max-w-none">
       <div class="">
-        <%= form_with model: @user, url: settings_update_notifications_path, html: { class: "md:col-span-2" }, method: :put do |form| %>
-          <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
-            <div class="col-span-full">
-              <div class="flex items-center gap-x-3">
-                <%= form.check_box :email_notifications, class: "h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500" %>
-                <%= form.label :email_notifications, "تلقي إشعارات على البريد الإلكتروني", class: "block text-sm font-medium leading-6 text-gray-900" %>
-              </div>
-              <p class="mt-2 text-sm text-gray-500">عند التفعيل، ستتلقى ملخصًا يوميًا بالإشعارات الجديدة على بريدك الإلكتروني.</p>
-            </div>
-          </div>
+        <%= form_with model: @user, url: settings_update_notifications_path, method: :put, class: "max-w-xl" do |form| %>
+          <h2 class="text-base font-semibold text-gray-900">رسائل البريد الإلكتروني</h2>
+          <p class="mt-1 text-sm text-gray-500">اختر ما يصلك على <bdi dir="ltr"><%= @user.email %></bdi>.</p>
 
-          <div class="mt-8 flex">
-            <%= form.submit "حفظ", class: "rounded-md bg-orange-50 px-3.5 py-2.5 text-sm font-semibold text-orange-600 shadow-sm hover:bg-orange-100" %>
+          <% if @user.email_suppressed? %>
+            <p class="mt-4 rounded-lg bg-orange-50 px-4 py-3 text-sm text-orange-800" role="status">
+              توقّفنا عن مراسلة هذا العنوان لأن الرسائل ارتدّت أو عُلِّمت كرسائل مزعجة. تواصل مع الدعم لإعادة تفعيله.
+            </p>
+          <% end %>
+
+          <ul class="mt-6 divide-y divide-gray-100 rounded-xl ring-1 ring-gray-900/5">
+            <% Email::Categories::OPTIONAL.each do |category| %>
+              <% column = Email::Categories.column(category) %>
+              <% info = Email::Categories::ALL[category] %>
+              <li class="flex items-start justify-between gap-4 p-4">
+                <div>
+                  <p id="email-<%= category %>-label" class="text-sm font-semibold text-gray-900"><%= info[:label] %></p>
+                  <p id="email-<%= category %>-hint" class="mt-1 text-sm text-gray-500"><%= info[:description] %></p>
+                </div>
+                <label class="relative inline-flex shrink-0 cursor-pointer items-center">
+                  <%= form.check_box column, role: "switch", class: "peer sr-only",
+                                             aria: { labelledby: "email-#{category}-label", describedby: "email-#{category}-hint" } %>
+                  <span class="h-6 w-11 rounded-full bg-gray-200 transition-colors duration-150 peer-checked:bg-gray-900 peer-focus-visible:ring-2 peer-focus-visible:ring-orange-500 peer-focus-visible:ring-offset-2"></span>
+                  <span class="pointer-events-none absolute right-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200 ease-out peer-checked:-translate-x-5"></span>
+                </label>
+              </li>
+            <% end %>
+            <li class="flex items-start justify-between gap-4 p-4">
+              <div>
+                <p class="text-sm font-semibold text-gray-900">رسائل الحساب</p>
+                <p class="mt-1 text-sm text-gray-500">رموز الدخول وتنبيهات الأمان. تصلك دائماً.</p>
+              </div>
+              <span class="shrink-0 text-xs text-gray-500">دائماً</span>
+            </li>
+          </ul>
+
+          <div class="mt-8">
+            <%= form.submit "حفظ",
+                  class: "cursor-pointer rounded-full bg-gray-900 px-6 py-2.5 text-sm font-semibold text-white transition-[transform,background-color] duration-150 hover:bg-gray-800 active:scale-[0.97]" %>
           </div>
         <% end %>
       </div>

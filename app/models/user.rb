@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   extend FriendlyId
+  include EmailPreferences
 
   friendly_id :email, use: :slugged
 

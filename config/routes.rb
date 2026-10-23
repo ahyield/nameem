@@ -18,6 +18,9 @@ Rails.application.routes.draw do
     end
   end
   resources :reports, only: [:create]
+  get "email/unsubscribe", to: "email/unsubscribes#show", as: :email_unsubscribe
+  post "email/unsubscribe", to: "email/unsubscribes#create"
+  post "webhooks/resend", to: "webhooks/resend#create", as: :resend_webhook
   resources :notifications, only: [:index] do
     member do
       post :mark_read

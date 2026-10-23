@@ -104,6 +104,18 @@
   </section>
 <% end %>
 
+<% if current_user.admin? && @user.email_suppressed? %>
+  <section class="mt-12 border-t border-gray-200/70 pt-6">
+    <h2 class="text-sm font-semibold text-gray-900">البريد موقوف</h2>
+    <p class="mt-1 mb-3 text-sm text-gray-500">
+      لا نرسل لهذا العنوان إلا رسائل الحساب منذ <%= time_ago_in_words(@user.email_suppressed_at) %>،
+      بسبب <%= @user.email_suppression_reason == "complaint" ? "تعليم رسالة كمزعجة" : "ارتداد الرسائل" %>.
+    </p>
+    <%= button_to "إعادة تفعيل البريد", unsuppress_email_backoffice_user_path(@user), method: :post, class: "bo-btn bo-btn-ghost -mr-3",
+        data: { turbo_confirm: "تأكد أن العنوان يعمل قبل إعادة التفعيل. متابعة؟" } %>
+  </section>
+<% end %>
+
 <% if current_user.admin? && @user != current_user %>
   <section class="mt-12 border-t border-gray-200/70 pt-6">
     <h2 class="text-sm font-semibold text-gray-900">إيقاف الحساب</h2>

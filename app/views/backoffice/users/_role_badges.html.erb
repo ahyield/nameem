@@ -4,6 +4,9 @@
       <%= status_badge(label, :active) %>
     <% end %>
   <% end %>
+  <% if user.email_suppressed? %>
+    <%= status_badge("البريد موقوف") %>
+  <% end %>
   <% if user.suspended? %>
     <%= status_badge("موقوف") %>
   <% end %>
