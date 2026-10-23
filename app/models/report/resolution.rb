@@ -5,7 +5,8 @@ class Report
 
     attr_reader :report, :reviewer, :decision, :note
 
-    # actions: remove_content, warn_author, notify_reporters (booleans, used when the decision is "action")
+    # actions: remove_content, warn_author, notify_reporters, suspend_author (booleans, used when the decision
+    # is "action"); only admins can suspend
     def initialize(report, reviewer:, decision:, note: nil, **actions)
       @report = report
       @reviewer = reviewer
@@ -41,8 +42,13 @@ class Report
 
     def take_action(reports)
       remove_content if @actions[:remove_content] && report.reportable
-      notify(report.reported_user, :content_removed, reports.first) if @actions[:warn_author] && report.reported_user
+      act_on_author(reports.first) if report.reported_user
       reports.each { |filed| notify(filed.reporter, :report_actioned, filed) } if @actions[:notify_reporters]
+    end
+
+    def act_on_author(filed)
+      report.reported_user.suspend!(note || "مخالفة إرشادات النشر") if @actions[:suspend_author] && reviewer.admin?
+      notify(report.reported_user, :content_removed, filed) if @actions[:warn_author]
     end
 
     def remove_content

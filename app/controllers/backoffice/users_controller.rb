@@ -2,9 +2,18 @@ module Backoffice
   class UsersController < BaseController
     EDITOR_ROLES = %w[featured picked confirmed].freeze
     ADMIN_ROLES = %w[admin editor].freeze
+    USER_FILTERS = {
+      "confirmed"   => :confirmed,
+      "unconfirmed" => :unconfirmed,
+      "featured"    => :featured,
+      "picked"      => :picked,
+      "admins"      => :admins,
+      "editors"     => :editors,
+      "suspended"   => :suspended
+    }.freeze
 
-    before_action :set_user, only: %i[show update destroy toggle_role]
-    before_action :require_admin!, only: [:destroy]
+    before_action :set_user, only: %i[show update destroy toggle_role suspend unsuspend]
+    before_action :require_admin!, only: %i[destroy suspend unsuspend]
 
     def index
       @page_title = "المستخدمين"
@@ -22,6 +31,7 @@ module Backoffice
     def show
       @page_title = @user.name
       @recent_articles = @user.articles.order(created_at: :desc).limit(5)
+      @reports_received = @user.reports_received.includes(:reporter).order(created_at: :desc).limit(5)
     end
 
     def update
@@ -55,6 +65,22 @@ module Backoffice
       redirect_to backoffice_user_path(@user)
     end
 
+    def suspend
+      if @user == current_user
+        flash[:error] = "لا يمكنك إيقاف حسابك"
+      else
+        @user.suspend!(params[:reason].presence || "مخالفة إرشادات النشر")
+        flash[:notice] = "تم إيقاف الحساب"
+      end
+      redirect_to backoffice_user_path(@user)
+    end
+
+    def unsuspend
+      @user.unsuspend!
+      flash[:notice] = "تم رفع الإيقاف"
+      redirect_to backoffice_user_path(@user)
+    end
+
     private
 
     def set_user
@@ -62,15 +88,8 @@ module Backoffice
     end
 
     def filter_users(users)
-      case @filter
-      when "confirmed"   then users.confirmed
-      when "unconfirmed" then users.where(confirmed: false)
-      when "featured"    then users.featured
-      when "picked"      then users.picked
-      when "admins"      then users.admins
-      when "editors"     then users.editors
-      else users
-      end
+      scope = USER_FILTERS[@filter]
+      scope ? users.public_send(scope) : users
     end
 
     def search_users(users)

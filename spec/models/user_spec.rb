@@ -217,4 +217,18 @@ RSpec.describe User do
       expect(user.social_link(:twitter_handle)).to be_nil
     end
   end
+
+  describe "suspension" do
+    let(:user) { create(:user) }
+
+    it "suspends and lifts it" do
+      user.suspend!("إساءة")
+      expect(user).to be_suspended
+      expect(described_class.suspended).to include(user)
+
+      user.unsuspend!
+      expect(user.reload).not_to be_suspended
+      expect(user.suspension_reason).to be_nil
+    end
+  end
 end

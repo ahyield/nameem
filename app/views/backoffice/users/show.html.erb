@@ -86,7 +86,41 @@
   </section>
 </div>
 
+<% if @reports_received.any? %>
+  <section class="mt-8">
+    <h2 class="mb-3 text-sm font-semibold text-gray-900">بلاغات عن محتواه</h2>
+    <ul class="bo-panel divide-y divide-gray-200/70">
+      <% @reports_received.each do |report| %>
+        <li>
+          <%= link_to backoffice_report_path(report), class: "bo-row" do %>
+            <span class="min-w-0 flex-1 truncate text-sm"><%= report.snapshot.to_s.truncate(100) %></span>
+            <span class="shrink-0 text-xs text-gray-500"><%= report.reason_label %></span>
+            <%= status_badge({ "pending" => "معلق", "actioned" => "اتُّخذ إجراء", "dismissed" => "مرفوض" }[report.status],
+                             report.pending? ? :active : :default) %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </section>
+<% end %>
+
 <% if current_user.admin? && @user != current_user %>
+  <section class="mt-12 border-t border-gray-200/70 pt-6">
+    <h2 class="text-sm font-semibold text-gray-900">إيقاف الحساب</h2>
+    <% if @user.suspended? %>
+      <p class="mt-1 mb-3 text-sm text-gray-500">
+        موقوف منذ <%= time_ago_in_words(@user.suspended_at) %> · <%= @user.suspension_reason %>
+      </p>
+      <%= button_to "رفع الإيقاف", unsuspend_backoffice_user_path(@user), method: :post, class: "bo-btn bo-btn-ghost -mr-3" %>
+    <% else %>
+      <p class="mt-1 mb-3 text-sm text-gray-500">يبقى الحساب قادراً على القراءة، لكنه لا يستطيع النشر أو التعليق أو الإعجاب.</p>
+      <%= form_with url: suspend_backoffice_user_path(@user), method: :post, class: "flex flex-wrap items-center gap-2" do %>
+        <%= text_field_tag :reason, nil, placeholder: "السبب", class: "bo-input sm:w-64", autocomplete: "off", aria: { label: "سبب الإيقاف" } %>
+        <%= submit_tag "إيقاف الحساب", class: "bo-btn bo-btn-danger", data: { turbo_confirm: "هل أنت متأكد من إيقاف هذا الحساب؟" } %>
+      <% end %>
+    <% end %>
+  </section>
+
   <section class="mt-12 border-t border-gray-200/70 pt-6">
     <h2 class="text-sm font-semibold text-gray-900">حذف المستخدم</h2>
     <p class="mt-1 mb-3 text-sm text-gray-500">يحذف الحساب وكل مقالاته وتعليقاته. لا يمكن التراجع عن ذلك.</p>

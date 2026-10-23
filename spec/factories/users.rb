@@ -47,6 +47,11 @@ FactoryBot.define do
       editor { true }
     end
 
+    trait :suspended do
+      suspended_at { 1.day.ago }
+      suspension_reason { "مخالفة إرشادات النشر" }
+    end
+
     factory :user_with_articles, traits: [:with_articles]
     factory :user_with_avatar, traits: [:with_avatar]
 

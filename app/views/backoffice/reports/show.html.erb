@@ -8,6 +8,7 @@
     <h1 class="text-base font-semibold text-gray-900">
       <% if @author %>
         <%= link_to @author.name, backoffice_user_path(@author), class: "hover:underline" %>
+        <% if @author.suspended? %><%= status_badge("موقوف", :active) %><% end %>
       <% else %>
         مستخدم محذوف
       <% end %>
@@ -101,6 +102,12 @@
             <%= check_box_tag :notify_reporters, "1", true %>
             إشعار المُبلِّغين باتخاذ إجراء
           </label>
+          <% if current_user.admin? && @author && !@author.suspended? %>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <%= check_box_tag :suspend_author, "1", false %>
+              إيقاف حساب الكاتب (لا يستطيع النشر أو التعليق أو الإعجاب)
+            </label>
+          <% end %>
         </div>
         <label class="flex items-center gap-3 text-sm text-gray-900 cursor-pointer">
           <%= radio_button_tag :decision, "dismiss", false %>

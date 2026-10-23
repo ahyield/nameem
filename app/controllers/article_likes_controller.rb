@@ -1,4 +1,5 @@
 class ArticleLikesController < ApplicationController
+  before_action :refuse_suspended_user, only: :create
   before_action :set_article
 
   def create

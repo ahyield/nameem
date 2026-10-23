@@ -1,6 +1,7 @@
 module Api
   class ArticlesController < ApiBaseController
     skip_before_action :require_authentication, only: [:show]
+    before_action :refuse_suspended_user, only: %i[create update]
 
     def show
       @user = User.find_by!(slug: params[:slug])
