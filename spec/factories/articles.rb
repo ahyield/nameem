@@ -6,7 +6,7 @@ FactoryBot.define do
     title { "New Article" }
     content { { ops: [{ insert: "New Article" }] } }
     slug { "slug-article" }
-    user { User.create(email: "test@test.com", slug: "test") }
+    user
     uuid { SecureRandom.uuid }
     published_at { DateTime.now }
     featured { false }
@@ -27,9 +27,9 @@ FactoryBot.define do
 
     trait :with_images do
       after(:create) do |article|
-        article.images.attach(io:           Rails.root.join("spec", "fixtures", "files", "avatar.png").open,
-                              filename:     "image.jpg",
-                              content_type: "image/jgp")
+        article.images.attach(io:           Rails.root.join("spec/fixtures/files/avatar-3.jpeg").open,
+                              filename:     "image.jpeg",
+                              content_type: "image/jpeg")
       end
     end
 

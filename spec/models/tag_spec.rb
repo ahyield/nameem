@@ -16,7 +16,8 @@ RSpec.describe Tag do
     it "requires a unique slug" do
       create(:tag, name: "تقنية")
       duplicate = build(:tag, name: "تقنية")
-      expect(duplicate).not_to be_valid
+      duplicate.validate
+      expect(duplicate.errors[:slug]).to be_present
     end
   end
 
@@ -34,16 +35,16 @@ RSpec.describe Tag do
 
   describe "scopes" do
     it ".popular orders by articles_count desc" do
-      tag_low = create(:tag, articles_count: 1)
+      create(:tag, articles_count: 1)
       tag_high = create(:tag, articles_count: 10)
-      expect(Tag.popular.first).to eq(tag_high)
+      expect(described_class.popular.first).to eq(tag_high)
     end
 
     it ".with_articles excludes tags with zero articles" do
       tag_with = create(:tag, articles_count: 1)
       tag_without = create(:tag, articles_count: 0)
-      expect(Tag.with_articles).to include(tag_with)
-      expect(Tag.with_articles).not_to include(tag_without)
+      expect(described_class.with_articles).to include(tag_with)
+      expect(described_class.with_articles).not_to include(tag_without)
     end
   end
 

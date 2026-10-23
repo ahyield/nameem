@@ -10,12 +10,11 @@ FactoryBot.define do
     last_sign_in_at { Time.zone.now }
     sequence(:slug) { |n| "#{Faker::Internet.slug}-#{n}" }
 
-    after(:create) do |user|
-      url = Faker::Avatar.image(slug: Faker::Internet.slug, size: "50x50", format: "jpg")
-      file = URI.parse(url).open
-      filename = File.basename(URI.parse(url).path)
-
-      user.avatar.attach(io: file, filename:)
+    # Attaches a local placeholder image; specs must never download files
+    trait :with_avatar do
+      after(:create) do |user|
+        user.avatar.attach(io: Rails.root.join("spec/fixtures/files/avatar-2.jpeg").open, filename: "avatar.jpeg")
+      end
     end
 
     trait :unconfirmed do

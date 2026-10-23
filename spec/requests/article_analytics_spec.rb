@@ -75,7 +75,7 @@ RSpec.describe "Article Analytics" do
     end
 
     it "lists all likers in scrollable list" do
-      likers = 8.times.map { create(:user) }
+      likers = Array.new(8) { create(:user) }
       likers.each { |u| create(:article_like, article: article, user: u) }
 
       get article_path

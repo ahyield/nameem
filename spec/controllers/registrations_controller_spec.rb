@@ -70,9 +70,9 @@ RSpec.describe RegistrationsController do
       end
 
       it "creates user and magic link, redirects to code entry" do
-        expect {
+        expect do
           post :create, params: { sign_up: { email: "newuser@example.com" } }
-        }.to change(User, :count).by(1)
+        end.to change(User, :count).by(1)
 
         user = User.find_by(email: "newuser@example.com")
         expect(user.magic_links.count).to eq(1)

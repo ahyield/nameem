@@ -10,26 +10,26 @@ RSpec.describe "Follows" do
       it "creates a follow" do
         other_user = create(:user)
 
-        expect {
+        expect do
           post user_follow_path(slug: other_user), as: :turbo_stream
-        }.to change(Follow, :count).by(1)
+        end.to change(Follow, :count).by(1)
 
         expect(response).to have_http_status(:success)
       end
 
       it "rejects self-follow" do
-        expect {
+        expect do
           post user_follow_path(slug: user), as: :turbo_stream
-        }.not_to change(Follow, :count)
+        end.not_to change(Follow, :count)
       end
 
       it "does not create duplicate follows" do
         other_user = create(:user)
         create(:follow, follower: user, followable: other_user)
 
-        expect {
+        expect do
           post user_follow_path(slug: other_user), as: :turbo_stream
-        }.not_to change(Follow, :count)
+        end.not_to change(Follow, :count)
       end
     end
 
@@ -50,9 +50,9 @@ RSpec.describe "Follows" do
         other_user = create(:user)
         create(:follow, follower: user, followable: other_user)
 
-        expect {
+        expect do
           delete user_unfollow_path(slug: other_user), as: :turbo_stream
-        }.to change(Follow, :count).by(-1)
+        end.to change(Follow, :count).by(-1)
 
         expect(response).to have_http_status(:success)
       end
@@ -66,9 +66,9 @@ RSpec.describe "Follows" do
       it "creates a follow for a tag" do
         tag = create(:tag)
 
-        expect {
+        expect do
           post follow_topic_path(tag), as: :turbo_stream
-        }.to change(Follow, :count).by(1)
+        end.to change(Follow, :count).by(1)
 
         expect(Follow.last.followable).to eq(tag)
       end
@@ -91,9 +91,9 @@ RSpec.describe "Follows" do
         tag = create(:tag)
         create(:follow, follower: user, followable: tag)
 
-        expect {
+        expect do
           delete unfollow_topic_path(tag), as: :turbo_stream
-        }.to change(Follow, :count).by(-1)
+        end.to change(Follow, :count).by(-1)
       end
     end
   end

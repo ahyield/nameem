@@ -80,7 +80,7 @@ export default class extends Controller {
 
     // Track image deletions
     this.editor.registerMutationListener(ImageNode, (mutations) => {
-      for (const [nodeKey, mutation] of mutations) {
+      for (const [, mutation] of mutations) {
         if (mutation === "destroyed") {
           // We can't access the node after destruction, but we track via the DOM
           // The image cleanup will happen via the auto-save cycle

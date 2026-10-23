@@ -2,12 +2,12 @@ class Follow < ApplicationRecord
   belongs_to :follower, class_name: "User", counter_cache: :following_count
   belongs_to :followable, polymorphic: true
 
-  validates :follower_id, uniqueness: { scope: [:followable_type, :followable_id] }
+  validates :follower_id, uniqueness: { scope: %i[followable_type followable_id] }
   validate :not_self_follow
 
   after_create :increment_followers_count
-  after_destroy :decrement_followers_count
   after_create :notify_followable
+  after_destroy :decrement_followers_count
 
   private
 

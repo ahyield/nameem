@@ -57,9 +57,9 @@ module Backup
     end
 
     def compress_backup
-      compress_command = "gzip #{backup_file}"
-      Rails.logger.debug { "Compressing backup file: #{compress_command}" }
-      system(compress_command)
+      Rails.logger.debug { "Compressing backup file: #{backup_file}" }
+      # Argument list, not a string, so no shell is involved
+      system("gzip", backup_file)
 
       unless $CHILD_STATUS.success?
         Rails.logger.debug "Compression failed. Please check the command and file."

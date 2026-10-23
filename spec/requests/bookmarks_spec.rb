@@ -83,7 +83,7 @@ RSpec.describe "Bookmarks" do
 
       it "denies access" do
         get user_bookmarks_path(slug: other_user)
-        expect(response).to have_http_status(:forbidden).or redirect_to(root_path)
+        expect(response).to have_http_status(:not_found)
       end
     end
 

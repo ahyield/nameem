@@ -1,18 +1,10 @@
 class FeedController < ApplicationController
   def index
     @pagy, @articles = pagy(Article.published.order(published_at: :desc))
-    @users = if Current.user
-                followed_ids = Current.user.following_users.pluck(:id) + [Current.user.id]
-                User.picked.where.not(id: followed_ids).order("RAND()").limit(4)
-              else
-                User.picked.order("RAND()").limit(4)
-              end
-    @tags = if Current.user
-               followed_tag_ids = Current.user.following_tags.pluck(:id)
-               Tag.popular.with_articles.where.not(id: followed_tag_ids).limit(10)
-             else
-               Tag.popular.with_articles.limit(10)
-             end
+    # The feed requires signing in, so suggestions always skip what the reader already follows
+    followed_ids = Current.user.following_users.pluck(:id) + [Current.user.id]
+    @users = User.picked.where.not(id: followed_ids).order("RAND()").limit(4)
+    @tags = Tag.popular.with_articles.where.not(id: Current.user.following_tags.select(:id)).limit(10)
 
     @trending = Article.trending(days: 7).limit(5).includes(:user)
 

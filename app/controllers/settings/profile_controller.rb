@@ -14,7 +14,7 @@ module Settings
         redirect_to settings_user_settings_path
       else
         flash.now[:error] = @user.errors.full_messages.to_sentence
-        render :edit, status: :unprocessable_entity
+        render :edit, status: :unprocessable_content
       end
     end
 

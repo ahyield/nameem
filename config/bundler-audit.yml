@@ -1,0 +1,3 @@
+# Advisories to ignore, with a reason for each. Keep this list empty unless an advisory
+# cannot apply to how Nameem uses the gem.
+ignore: []

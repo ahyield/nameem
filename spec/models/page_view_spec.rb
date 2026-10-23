@@ -26,15 +26,15 @@ RSpec.describe PageView do
 
   describe "counter cache" do
     it "increments real_views_count on the article" do
-      expect {
+      expect do
         create(:page_view, viewable: article)
-      }.to change { article.reload.real_views_count }.by(1)
+      end.to change { article.reload.real_views_count }.by(1)
     end
 
     it "increments real_views_count on the user" do
-      expect {
+      expect do
         create(:page_view, viewable: user)
-      }.to change { user.reload.real_views_count }.by(1)
+      end.to change { user.reload.real_views_count }.by(1)
     end
   end
 

@@ -68,7 +68,7 @@ RSpec.describe User do
   describe "attachments" do
     context "when avatar is attached" do
       it "has an attached avatar" do
-        user = create(:user)
+        user = create(:user, :with_avatar)
         expect(user.avatar).to be_attached
       end
     end
@@ -152,9 +152,9 @@ RSpec.describe User do
     it "creates a magic link and enqueues the mailer" do
       user = create(:user)
 
-      expect {
+      expect do
         user.send_magic_link(purpose: :sign_in)
-      }.to change(MagicLink, :count).by(1)
+      end.to change(MagicLink, :count).by(1)
 
       magic_link = user.magic_links.last
       expect(magic_link).to be_sign_in

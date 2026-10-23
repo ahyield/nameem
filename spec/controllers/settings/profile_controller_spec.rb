@@ -27,10 +27,9 @@ RSpec.describe Settings::ProfileController do
         allow(controller).to receive(:authorize).with(another_user, :edit?).and_raise(Pundit::NotAuthorizedError)
       end
 
-      it "raises a Pundit::NotAuthorizedError" do
-        expect do
-          get :edit
-        end.to raise_error(Pundit::NotAuthorizedError)
+      it "responds with not found" do
+        get :edit
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -79,10 +78,9 @@ RSpec.describe Settings::ProfileController do
         allow(controller).to receive(:authorize).with(user, :update?).and_raise(Pundit::NotAuthorizedError)
       end
 
-      it "raises a Pundit::NotAuthorizedError" do
-        expect do
-          patch :update, params: { user: { name: "New Name" } }
-        end.to raise_error(Pundit::NotAuthorizedError)
+      it "responds with not found" do
+        patch :update, params: { user: { name: "New Name" } }
+        expect(response).to have_http_status(:not_found)
       end
     end
   end

@@ -37,7 +37,7 @@ RSpec.describe "Backoffice::Comments", type: :request do
     end
 
     context "with replies" do
-      let!(:reply) { create(:comment, :reply, article: article, user: user, parent: comment) }
+      before { create(:comment, :reply, article: article, user: user, parent: comment) }
 
       it "shows replies for top-level comment" do
         get backoffice_comment_path(comment)
@@ -48,9 +48,9 @@ RSpec.describe "Backoffice::Comments", type: :request do
 
   describe "DELETE /backoffice/comments/:id" do
     it "deletes the comment" do
-      expect {
+      expect do
         delete backoffice_comment_path(comment)
-      }.to change(Comment, :count).by(-1)
+      end.to change(Comment, :count).by(-1)
       expect(response).to redirect_to(backoffice_comments_path)
     end
   end

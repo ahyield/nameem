@@ -3,7 +3,7 @@ class ArticleLikesController < ApplicationController
 
   def create
     if @article.user == current_user
-      head :unprocessable_entity
+      head :unprocessable_content
       return
     end
 

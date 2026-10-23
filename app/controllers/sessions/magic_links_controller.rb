@@ -17,7 +17,7 @@ module Sessions
 
       if magic_link.nil? || magic_link.user.email != email_address_pending_authentication
         flash.now[:error] = "الرمز غير صحيح أو منتهي الصلاحية"
-        return render :show, status: :unprocessable_entity
+        return render :show, status: :unprocessable_content
       end
 
       cookies.delete(:pending_authentication_token)

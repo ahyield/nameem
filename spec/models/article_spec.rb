@@ -45,9 +45,9 @@ RSpec.describe Article do
       end
 
       it "has alternative titles" do
-        article = create(:article, title: nil, user: create(:user),
-                                   content_html: "<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>")
-        expect(article.alternative_titles).to eq(["Lorem Ipsum is simply dummy text of the printing and typesetting industry."])
+        sentence = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+        article = create(:article, title: nil, content_html: "<p>#{sentence}</p>")
+        expect(article.alternative_titles).to eq([sentence])
       end
 
       it "has article images" do

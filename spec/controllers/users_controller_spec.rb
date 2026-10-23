@@ -45,11 +45,10 @@ RSpec.describe UsersController do
         sign_in another_user
       end
 
-      it "raises a Pundit::NotAuthorizedError" do
-        expect do
-          article.unpublish
-          get :article, params: { slug: user.slug, uuid: article.uuid }
-        end.to raise_error(Pundit::NotAuthorizedError)
+      it "responds with not found" do
+        article.unpublish
+        get :article, params: { slug: user.slug, uuid: article.uuid }
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -133,10 +132,9 @@ RSpec.describe UsersController do
     context "when signed in as another user" do
       before { sign_in another_user }
 
-      it "raises Pundit::NotAuthorizedError" do
-        expect do
-          get :stats, params: { slug: user.slug }
-        end.to raise_error(Pundit::NotAuthorizedError)
+      it "responds with not found" do
+        get :stats, params: { slug: user.slug }
+        expect(response).to have_http_status(:not_found)
       end
     end
 

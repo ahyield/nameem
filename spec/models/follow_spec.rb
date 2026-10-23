@@ -46,58 +46,58 @@ RSpec.describe Follow do
   describe "counter caches" do
     it "increments followers_count on the followed user" do
       followed = create(:user)
-      expect {
+      expect do
         create(:follow, followable: followed)
-      }.to change { followed.reload.followers_count }.by(1)
+      end.to change { followed.reload.followers_count }.by(1)
     end
 
     it "decrements followers_count on unfollow" do
       follow = create(:follow)
       followed = follow.followable
 
-      expect {
+      expect do
         follow.destroy
-      }.to change { followed.reload.followers_count }.by(-1)
+      end.to change { followed.reload.followers_count }.by(-1)
     end
 
     it "increments following_count on the follower" do
       follower = create(:user)
-      expect {
+      expect do
         create(:follow, follower: follower)
-      }.to change { follower.reload.following_count }.by(1)
+      end.to change { follower.reload.following_count }.by(1)
     end
 
     it "decrements following_count on unfollow" do
       follow = create(:follow)
       follower = follow.follower
 
-      expect {
+      expect do
         follow.destroy
-      }.to change { follower.reload.following_count }.by(-1)
+      end.to change { follower.reload.following_count }.by(-1)
     end
 
     it "increments followers_count on a followed tag" do
       tag = create(:tag)
-      expect {
+      expect do
         create(:follow, :tag_follow, followable: tag)
-      }.to change { tag.reload.followers_count }.by(1)
+      end.to change { tag.reload.followers_count }.by(1)
     end
 
     it "decrements followers_count on tag unfollow" do
       follow = create(:follow, :tag_follow)
       tag = follow.followable
 
-      expect {
+      expect do
         follow.destroy
-      }.to change { tag.reload.followers_count }.by(-1)
+      end.to change { tag.reload.followers_count }.by(-1)
     end
   end
 
   describe "notifications" do
     it "creates a notification when following a user" do
-      expect {
+      expect do
         create(:follow)
-      }.to change(Notification, :count).by(1)
+      end.to change(Notification, :count).by(1)
     end
 
     it "creates a followed notification with correct attributes" do
@@ -111,9 +111,9 @@ RSpec.describe Follow do
     end
 
     it "does not create a notification when following a tag" do
-      expect {
+      expect do
         create(:follow, :tag_follow)
-      }.not_to change(Notification, :count)
+      end.not_to change(Notification, :count)
     end
   end
 end

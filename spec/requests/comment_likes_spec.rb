@@ -89,7 +89,6 @@ RSpec.describe "Comment Likes" do
       notification = Notification.where(action: :comment_liked).last
       expect(notification.recipient).to eq(reply_author)
     end
-
   end
 
   describe "DELETE /:slug/:uuid/comments/:id/like" do
@@ -130,7 +129,6 @@ RSpec.describe "Comment Likes" do
 
       expect(response).to have_http_status(:ok)
     end
-
   end
 
   describe "authentication" do

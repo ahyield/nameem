@@ -11,6 +11,10 @@ class ArticlePolicy < ApplicationPolicy
     update?
   end
 
+  def destroy?
+    update?
+  end
+
   def show?
     if record.draft?
       edit?

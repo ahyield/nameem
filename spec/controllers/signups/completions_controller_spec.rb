@@ -35,7 +35,7 @@ RSpec.describe Signups::CompletionsController do
       end
     end
 
-    context "security: does not permit confirmed param" do
+    context "when a confirmed param is submitted" do
       it "ignores the confirmed parameter" do
         post :create, params: { user: { name: "عبدالله", slug: "abdullah-test", confirmed: true } }
 

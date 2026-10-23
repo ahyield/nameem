@@ -38,7 +38,8 @@ RSpec.describe "Backoffice::Tags", type: :request do
     let!(:target_tag) { create(:tag) }
     let(:user) { create(:user) }
     let!(:article) { create(:article, :published, user: user) }
-    let!(:article_tag) { create(:article_tag, article: article, tag: tag) }
+
+    before { create(:article_tag, article: article, tag: tag) }
 
     it "merges the tag into target" do
       post merge_backoffice_tag_path(tag), params: { target_id: target_tag.id }
@@ -50,9 +51,9 @@ RSpec.describe "Backoffice::Tags", type: :request do
 
   describe "DELETE /backoffice/tags/:slug" do
     it "deletes the tag" do
-      expect {
+      expect do
         delete backoffice_tag_path(tag)
-      }.to change(Tag, :count).by(-1)
+      end.to change(Tag, :count).by(-1)
       expect(response).to redirect_to(backoffice_tags_path)
     end
   end

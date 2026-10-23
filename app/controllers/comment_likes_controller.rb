@@ -3,7 +3,7 @@ class CommentLikesController < ApplicationController
 
   def create
     if @comment.user == current_user
-      head :unprocessable_entity
+      head :unprocessable_content
       return
     end
 

@@ -33,9 +33,9 @@ class ArticlesController < ApplicationController
   end
 
   def show_modal
-    @user = User.find_by(slug: params[:slug])
-
-    @article = @user.articles.find_by(uuid: params[:uuid])
+    @user = User.friendly.find(params[:slug])
+    @article = @user.articles.find_by!(uuid: params[:uuid])
+    authorize @article, :edit?
   end
 
   private

@@ -1,28 +1,30 @@
 module JsonLdHelper
   def json_ld_tag(data)
-    tag.script(data.to_json.html_safe, type: "application/ld+json")
+    # JSON inside <script> must not be HTML-escaped, so it's marked safe after json_escape
+    # turns <, > and & into \u escapes; a title like "</script>" can't break out of the tag.
+    tag.script(json_escape(data.to_json).html_safe, type: "application/ld+json") # rubocop:disable Rails/OutputSafety
   end
 
   def article_json_ld(article, user)
     data = {
-      "@context" => "https://schema.org",
-      "@type" => "Article",
-      "headline" => article.title,
-      "description" => article.description&.truncate(160),
+      "@context"      => "https://schema.org",
+      "@type"         => "Article",
+      "headline"      => article.title,
+      "description"   => article.description&.truncate(160),
       "datePublished" => (article.published_at || article.created_at).iso8601,
-      "dateModified" => article.updated_at.iso8601,
-      "url" => user_article_url(slug: user, uuid: article),
-      "author" => {
+      "dateModified"  => article.updated_at.iso8601,
+      "url"           => user_article_url(slug: user, uuid: article),
+      "author"        => {
         "@type" => "Person",
-        "name" => user.name,
-        "url" => user_url(slug: user.slug)
+        "name"  => user.name,
+        "url"   => user_url(slug: user.slug)
       },
-      "publisher" => {
+      "publisher"     => {
         "@type" => "Organization",
-        "name" => "نميم",
-        "logo" => {
+        "name"  => "نميم",
+        "logo"  => {
           "@type" => "ImageObject",
-          "url" => asset_url("brand/logo.png")
+          "url"   => asset_url("brand/logo.png")
         }
       }
     }
@@ -36,9 +38,9 @@ module JsonLdHelper
   def profile_json_ld(user)
     data = {
       "@context" => "https://schema.org",
-      "@type" => "Person",
-      "name" => user.name,
-      "url" => user_url(slug: user.slug)
+      "@type"    => "Person",
+      "name"     => user.name,
+      "url"      => user_url(slug: user.slug)
     }
 
     data["description"] = user.bio if user.bio.present?

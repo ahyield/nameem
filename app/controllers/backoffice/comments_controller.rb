@@ -1,6 +1,6 @@
 module Backoffice
   class CommentsController < BaseController
-    before_action :set_comment, only: [:show, :destroy]
+    before_action :set_comment, only: %i[show destroy]
 
     def index
       @page_title = "التعليقات"

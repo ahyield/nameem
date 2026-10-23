@@ -27,7 +27,7 @@ RSpec.describe CommentLike do
 
     it "allows the same user to like different comments" do
       user = create(:user)
-      like1 = create(:comment_like, user: user)
+      create(:comment_like, user: user)
       like2 = build(:comment_like, user: user)
       expect(like2).to be_valid
     end
