@@ -1,23 +1,29 @@
 <% content_for :title, "أهلاً بك في نميم" %>
-<% content_for :preheader, "حسابك جاهز. هنا تكتب وتقرأ بالعربية، بلا ضجيج." %>
+<% content_for :preheader, "حسابك جاهز. مصطبة جديدة للكتابة، خارج غرف الصدى الرقمية." %>
 
-<h1 class="h1">أهلاً بك في نميم، <%= @user.first_name %></h1>
-<p>نميم مساحة للكتابة والقراءة بالعربية: مقالات وقصص وأفكار، بلا إعلانات ولا ضجيج.</p>
-<p>ابدأ بما تحب. اكتب موضوعك الأول، أو تابع كتّاباً يصلك جديدهم في صفحتك.</p>
+<p class="eyebrow">حسابك جاهز</p>
+<h1 class="masthead-title">أهلاً بك في نميم، <%= @user.first_name %></h1>
+<p>نميم منصة عربية للتدوين الجماعي الحرّ؛ مصطبة نشتبك فيها مع أنفسنا ومع العالم بحرّية، بعيداً عن سباق القراءات والتحايل على الخوارزميات.</p>
+<p style="color: #111827; font-weight: 700;">لا إعلانات، لا توجّهات، ولا سقف لحرّية التعبير. كتابة للكتابة؛ كتابة للجميع.</p>
 
-<p style="margin: 28px 0; text-align: center;">
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-top: 8px;">
+  <% [
+    ["اكتب", "ابدأ موضوعك الأول متى شئت؛ يُحفظ ما تكتبه تلقائياً حتى تقرّر نشره."],
+    ["تابع", "تابع من تشتبك مع كتاباتهم والمواضيع التي تشغلك، ليصلك جديدهم في صفحتك."],
+    ["احفظ", "احفظ ما يستحق العودة إليه، وشارك ما يستحق أن يُقرأ."]
+  ].each_with_index do |(step, text), index| %>
+    <tr>
+      <td class="step step-number"><%= format("%02d", index + 1) %></td>
+      <td class="step">
+        <p style="margin: 0; font-weight: 700; color: #111827;"><%= step %></p>
+        <p class="excerpt" style="margin-top: 2px !important;"><%= text %></p>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<p style="margin: 28px 0 8px; text-align: center;">
   <%= link_to "اكتب موضوعك الأول", new_story_url, class: "button" %>
 </p>
 
-<% if @writers.any? %>
-  <div class="divider"></div>
-  <h2 class="h2">كتّاب قد يعجبونك</h2>
-  <% @writers.each do |writer| %>
-    <div class="item">
-      <%= link_to writer.name, user_url(writer), class: "item-title" %>
-      <% if writer.bio.present? %>
-        <p class="muted small" style="margin: 2px 0 0;"><%= writer.bio.truncate(110) %></p>
-      <% end %>
-    </div>
-  <% end %>
-<% end %>
+<%= render "mailer/writers", writers: @writers, title: "كتّاب تبدأ بهم" %>

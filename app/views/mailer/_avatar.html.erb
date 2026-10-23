@@ -1,0 +1,2 @@
+<%# locals: (name:, size: 40, team: false) %>
+<div class="<%= team ? 'avatar avatar-team' : 'avatar' %>" style="width: <%= size %>px; height: <%= size %>px; line-height: <%= size %>px;"><%= team ? "ن" : name.to_s.first %></div>

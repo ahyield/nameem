@@ -1,0 +1,20 @@
+<%# locals: (writers:, title: "كتّاب قد يعجبونك") %>
+<% if writers.any? %>
+  <p class="section-title" style="margin-top: 32px;"><%= title %></p>
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-top: 6px;">
+    <% writers.each do |writer| %>
+      <tr>
+        <td class="writer" style="width: 40px;"><%= render "mailer/avatar", name: writer.name %></td>
+        <td class="writer" style="padding-right: 12px;">
+          <a href="<%= user_url(writer) %>" class="story-title" style="font-size: 15px;"><%= writer.name %></a>
+          <% if writer.bio.present? %>
+            <p class="meta" style="margin-top: 0 !important;"><%= writer.bio.truncate(70) %></p>
+          <% end %>
+        </td>
+        <td class="writer" style="text-align: left; width: 70px;">
+          <a href="<%= user_url(writer) %>" class="follow">تابع</a>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

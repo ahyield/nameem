@@ -1,48 +1,89 @@
-<% content_for :title, "الأفضل على نميم هذا الأسبوع" %>
-<% content_for :preheader, @trending.first(2).map { |article| article.title.presence || first_paragraph(article) }.join(" · ") %>
+<% lead, *stories = @trending %>
+<% title_for = ->(article) { article.title.presence || first_paragraph(article).to_s.truncate(80) } %>
+<% url_for_article = ->(article) { user_article_url(slug: article.user, uuid: article) } %>
+<% content_for :title, "حصاد الأسبوع على نميم" %>
+<% content_for :preheader, @trending.first(2).map { |article| title_for.call(article) }.join(" · ") %>
 
-<h1 class="h1">الأفضل هذا الأسبوع</h1>
-<p class="muted">أكثر ما قرأه الناس على نميم في الأيام السبعة الماضية.</p>
+<%# Masthead %>
+<p class="eyebrow">النشرة الأسبوعية · <%= email_week_range %></p>
+<h1 class="masthead-title">حصاد الأسبوع</h1>
+<p class="muted" style="margin: 0 0 28px;">أسبوع من الكتابة على نميم: ما لقي صدى بين القرّاء، واختيارات المحررين، وكتّاب قد تجد في كتاباتهم ما يشبهك.</p>
 
-<% @trending.each_with_index do |article, index| %>
-  <div class="item">
-    <p class="muted small" style="margin: 0 0 2px;"><%= index + 1 %> · <%= article.user.name %></p>
-    <%= link_to article.title.presence || first_paragraph(article).to_s.truncate(80), user_article_url(slug: article.user, uuid: article),
-                class: "item-title" %>
-    <% if article.description.present? %>
-      <p class="muted small" style="margin: 4px 0 0;"><%= article.description.truncate(140) %></p>
+<%# Lead story %>
+<% if lead %>
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+    <% if (cover = email_cover_url(lead, [992, 558])) %>
+      <tr>
+        <td style="padding-bottom: 16px;">
+          <a href="<%= url_for_article.call(lead) %>"><img src="<%= cover %>" class="lead-image" width="496" height="279" alt=""></a>
+        </td>
+      </tr>
     <% end %>
-    <% if article.reading_time_minutes.present? %>
-      <p class="muted small" style="margin: 4px 0 0;"><%= reading_time_label(article.reading_time_minutes) %></p>
-    <% end %>
-  </div>
+    <tr>
+      <td>
+        <p class="eyebrow">الأوسع صدى</p>
+        <a href="<%= url_for_article.call(lead) %>" class="lead-title"><%= title_for.call(lead) %></a>
+        <% if lead.description.present? %>
+          <p class="excerpt"><%= lead.description.truncate(180) %></p>
+        <% end %>
+        <p class="meta">
+          <%= lead.user.name %>
+          <% if lead.reading_time_minutes.present? %>&nbsp;·&nbsp;<%= reading_time_label(lead.reading_time_minutes) %><% end %>
+        </p>
+      </td>
+    </tr>
+  </table>
 <% end %>
 
+<%# Stories 2-5 %>
+<% if stories.any? %>
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-top: 28px;">
+    <% stories.each_with_index do |article, index| %>
+      <% thumb = email_cover_url(article, [152, 152]) %>
+      <tr>
+        <td class="rank story"><%= format("%02d", index + 2) %></td>
+        <td class="story">
+          <a href="<%= url_for_article.call(article) %>" class="story-title"><%= title_for.call(article) %></a>
+          <% if article.description.present? %>
+            <p class="excerpt"><%= article.description.truncate(110) %></p>
+          <% end %>
+          <p class="meta">
+            <%= article.user.name %>
+            <% if article.reading_time_minutes.present? %>&nbsp;·&nbsp;<%= reading_time_label(article.reading_time_minutes) %><% end %>
+          </p>
+        </td>
+        <% if thumb %>
+          <td class="thumb-cell">
+            <a href="<%= url_for_article.call(article) %>"><img src="<%= thumb %>" class="thumb" width="76" height="76" alt=""></a>
+          </td>
+        <% else %>
+          <td class="story" style="width: 0;"></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+<% end %>
+
+<%# Editors' picks %>
 <% if @picks.any? %>
-  <div class="divider"></div>
-  <h2 class="h2">اختيارات المحررين</h2>
-  <% @picks.each do |article| %>
-    <div class="item">
-      <%= link_to article.title.presence || first_paragraph(article).to_s.truncate(80), user_article_url(slug: article.user, uuid: article),
-                  class: "item-title" %>
-      <p class="muted small" style="margin: 2px 0 0;"><%= article.user.name %></p>
-    </div>
-  <% end %>
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-top: 28px;">
+    <tr>
+      <td class="panel">
+        <p class="section-title" style="margin-bottom: 14px;">اختيارات المحررين</p>
+        <% @picks.each do |article| %>
+          <div class="pick">
+            <a href="<%= url_for_article.call(article) %>" class="story-title"><%= title_for.call(article) %></a>
+            <p class="meta" style="margin-top: 2px !important;"><%= article.user.name %></p>
+          </div>
+        <% end %>
+      </td>
+    </tr>
+  </table>
 <% end %>
 
-<% if @writers.any? %>
-  <div class="divider"></div>
-  <h2 class="h2">كتّاب قد يعجبونك</h2>
-  <% @writers.each do |writer| %>
-    <div class="item">
-      <%= link_to writer.name, user_url(writer), class: "item-title" %>
-      <% if writer.bio.present? %>
-        <p class="muted small" style="margin: 2px 0 0;"><%= writer.bio.truncate(110) %></p>
-      <% end %>
-    </div>
-  <% end %>
-<% end %>
+<%# Writers to follow %>
+<%= render "mailer/writers", writers: @writers %>
 
-<p style="margin: 28px 0 0; text-align: center;">
+<p style="margin: 32px 0 0; text-align: center;">
   <%= link_to "اقرأ المزيد على نميم", root_url, class: "button" %>
 </p>

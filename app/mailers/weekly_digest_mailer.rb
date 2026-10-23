@@ -1,5 +1,5 @@
 class WeeklyDigestMailer < ApplicationMailer
-  helper ApplicationHelper
+  helper ApplicationHelper, EmailHelper
 
   def best_of(user, digest = WeeklyDigest.current)
     @user = user
@@ -7,6 +7,6 @@ class WeeklyDigestMailer < ApplicationMailer
     @picks = digest.picks
     @writers = User.suggested_for(user, limit: 3)
 
-    mail_user user, category: :weekly, subject: "الأفضل على نميم هذا الأسبوع"
+    mail_user user, category: :weekly, subject: "حصاد الأسبوع على نميم"
   end
 end

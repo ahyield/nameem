@@ -16,9 +16,11 @@ RSpec.describe NotificationMailer do
       expect(mail.to).to eq([user.email])
     end
 
-    it "counts the notifications in the subject" do
-      expect(mail.subject).to include("2")
+    it "counts the notifications in the subject, in correct Arabic" do
+      expect(mail.subject).to eq("لديك إشعاران جديدان على نميم")
       expect(described_class.digest(user, notifications.first(1)).subject).to eq("لديك إشعار جديد على نميم")
+      expect(described_class.count_phrase(5)).to eq("5 إشعارات جديدة")
+      expect(described_class.count_phrase(12)).to eq("12 إشعاراً جديداً")
     end
 
     it "mentions who acted" do

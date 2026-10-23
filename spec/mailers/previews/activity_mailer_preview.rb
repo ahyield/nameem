@@ -24,7 +24,7 @@ class ActivityMailerPreview < ActionMailer::Preview
   end
 
   def article_notification(action)
-    article = Article.published.last!
+    article = Article.published.joins(:images_attachments).last || Article.published.last!
     Notification.new(action:, recipient: article.user, actor: User.first!, notifiable: article)
   end
 
