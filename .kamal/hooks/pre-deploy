@@ -1,6 +1,0 @@
-#!/bin/sh
-
-kamal proxy boot_config set -d production \
-  --publish false \
-  --docker_options label=traefik.http.services.kamal_proxy.loadbalancer.server.scheme=http \
-                   label=traefik.http.routers.kamal_proxy.rule=PathPrefix\(\`/\`\)
