@@ -2,7 +2,7 @@
 service: nameem
 
 # Name of the container image.
-image: nameemhq/nameem
+image: ahyield/nameem
 
 # Deploy to these servers.
 servers:
@@ -18,7 +18,7 @@ asset_path: /rails/public/assets
 # Credentials for your image host.
 registry:
   server: ghcr.io
-  username: nameemhq
+  username: ahyield
 
   # Always use an access token rather than real password when possible.
   password:
