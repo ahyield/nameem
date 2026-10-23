@@ -12,8 +12,28 @@ RSpec.describe EmailHelper do
   end
 
   describe "#email_cover_url" do
+    let(:blob) do
+      ActiveStorage::Blob.create_and_upload!(io: Rails.root.join("spec/fixtures/files/avatar-3.jpeg").open,
+                                             filename: "cover.jpeg", content_type: "image/jpeg")
+    end
+
     it "returns nothing for an article without images" do
       expect(helper.email_cover_url(build(:article), [10, 10])).to be_nil
+    end
+
+    it "crops the first image embedded in the article body" do
+      html = %(<p>نص</p><img src="https://nameem.com/rails/active_storage/blobs/proxy/#{blob.signed_id}/cover.jpeg">)
+      url = helper.email_cover_url(build(:article, content_html: html), [10, 10])
+
+      expect(url).to include("/rails/active_storage/representations/")
+    end
+
+    it "ignores images hosted elsewhere and unknown blobs" do
+      external = build(:article, content_html: %(<img src="https://example.com/photo.jpg">))
+      forged = build(:article, content_html: %(<img src="/rails/active_storage/blobs/proxy/forged/x.jpg">))
+
+      expect(helper.email_cover_url(external, [10, 10])).to be_nil
+      expect(helper.email_cover_url(forged, [10, 10])).to be_nil
     end
   end
 
