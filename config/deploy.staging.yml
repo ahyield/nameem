@@ -4,13 +4,13 @@ image: nameemhq/nameem-staging
 # Deploy to these servers.
 servers:
   web:
-    - 203.0.113.30
+    - <%= ENV.fetch("WEB_HOST") %>
 
 # Inject ENV variables into containers (secrets come from .env).
 # Remember to run `kamal env push` after making changes!
 env:
   clear:
-    DB_HOST: 203.0.113.40
+    DB_HOST: <%= ENV.fetch("DB_HOST") %>
   secret:
     - RAILS_MASTER_KEY
     - MYSQL_USERNAME
@@ -22,6 +22,6 @@ builder:
 
 accessories:
   db:
-    host: 203.0.113.40
+    host: <%= ENV.fetch("DB_HOST") %>
     files:
       - db/staging.sql:/docker-entrypoint-initdb.d/setup.sql

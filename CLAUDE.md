@@ -46,7 +46,7 @@ config/
 ├── routes.rb             # Main routes
 ├── routes/backoffice.rb  # Admin routes
 ├── deploy.yml            # Kamal base config
-└── schedule.yml          # Recurring jobs (Plausible sync)
+└── schedule.yml          # Recurring jobs
 db/
 ├── migrate/              # Migrations
 └── schema.rb             # Current schema
@@ -110,12 +110,10 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 
 ## Integrations
 
-- **Plausible Analytics** — article view/visitor tracking, synced via background job
 - **AWS S3** — production file storage (avatars, article images)
 - **Resend** — transactional emails
 - **Sentry** — error tracking
 - **Flipper** — feature flags
-- **Turnstile** — CAPTCHA
 
 ## Completed Features
 
@@ -127,4 +125,4 @@ Tags & Topics, Search, Follow System, Notifications, Threaded Comments, Author A
 - Article content stored as Lexical EditorState JSON (`content`) + server-rendered HTML (`content_html`)
 - Articles use binary UUIDs (16 bytes) as public identifiers, not auto-increment IDs
 - Fonts: Noto Naskh Arabic (primary), Montserrat (secondary)
-- Production: Hetzner server (203.0.113.10), DB on separate server (203.0.113.20)
+- Production: Hetzner via Kamal; server and DB hosts come from `WEB_HOST` / `DB_HOST` env vars

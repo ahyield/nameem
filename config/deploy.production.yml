@@ -5,10 +5,10 @@ image: nameemhq/nameem-production
 servers:
   web:
     hosts:
-      - 203.0.113.10
+      - <%= ENV.fetch("WEB_HOST") %>
   job:
     hosts:
-      - 203.0.113.10
+      - <%= ENV.fetch("WEB_HOST") %>
     cmd: bundle exec bin/jobs --recurring_schedule_file=config/schedule.yml -c config/recurring.yml
 
 
@@ -16,7 +16,7 @@ servers:
 # Remember to run `kamal env push` after making changes!
 env:
   clear:
-    DB_HOST: 203.0.113.20
+    DB_HOST: <%= ENV.fetch("DB_HOST") %>
     RAILS_MAX_THREADS: 10
   secret:
     - RAILS_MASTER_KEY
@@ -31,7 +31,7 @@ accessories:
   db:
     options:
       memory: 4G
-    host: 203.0.113.20
+    host: <%= ENV.fetch("DB_HOST") %>
     files:
       - infrastucture/mysql/production.sql:/docker-entrypoint-initdb.d/setup.sql
       - infrastucture/mysql/production.cnf:/etc/mysql/conf.d/my.cnf

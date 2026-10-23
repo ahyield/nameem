@@ -69,8 +69,6 @@ gem "sentry-ruby"
 
 gem "english"
 
-gem "turnstile-captcha", require: "turnstile"
-
 gem "thruster"
 
 group :development, :test do

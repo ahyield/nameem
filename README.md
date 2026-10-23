@@ -1,25 +1,100 @@
-[![Specs](https://github.com/nameemhq/nameem/actions/workflows/_specs.yml/badge.svg)](https://github.com/nameemhq/nameem/actions/workflows/_specs.yml)
-[![Lint](https://github.com/nameemhq/nameem/actions/workflows/_lint.yml/badge.svg)](https://github.com/nameemhq/nameem/actions/workflows/_lint.yml)
+# Nameem — نميم
 
-# Nameem
+> A minor wound on the arm of the absurd present.
 
-A minor wound on the arm of the absurd present.
+![Nameem home page](docs/screenshot.png)
 
+Nameem is an Arabic-first, right-to-left article publishing platform. Writers publish long-form articles; readers follow authors and topics, like, bookmark, and discuss them in threaded comments.
 
-# Components
+## Features
 
-- rails
-- stimulus
-- quilljs
-- active_storage
-- ...
+- Rich article editor built on [Lexical](https://lexical.dev) (images, video, embeds, dividers)
+- Passwordless sign-in with emailed 6-digit codes
+- Feeds: latest, trending, picked, and following
+- Tags and topics, Arabic-aware search, related articles
+- Follows, likes, bookmarks, threaded comments, notifications and email digests
+- Per-article analytics for authors
+- Admin backoffice for users, articles, comments and tags
+- SEO metadata, structured data and sitemaps
 
-# setup
+## Tech stack
 
-You need ruby, you can use `mise install ruby 3.2.2`
+- Ruby 4.0 / Rails 8.2 (edge)
+- MySQL 8.0
+- Hotwire (Turbo + Stimulus), ImportMap, no JS bundler
+- Tailwind CSS 4
+- Solid Queue for background jobs
+- Kamal for deployment
 
-- clone it
-- `gem install bundler`
-- `bundle install`
-- `rails db:create && rails db:migrate`
-- You need Proc runner, I use [Overmind](https://github.com/DarthSim/overmind), `overmind start Procfile.dev`
+## Getting started
+
+### Requirements
+
+- Ruby (see `.ruby-version`); [mise](https://mise.jdx.dev) or rbenv work well
+- MySQL 8.0
+- A Procfile runner such as [Overmind](https://github.com/DarthSim/overmind) or Foreman
+
+### Setup
+
+```bash
+git clone https://github.com/nameemhq/nameem.git
+cd nameem
+cp .env.example .env.development   # then fill in your MySQL credentials
+bundle install
+bin/rails db:prepare
+bin/rails db:seed                  # optional: fake users and articles
+bin/dev
+```
+
+The app runs at http://localhost:3000.
+
+In development, emails (including sign-in codes) are opened in your browser via [letter_opener](https://github.com/ryanb/letter_opener) instead of being sent.
+
+### Credentials
+
+Third-party keys (Resend, AWS S3) are read from Rails encrypted credentials. The encrypted files in this repo belong to the hosted Nameem instance and can't be decrypted without its keys. To run your own instance, delete them and create your own:
+
+```bash
+rm config/credentials.yml.enc config/credentials/*.yml.enc
+bin/rails credentials:edit --environment development
+```
+
+Expected structure:
+
+```yaml
+resend:
+  api_key: ...
+aws:
+  access_key_id: ...
+  secret_access_key: ...
+```
+
+None of these are needed to run the app locally or to run the specs.
+
+## Tests and linting
+
+```bash
+bundle exec rspec
+bundle exec rubocop
+```
+
+Specs need a MySQL database; set `MYSQL_USERNAME`, `MYSQL_ROOT_PASSWORD`, `DATABASE_HOST` and `DB_PORT` as needed.
+
+## Deployment
+
+Nameem deploys with [Kamal](https://kamal-deploy.org). `config/deploy.yml` holds the shared config and `config/deploy.production.yml` the production destination. Hosts and secrets come from the environment:
+
+```bash
+export WEB_HOST=... DB_HOST=...
+export RAILS_MASTER_KEY=... KAMAL_REGISTRY_PASSWORD=...
+export MYSQL_USERNAME=... MYSQL_ROOT_PASSWORD=... SENTRY_DSN=...
+kamal deploy -d production
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). To report a security issue, see [SECURITY.md](SECURITY.md).
+
+## License
+
+Nameem is released under the [MIT License](LICENSE).
