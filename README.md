@@ -92,7 +92,8 @@ Nameem deploys with [Kamal](https://kamal-deploy.org). `config/deploy.yml` holds
 ```bash
 scripts/deploy.sh       # build and deploy
 scripts/migrate_db.sh   # run migrations in production
-scripts/kamal.sh        # open a production Rails console
+scripts/kamal.sh        # production Rails console, or any kamal command:
+scripts/kamal.sh proxy reboot -d production
 ```
 
 ## Contributing
