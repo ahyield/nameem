@@ -1,7 +1,8 @@
 #!/bin/sh
 # Runs after the new image is pushed and before new containers boot, so the schema is ready
 # for the new code. A failed migration stops the deploy and the old version keeps running.
+# --roles=web: the primary host also runs the job role, and two migrators would race.
 set -e
 
 echo "Run database migrations with version $KAMAL_VERSION..."
-kamal app exec --primary --version="$KAMAL_VERSION" ${KAMAL_DESTINATION:+-d "$KAMAL_DESTINATION"} "bin/rails db:migrate"
+kamal app exec --roles=web --primary --version="$KAMAL_VERSION" ${KAMAL_DESTINATION:+-d "$KAMAL_DESTINATION"} "bin/rails db:migrate"
