@@ -1,6 +1,6 @@
 <%= turbo_stream.append "feed" do %>
   <% @articles.each do |article| %>
-    <%= render "article", article: article %>
+    <%= render "article", article: article, newcomer: @newcomer_ids.include?(article.id) %>
   <% end %>
 <% end %>
 

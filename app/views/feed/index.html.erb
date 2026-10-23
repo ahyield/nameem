@@ -97,10 +97,16 @@
               <h1 class="font-bold text-gray-900">الرائج هذا الأسبوع</h1>
             </div>
             <ol class="px-6 pb-6">
+              <% rank = 0 %>
               <% @trending.each_with_index do |article, i| %>
+                <% newcomer = @newcomer_ids.include?(article.id) %>
                 <li class="py-3 <%= 'border-b border-gray-100' unless i == @trending.size - 1 %>">
                   <div class="flex gap-x-3">
-                    <span class="text-2xl font-bold text-gray-200 leading-none mt-1"><%= format("%02d", i + 1) %></span>
+                    <% if newcomer %>
+                      <span class="mt-1 h-fit shrink-0 rounded-full bg-orange-50 px-2 py-0.5 text-xs font-medium text-orange-700">جديد</span>
+                    <% else %>
+                      <span class="text-2xl font-bold text-gray-200 leading-none mt-1"><%= format("%02d", rank += 1) %></span>
+                    <% end %>
                     <div class="min-w-0">
                       <%= link_to user_path(article.user), data: { turbo: false },
                           class: "group mb-1 flex min-w-0 items-center gap-x-2" do %>
