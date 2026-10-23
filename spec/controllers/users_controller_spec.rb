@@ -104,6 +104,30 @@ RSpec.describe UsersController do
         expect(assigns(:articles)).to include(article)
         expect(assigns(:articles)).not_to include(draft)
       end
+
+      it "highlights the most viewed article rather than the newest" do
+        popular = create(:article, :published, user:, published_at: 1.month.ago)
+        popular.update_column(:real_views_count, 50)
+        article.update_column(:real_views_count, 5)
+
+        get :stats, params: { slug: user.slug }
+        expect(assigns(:top_article)).to eq(popular)
+      end
+
+      it "sorts articles by the requested column" do
+        create(:article, :published, user:).update_column(:real_views_count, 50)
+        article.update_column(:real_views_count, 5)
+
+        get :stats, params: { slug: user.slug, sort: "views", direction: "desc" }
+        views = assigns(:articles).map(&:real_views_count)
+        expect(views).to eq(views.sort.reverse)
+      end
+
+      it "ignores unknown sort columns" do
+        get :stats, params: { slug: user.slug, sort: "title; DROP TABLE articles" }
+        expect(response).to be_successful
+        expect(assigns(:sort)).to eq("date")
+      end
     end
 
     context "when signed in as another user" do
