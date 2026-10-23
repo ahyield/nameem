@@ -108,7 +108,7 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 - `sign_in(user)` / `authenticate_user(user)` in request and controller specs
 - `json` helper to parse response body
 - Coverage: SimpleCov floor in `.simplecov` (only goes up); `undercover` fails PRs whose changed lines aren't covered
-- CI: `.github/workflows/ci.yml` (jobs `lint`, `security`, `js`, `specs`); `main` only accepts PRs with all checks green
+- CI: `.github/workflows/ci.yml` (jobs `lint`, `security`, `js`, `specs`, gated by a `changes` job so PRs only run checks for the files they touch); `main` only accepts PRs with all checks green
 
 ## Integrations
 

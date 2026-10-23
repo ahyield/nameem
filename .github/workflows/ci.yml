@@ -16,28 +16,73 @@ env:
   CI: true
 
 jobs:
+  # Decides which checks a pull request needs. Skipped jobs count as passing for the
+  # required checks, so docs- or script-only changes merge without running the suite.
+  changes:
+    name: changes
+    runs-on: ubuntu-latest
+    outputs:
+      ruby: ${{ steps.filter.outputs.ruby }}
+      js: ${{ steps.filter.outputs.js }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2 # the PR merge commit and its base parent
+      - id: filter
+        run: |
+          if [ "$GITHUB_EVENT_NAME" != "pull_request" ]; then
+            echo "ruby=true" >> "$GITHUB_OUTPUT"
+            echo "js=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          files=$(git diff --name-only HEAD^1 HEAD)
+          echo "$files"
+
+          ci='^\.github/workflows/'
+          js='^(app|spec)/javascript/|^vendor/javascript/|^config/importmap\.rb$|^package(-lock)?\.json$|^(eslint|vitest)\.config\.js$'
+          ruby='^(app|config|db|lib|spec|bin|public)/|^Gemfile|^Rakefile$|^config\.ru$|^\.ruby-version$|^\.rspec$|^\.simplecov$|^\.rubocop|^\.erb_lint\.yml$'
+
+          any() { echo "$files" | grep -qE "$1"; }
+          # Ruby paths minus the JavaScript folders inside app/ and spec/
+          ruby_changed() { echo "$files" | grep -E "$ruby" | grep -qvE '^(app|spec)/javascript/'; }
+
+          if any "$ci" || ruby_changed; then echo "ruby=true"; else echo "ruby=false"; fi >> "$GITHUB_OUTPUT"
+          if any "$ci" || any "$js"; then echo "js=true"; else echo "js=false"; fi >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+
   lint:
     name: lint
+    needs: changes
+    if: needs.changes.outputs.ruby == 'true' || needs.changes.outputs.js == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: ruby/setup-ruby@v1
+        if: needs.changes.outputs.ruby == 'true'
         with:
           bundler-cache: true
       - uses: actions/setup-node@v7
+        if: needs.changes.outputs.js == 'true'
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - if: needs.changes.outputs.js == 'true'
+        run: npm ci
       - name: RuboCop
+        if: needs.changes.outputs.ruby == 'true'
         run: bin/rubocop -f github
       - name: ERB lint
+        if: needs.changes.outputs.ruby == 'true'
         run: bin/erb_lint --lint-all
       - name: ESLint
+        if: needs.changes.outputs.js == 'true'
         run: npm run lint:js
 
   security:
     name: security
+    needs: changes
+    if: needs.changes.outputs.ruby == 'true' || needs.changes.outputs.js == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -45,14 +90,19 @@ jobs:
         with:
           bundler-cache: true
       - name: Brakeman
+        if: needs.changes.outputs.ruby == 'true'
         run: bin/brakeman --quiet --no-pager --exit-on-warn --exit-on-error
       - name: Gem audit
+        if: needs.changes.outputs.ruby == 'true'
         run: bin/bundler-audit
       - name: Importmap audit
+        if: needs.changes.outputs.js == 'true'
         run: bin/importmap audit
 
   js:
     name: js
+    needs: changes
+    if: needs.changes.outputs.js == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -65,6 +115,8 @@ jobs:
 
   specs:
     name: specs
+    needs: changes
+    if: needs.changes.outputs.ruby == 'true'
     runs-on: ubuntu-latest
     services:
       mysql:
