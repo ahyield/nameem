@@ -16,6 +16,15 @@ RSpec.describe "Feed suggestions" do
     expect(response.body).not_to include(followed_author.name)
   end
 
+  it "hides the section when there is no one left to suggest" do
+    create(:follow, follower: reader, followable: new_author)
+    authenticate_user(reader)
+
+    get feed_index_path
+
+    expect(response.body).not_to include("اخترنا لك")
+  end
+
   it "suggests popular topics the reader doesn't follow yet" do
     followed_topic = create(:tag, name: "شعر")
     new_topic = create(:tag, name: "قصة")
