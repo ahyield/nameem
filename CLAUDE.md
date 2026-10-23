@@ -113,6 +113,7 @@ User profiles and articles live under `/:slug` and `/:slug/:uuid`:
 - **Resend** — transactional emails
 - **Sentry** — error tracking
 - **Flipper** — feature flags
+- **Turnstile** — CAPTCHA on sign-up
 
 ## Completed Features
 

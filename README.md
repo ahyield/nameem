@@ -52,7 +52,7 @@ In development, emails (including sign-in codes) are opened in your browser via 
 
 ### Credentials
 
-Third-party keys (Resend, AWS S3) are read from Rails encrypted credentials. The encrypted files in this repo belong to the hosted Nameem instance and can't be decrypted without its keys. To run your own instance, delete them and create your own:
+Third-party keys (Resend, AWS S3, Turnstile, digitup) are read from Rails encrypted credentials. The encrypted files in this repo belong to the hosted Nameem instance and can't be decrypted without its keys. To run your own instance, delete them and create your own:
 
 ```bash
 rm config/credentials.yml.enc config/credentials/*.yml.enc
@@ -67,6 +67,11 @@ resend:
 aws:
   access_key_id: ...
   secret_access_key: ...
+turnstile:            # production only; dev/test use Cloudflare test keys
+  site_key: ...
+  secret_key: ...
+digitup:              # optional, production only
+  rum_key: ...
 ```
 
 None of these are needed to run the app locally or to run the specs.

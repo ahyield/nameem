@@ -24,7 +24,9 @@
 <%= stylesheet_link_tag "actiontext", "data-turbo-track": "reload" %>
 
 <script src="https://platform.twitter.com/widgets.js"></script>
-<script src="https://api.digitup.dev/v1/rum.js" data-key="rk_2c520ef33e2ad06deddbe89767b3b0ea" defer></script>
+<% if Rails.env.production? && (rum_key = Rails.application.credentials.dig(:digitup, :rum_key)) %>
+  <script src="https://api.digitup.dev/v1/rum.js" data-key="<%= rum_key %>" defer></script>
+<% end %>
 
 <%= captcha_javascript_tag %>
 
