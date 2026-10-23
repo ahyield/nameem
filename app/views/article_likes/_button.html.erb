@@ -1,26 +1,19 @@
 <%= turbo_frame_tag dom_id(article, :like) do %>
+  <% count = article.likes_count if article.likes_count.positive? %>
   <% if current_user && current_user != article.user %>
-    <% if liked %>
-      <%= button_to user_unlike_article_path(slug: article.user, uuid: article),
-            method: :delete,
-            class: "flex items-center gap-1 cursor-pointer group",
-            data: { turbo_frame: dom_id(article, :like) } do %>
-        <%= heroicon "heart", variant: :solid, class: "w-6 h-6 text-red-500 group-hover:scale-110 transition-transform" %>
-        <span class="text-sm text-gray-500"><%= article.likes_count %></span>
-      <% end %>
-    <% else %>
-      <%= button_to user_like_article_path(slug: article.user, uuid: article),
-            method: :post,
-            class: "flex items-center gap-1 cursor-pointer group",
-            data: { turbo_frame: dom_id(article, :like) } do %>
-        <%= heroicon "heart", class: "w-6 h-6 text-gray-300 group-hover:text-red-400 transition-colors" %>
-        <span class="text-sm text-gray-500"><%= article.likes_count %></span>
-      <% end %>
+    <%= button_to (liked ? user_unlike_article_path(slug: article.user, uuid: article) : user_like_article_path(slug: article.user, uuid: article)),
+          method: (liked ? :delete : :post),
+          class: "article-action #{'text-red-500' if liked}",
+          aria: { label: "إعجاب", pressed: liked.present? },
+          data: { turbo_frame: dom_id(article, :like) } do %>
+      <%= heroicon "heart", variant: (liked ? :solid : :outline), class: "h-6 w-6" %>
+      <span class="text-sm tabular-nums"><%= count %></span>
     <% end %>
   <% else %>
-    <div class="flex items-center gap-1">
-      <%= heroicon "heart", class: "w-6 h-6 text-gray-300" %>
-      <span class="text-sm text-gray-500"><%= article.likes_count %></span>
+    <div class="inline-flex h-10 min-w-10 items-center justify-center gap-1.5 px-2 text-gray-500">
+      <%= heroicon "heart", class: "h-6 w-6" %>
+      <span class="text-sm tabular-nums"><%= count %></span>
+      <span class="sr-only">إعجاب</span>
     </div>
   <% end %>
 <% end %>

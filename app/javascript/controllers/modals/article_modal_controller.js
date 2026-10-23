@@ -1,30 +1,30 @@
 import { Controller } from "@hotwired/stimulus"
 
+const DESCRIPTION_LIMIT = 160
+const DESCRIPTION_WARNING = 140
+
 export default class extends Controller {
-  static targets = ["description", "charCount", "previewDescription"]
+  static targets = ["description", "charCount"]
 
-  connect() {
-    const modal = document.querySelector(".modal")
-    modal.classList.add("ease-out", "duration-300", "opacity-100")
+  updateDescription() {
+    const length = this.descriptionTarget.value.length
+    this.charCountTarget.textContent = `${length} / ${DESCRIPTION_LIMIT}`
+    this.charCountTarget.classList.toggle("text-orange-700", length >= DESCRIPTION_WARNING)
+    this.charCountTarget.classList.toggle("text-gray-500", length < DESCRIPTION_WARNING)
+  }
 
-    const modalPanel = document.querySelector(".modal-panel")
-    modalPanel.classList.add("opacity-100", "translate-y-4", "sm:translate-y-0", "sm:scale-95", "ease-out", "duration-600")
-
-    const publishBtn = document.querySelector(".publish-btn")
-    const titleBox = document.querySelector(".title-box")
-    const titleNeeded = document.querySelector(".title-needed")
-
-    if (titleBox.contains(titleNeeded)) {
-      publishBtn.disabled = true
+  // Unpublishing hides the article from readers, so ask first
+  confirmUnpublish(event) {
+    if (!window.confirm("سيختفي الموضوع عن القرّاء ويعود مسودة. هل تريد إلغاء نشره؟")) {
+      event.preventDefault()
     }
   }
 
-  updateDescription() {
-    const value = this.descriptionTarget.value
-    this.charCountTarget.textContent = value.length
+  escape(event) {
+    if (event.key === "Escape") this.closeModal()
   }
 
-  closeModal(event) {
+  closeModal() {
     this.element.parentElement.removeAttribute("src")
     this.element.remove()
   }

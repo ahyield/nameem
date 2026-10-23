@@ -1,26 +1,24 @@
 <% icon_size = local_assigns.fetch(:size, "w-6 h-6") %>
+<%# The article page uses the default size with the action-bar style; feed cards pass a smaller size %>
+<% compact = icon_size != "w-6 h-6" %>
 <%= turbo_frame_tag dom_id(article, :bookmark) do %>
   <% if current_user %>
-    <% if bookmarked %>
-      <%= button_to user_unbookmark_article_path(slug: article.user, uuid: article),
-            method: :delete,
-            params: { size: icon_size },
-            class: "flex items-center gap-1 cursor-pointer group",
-            data: { turbo_frame: dom_id(article, :bookmark) } do %>
-        <%= heroicon "bookmark", variant: :solid, class: "#{icon_size} text-gray-900 group-hover:scale-110 transition-transform" %>
-      <% end %>
-    <% else %>
-      <%= button_to user_bookmark_article_path(slug: article.user, uuid: article),
-            method: :post,
-            params: { size: icon_size },
-            class: "flex items-center gap-1 cursor-pointer group",
-            data: { turbo_frame: dom_id(article, :bookmark) } do %>
-        <%= heroicon "bookmark", class: "#{icon_size} text-gray-300 group-hover:text-gray-500 transition-colors" %>
+    <%= button_to (bookmarked ? user_unbookmark_article_path(slug: article.user, uuid: article) : user_bookmark_article_path(slug: article.user, uuid: article)),
+          method: (bookmarked ? :delete : :post),
+          params: { size: icon_size },
+          class: (compact ? "flex items-center gap-1 cursor-pointer group" : "article-action #{'text-gray-900' if bookmarked}"),
+          aria: { label: (bookmarked ? "إزالة من المحفوظات" : "حفظ"), pressed: bookmarked.present? },
+          data: { turbo_frame: dom_id(article, :bookmark) } do %>
+      <% if compact %>
+        <%= heroicon "bookmark", variant: (bookmarked ? :solid : :outline),
+                                 class: "#{icon_size} #{bookmarked ? 'text-gray-900' : 'text-gray-400 group-hover:text-gray-600'} transition-colors" %>
+      <% else %>
+        <%= heroicon "bookmark", variant: (bookmarked ? :solid : :outline), class: icon_size %>
       <% end %>
     <% end %>
   <% else %>
-    <div class="flex items-center gap-1">
-      <%= heroicon "bookmark", class: "#{icon_size} text-gray-300" %>
+    <div class="<%= compact ? 'flex items-center gap-1' : 'inline-flex h-10 min-w-10 items-center justify-center px-2' %> text-gray-400">
+      <%= heroicon "bookmark", class: icon_size %>
     </div>
   <% end %>
 <% end %>

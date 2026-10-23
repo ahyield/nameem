@@ -55,6 +55,32 @@ RSpec.describe "Article authorization" do
       expect(response).to have_http_status(:ok)
     end
 
+    it "offers to publish a draft or keep it as a draft" do
+      authenticate_user(author)
+      get user_publish_modal_path(slug: author.slug, uuid: draft.uuid)
+
+      expect(response.body).to match(%r{value="true"[^>]*>\s*نشر\s*</button>})
+      expect(response.body).to include("حفظ كمسودة")
+    end
+
+    it "offers to save changes or unpublish a published article" do
+      authenticate_user(author)
+      get user_publish_modal_path(slug: author.slug, uuid: article.uuid)
+
+      expect(response.body).to match(%r{value="true"[^>]*>\s*نشر\s*</button>})
+      expect(response.body).to include("إلغاء النشر")
+      expect(response.body).not_to include("حفظ كمسودة")
+    end
+
+    it "explains why a draft without a title can't be published" do
+      untitled = create(:article, :draft, user: author, title: nil, content_html: nil)
+      authenticate_user(author)
+      get user_publish_modal_path(slug: author.slug, uuid: untitled.uuid)
+
+      expect(response.body).to include('<button type="submit" name="publish" value="true" disabled')
+      expect(response.body).to include("أضف عنواناً لموضوعك لتتمكن من نشره")
+    end
+
     it "hides other users' drafts" do
       authenticate_user(create(:user))
 

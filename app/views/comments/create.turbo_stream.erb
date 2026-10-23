@@ -14,5 +14,5 @@
   <% end %>
 <% end %>
 
-<%= turbo_stream.update "comments_count", @article.reload.comments_count.to_s %>
+<%= turbo_stream.update "comments_count", @article.reload.comments_count.positive? ? @article.comments_count.to_s : "" %>
 <%= turbo_stream.update "drawer_comments_count", @article.comments_count.to_s %>

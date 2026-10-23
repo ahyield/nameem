@@ -1,91 +1,135 @@
+<% published = @article.published? %>
+<% can_publish = @article.title.present? || @article.alternative_titles.present? %>
 <%= turbo_frame_tag "modal", target: "_top" do %>
-  <div class="relative z-10 font-naskh" data-controller="modals--article-modal" aria-labelledby="modal-title" role="dialog" aria-modal="true" dir="rtl">
-    <div class="fixed modal inset-0 bg-white transition-opacity"></div>
+  <div class="relative z-10 font-naskh" dir="rtl" role="dialog" aria-modal="true" aria-labelledby="publish-dialog-title"
+       data-controller="modals--article-modal" data-action="keydown@window->modals--article-modal#escape">
+    <div class="publish-backdrop fixed inset-0 bg-white"></div>
+
     <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
       <div class="flex min-h-full justify-center px-6 py-10 sm:py-16">
-        <div class="relative modal-panel w-full max-w-4xl">
+        <div class="publish-sheet relative w-full max-w-4xl">
 
-          <%# Close button %>
-          <div class="absolute left-0 top-0">
-            <button type="button" data-action="click->modals--article-modal#closeModal" class="text-gray-400 hover:text-gray-600 transition-colors">
-              <span class="sr-only">إغلاق</span>
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <div class="mb-10 flex items-start justify-between gap-6">
+            <div>
+              <h2 id="publish-dialog-title" class="text-2xl font-bold text-gray-900">
+                <%= published ? "تحديث الموضوع" : "جاهز للنشر؟" %>
+              </h2>
+              <p class="mt-1 text-sm text-gray-500">
+                <%= published ? "راجع شكل موضوعك وإعداداته، ثم انشر التحديث." : "راجع كيف سيظهر موضوعك للقراء قبل نشره." %>
+              </p>
+            </div>
+            <button type="button" class="article-action -mt-1 -ml-2 shrink-0" aria-label="إغلاق"
+                    data-action="modals--article-modal#closeModal">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
-          <h3 class="text-xl font-bold text-gray-900 mb-6" id="modal-title">معاينة الموضوع</h3>
+          <%= form_tag user_update_article_path(slug: params[:slug], uuid: params[:uuid]), method: :put,
+                data: { turbo: false, controller: "tag-input",
+                        "tag-input-existing-value": (@article&.tags&.pluck(:name) || []).to_json } do %>
+            <div class="grid gap-12 lg:grid-cols-2">
 
-          <%= form_tag user_update_article_path(slug: params[:slug], uuid: params[:uuid]), method: :put, data: { turbo: false, controller: "tag-input", "tag-input-existing-value": (@article&.tags&.pluck(:name) || []).to_json } do %>
-            <div class="lg:grid lg:grid-cols-2 lg:gap-12">
+              <%# Preview: the card readers see on the home page and when the link is shared %>
+              <section aria-labelledby="publish-preview-heading">
+                <h3 id="publish-preview-heading" class="mb-3 text-xs font-medium text-gray-500">المعاينة</h3>
 
-              <%# Right in RTL — Story Preview %>
-              <div>
-                <%# Cover image / placeholder %>
-                <% if !@article.article_images.empty? %>
-                  <%= image_tag article_cover(@article), class: "w-full aspect-video object-cover bg-gray-100 mb-4" %>
-                <% else %>
-                  <div class="w-full min-h-52 bg-gray-100 flex items-center justify-center mb-4">
-                    <span class="text-sm text-gray-400 px-8 text-center leading-relaxed">أدرج صورة عالية الجودة في موضوعك لجعله أكثر جاذبية للقراء.</span>
-                  </div>
-                <% end %>
-
-                <%# Title (display) %>
-                <div class="title-box border-b border-gray-200 pb-2 mb-2">
-                  <% if @article.title.blank? && @article.alternative_titles.blank? %>
-                    <span class="title-needed text-lg text-gray-300">العنوان مطلوب</span>
+                <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-900/5">
+                  <% if @article.article_images.any? %>
+                    <%= image_tag article_cover(@article), alt: "", class: "aspect-video w-full bg-gray-100 object-cover" %>
                   <% else %>
-                    <h4 class="text-lg font-bold text-gray-900 leading-snug line-clamp-2"><%= @article.title.presence || first_paragraph(@article) %></h4>
+                    <div class="flex aspect-video w-full flex-col items-center justify-center gap-2 bg-gray-50 px-8 text-center">
+                      <svg class="h-8 w-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                      </svg>
+                      <span class="text-sm text-gray-500">أضف صورة إلى موضوعك لتظهر هنا</span>
+                    </div>
+                  <% end %>
+
+                  <div class="p-5">
+                    <% if can_publish %>
+                      <p class="line-clamp-2 text-lg font-bold leading-snug text-gray-900"><%= @article.title.presence || first_paragraph(@article) %></p>
+                    <% else %>
+                      <p class="text-lg font-bold leading-snug text-gray-300">بدون عنوان</p>
+                    <% end %>
+
+                    <label for="publish-description" class="mt-4 block text-xs font-medium text-gray-500">الوصف</label>
+                    <textarea id="publish-description" name="description" rows="3" maxlength="160"
+                              aria-describedby="publish-description-count"
+                              data-action="input->modals--article-modal#updateDescription"
+                              data-modals--article-modal-target="description"
+                              placeholder="جملة أو جملتان تشدّان القارئ…"
+                              class="mt-1 block w-full resize-none border-0 bg-transparent p-0 text-sm leading-relaxed text-gray-700 placeholder:text-gray-400 focus:ring-0"><%= @article.description %></textarea>
+                    <p id="publish-description-count" class="mt-2 text-left text-xs tabular-nums text-gray-500" dir="ltr"
+                       data-modals--article-modal-target="charCount">
+                      <%= @article.description.to_s.length %> / 160
+                    </p>
+                  </div>
+                </div>
+
+                <p class="mt-3 text-xs leading-relaxed text-gray-500">
+                  يظهر هذا في الصفحة الرئيسية وعند مشاركة الرابط، ولا يغيّر نص الموضوع.
+                </p>
+              </section>
+
+              <%# Settings %>
+              <section aria-labelledby="publish-settings-heading" class="flex flex-col">
+                <h3 id="publish-settings-heading" class="mb-3 text-xs font-medium text-gray-500">إعدادات النشر</h3>
+
+                <div>
+                  <label for="publish-topics" class="block text-sm font-semibold text-gray-900">المواضيع</label>
+                  <p id="publish-topics-hint" class="mt-1 text-sm text-gray-500">أضف حتى ٥ مواضيع ليجدك القرّاء. اضغط Enter بعد كل موضوع.</p>
+                  <div class="relative mt-3">
+                    <input type="text" id="publish-topics" autocomplete="off" aria-describedby="publish-topics-hint"
+                           data-tag-input-target="input" data-action="keydown->tag-input#keydown input->tag-input#input"
+                           placeholder="مثل: أدب، تقنية، سفر"
+                           class="block w-full rounded-lg border-0 bg-white px-3 py-2.5 text-sm text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-500">
+                    <div data-tag-input-target="suggestions"
+                         class="absolute z-50 mt-1 hidden max-h-48 w-full overflow-y-auto rounded-lg bg-white shadow-lg ring-1 ring-gray-900/5"></div>
+                  </div>
+                  <div data-tag-input-target="pills" class="mt-3 flex flex-wrap gap-2"></div>
+                  <div data-tag-input-target="hiddenFields"></div>
+                </div>
+
+                <div class="mt-8 flex items-start justify-between gap-4 rounded-xl p-4 ring-1 ring-gray-900/5">
+                  <div>
+                    <p id="publish-comments-label" class="text-sm font-semibold text-gray-900">التعليقات</p>
+                    <p id="publish-comments-hint" class="mt-1 text-sm text-gray-500">السماح للقرّاء بالتعليق على هذا الموضوع.</p>
+                  </div>
+                  <%= hidden_field_tag "comments_enabled", "0", id: nil %>
+                  <label class="relative inline-flex shrink-0 cursor-pointer items-center">
+                    <%= check_box_tag "comments_enabled", "1", @article.comments_enabled,
+                                      role: "switch", class: "peer sr-only",
+                                      aria: { labelledby: "publish-comments-label", describedby: "publish-comments-hint" } %>
+                    <span class="h-6 w-11 rounded-full bg-gray-200 transition-colors duration-150 peer-checked:bg-gray-900 peer-focus-visible:ring-2 peer-focus-visible:ring-orange-500 peer-focus-visible:ring-offset-2"></span>
+                    <span class="pointer-events-none absolute right-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200 ease-out peer-checked:-translate-x-5"></span>
+                  </label>
+                </div>
+
+                <div class="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-gray-100 pt-6 lg:mt-auto">
+                  <button type="submit" name="publish" value="true" <%= "disabled" unless can_publish %>
+                          aria-describedby="<%= 'publish-title-needed' unless can_publish %>"
+                          class="publish-btn rounded-full bg-gray-900 px-6 py-2.5 text-sm font-semibold text-white transition-[transform,background-color] duration-150 hover:bg-gray-800 active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-gray-300 disabled:active:scale-100">
+                    نشر
+                  </button>
+                  <% if published %>
+                    <button type="submit" name="publish" value="false"
+                            data-action="modals--article-modal#confirmUnpublish"
+                            class="text-sm text-gray-500 underline decoration-gray-300 underline-offset-4 transition-colors hover:text-gray-900">
+                      إلغاء النشر
+                    </button>
+                  <% else %>
+                    <button type="submit" name="publish" value="false"
+                            class="text-sm text-gray-500 underline decoration-gray-300 underline-offset-4 transition-colors hover:text-gray-900">
+                      حفظ كمسودة
+                    </button>
+                  <% end %>
+                  <% unless can_publish %>
+                    <p id="publish-title-needed" class="basis-full text-sm text-orange-700">أضف عنواناً لموضوعك لتتمكن من نشره.</p>
                   <% end %>
                 </div>
-
-                <%# Description (editable, Medium style) %>
-                <div class="mb-4">
-                  <textarea name="description" rows="2" maxlength="160"
-                            data-action="input->modals--article-modal#updateDescription"
-                            data-modals--article-modal-target="description"
-                            placeholder="اكتب وصفاً مختصراً..."
-                            class="block w-full border-0 border-b border-gray-200 bg-transparent p-0 pb-2 text-sm text-gray-600 placeholder:text-gray-300 focus:border-gray-400 focus:ring-0 leading-relaxed resize-none"><%= @article.description %></textarea>
-                  <p class="mt-1 text-xs text-gray-300" dir="ltr">
-                    <span data-modals--article-modal-target="charCount"><%= @article.description&.length || 0 %></span>/160
-                  </p>
-                </div>
-
-                <p class="text-xs text-gray-300 leading-relaxed">التغييرات هنا تؤثر على شكل الموضوع في الصفحة الرئيسية ومنصات التواصل — وليس على محتوى الموضوع نفسه.</p>
-              </div>
-
-              <%# Left in RTL — Publish Details %>
-              <div class="mt-10 lg:mt-0">
-                <h4 class="text-base font-bold text-gray-900 mb-1">المواضيع</h4>
-                <p class="text-sm text-gray-400 mb-3">أضف حتى ٥ مواضيع ليجد القراء موضوعك.</p>
-                <div class="relative">
-                  <input type="text" data-tag-input-target="input" data-action="keydown->tag-input#keydown input->tag-input#input"
-                         placeholder="أضف موضوع..."
-                         class="block w-full rounded-lg border-0 py-2.5 px-3 text-sm text-gray-900 bg-gray-50 placeholder:text-gray-300 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-orange-500 transition-colors" autocomplete="off">
-                  <div data-tag-input-target="suggestions" class="hidden absolute z-50 w-full mt-1 bg-white rounded-md shadow-lg ring-1 ring-gray-900/5 max-h-48 overflow-y-auto"></div>
-                </div>
-                <div data-tag-input-target="pills" class="flex flex-wrap gap-2 mt-2"></div>
-                <div data-tag-input-target="hiddenFields"></div>
-
-                <h4 class="mt-8 text-base font-bold text-gray-900 mb-3">التعليقات</h4>
-                <%= hidden_field_tag "comments_enabled", "0", id: nil %>
-                <label class="flex items-center gap-3 cursor-pointer">
-                  <%= check_box_tag "comments_enabled", "1", @article.comments_enabled,
-                                    class: "h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-orange-500" %>
-                  <span class="text-sm text-gray-700">السماح بالتعليقات على هذا الموضوع</span>
-                </label>
-
-                <hr class="my-6 border-gray-200">
-
-                <div class="flex items-center gap-4">
-                  <button type="submit" name="publish" value="true" class="rounded-full px-6 py-2.5 text-sm
-                                font-semibold text-white bg-gray-900
-                                publish-btn hover:bg-gray-800 transition-colors
-                                disabled:bg-gray-300 disabled:cursor-not-allowed">نشر</button>
-                  <button type="submit" name="publish" value="false" class="text-sm text-gray-500 hover:text-gray-700 underline decoration-gray-300 underline-offset-4 transition-colors">حفظ كمسودة</button>
-                </div>
-              </div>
+              </section>
 
             </div>
           <% end %>

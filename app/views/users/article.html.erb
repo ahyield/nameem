@@ -20,64 +20,61 @@ twitter: {
 
 <div class="bg-white px-6 py-32 lg:px-8" data-controller="drawer page-view report" data-page-view-viewable-type-value="Article" data-page-view-viewable-id-value="<%= @article.id %>">
   <div class="mx-auto max-w-3xl text-base leading-7 text-gray-700">
-    <h1 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"><%= @article.title %></h1>
-    <div class="flex space-x-4 text-sm text-gray-500">
-      <div class="flex-none ml-3 py-10">
-        <%= link_to user_path(@article.user), data: { turbo: false } do %>
-          <% if @user.avatar.attached? %>
-            <%= image_tag @user.avatar.variant(resize_to_fill: [600, 600]), class: "h-11 w-11 rounded-full bg-gray-50" %>
-          <% else %>
-            <span class="inline-block h-11 w-11 overflow-hidden rounded-full bg-gray-100">
-              <svg class="h-full w-full text-gray-300 hover:bg-gray-300 hover:bg-opacity-25" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-            </span>
-          <% end %>
+    <h1 class="mt-2 text-3xl font-bold leading-snug text-gray-900 sm:text-4xl [text-wrap:balance]"><%= @article.title %></h1>
+
+    <div class="mt-8 flex items-center gap-3">
+      <%= link_to user_path(@article.user), class: "shrink-0", data: { turbo: false }, aria: { hidden: true }, tabindex: -1 do %>
+        <% if @user.avatar.attached? %>
+          <%= image_tag @user.avatar.variant(resize_to_fill: [96, 96]), alt: "", class: "h-11 w-11 rounded-full bg-gray-50 ring-1 ring-gray-900/5" %>
+        <% else %>
+          <span class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-orange-50 text-base font-medium text-orange-700">
+            <%= @user.name.to_s.first %>
+          </span>
         <% end %>
-      </div>
-      <div class="flex-1 py-11">
-        <h3 class="font-medium text-gray-900">
-          <%= link_to user_path(@article.user), data: { turbo: false }, class: "hover:underline hover:underline-offset-4" do %>
-            <%= @article.user.name %>
-          <% end %>
-        </h3>
-        <p class="text-xs">
-          <time><%= short_date(@article.published_at || @article.created_at) %></time>
+      <% end %>
+      <div class="min-w-0">
+        <p class="truncate text-sm font-medium text-gray-900">
+          <%= link_to @article.user.name, user_path(@article.user), data: { turbo: false },
+                      class: "hover:underline hover:underline-offset-4" %>
+        </p>
+        <p class="mt-0.5 text-sm text-gray-500">
+          <% published = @article.published_at || @article.created_at %>
+          <time datetime="<%= published.iso8601 %>"><%= short_date(published) %></time>
           <% if @article.reading_time_minutes.present? %>
-            <span class="mx-1">.</span>
-            <span><%= @article.reading_time_minutes %> د قراءة</span>
+            <span class="mx-1.5" aria-hidden="true">·</span>
+            <span><%= reading_time_label(@article.reading_time_minutes) %></span>
           <% end %>
         </p>
       </div>
     </div>
 
     <% if @article.tags.any? %>
-      <div class="flex flex-wrap gap-2 mt-2 mb-4">
+      <div class="mt-6 flex flex-wrap gap-2">
         <%= render partial: "tags/tag", collection: @article.tags, as: :tag %>
       </div>
     <% end %>
 
-    <div class="border-t border-b border-gray-200 py-3 flex items-center justify-between">
+    <div class="mt-8 flex items-center justify-between border-y border-gray-100 py-1.5">
       <%# Likes & Comments (right side in RTL) %>
-      <div class="flex items-center gap-6">
+      <div class="-mr-2 flex items-center gap-1">
         <%= render "article_likes/button", article: @article, liked: @liked %>
-        <button type="button" data-action="drawer#open" class="flex items-center gap-1 cursor-pointer group">
-          <svg class="w-6 h-6 text-gray-300 group-hover:text-gray-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
+        <button type="button" data-action="drawer#open" class="article-action" aria-label="التعليقات">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
           </svg>
-          <span id="comments_count" class="text-sm text-gray-500"><%= @article.comments_count %></span>
+          <span id="comments_count" class="text-sm tabular-nums"><%= @article.comments_count if @article.comments_count.positive? %></span>
         </button>
       </div>
 
       <%# Bookmark & Share & Options (left side in RTL) %>
-      <div class="flex items-center gap-5 [&>turbo-frame]:flex [&>turbo-frame]:items-center">
+      <div class="-ml-2 flex items-center gap-1 [&>turbo-frame]:flex [&>turbo-frame]:items-center">
         <%= render "bookmarks/button", article: @article, bookmarked: @bookmarked %>
         <%# Share dropdown %>
         <div data-controller="dropdown" class="relative">
-          <button type="button" class="text-gray-300 hover:text-gray-600 cursor-pointer transition-colors"
+          <button type="button" class="article-action"
             data-action="click->dropdown#toggle click@window->dropdown#hide">
             <span class="sr-only">مشاركة</span>
-            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-6 h-6">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
             </svg>
           </button>
@@ -113,10 +110,10 @@ twitter: {
         <%# Options dropdown (... at far end, like Medium) %>
         <% if policy(@article).edit? %>
           <div data-controller="dropdown modal" class="relative">
-            <button type="button" class="text-gray-300 hover:text-gray-600 cursor-pointer transition-colors"
+            <button type="button" class="article-action"
               data-action="click->dropdown#toggle click@window->dropdown#hide">
               <span class="sr-only">خيارات</span>
-              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="5" cy="12" r="1.5" />
                 <circle cx="12" cy="12" r="1.5" />
                 <circle cx="19" cy="12" r="1.5" />
@@ -161,7 +158,7 @@ twitter: {
           </div>
         <% elsif authenticated? %>
           <div data-controller="dropdown" class="relative">
-            <button type="button" class="text-gray-300 hover:text-gray-600 cursor-pointer transition-colors"
+            <button type="button" class="article-action"
               data-action="click->dropdown#toggle click@window->dropdown#hide">
               <span class="sr-only">خيارات</span>
               <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
