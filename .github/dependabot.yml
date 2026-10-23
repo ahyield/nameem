@@ -5,6 +5,10 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # Tailwind 4 drops the JS config and needs a manual migration
+      - dependency-name: tailwindcss-rails
+        update-types: ["version-update:semver-major"]
     groups:
       gems:
         patterns: ["*"]
