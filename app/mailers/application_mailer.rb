@@ -4,11 +4,14 @@ class ApplicationMailer < ActionMailer::Base
 
   before_action :attach_logo
 
+  # The record an email was about was deleted before the delivery job ran; there's nothing to send
+  rescue_from ActiveJob::DeserializationError, with: -> {}
+
   private
 
   # Sends to a user under an email category (see Email::Categories). Mail the user switched off, or mail to
   # a suppressed address, isn't delivered. Everything but account mail carries one-click unsubscribe.
-  def mail_user(user, category:, subject:, **)
+  def mail_user(user, category:, subject:, to: user.email, **)
     @email_category = category.to_s
     # Set before mail() renders the template, so the footer can link to it
     if @email_category != "account"
@@ -17,7 +20,7 @@ class ApplicationMailer < ActionMailer::Base
       headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
     end
 
-    mail(to: user.email, subject:, **).tap do |message|
+    mail(to:, subject:, **).tap do |message|
       message.perform_deliveries = user.emailable?(category)
     end
   end

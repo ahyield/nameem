@@ -1,0 +1,18 @@
+<% excerpt = @comment.body.to_plain_text.squish.truncate(280) %>
+<% content_for :title, @notification.commented? ? "تعليق جديد على موضوعك" : "ردّ جديد على تعليقك" %>
+<% content_for :preheader, "#{@notification.actor.name}: #{excerpt.truncate(90)}" %>
+
+<h1 class="h1">
+  <%= @notification.commented? ? "تعليق جديد على موضوعك" : "ردّ جديد على تعليقك" %>
+</h1>
+<p>
+  <strong style="color: #111827;"><%= @notification.actor.name %></strong>
+  <%= @notification.commented? ? "علّق على" : "ردّ على تعليقك في" %>
+  <%= link_to @article.title.presence || "بدون عنوان", user_article_url(slug: @article.user, uuid: @article), class: "link" %>:
+</p>
+<p class="quote"><%= excerpt %></p>
+
+<p style="margin: 28px 0 0; text-align: center;">
+  <%= link_to (@notification.commented? ? "اقرأ التعليق وردّ عليه" : "اقرأ الرد"), user_article_url(slug: @article.user, uuid: @article),
+              class: "button" %>
+</p>

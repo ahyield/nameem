@@ -73,4 +73,48 @@ RSpec.describe Notification do
       expect(notification.read_at).to eq(original_read_at)
     end
   end
+
+  describe "instant emails", :queued_jobs do
+    let(:author) { create(:user) }
+    let(:article) { create(:article, :published, user: author) }
+
+    def comment_by(user = create(:user))
+      create(:comment, article:, user:)
+    end
+
+    it "emails the author right away and marks the notification emailed" do
+      expect { comment_by }.to have_enqueued_mail(ActivityMailer, :comment)
+      expect(described_class.commented.last.emailed_at).to be_present
+    end
+
+    it "waits for the digest when the author was emailed about the same article minutes ago" do
+      comment_by
+
+      expect { comment_by }.not_to have_enqueued_mail(ActivityMailer, :comment)
+      expect(described_class.commented.last.emailed_at).to be_nil
+    end
+
+    it "emails again once the cooldown has passed" do
+      comment_by
+      described_class.commented.last.update_column(:emailed_at, 20.minutes.ago)
+
+      expect { comment_by }.to have_enqueued_mail(ActivityMailer, :comment)
+    end
+
+    it "respects the comments setting" do
+      author.update!(email_comments: false)
+
+      expect { comment_by }.not_to have_enqueued_mail(ActivityMailer, :comment)
+      expect(described_class.commented.last.emailed_at).to be_nil
+    end
+
+    it "emails the author when their article is featured" do
+      User.find_by(id: 1) || create(:user, id: 1) # featuring notifies from the site account
+      expect { article.update!(featured: true) }.to have_enqueued_mail(ActivityMailer, :editorial)
+    end
+
+    it "sends nothing for likes and follows" do
+      expect { create(:article_like, article:) }.not_to have_enqueued_mail
+    end
+  end
 end

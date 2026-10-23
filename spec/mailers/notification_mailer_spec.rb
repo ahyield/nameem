@@ -34,8 +34,9 @@ RSpec.describe NotificationMailer do
 
     it "is not delivered once the reader switches the digest off" do
       user.update!(email_notifications: false)
+      message = mail
 
-      expect { mail.deliver_now }.not_to change(ActionMailer::Base.deliveries, :count)
+      expect { message.deliver_now }.not_to change(ActionMailer::Base.deliveries, :count)
     end
 
     it "shows the postal address when one is configured" do

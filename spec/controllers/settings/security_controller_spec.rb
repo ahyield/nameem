@@ -37,6 +37,20 @@ RSpec.describe Settings::SecurityController do
     end
 
     context "when the new email does not belong to a confirmed user" do
+      it "does not warn when re-confirming the same address", :queued_jobs do
+        user.update!(confirmed: false)
+
+        expect { patch :update, params: { user: { email: user.email } } }
+          .not_to have_enqueued_mail(AccountMailer, :email_changed)
+      end
+
+      it "warns the old address", :queued_jobs do
+        old_email = user.email
+
+        expect { patch :update, params: { user: { email: "newemail@example.com" } } }
+          .to have_enqueued_mail(AccountMailer, :email_changed).with(user, old_email:)
+      end
+
       it "creates a confirm_email magic link, updates email, and redirects" do
         patch :update, params: { user: { email: "newemail@example.com" } }
 

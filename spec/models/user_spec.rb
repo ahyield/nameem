@@ -221,12 +221,12 @@ RSpec.describe User do
   describe "suspension" do
     let(:user) { create(:user) }
 
-    it "suspends and lifts it" do
-      user.suspend!("إساءة")
+    it "suspends and lifts it", :queued_jobs do
+      expect { user.suspend!("إساءة") }.to have_enqueued_mail(AccountMailer, :suspended)
       expect(user).to be_suspended
       expect(described_class.suspended).to include(user)
 
-      user.unsuspend!
+      expect { user.unsuspend! }.to have_enqueued_mail(AccountMailer, :reinstated)
       expect(user.reload).not_to be_suspended
       expect(user.suspension_reason).to be_nil
     end
