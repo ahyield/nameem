@@ -47,7 +47,6 @@ package.json
 !/app/assets/builds/.keep
 
 .env.local
-.env.staging
 .env
 
 /config/credentials/development.key

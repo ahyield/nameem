@@ -50,14 +50,6 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
-staging:
-  <<: *default
-  socket: /tmp/mysql.sock
-  host: <%= ENV["DB_HOST"] %>
-  database: nameem_staging
-  username: <%= ENV["MYSQL_USERNAME"] %>
-  password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
-
 production:
   primary: &primary_production
     <<: *default

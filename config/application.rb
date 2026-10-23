@@ -42,9 +42,6 @@ module Nameem
     if Rails.env.production?
       config.asset_host = "https://nameem.com"
       config.action_mailer.asset_host = "https://nameem.com"
-    elsif Rails.env.staging?
-      config.asset_host = "https://staging.nameem.com"
-      config.action_mailer.asset_host = "https://staging.nameem.com"
     elsif Rails.env.development?
       config.asset_host = "http://localhost:3000"
       config.action_mailer.asset_host = "http://localhost:3000"

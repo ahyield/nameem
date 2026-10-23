@@ -37,7 +37,7 @@ Nameem is an Arabic-first, right-to-left article publishing platform. Writers pu
 ### Setup
 
 ```bash
-git clone https://github.com/nameemhq/nameem.git
+git clone https://github.com/ahyield/nameem.git
 cd nameem
 cp .env.example .env.development   # then fill in your MySQL credentials
 bundle install
@@ -82,13 +82,12 @@ Specs need a MySQL database; set `MYSQL_USERNAME`, `MYSQL_ROOT_PASSWORD`, `DATAB
 
 ## Deployment
 
-Nameem deploys with [Kamal](https://kamal-deploy.org). `config/deploy.yml` holds the shared config and `config/deploy.production.yml` the production destination. Hosts and secrets come from the environment:
+Nameem deploys with [Kamal](https://kamal-deploy.org). `config/deploy.yml` holds the shared config and `config/deploy.production.yml` the production destination. Hosts and secrets are read from `.env.production` (see `.env.example`):
 
 ```bash
-export WEB_HOST=... DB_HOST=...
-export RAILS_MASTER_KEY=... KAMAL_REGISTRY_PASSWORD=...
-export MYSQL_USERNAME=... MYSQL_ROOT_PASSWORD=... SENTRY_DSN=...
-kamal deploy -d production
+scripts/deploy.sh       # build and deploy
+scripts/migrate_db.sh   # run migrations in production
+scripts/kamal.sh        # open a production Rails console
 ```
 
 ## Contributing
