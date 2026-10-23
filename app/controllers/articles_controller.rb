@@ -23,6 +23,7 @@ class ArticlesController < ApplicationController
     authorize @article, :update?
 
     @article.description = params[:description].presence if params.key?(:description)
+    @article.comments_enabled = params[:comments_enabled] == "1" if params.key?(:comments_enabled)
     @article.published = params[:publish]
     @article.published_at = DateTime.now if @article.published_at.nil? && @article.published?
     @article.save!

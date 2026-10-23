@@ -40,6 +40,7 @@ class Article < ApplicationRecord
   validates :featured, inclusion: { in: [true, false] }, allow_nil: false
   validates :published, inclusion: { in: [true, false] }, allow_nil: false
   validates :picked, inclusion: { in: [true, false] }, allow_nil: false
+  validates :comments_enabled, inclusion: { in: [true, false] }, allow_nil: false
   validates :uuid, uniqueness: true
 
   def self.trending(days: 7)

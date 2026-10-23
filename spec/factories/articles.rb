@@ -33,6 +33,10 @@ FactoryBot.define do
       end
     end
 
+    trait :comments_disabled do
+      comments_enabled { false }
+    end
+
     trait :draft do
       published { false }
     end

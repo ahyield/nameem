@@ -34,6 +34,14 @@ RSpec.describe Article do
     end
   end
 
+  describe "comments_enabled" do
+    it "is on for new articles" do
+      expect(described_class.new.comments_enabled).to be(true)
+    end
+
+    it { is_expected.to validate_inclusion_of(:comments_enabled).in_array([true, false]) }
+  end
+
   describe "metable" do
     context "when updating content_html" do
       before do
