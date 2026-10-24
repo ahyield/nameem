@@ -31,11 +31,13 @@ class FeedController < ApplicationController
     end
   end
 
+  # Only what's trending (at most Trending::MAX_RANKED) plus the «جديد» slots; it ends there and points
+  # readers to الأحدث instead of paging through every article
   def trending_feed
     newcomers = Article.newcomers(limit: Trending::Newcomers::TAB_SLOTS.size)
     @newcomer_ids = newcomers.map(&:id)
-    @pagy, @articles = pagy(Article.by_trending.where.not(id: @newcomer_ids))
-    @articles = Trending::Newcomers.interleave(@articles.to_a, newcomers, at: Trending::Newcomers::TAB_SLOTS) if @pagy.page == 1
+    @articles = Trending::Newcomers.interleave(Article.trending.includes(:user).to_a, newcomers,
+                                               at: Trending::Newcomers::TAB_SLOTS)
 
     respond_to do |format|
       format.turbo_stream

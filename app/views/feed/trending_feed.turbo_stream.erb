@@ -2,10 +2,15 @@
   <% @articles.each do |article| %>
     <%= render "article", article: article, newcomer: @newcomer_ids.include?(article.id) %>
   <% end %>
-<% end %>
 
-<% if @pagy.next.present? %>
-  <%= turbo_stream.append "feed_pagination" do %>
-    <%= turbo_frame_tag "feed_pagination", src: trending_feed_path(page: @pagy.next, format: "turbo_stream"), loading: "lazy" %>
-  <% end %>
+  <div class="py-12 text-center">
+    <p class="text-gray-500">
+      <%= @articles.any? ? "هذا كل ما يتداوله القرّاء الآن." : "لا شيء رائج الآن. عُد لاحقاً، أو تصفّح أحدث ما نُشر." %>
+    </p>
+    <button type="button" data-controller="feed-switch" data-feed-switch-href-value="<%= latest_feed_path %>"
+            data-action="feed-switch#go"
+            class="mt-4 cursor-pointer rounded-full px-5 py-2 text-sm font-medium text-gray-700 ring-1 ring-inset ring-gray-300 transition-[transform,background-color] duration-150 hover:bg-gray-50 active:scale-[0.97]">
+      تصفّح الأحدث ←
+    </button>
+  </div>
 <% end %>
