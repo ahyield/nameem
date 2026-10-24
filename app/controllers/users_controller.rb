@@ -25,11 +25,11 @@ class UsersController < ApplicationController
                         .includes(:user, :rich_text_body, :comment_likes, :mentioned_user,
                                   replies: %i[user rich_text_body comment_likes mentioned_user])
 
-    @related_articles = Article.related_to(@article, limit: 3)
-                               .includes(:user, :tags, images_attachments: :blob)
-    @author_articles = @user.articles.published
-                            .where.not(id: @article.id)
-                            .order(published_at: :desc)
+    @related_articles = RelatedArticles.for(@article, limit: 3)
+    # The author's articles readers engaged with most, rather than just the latest
+    @author_articles = @user.articles.published.where.not(id: @article.id)
+                            .includes(images_attachments: :blob)
+                            .order(Arel.sql("likes_count * 3 + comments_count * 5 + real_views_count DESC, published_at DESC"))
                             .limit(3)
                             .includes(:tags, images_attachments: :blob)
 

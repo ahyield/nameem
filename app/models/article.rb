@@ -26,16 +26,6 @@ class Article < ApplicationRecord
   scope :most_popular, lambda {
     where("published = ? AND user_id != ?", true, RANKING_EXCLUDED_USER_ID).order(real_views_count: :desc)
   }
-  scope :related_to, lambda { |article, limit: 4|
-    published
-      .joins(:article_tags)
-      .where(article_tags: { tag_id: article.tag_ids })
-      .where.not(id: article.id)
-      .select("articles.*, COUNT(article_tags.tag_id) as shared_tags_count")
-      .group("articles.id")
-      .order(Arel.sql("COUNT(article_tags.tag_id) DESC, articles.published_at DESC"))
-      .limit(limit)
-  }
 
   attribute :uuid, MySQLBinUUID::Type.new
 

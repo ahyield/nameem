@@ -204,7 +204,7 @@ twitter: {
       <% if @author_articles&.any? %>
         <h2 class="text-xl font-bold text-gray-900 mb-6 <%= "mt-14 border-t border-gray-200 pt-10" if @related_articles&.any? %>">المزيد من <%= @user.name %></h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          <%= render partial: "articles/suggestion_card", collection: @author_articles, as: :article %>
+          <%= render partial: "articles/suggestion_card", collection: @author_articles, as: :article, locals: { show_author: false } %>
         </div>
       <% end %>
     </div>
