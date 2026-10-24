@@ -1,15 +1,15 @@
 <nav class="bg-slate border border-solid border-b-1 border-slate-100">
   <div class="max-w-7xl lg:w-10/12 2xl:w-3/4 mx-auto px-2 sm:px-6 lg:px-8">
     <div class="relative flex h-16 items-center justify-between">
-      <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+      <div class="flex items-center">
         <div class="flex flex-shrink-0 items-center rtl:ml-3">
           <a href="/">
             <img class="h-8 w-auto" src="<%= asset_path("brand/logo.png") %>" alt="نميم">
           </a>
         </div>
       </div>
-      <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-        <span id="save-status" class="text-sm text-gray-400 ml-3"></span>
+      <div class="flex min-w-0 items-center sm:ml-6">
+        <span id="save-status" class="ml-3 truncate text-xs text-gray-400 sm:text-sm" role="status"></span>
         <%= button_to user_publish_modal_path(uuid: params[:uuid] || "", slug: params[:slug] || current_user || ""),
           form: { id: "publish-form-btn" }, data: { turbo_frame: "modal"}, class: "btn-publish-disabled relative h-8 px-6 m-2 text-lg text-white bg-gradient-to-l from-amber-400 to-orange-500
                                                                                    hover:from-amber-500 hover:to-orange-600 rounded-full focus:outline-none focus:ring-0", method: :get do %>
