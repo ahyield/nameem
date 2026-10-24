@@ -10,20 +10,15 @@ class Trending
   MIN_PEOPLE = 2
   # Below this an article is just being passed by: two opens score about 2, one real read 4, a like 3
   MIN_SCORE = 3
+  # Stability, so the list doesn't flicker on single views: an article already trending stays until it
+  # drops below STAY_SCORE, and a newcomer has to beat it by INCUMBENT_MARGIN to take its place
+  STAY_SCORE = 2
+  INCUMBENT_MARGIN = 0.2
   # At most this many articles are ranked as trending; any one author gets at most AUTHOR_CAP of them
   MAX_RANKED = 20
   AUTHOR_CAP = 2
-
-  # Decayed score per signal: weight × 0.5 ^ (minutes since the event ÷ half-life). Filled in with
-  # sanitize_sql_array, so the only SQL here is these constants.
-  DECAY = "POW(0.5, TIMESTAMPDIFF(MINUTE, %<at>s, :now) / :half_life)".freeze
-  SCORE_SQL = {
-    views:     "SUM(:open * #{format(DECAY, at: 'page_views.created_at')} + CASE WHEN page_views.read_at IS NULL " \
-               "THEN 0 ELSE :read * #{format(DECAY, at: 'page_views.read_at')} END)",
-    likes:     "SUM(:like * #{format(DECAY, at: 'article_likes.created_at')})",
-    bookmarks: "SUM(:save * #{format(DECAY, at: 'bookmarks.created_at')})",
-    comments:  "SUM(:comment * #{format(DECAY, at: 'commenters.last_at')})"
-  }.freeze
+  # Nameem is Arabic first: mostly-English articles (ArticleLanguage) need about 4× the engagement to trend
+  LATIN_WEIGHT = 0.25
 
   def self.compute!(now: Time.current)
     new(now).compute!
@@ -37,13 +32,24 @@ class Trending
   # Returns the ranked article ids, best first
   def compute!
     scores, people = tally
-    eligible = scores.select { |id, score| score >= MIN_SCORE && people[id] >= MIN_PEOPLE }
-    ranked = diversify(eligible.sort_by { |id, score| [-score, -id] }.map(&:first))
+    Article.where(id: scores.keys, mostly_latin: true).pluck(:id).each { |id| scores[id] *= LATIN_WEIGHT }
+    incumbents = Article.where.not(trending_rank: nil).pluck(:id).to_set
+    eligible = scores.select do |id, score|
+      people[id] >= MIN_PEOPLE && score >= (incumbents.include?(id) ? STAY_SCORE : MIN_SCORE)
+    end
+    ranked = diversify(rank_with_incumbency(eligible, incumbents))
     store(ranked, eligible)
     ranked
   end
 
   private
+
+  # Articles already trending sort as if they scored INCUMBENT_MARGIN more; the stored score stays the real one
+  def rank_with_incumbency(scores, incumbents)
+    scores.sort_by do |id, score|
+      [-(incumbents.include?(id) ? score * (1 + INCUMBENT_MARGIN) : score), -id]
+    end.map(&:first)
+  end
 
   # score and distinct people per article, summed across signals
   def tally
@@ -99,7 +105,7 @@ class Trending
 
   def score(signal)
     binds = WEIGHTS.merge(now: @now.utc, half_life: HALF_LIFE_MINUTES)
-    Arel.sql(ActiveRecord::Base.sanitize_sql_array([SCORE_SQL.fetch(signal), binds]))
+    Arel.sql(ActiveRecord::Base.sanitize_sql_array([ScoreSql::FRAGMENTS.fetch(signal), binds]))
   end
 
   # The top MAX_RANKED in score order, with any one author kept to AUTHOR_CAP of them

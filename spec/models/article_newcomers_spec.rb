@@ -34,4 +34,9 @@ RSpec.describe Article, ".newcomers" do
 
     expect(described_class.newcomers(limit: 2)).to be_empty
   end
+
+  it "leaves out mostly-English articles" do
+    published(1.hour.ago).update_column(:mostly_latin, true)
+    expect(described_class.newcomers(limit: 2)).to be_empty
+  end
 end

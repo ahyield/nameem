@@ -1,4 +1,4 @@
-# Every 15 minutes (config/schedule.yml): recompute the الرائج ranking
+# Every hour (config/schedule.yml): recompute the الرائج ranking
 class RefreshTrendingJob < ApplicationJob
   queue_as :default
 

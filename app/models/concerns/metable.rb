@@ -4,6 +4,11 @@ module Metable
   included do
     # Derived fields are set before saving, so an autosave writes one UPDATE
     before_save :refresh_content_metadata, if: :content_html_changed?
+    before_save :detect_language, if: -> { title_changed? || content_html_changed? }
+
+    def detect_language
+      self.mostly_latin = ArticleLanguage.mostly_latin?(title, content_html)
+    end
 
     def refresh_content_metadata
       return if content_html.blank?
