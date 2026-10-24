@@ -16,7 +16,7 @@ RSpec.describe "New articles in الرائج" do
     response.body.scan(/رائج \d+|جديد [أب]/)
   end
 
-  it "puts new articles third and sixth on the tab, labelled, and not again on page 2" do
+  it "puts new articles third and sixth on the tab, labelled, then ends with a way to الأحدث" do
     trending(6)
     create(:article, :published, title: "جديد أ", published_at: 1.hour.ago)
     create(:article, :published, title: "جديد ب", published_at: 2.hours.ago)
@@ -25,17 +25,24 @@ RSpec.describe "New articles in الرائج" do
 
     expect(card_titles.first(8)).to eq(["رائج 1", "رائج 2", "جديد أ", "رائج 3", "رائج 4", "جديد ب", "رائج 5", "رائج 6"])
     expect(response.body.scan(">جديد<").size).to eq(2)
-
-    get trending_feed_path(format: :turbo_stream, page: 2)
-    expect(response.body).not_to include("جديد أ")
+    expect(response.body).to include("هذا كل ما يتداوله القرّاء الآن", "تصفّح الأحدث", latest_feed_path)
+    expect(response.body).not_to include("feed_pagination")
   end
 
-  it "leads with new articles when nothing is trending" do
+  it "shows only new articles when nothing is trending, not older ones" do
     create(:article, :published, title: "قديم", published_at: 3.days.ago)
     create(:article, :published, title: "جديد أ", published_at: 1.hour.ago)
 
     get trending_feed_path(format: :turbo_stream)
-    expect(response.body.index("جديد أ")).to be < response.body.index("قديم")
+    expect(response.body).to include("جديد أ")
+    expect(response.body).not_to include("قديم")
+  end
+
+  it "says so when nothing is trending or new" do
+    create(:article, :published, published_at: 3.days.ago)
+
+    get trending_feed_path(format: :turbo_stream)
+    expect(response.body).to include("لا شيء رائج الآن", "تصفّح الأحدث")
   end
 
   it "gives one sidebar slot to a new article, keeping five entries" do

@@ -47,8 +47,6 @@ class Article < ApplicationRecord
 
   # Ranked by recent engagement (see Trending); only articles that are trending right now
   scope :trending, -> { published.where.not(trending_rank: nil).order(:trending_rank) }
-  # The الرائج tab: trending articles first, then everything else newest first, so it never runs dry
-  scope :by_trending, -> { published.order(Arel.sql("trending_rank IS NULL, trending_rank, published_at DESC")) }
 
   NEWCOMER_WINDOW = 24.hours
 
