@@ -311,3 +311,38 @@
   pointer-events: none;
   opacity: 0.4;
 }
+
+/* Image still uploading: the local preview shows right away, dimmed, with a label */
+.editor-image-wrapper.is-uploading img {
+  opacity: 0.55;
+}
+
+.editor-image-wrapper.is-uploading::after {
+  content: "جاري رفع الصورة…";
+  position: absolute;
+  inset-inline-start: 12px;
+  top: 28px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgb(17 24 39 / 80%);
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+/* Phones: full-width editor, and the + button and media bar on the left (the end of an RTL line), where
+   they don't cover the start of what you're typing */
+@media (width <= 640px) {
+  .editor-container {
+    font-size: 1.05em;
+  }
+
+  .insert-toggle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .sidebar-inner button {
+    min-width: 40px;
+    min-height: 40px;
+  }
+}

@@ -7,6 +7,7 @@ import {
   $createRangeSelection,
   $setSelection,
   $createParagraphNode,
+  $getNodeByKey,
   $insertNodes,
   FORMAT_TEXT_COMMAND,
   SELECTION_CHANGE_COMMAND,
@@ -23,6 +24,7 @@ import { $createVideoNode } from "lib/lexical/nodes/video_node"
 import { TweetNode, $createTweetNode } from "lib/lexical/nodes/tweet_node"
 import { $createDividerNode } from "lib/lexical/nodes/divider_node"
 import { validateVideoUrl, validateTweetUrl } from "lib/utils/validation_utils"
+import { ACCEPTED_TYPES, prepareImage } from "lib/image_prepare"
 import { createArticle, fetchArticle, saveArticle } from "lib/api/article_api"
 import { isNewArticle, articleUuid, userSlug, drawUrl } from "lib/api/helpers/url_helpers"
 
@@ -32,9 +34,10 @@ export default class extends Controller {
     this.editor = createNamoemEditor(container)
     this.dirty = false
     this.saving = false
+    this.pendingUploads = 0
     this.titleDebounceTimer = null
 
-    // RTL direction on root
+    // The editor's own empty paragraph isn't a change; tagged so it doesn't create a draft before typing
     this.editor.update(() => {
       const root = $getRoot()
       if (root.getChildrenSize() === 0) {
@@ -42,7 +45,7 @@ export default class extends Controller {
         root.append(paragraph)
         paragraph.select()
       }
-    })
+    }, { tag: "nameem-setup" })
 
     const rootElement = this.editor.getRootElement()
     if (rootElement) {
@@ -62,8 +65,8 @@ export default class extends Controller {
     )
 
     // Track dirty state + empty state for placeholder
-    this.editor.registerUpdateListener(({ dirtyElements, dirtyLeaves, editorState }) => {
-      if (dirtyElements.size > 0 || dirtyLeaves.size > 0) {
+    this.editor.registerUpdateListener(({ dirtyElements, dirtyLeaves, editorState, tags }) => {
+      if (!tags.has("nameem-setup") && (dirtyElements.size > 0 || dirtyLeaves.size > 0)) {
         this.dirty = true
       }
 
@@ -180,11 +183,11 @@ export default class extends Controller {
   }
 
   async autoSave() {
-    if (!this.dirty || this.saving) return
+    // An image still uploading has a temporary local URL that must not be saved
+    if (!this.dirty || this.saving || this.pendingUploads > 0) return
     this.saving = true
 
-    const statusEl = document.getElementById("save-status")
-    if (statusEl) statusEl.textContent = "جاري الحفظ..."
+    this.setStatus("جاري الحفظ...")
 
     try {
       let uuid, slug
@@ -210,12 +213,11 @@ export default class extends Controller {
 
       await saveArticle(uuid, slug, { content, content_html: contentHtml })
 
-      if (statusEl) statusEl.textContent = "تم الحفظ"
+      this.setStatus("تم الحفظ")
       this.dirty = false
     } catch (error) {
       console.error("Auto-save failed:", error)
-      const statusEl = document.getElementById("save-status")
-      if (statusEl) statusEl.textContent = "فشل الحفظ"
+      this.setStatus("فشل الحفظ", { hold: true })
       // Keep dirty = true for retry
     } finally {
       this.saving = false
@@ -434,38 +436,65 @@ export default class extends Controller {
   // === Media Insertion ===
 
   imageUpload() {
+    // Attached to the page: iOS Safari doesn't reliably report the chosen photo from a detached input
     const input = document.createElement("input")
     input.type = "file"
-    input.accept = "image/png, image/jpeg"
+    input.accept = ACCEPTED_TYPES
+    input.hidden = true
+    document.body.appendChild(input)
 
-    input.onchange = () => {
+    input.addEventListener("change", () => {
       const file = input.files[0]
-      if (!file) return
+      input.remove()
+      if (file) this.uploadImage(file)
+    }, { once: true })
+    input.addEventListener("cancel", () => input.remove(), { once: true })
 
-      const baseURL = window.location.origin
-      const url = `${baseURL}/rails/active_storage/direct_uploads`
-      const upload = new DirectUpload(file, url)
-
-      upload.create((error, blob) => {
-        if (error) {
-          alert("فشل رفع الصورة!")
-          return
-        }
-
-        const imageUrl = `${baseURL}/rails/active_storage/blobs/proxy/${blob.signed_id}/${blob.filename}`
-        this.editor.update(() => {
-          const imageNode = $createImageNode({ src: imageUrl, alt: "" })
-          const newParagraph = $createParagraphNode()
-          $insertNodes([imageNode, newParagraph])
-          newParagraph.select()
-        })
-
-        // Only hide sidebar bar, let updateToolbar() reposition the + button
-        const sidebar = document.querySelector(".sidebar-controls")
-        if (sidebar) sidebar.style.display = "none"
-      })
-    }
+    this.hideSidebar()
     input.click()
+  }
+
+  // Shows the photo right away from a local preview, uploads a resized copy, then swaps in the real URL.
+  // A failed upload removes the preview and says so.
+  async uploadImage(file) {
+    let prepared
+    try {
+      prepared = await prepareImage(file)
+    } catch {
+      prepared = file
+    }
+
+    const previewUrl = URL.createObjectURL(prepared)
+    let nodeKey
+    this.pendingUploads += 1
+    this.setStatus("جاري رفع الصورة...")
+
+    this.editor.update(() => {
+      const imageNode = $createImageNode({ src: previewUrl, alt: "", uploading: true })
+      const newParagraph = $createParagraphNode()
+      $insertNodes([imageNode, newParagraph])
+      newParagraph.select()
+      nodeKey = imageNode.getKey()
+    })
+
+    const origin = window.location.origin
+    new DirectUpload(prepared, `${origin}/rails/active_storage/direct_uploads`).create((error, blob) => {
+      this.pendingUploads -= 1
+
+      this.editor.update(() => {
+        const node = $getNodeByKey(nodeKey)
+        if (!node) return
+
+        if (error) {
+          node.remove()
+        } else {
+          node.setSrc(`${origin}/rails/active_storage/blobs/proxy/${blob.signed_id}/${encodeURIComponent(blob.filename)}`)
+        }
+      })
+
+      setTimeout(() => URL.revokeObjectURL(previewUrl), 10000)
+      if (error) this.setStatus("فشل رفع الصورة، حاول مرة أخرى", { hold: true })
+    })
   }
 
   toggleVideoInput() {
@@ -630,13 +659,8 @@ export default class extends Controller {
           const top = rect.top - editorRect.top + (rect.height / 2) - 16
 
           controls.style.display = "block"
-          controls.style.top = `${top}px`
-          controls.style.left = "auto"
-          controls.style.right = "-48px"
-
-          sidebar.style.top = `${top}px`
-          sidebar.style.left = "auto"
-          sidebar.style.right = "-48px"
+          this.placeBeside(controls, top)
+          this.placeBeside(sidebar, top)
         } else {
           controls.style.display = "none"
           sidebar.style.display = "none"
@@ -663,6 +687,25 @@ export default class extends Controller {
 
   // === Helpers ===
 
+  // Errors stay up for a few seconds, so the autosave that follows doesn't replace them with "تم الحفظ"
+  setStatus(text, { hold = false } = {}) {
+    const statusEl = document.getElementById("save-status")
+    if (!statusEl) return
+    if (!hold && Date.now() < (this.statusHeldUntil || 0)) return
+
+    statusEl.textContent = text
+    this.statusHeldUntil = hold ? Date.now() + 6000 : 0
+  }
+
+  // The + button and media bar sit outside the text on wide screens; on phones there's no room there,
+  // so they go on the left edge, the end of an RTL line, clear of what's being typed
+  placeBeside(element, top) {
+    const phone = window.matchMedia("(max-width: 640px)").matches
+    element.style.top = `${top}px`
+    element.style.left = phone ? "0px" : "auto"
+    element.style.right = phone ? "auto" : "-48px"
+  }
+
   showControlsAtCaret() {
     const controls = document.querySelector(".show-controls")
     const sidebar = document.querySelector(".sidebar-controls")
@@ -676,15 +719,11 @@ export default class extends Controller {
         const editorRect = this.element.getBoundingClientRect()
         const top = rect.top - editorRect.top + (rect.height / 2) - 16
         controls.style.display = "block"
-        controls.style.top = `${top}px`
-        controls.style.left = "auto"
-        controls.style.right = "-48px"
+        this.placeBeside(controls, top)
 
         if (sidebar) {
           sidebar.style.display = "none"
-          sidebar.style.top = `${top}px`
-          sidebar.style.left = "auto"
-          sidebar.style.right = "-48px"
+          this.placeBeside(sidebar, top)
         }
       }
     }

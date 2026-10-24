@@ -1,4 +1,4 @@
-<div id="editor" data-controller="editor" class="w-3/5 mx-auto">
+<div id="editor" data-controller="editor" class="relative mx-auto w-full px-5 sm:w-3/5 sm:px-0">
   <div class="tooltip-controls hidden" data-action="click@window->editor#hideToolTip">
     <div class="tooltip-inner">
       <button data-action="click->editor#toggleBold" title="عريض"><i class="fa-solid fa-bold"></i></button>
@@ -47,13 +47,13 @@
     </div>
   </div>
 
-  <div class="h-full mt-20 title">
-    <input type="text" autocomplete="off" placeholder="العنوان" dir="rtl" id="article-title" data-action="keyup->editor#upsertTitle" class="border-0 placeholder:opacity-50 text-black
-    placeholder:text-grey-300 w-full focus:ring-0 text-5xl">
+  <div class="h-full mt-8 sm:mt-20 title">
+    <input type="text" autocomplete="off" placeholder="العنوان" dir="rtl" id="article-title" data-action="keyup->editor#upsertTitle" class="border-0 px-0 placeholder:opacity-50 text-black
+    placeholder:text-grey-300 w-full focus:ring-0 text-3xl sm:text-5xl">
   </div>
   <hr class="h-px bg-slate-200 border-0 w-1/2">
 
-  <div class="h-full editor-container mt-10" contenteditable="true" dir="rtl">
+  <div class="h-full editor-container mt-6 sm:mt-10" contenteditable="true" dir="rtl">
   </div>
 </div>
 
