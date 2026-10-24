@@ -133,4 +133,47 @@ RSpec.describe Trending do
     RefreshTrendingJob.perform_now
     expect(trending.reload.trending_rank).to eq(1)
   end
+
+  it "gives mostly-English articles a quarter of the weight" do
+    english = article.tap { |a| a.update_column(:mostly_latin, true) }.tap { |a| 4.times { save(a) } }
+    arabic = article.tap { |a| 2.times { like(a) } }
+
+    expect(ranked).to eq([arabic, english])
+    expect(english.reload.trending_score).to be_within(0.5).of(4)
+  end
+
+  describe "stability" do
+    it "keeps a trending article ahead of a challenger that is only slightly better" do
+      incumbent = article.tap { |a| 2.times { like(a) } }
+      described_class.compute!
+      challenger = article.tap { |a| 2.times { like(a) } }
+      view(challenger)
+
+      expect(ranked).to eq([incumbent, challenger])
+    end
+
+    it "lets a clearly better challenger through" do
+      incumbent = article.tap { |a| 2.times { like(a) } }
+      described_class.compute!
+      challenger = article.tap { |a| 3.times { like(a) } }
+
+      expect(ranked).to eq([challenger, incumbent])
+    end
+
+    it "keeps a trending article between the stay and entry scores, but doesn't admit a newcomer there" do
+      # Three opens score about 2.96: enough to stay (2), not enough to enter (3)
+      staying = article.tap { |a| a.update_column(:trending_rank, 1) }.tap { |a| 3.times { view(a) } }
+      newcomer = article.tap { |a| 3.times { view(a) } }
+
+      expect(ranked).to eq([staying])
+      expect(newcomer.reload.trending_rank).to be_nil
+    end
+
+    it "drops an article once it falls below the stay score" do
+      gone = article.tap { |a| a.update_column(:trending_rank, 1) }
+      2.times { view(gone, at: 3.days.ago) }
+
+      expect(ranked).to be_empty
+    end
+  end
 end

@@ -53,9 +53,10 @@ class Article < ApplicationRecord
   NEWCOMER_WINDOW = 24.hours
 
   # Articles from the last day that aren't trending yet, one per author, newest first. They get labelled
-  # «جديد» slots in الرائج so they can be found before they have any engagement.
+  # «جديد» slots in الرائج so they can be found before they have any engagement. Mostly-English
+  # articles don't get a slot (Nameem is Arabic first).
   def self.newcomers(limit:)
-    published.where(published_at: NEWCOMER_WINDOW.ago.., trending_rank: nil)
+    published.where(published_at: NEWCOMER_WINDOW.ago.., trending_rank: nil, mostly_latin: false)
              .where.not(user_id: RANKING_EXCLUDED_USER_ID)
              .includes(:user).order(published_at: :desc)
              .to_a.uniq(&:user_id).first(limit)

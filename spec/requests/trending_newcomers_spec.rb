@@ -46,7 +46,7 @@ RSpec.describe "New articles in الرائج" do
 
     sidebar = response.body[/الرائج هذا الأسبوع.*?<\/ol>/m]
     expect(sidebar.scan(/رائج \d+|جديد أ/)).to eq(["رائج 1", "رائج 2", "جديد أ", "رائج 3", "رائج 4"])
-    expect(sidebar).to include(">جديد<", "04")
-    expect(sidebar).not_to include("05")
+    expect(sidebar).to include(">جديد<")
+    expect(sidebar.scan(%r{>(0\d)</span>}).flatten).to eq(%w[01 02 03 04])
   end
 end

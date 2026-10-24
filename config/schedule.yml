@@ -10,7 +10,7 @@ production:
   trending:
     class: RefreshTrendingJob
     queue: default
-    schedule: every 15 minutes
+    schedule: every hour
   weekly_digest:
     class: SendWeeklyDigestJob
     queue: default
