@@ -1,13 +1,16 @@
-<article class="flex flex-col">
-  <% cover = article_cover(article) %>
+<%# locals: (article:, show_author: true) %>
+<article class="group/card flex flex-col">
+  <% cover = cover_image_url(article, [640, 400]) %>
   <% if cover %>
-    <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false } do %>
-      <div class="aspect-[16/10] w-full overflow-hidden rounded-sm bg-gray-100">
-        <%= image_tag cover, class: "h-full w-full object-cover" %>
+    <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false }, tabindex: -1, aria: { hidden: true } do %>
+      <div class="aspect-[16/10] w-full overflow-hidden rounded-lg bg-gray-100">
+        <%= image_tag cover, alt: "", width: 320, height: 200, loading: "lazy",
+                             class: "h-full w-full object-cover transition-transform duration-300 ease-out group-hover/card:scale-[1.02]" %>
       </div>
     <% end %>
   <% end %>
 
+  <% if show_author %>
   <div class="flex items-center gap-2 mt-4 text-xs text-gray-500">
     <%= link_to user_path(article.user), data: { turbo: false }, class: "flex items-center gap-2 hover:underline" do %>
       <% if article.user.avatar.attached? %>
@@ -22,16 +25,17 @@
       <span class="font-medium text-gray-700"><%= article.user.name %></span>
     <% end %>
   </div>
+  <% end %>
 
   <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false }, class: "group" do %>
-    <h3 class="mt-2 text-base font-bold text-gray-900 leading-snug group-hover:text-gray-600 transition-colors line-clamp-2">
+    <h3 dir="auto" class="<%= show_author || cover ? "mt-2" : "mt-0" %> text-base font-bold text-gray-900 leading-snug group-hover:text-gray-600 transition-colors line-clamp-2">
       <% if article.title.blank? %>
         <%= first_paragraph(article)&.truncate(100) %>
       <% else %>
         <%= article.title.truncate(100) %>
       <% end %>
     </h3>
-    <p class="mt-1 text-sm leading-relaxed text-gray-500 line-clamp-2"><%= article.description&.truncate(120) %></p>
+    <p dir="auto" class="mt-1 text-sm leading-relaxed text-gray-500 line-clamp-2"><%= article.description&.truncate(120) %></p>
   <% end %>
 
   <div class="mt-3 flex items-center gap-3 text-xs text-gray-400">
