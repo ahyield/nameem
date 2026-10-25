@@ -37,7 +37,7 @@
 
                 <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-900/5">
                   <% if @article.article_images.any? %>
-                    <%= image_tag article_cover(@article), alt: "", class: "aspect-video w-full bg-gray-100 object-cover" %>
+                    <%= image_tag card_cover_url(@article, [1280, 720]), alt: "", class: "aspect-video w-full bg-gray-100 object-cover" %>
                   <% else %>
                     <div class="flex aspect-video w-full flex-col items-center justify-center gap-2 bg-gray-50 px-8 text-center">
                       <svg class="h-8 w-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
