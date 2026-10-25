@@ -45,11 +45,10 @@
     </div>
 
   </div>
-  <% if article_cover(article) %>
-    <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false } do %>
-      <div class="relative mt-4 aspect-[112/112] lg:aspect-square w-24 h-24 md:w-24 md:h-24 lg:w-32 lg:h-32">
-          <%= image_tag article_cover(article), class: "absolute inset-0 h-full w-full bg-gray-50 object-cover" %>
-        <div class="absolute inset-0 ring-inset ring-gray-900/10"></div>
+  <% if (cover = card_cover_url(article, [384, 256])) %>
+    <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false }, class: "shrink-0" do %>
+      <div class="relative mt-4 aspect-[3/2] w-28 md:w-36 lg:w-48 rounded-lg overflow-hidden bg-gray-50 ring-1 ring-inset ring-gray-900/5">
+        <%= image_tag cover, alt: "", loading: "lazy", decoding: "async", class: "absolute inset-0 h-full w-full object-cover" %>
       </div>
     <% end %>
   <% end %>
