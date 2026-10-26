@@ -17,6 +17,9 @@ pin "@lexical/history", to: "https://esm.sh/@lexical/history@0.28.0?external=lex
 pin "@lexical/selection", to: "https://esm.sh/@lexical/selection@0.28.0?external=lexical"
 pin "@lexical/html", to: "https://esm.sh/@lexical/html@0.28.0?external=lexical,@lexical/selection"
 pin "@lexical/utils", to: "https://esm.sh/@lexical/utils@0.28.0?external=lexical,@lexical/selection"
+pin "@lexical/code", to: "https://esm.sh/@lexical/code@0.28.0?bundle-deps&external=lexical,@lexical/utils,@lexical/selection"
+pin "@lexical/markdown",
+    to: "https://esm.sh/@lexical/markdown@0.28.0?external=lexical,@lexical/code,@lexical/link,@lexical/rich-text,@lexical/utils,@lexical/selection"
 pin "stimulus-clipboard", to: "https://ga.jspm.io/npm:stimulus-clipboard@4.0.1/dist/stimulus-clipboard.mjs"
 pin "@fingerprintjs/fingerprintjs", to: "fingerprintjs.esm.js"
 pin "trix"
