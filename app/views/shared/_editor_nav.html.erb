@@ -1,4 +1,4 @@
-<nav class="bg-slate border border-solid border-b-1 border-slate-100">
+<nav class="border border-solid border-b-1 border-gray-100">
   <div class="max-w-7xl lg:w-10/12 2xl:w-3/4 mx-auto px-2 sm:px-6 lg:px-8">
     <div class="relative flex h-16 items-center justify-between">
       <div class="flex items-center">
@@ -43,7 +43,7 @@
                data-transition-leave="transition ease-in duration-150"
                data-transition-leave-from="opacity-100 translate-y-0"
                data-transition-leave-to="opacity-0 translate-y-1"
-               class="absolute hidden right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+               class="absolute hidden right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-raised py-1 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
                role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
             <!-- Active: "bg-gray-100", Not Active: "" -->
             <%= link_to user_path(current_user), class: "block px-4 py-2 hover:transition-all hover:duration-300 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-amber-300 hover:to-orange-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-1" do %>

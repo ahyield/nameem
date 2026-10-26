@@ -27,9 +27,9 @@
 
             <%= link_to user_article_path(uuid: article, slug: article.user) do %>
               <% if article.title.blank? %>
-                <h1 class="mt-1 text-xl text-black"><%= first_paragraph(article) %></h1>
+                <h1 class="mt-1 text-xl text-gray-950"><%= first_paragraph(article) %></h1>
               <% else %>
-                <h1 class="mt-1 text-xl text-black"><%= article.title %></h1>
+                <h1 class="mt-1 text-xl text-gray-950"><%= article.title %></h1>
               <% end %>
 
             <% end %>

@@ -12,7 +12,7 @@
   }
 
   blockquote {
-    border-left: 4px solid #111;
+    border-left: 4px solid theme("colors.gray.900");
     padding-left: 1em;
   }
 
@@ -120,7 +120,7 @@
   }
 
   .bo-btn-ghost {
-    @apply border border-gray-200 bg-white text-gray-900;
+    @apply border border-gray-200 bg-surface text-gray-900;
   }
 
   .bo-btn-danger {
@@ -128,7 +128,7 @@
   }
 
   .bo-panel {
-    @apply rounded-xl border border-gray-200/70 bg-white;
+    @apply rounded-xl border border-gray-200/70 bg-surface;
   }
 
   .bo-label {
@@ -136,7 +136,7 @@
   }
 
   .bo-input {
-    @apply block w-full rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-orange-600 focus:outline-none focus:ring-1 focus:ring-orange-600;
+    @apply block w-full rounded-lg border border-gray-200 bg-surface px-3 py-1.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-orange-600 focus:outline-none focus:ring-1 focus:ring-orange-600;
   }
 
   .bo-row {
@@ -192,7 +192,7 @@
   }
 
   .bo .pagy a:not(.gap)[aria-current="page"] {
-    @apply bg-gray-900 text-white;
+    @apply bg-gray-900 text-surface;
   }
 }
 
@@ -204,7 +204,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .bo-btn-primary:hover { @apply bg-orange-700; }
+  .bo-btn-primary:hover { @apply bg-orange-700 dark:bg-orange-500; }
   .bo-btn-ghost:hover { @apply bg-gray-50; }
   .bo-btn-danger:hover { @apply bg-red-50; }
   .bo-row:hover { @apply bg-gray-50; }
@@ -234,7 +234,7 @@
       @apply text-gray-300 bg-gray-100 cursor-default;
     }
     &.current {
-      @apply text-white bg-gray-400;
+      @apply text-surface bg-gray-400;
     }
   }
   label {

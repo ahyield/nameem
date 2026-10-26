@@ -13,7 +13,7 @@
       ["الإعجابات", @total_likes, @this_week[:likes], "bg-rose-400/10"],
       ["التعليقات", @total_comments, @this_week[:comments], "bg-amber-400/10"]
     ].each do |label, total, week, glow| %>
-      <div class="relative overflow-hidden rounded-2xl bg-white/60 backdrop-blur-sm px-5 py-6 shadow-sm ring-1 ring-gray-900/5">
+      <div class="relative overflow-hidden rounded-2xl bg-surface/60 backdrop-blur-sm px-5 py-6 shadow-sm ring-1 ring-gray-900/5">
         <div class="absolute -top-6 -left-6 h-24 w-24 rounded-full <%= glow %> blur-2xl"></div>
         <dt class="text-sm font-medium text-gray-500"><%= label %></dt>
         <dd class="mt-2 text-3xl font-bold text-gray-900 tabular-nums"><%= number_with_delimiter(total) %></dd>
@@ -29,7 +29,7 @@
   <!-- New readers, last 30 days -->
   <% days = @daily_readers.size %>
   <% peak = @daily_readers.map(&:last).max.to_i %>
-  <section class="mb-10 rounded-xl bg-white px-6 py-5 shadow-sm ring-1 ring-gray-900/5" aria-labelledby="readers-title">
+  <section class="mb-10 rounded-xl bg-surface px-6 py-5 shadow-sm ring-1 ring-gray-900/5" aria-labelledby="readers-title">
     <div class="mb-4 flex items-baseline justify-between gap-4">
       <h2 id="readers-title" class="text-lg font-semibold text-gray-900">قرّاء جدد</h2>
       <p class="text-sm text-gray-500">
@@ -56,7 +56,7 @@
   </section>
 
   <!-- Per-article table -->
-  <div id="articles" class="scroll-mt-20 rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5 overflow-hidden">
+  <div id="articles" class="scroll-mt-20 rounded-xl bg-surface shadow-sm ring-1 ring-gray-900/5 overflow-hidden">
     <div class="px-6 py-5 border-b border-gray-100">
       <h2 class="text-lg font-semibold text-gray-900">أداء المقالات</h2>
       <p class="mt-1 text-sm text-gray-500"><%= @articles.size %> مقالة منشورة</p>

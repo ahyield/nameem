@@ -13,10 +13,10 @@
     <div class="grid grid-cols-1 gap-4 lg:col-span-2">
       <section aria-labelledby="section-1-title">
         <h2 class="sr-only" id="section-1-title">Section title</h2>
-        <div class="rounded-lg bg-white">
+        <div class="rounded-lg bg-surface">
           <div class="p-6">
 
-            <div class="self-start sticky top-0 z-20 bg-white">
+            <div class="self-start sticky top-0 z-20 bg-surface">
               <div class="block">
                 <div class="border-b border-gray-200">
                   <nav class="-mb-px flex space-x-4 rtl:space-x-reverse" data-controller="feed-active-link" data-turbo-frame="feed" aria-label="Tabs">
@@ -51,7 +51,7 @@
       <% if @users.any? %>
         <section aria-labelledby="section-2-title">
           <h2 class="sr-only" id="section-2-title">اخترنا لك</h2>
-          <div class="overflow-hidden rounded-lg bg-white">
+          <div class="overflow-hidden rounded-lg bg-surface">
             <div class="p-6 pb-3">
               <h1 class="font-bold text-gray-900">اخترنا لك</h1>
             </div>
@@ -92,7 +92,7 @@
       <% if @trending.any? %>
         <section aria-labelledby="section-trending-title">
           <h2 class="sr-only" id="section-trending-title">الرائج هذا الأسبوع</h2>
-          <div class="overflow-hidden rounded-lg bg-white">
+          <div class="overflow-hidden rounded-lg bg-surface">
             <div class="p-6 pb-2">
               <h1 class="font-bold text-gray-900">الرائج هذا الأسبوع</h1>
             </div>
@@ -137,7 +137,7 @@
       <% if @tags.any? %>
         <section aria-labelledby="section-topics-title">
           <h2 class="sr-only" id="section-topics-title">المواضيع</h2>
-          <div class="overflow-hidden rounded-lg bg-white">
+          <div class="overflow-hidden rounded-lg bg-surface">
             <div class="p-6 pb-3">
               <h1 class="font-bold text-gray-900">المواضيع</h1>
             </div>
