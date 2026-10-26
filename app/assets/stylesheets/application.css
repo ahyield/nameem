@@ -1,7 +1,6 @@
 /* Shared toolbar button styles */
 
-.tooltip-controls button,
-.sidebar-inner button {
+.tooltip-controls button {
   background: transparent;
   color: #d4d4d4;
   border: none;
@@ -16,8 +15,7 @@
   transition: background 0.15s, color 0.15s;
 }
 
-.tooltip-controls button:hover,
-.sidebar-inner button:hover {
+.tooltip-controls button:hover {
   background: #333;
   color: #fff;
 }
@@ -251,7 +249,6 @@
 
 /* The formatting bars are dark in both themes; on an ink page they need an edge to stand apart */
 .dark .tooltip-inner,
-.dark .sidebar-inner,
 .dark .link-tip,
 .dark .video-input,
 .dark .tweet-input {
@@ -283,21 +280,28 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1.5px solid rgb(var(--gray-300));
+  border: 1px solid rgb(var(--gray-300));
   background: rgb(var(--surface));
   color: rgb(var(--gray-400));
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  transition: all 0.2s;
+  transition: color 150ms ease, border-color 150ms ease, transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.insert-toggle svg {
+  width: 18px;
+  height: 18px;
 }
 
 .insert-toggle:hover {
   border-color: rgb(var(--gray-500));
   color: rgb(var(--gray-700));
-  background: rgb(var(--gray-50));
+}
+
+.insert-toggle:active {
+  transform: scale(0.95);
 }
 
 .sidebar-controls {
@@ -306,24 +310,61 @@
   direction: ltr;
 }
 
+/* The insert menu: a raised pill of outline icons, like the site's other menus */
 .sidebar-inner {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
   gap: 2px;
-  background: #1e1e1e;
-  border-radius: 8px;
-  padding: 4px 6px;
-  box-shadow: 0 4px 14px rgb(0 0 0 / 25%);
+  padding: 4px;
+  border-radius: 9999px;
+  background: rgb(var(--raised));
+  box-shadow: 0 0 0 1px rgb(var(--gray-900) / 8%), 0 8px 24px rgb(0 0 0 / 12%);
   white-space: nowrap;
 }
 
-.sidebar-close {
-  color: #6b7280 !important;
+.sidebar-inner button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 9999px;
+  background: transparent;
+  color: rgb(var(--gray-500));
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 150ms ease, color 150ms ease, transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.sidebar-inner button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.sidebar-inner button .tweet-icon {
+  width: 17px;
+  height: 17px;
+}
+
+.sidebar-inner button:hover {
+  background: rgb(var(--gray-100));
+  color: rgb(var(--gray-900));
+}
+
+.sidebar-inner button:active {
+  transform: scale(0.95);
+}
+
+.sidebar-separator {
+  width: 1px;
+  height: 20px;
+  margin: 0 2px;
+  background: rgb(var(--gray-200));
 }
 
 .sidebar-close:hover {
-  color: #ef4444 !important;
+  color: rgb(var(--gray-900));
 }
 
 /* Publish button */
@@ -447,3 +488,50 @@
     opacity: 1;
   }
 }
+
+/* Language menu on the code block being edited */
+.code-language {
+  position: absolute;
+  z-index: 10;
+  padding: 0.125rem 1.75rem 0.125rem 0.5rem;
+  border: 1px solid rgb(var(--gray-200));
+  border-radius: 9999px;
+  background-color: rgb(var(--surface));
+  background-position: right 0.375rem center;
+  color: rgb(var(--gray-600));
+  font-size: 0.75rem;
+  direction: ltr;
+  cursor: pointer;
+}
+
+/* Code colours: a warm palette that keeps its contrast on paper and on ink */
+:root {
+  --tok-comment: 120 113 108;
+  --tok-keyword: 180 70 43;
+  --tok-string: 58 120 64;
+  --tok-number: 150 72 150;
+  --tok-function: 44 94 156;
+  --tok-tag: 176 48 86;
+  --tok-variable: 138 90 0;
+  --tok-punctuation: 107 114 128;
+}
+
+.dark {
+  --tok-comment: 150 142 132;
+  --tok-keyword: 246 150 106;
+  --tok-string: 160 210 146;
+  --tok-number: 214 166 224;
+  --tok-function: 142 182 240;
+  --tok-tag: 240 152 178;
+  --tok-variable: 229 184 104;
+  --tok-punctuation: 170 162 152;
+}
+
+.tok-comment { color: rgb(var(--tok-comment)); font-style: italic; }
+.tok-keyword { color: rgb(var(--tok-keyword)); }
+.tok-string { color: rgb(var(--tok-string)); }
+.tok-number { color: rgb(var(--tok-number)); }
+.tok-function { color: rgb(var(--tok-function)); }
+.tok-tag { color: rgb(var(--tok-tag)); }
+.tok-variable { color: rgb(var(--tok-variable)); }
+.tok-punctuation { color: rgb(var(--tok-punctuation)); }

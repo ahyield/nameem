@@ -18,6 +18,10 @@ pin "@lexical/selection", to: "https://esm.sh/@lexical/selection@0.28.0?external
 pin "@lexical/html", to: "https://esm.sh/@lexical/html@0.28.0?external=lexical,@lexical/selection"
 pin "@lexical/utils", to: "https://esm.sh/@lexical/utils@0.28.0?external=lexical,@lexical/selection"
 pin "@lexical/code", to: "https://esm.sh/@lexical/code@0.28.0?bundle-deps&external=lexical,@lexical/utils,@lexical/selection"
+# Languages Prism doesn't ship with @lexical/code; they register on the global Prism it sets up
+%w[ruby bash json yaml go].each do |language|
+  pin "prismjs/components/prism-#{language}", to: "https://esm.sh/prismjs@1.30.0/components/prism-#{language}.js"
+end
 pin "@lexical/markdown",
     to: "https://esm.sh/@lexical/markdown@0.28.0?external=lexical,@lexical/code,@lexical/link,@lexical/rich-text,@lexical/utils,@lexical/selection"
 pin "stimulus-clipboard", to: "https://ga.jspm.io/npm:stimulus-clipboard@4.0.1/dist/stimulus-clipboard.mjs"
