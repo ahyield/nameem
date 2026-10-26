@@ -185,10 +185,8 @@ twitter: {
       </div>
     </div>
 
-    <div class="article-content mt-4" dir="rtl" data-controller="tweet-embed code-copy" data-page-view-target="content">
-      <%= sanitize @article.content_html,
-        tags: %w[p h1 h2 h3 blockquote a img iframe figure figcaption hr div span br strong em u s code pre],
-        attributes: %w[href src class data-tweet-id frameborder allowfullscreen alt title dir style target rel width height] %>
+    <div class="article-content mt-4" dir="rtl" data-controller="tweet-embed code-copy image-viewer" data-page-view-target="content">
+      <%= article_body(@article) %>
     </div>
 
   </div>

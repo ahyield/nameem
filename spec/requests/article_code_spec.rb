@@ -10,7 +10,7 @@ RSpec.describe "Code in articles" do
 
     expect(response.body).to include('<code class="editor-inline-code">git status</code>')
     expect(response.body).to include('<pre class="editor-code"><span>def hi</span><br><span>  puts 1</span></pre>')
-    expect(response.body).to include('data-controller="tweet-embed code-copy"')
+    expect(response.body).to include('data-controller="tweet-embed code-copy image-viewer"')
   end
 
   it "keeps the colours of highlighted code" do
