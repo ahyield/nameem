@@ -96,17 +96,81 @@
   height: 360px;
 }
 
-.article-content img {
-  padding: 1rem 0;
+/* Images: wide ones fill the column, tall ones are capped (shown whole, never cropped) and centred */
+.article-content figure,
+.editor-image-wrapper {
+  margin: 1.5rem 0;
+}
+
+.article-content img,
+.editor-image {
+  display: block;
+  width: auto;
+  height: auto;
   max-width: 100%;
+  max-height: min(70vh, 560px);
+  margin-inline: auto;
+  padding: 0;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+.article-content figure img {
+  cursor: zoom-in;
+}
+
+.article-content figure img:focus-visible {
+  outline: 2px solid rgb(249 115 22);
+  outline-offset: 3px;
 }
 
 /* On ink, a light-backgrounded picture would bleed into the page without a faint edge */
-.dark .article-content img {
-  padding: 0;
-  margin: 1rem 0;
-  border-radius: 4px;
+.dark .article-content img,
+.dark .editor-image {
   outline: 1px solid rgb(255 255 255 / 8%);
+}
+
+.article-content figcaption,
+.editor-image-caption {
+  margin-top: 0.5rem;
+  color: rgb(var(--gray-500));
+  font-size: 0.875rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.editor-image-caption input {
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+}
+
+.editor-image-caption input:focus {
+  outline: none;
+  background: rgb(var(--gray-50));
+  box-shadow: none;
+}
+
+/* An empty caption only appears while the image is hovered or the field is in use */
+.editor-image-caption.is-empty {
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.editor-image-wrapper:hover .editor-image-caption.is-empty,
+.editor-image-caption.is-empty:focus-within {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .editor-image-caption.is-empty {
+    opacity: 1;
+  }
 }
 
 .article-content hr {
@@ -126,7 +190,6 @@
 
 .editor-image-wrapper {
   position: relative;
-  margin: 0.5em 0;
 }
 
 .editor-image-loader {
@@ -155,10 +218,6 @@
   background: rgb(var(--gray-50));
 }
 
-.editor-image {
-  max-width: 100%;
-  border-radius: 4px;
-}
 
 @keyframes spin {
   to {
@@ -538,3 +597,154 @@
 .tok-tag { color: rgb(var(--tok-tag)); }
 .tok-variable { color: rgb(var(--tok-variable)); }
 .tok-punctuation { color: rgb(var(--tok-punctuation)); }
+
+/* Image viewer: full screen on near-black in both themes */
+
+.image-viewer {
+  --viewer-fade: 1;
+
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgb(10 9 8 / calc(0.97 * var(--viewer-fade)));
+  color: rgb(240 236 231);
+  overflow: hidden;
+}
+
+.image-viewer[open] {
+  animation: publish-fade-in 200ms ease-out both;
+}
+
+.image-viewer::backdrop {
+  background: transparent;
+}
+
+.image-viewer-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3.5rem 1rem 4.5rem;
+  touch-action: none;
+  user-select: none;
+  cursor: zoom-in;
+}
+
+.image-viewer.is-zoomed .image-viewer-stage {
+  cursor: grab;
+}
+
+.image-viewer-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transform-origin: center;
+  will-change: transform;
+  -webkit-user-drag: none;
+}
+
+.image-viewer-button {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 10%);
+  color: rgb(240 236 231);
+  cursor: pointer;
+  transition: background-color 150ms ease, transform 160ms cubic-bezier(0.23, 1, 0.32, 1), opacity 150ms ease;
+}
+
+.image-viewer-button svg {
+  width: 22px;
+  height: 22px;
+}
+
+.image-viewer-button:hover {
+  background: rgb(255 255 255 / 18%);
+}
+
+.image-viewer-button:active {
+  transform: scale(0.95);
+}
+
+.image-viewer-button:focus-visible {
+  outline: 2px solid rgb(249 115 22);
+  outline-offset: 2px;
+}
+
+.image-viewer-close {
+  top: max(0.75rem, env(safe-area-inset-top));
+  left: 0.75rem;
+}
+
+.image-viewer-previous,
+.image-viewer-next {
+  top: 50%;
+  margin-top: -22px;
+}
+
+.image-viewer-previous {
+  right: 0.75rem;
+}
+
+.image-viewer-next {
+  left: 0.75rem;
+}
+
+.image-viewer.is-single .image-viewer-previous,
+.image-viewer.is-single .image-viewer-next,
+.image-viewer.is-single .image-viewer-count,
+.image-viewer.is-zoomed .image-viewer-previous,
+.image-viewer.is-zoomed .image-viewer-next {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.image-viewer-footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem max(1rem, env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+
+.image-viewer-caption {
+  max-width: 40rem;
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.image-viewer-count {
+  color: rgb(240 236 231 / 60%);
+  font-family: Montserrat, ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+}
+
+/* On phones the image already fills the width; the side buttons give way to swiping */
+@media (hover: none) and (pointer: coarse) {
+  .image-viewer-previous,
+  .image-viewer-next {
+    display: none;
+  }
+}
