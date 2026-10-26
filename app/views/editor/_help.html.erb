@@ -1,0 +1,51 @@
+<%# The editor's help: a small «?» at the far left of the screen, opening a guide to what the editor can do %>
+<div data-controller="editor-help">
+  <button type="button" data-action="editor-help#open" aria-haspopup="dialog" aria-label="مساعدة المحرر" class="editor-help-button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+    </svg>
+    <span class="editor-help-label" aria-hidden="true">مساعدة</span>
+  </button>
+
+  <dialog data-editor-help-target="dialog" data-action="click->editor-help#closeOnBackdrop" aria-labelledby="editor-help-title"
+          class="editor-help w-[calc(100%-2rem)] max-w-lg rounded-2xl bg-raised p-0 text-gray-900 shadow-xl ring-1 ring-gray-900/5 backdrop:bg-gray-500/75 dark:backdrop:bg-black/60" dir="rtl">
+    <div class="flex items-start justify-between gap-4 border-b border-gray-100 px-6 py-4">
+      <div>
+        <h2 id="editor-help-title" class="text-lg font-bold">كيف تكتب في نميم</h2>
+        <p class="mt-0.5 text-sm text-gray-500">كل ما يمكن للمحرر فعله، باختصار.</p>
+      </div>
+      <button type="button" data-action="editor-help#close" aria-label="إغلاق"
+              class="-m-1 rounded-full p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="max-h-[70vh] space-y-5 overflow-y-auto px-6 py-5 text-sm leading-7">
+      <% [
+        ["الحفظ", "يُحفظ ما تكتبه تلقائياً أثناء الكتابة. يبقى الموضوع «مسودة» لا يراها أحد حتى تنشره."],
+        ["التنسيق", "ظلّل كلمات لتظهر شريطة التنسيق: عريض، مائل، رابط، عنوان رئيسي (H1) وفرعي (H2)، اقتباس، وكود ضمن السطر."],
+        ["الإدراج", "على سطر فارغ يظهر زر +، ومنه تضيف: صورة، فيديو يوتيوب، تغريدة، فاصلاً، أو كتلة كود."],
+        ["الصور", "اكتب تعليقاً تحت أي صورة إن شئت. أول صورة في الموضوع تصبح غلافه في الصفحة الرئيسية."],
+        ["الكود", "اكتب ``` ثم مسافة في بداية سطر لتبدأ كتلة كود (أو ```python مباشرة)، واختر اللغة من القائمة في زاوية الكتلة لتلوينها. اضغط Enter مرتين في نهايتها للخروج. وضع كلمة بين علامتي ` لتصبح كوداً ضمن السطر."],
+        ["النشر", "زر «حفظ ونشر» يفتح نافذة تختار فيها المواضيع وتراجع الوصف وتسمح بالتعليقات أو تمنعها قبل النشر."]
+      ].each do |title, text| %>
+        <section>
+          <h3 class="font-semibold text-gray-900"><%= title %></h3>
+          <p class="text-gray-600"><%= text %></p>
+        </section>
+      <% end %>
+
+      <section>
+        <h3 class="font-semibold text-gray-900">اختصارات</h3>
+        <dl class="mt-1 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-gray-600">
+          <% [["⌘ / Ctrl + B", "عريض"], ["⌘ / Ctrl + I", "مائل"], ["⌘ / Ctrl + Z", "تراجع"], ["⌘ / Ctrl + ⇧ + Z", "إعادة"], ["Shift + Enter", "سطر جديد داخل كتلة الكود"]].each do |keys, action| %>
+            <dt><kbd class="rounded-md border border-gray-200 bg-gray-50 px-1.5 py-0.5 font-montserrat text-xs text-gray-700" dir="ltr"><%= keys %></kbd></dt>
+            <dd><%= action %></dd>
+          <% end %>
+        </dl>
+      </section>
+    </div>
+  </dialog>
+</div>

@@ -6,7 +6,8 @@ const ICONS = {
   previous: "m8.25 4.5 7.5 7.5-7.5 7.5",
   next: "M15.75 19.5 8.25 12l7.5-7.5",
 }
-const DOUBLE_TAP_MS = 300
+// Only offer zoom when the picture has at least this much more detail than fits on screen
+const ZOOMABLE_RATIO = 1.15
 const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
 // Opens an article's images full screen: original quality, caption, next/previous, zoom and pan
@@ -68,6 +69,7 @@ export default class extends Controller {
     this.picture.className = "image-viewer-image"
     this.picture.alt = ""
     this.picture.draggable = false
+    this.picture.addEventListener("load", () => this.updateZoomable())
     this.stage.append(this.picture)
 
     const footer = document.createElement("div")
@@ -162,6 +164,17 @@ export default class extends Controller {
     this.apply(false)
   }
 
+  // How far a click zooms: up to the picture's real detail (at most TAP_ZOOM), or 0 when there's nothing to gain
+  zoomableScale() {
+    const shown = this.picture.offsetWidth
+    const ratio = shown ? this.picture.naturalWidth / shown : 0
+    return ratio < ZOOMABLE_RATIO ? 0 : Math.min(TAP_ZOOM, Math.max(1.5, ratio))
+  }
+
+  updateZoomable() {
+    this.dialog.classList.toggle("is-zoomable", this.zoomableScale() > 0)
+  }
+
   apply(animate) {
     if (!this.picture) return
     this.picture.style.transition = animate ? "transform 220ms cubic-bezier(0.23, 1, 0.32, 1)" : "none"
@@ -196,6 +209,7 @@ export default class extends Controller {
       this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
       if (this.pointers.size === 1) {
         this.drag = { x: event.clientX, y: event.clientY, pan: { ...this.pan }, time: performance.now(), moved: false }
+        this.dialog.classList.add("is-dragging")
       } else if (this.pointers.size === 2) {
         this.pinch = { distance: this.distance(), scale: this.scale }
         this.drag = null
@@ -239,6 +253,7 @@ export default class extends Controller {
 
       const drag = this.drag
       this.drag = null
+      this.dialog.classList.remove("is-dragging")
       this.dialog.style.removeProperty("--viewer-fade")
       const dx = event.clientX - drag.x
       const dy = event.clientY - drag.y
@@ -262,26 +277,21 @@ export default class extends Controller {
 
     this.stage.addEventListener("wheel", (event) => {
       event.preventDefault()
+      if (this.scale === 1 && !this.zoomableScale()) return
       this.zoomTo(this.scale * Math.exp(-event.deltaY * 0.002), this.pointFrom(event), false)
     }, { passive: false })
   }
 
-  // One tap on the backdrop closes; two quick taps (or a double-click) on the image zoom in or out
+  // A click or tap on the picture zooms in (when there's more detail to see) or back out; on the dark
+  // background it closes, or zooms out first if zoomed
   tap(event) {
-    const now = performance.now()
-    const double = this.lastTap && now - this.lastTap < DOUBLE_TAP_MS
-    this.lastTap = double ? null : now
-
-    if (double) {
-      clearTimeout(this.tapTimer)
-      if (this.scale > 1) {
-        this.reset()
-        this.apply(true)
-      } else {
-        this.zoomTo(TAP_ZOOM, this.pointFrom(event), true)
-      }
-    } else if (this.scale === 1 && !this.isOnImage(event)) {
-      this.tapTimer = setTimeout(() => this.close(), DOUBLE_TAP_MS)
+    if (this.scale > 1) {
+      this.reset()
+      this.apply(true)
+    } else if (!this.isOnImage(event)) {
+      this.close()
+    } else if (this.zoomableScale()) {
+      this.zoomTo(this.zoomableScale(), this.pointFrom(event), true)
     }
   }
 

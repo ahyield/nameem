@@ -22,6 +22,19 @@ RSpec.describe ArticleBodyHelper do
     expect(img["loading"]).to be_nil
   end
 
+  it "frames a tall photo with a blurred copy of itself so it fills the column" do
+    blob.update!(metadata: { "width" => 1200, "height" => 1600, "analyzed" => true })
+    frame = body(%(<figure><img src="#{original}"></figure>)).at_css("figure > span.image-frame")
+
+    expect(frame).to be_present
+    expect(frame["style"]).to include("--image-backdrop: url('", "/rails/active_storage/representations/")
+    expect(frame.at_css("img")["data-full-src"]).to eq(original)
+  end
+
+  it "leaves wide photos unframed" do
+    expect(body(%(<figure><img src="#{original}"></figure>)).at_css(".image-frame")).to be_nil
+  end
+
   it "lazy-loads every image after the first and keeps captions" do
     html = %(<figure><img src="#{original}"></figure><figure><img src="https://example.com/a.jpg"><figcaption>غروب</figcaption></figure>)
     fragment = body(html)
