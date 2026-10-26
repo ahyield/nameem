@@ -315,3 +315,19 @@
     }
   }
 }
+
+/* Confirm dialog (replaces the browser's confirm box) */
+
+.confirm-dialog[open] {
+  animation: publish-sheet-in 200ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.confirm-dialog[open]::backdrop {
+  animation: publish-fade-in 200ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confirm-dialog[open] {
+    animation-name: publish-fade-in;
+  }
+}
