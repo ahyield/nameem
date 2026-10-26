@@ -1,0 +1,27 @@
+<% content_for :title, "الوضع الداكن في نميم" %>
+<% content_for :preheader, "صفحات بلون الحبر الدافئ للقراءة ليلاً. اختره من قائمة حسابك، أو دعه يتبع جهازك." %>
+
+<p class="eyebrow">جديد في نميم</p>
+<h1 class="masthead-title">الوضع الداكن وصل أخيراً</h1>
+<p>أهلاً <%= @user.first_name %>،</p>
+<p>صار بإمكانك الآن قراءة نميم والكتابة فيه على صفحات داكنة بلون الحبر الدافئ، أريح للعين في القراءة الطويلة آخر الليل.</p>
+
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-top: 8px;">
+  <% [
+    ["تلقائي", "يتبع نميم إعداد جهازك: فاتح نهاراً وداكن ليلاً إن كان جهازك كذلك."],
+    ["اختيارك", "من قائمة حسابك أعلى الصفحة، اختر فاتح أو داكن أو تلقائي."],
+    ["في كل أجهزتك", "يُحفظ اختيارك في حسابك، فيتبعك أينما سجّلت الدخول."]
+  ].each_with_index do |(step, text), index| %>
+    <tr>
+      <td class="step step-number"><%= format("%02d", index + 1) %></td>
+      <td class="step">
+        <p style="margin: 0; font-weight: 700; color: #111827;"><%= step %></p>
+        <p class="excerpt" style="margin-top: 2px !important;"><%= text %></p>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<p style="margin: 28px 0 8px; text-align: center;">
+  <%= link_to "جرّبه الآن", root_url, class: "button" %>
+</p>

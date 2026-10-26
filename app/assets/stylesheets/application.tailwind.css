@@ -331,3 +331,26 @@
     animation-name: publish-fade-in;
   }
 }
+
+/* Dark mode launch card */
+
+.dark-mode-announcement {
+  transition: opacity 160ms ease-out, transform 160ms ease-out;
+  animation: publish-sheet-in 320ms cubic-bezier(0.23, 1, 0.32, 1) 600ms both;
+}
+
+.dark-mode-announcement.is-leaving {
+  animation: none;
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dark-mode-announcement {
+    animation-name: publish-fade-in;
+  }
+
+  .dark-mode-announcement.is-leaving {
+    transform: none;
+  }
+}
