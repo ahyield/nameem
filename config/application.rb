@@ -21,6 +21,12 @@ module Nameem
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
 
+    # Mission Control (/backoffice/jobs) runs behind the app's own admin check (MissionControlBaseController)
+    # rather than an HTTP basic auth password. Set here, before the engine reads it and eager loading builds
+    # its controllers.
+    config.mission_control.jobs.base_controller_class = "MissionControlBaseController"
+    config.mission_control.jobs.http_basic_auth_enabled = false
+
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
