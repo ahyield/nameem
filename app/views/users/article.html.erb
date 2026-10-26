@@ -44,6 +44,7 @@ twitter: {
             <span class="mx-1.5" aria-hidden="true">·</span>
             <span><%= reading_time_label(@article.reading_time_minutes) %></span>
           <% end %>
+          <%= render "articles/draft_badge", class: "ms-2 align-middle" if @article.draft? %>
         </p>
       </div>
     </div>
