@@ -15,6 +15,7 @@ import {
 } from "lexical"
 import { $setBlocksType } from "@lexical/selection"
 import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text"
+import { $createCodeNode } from "@lexical/code"
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html"
 import { $toggleLink } from "@lexical/link"
 
@@ -319,6 +320,19 @@ export default class extends Controller {
     })
   }
 
+  toggleCode() {
+    this.editor.update(() => {
+      const selection = $getSelection()
+      if (!$isRangeSelection(selection)) return
+      const element = selection.anchor.getNode().getTopLevelElementOrThrow()
+      if (element.getType() === "code") {
+        $setBlocksType(selection, () => $createParagraphNode())
+      } else {
+        $setBlocksType(selection, () => $createCodeNode())
+      }
+    })
+  }
+
   // === Link ===
 
   toggleLink() {
@@ -606,6 +620,16 @@ export default class extends Controller {
       $insertNodes([$createDividerNode(), newParagraph])
       newParagraph.select()
     })
+  }
+
+  // From the + menu: an empty code block at the caret, ready to type or paste into
+  insertCode() {
+    this.editor.update(() => {
+      const selection = $getSelection()
+      if (!$isRangeSelection(selection)) return
+      $setBlocksType(selection, () => $createCodeNode())
+    })
+    this.toggleControls()
   }
 
   // === Controls & Toolbar ===

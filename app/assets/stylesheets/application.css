@@ -367,3 +367,83 @@
     min-height: 40px;
   }
 }
+
+/* Code: blocks and inline code read left to right in a monospace face, in the editor and in articles */
+
+.editor-code,
+.article-content pre {
+  position: relative;
+  display: block;
+  margin: 1.25em 0;
+  padding: 0.875rem 1rem;
+  border: 1px solid rgb(var(--gray-200));
+  border-radius: 8px;
+  background: rgb(var(--gray-50));
+  color: rgb(var(--gray-900));
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.6;
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: isolate;
+  white-space: pre;
+  tab-size: 2;
+  overflow-x: auto;
+}
+
+/* Lexical wraps each line in a span with pre-wrap; keep long lines scrolling instead */
+.editor-code span,
+.article-content pre span {
+  white-space: pre !important;
+}
+
+.editor-inline-code,
+.article-content code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: rgb(var(--gray-100));
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.article-content pre code,
+.article-content code .editor-inline-code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+
+.code-copy {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.125rem 0.625rem;
+  border: 1px solid rgb(var(--gray-200));
+  border-radius: 9999px;
+  background: rgb(var(--surface));
+  color: rgb(var(--gray-600));
+  font-family: "Noto Naskh Arabic", sans-serif;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: opacity 150ms ease, transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.code-copy:active {
+  transform: scale(0.95);
+}
+
+/* Desktop shows it on hover or keyboard focus; touch screens always show it */
+@media (hover: hover) and (pointer: fine) {
+  .code-copy {
+    opacity: 0;
+  }
+
+  .code-copy:focus-visible,
+  .article-content pre:hover .code-copy {
+    opacity: 1;
+  }
+}
