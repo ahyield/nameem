@@ -12,4 +12,14 @@ RSpec.describe "Code in articles" do
     expect(response.body).to include('<pre class="editor-code"><span>def hi</span><br><span>  puts 1</span></pre>')
     expect(response.body).to include('data-controller="tweet-embed code-copy"')
   end
+
+  it "keeps the colours of highlighted code" do
+    html = '<pre class="editor-code" data-language="python"><span class="tok-keyword">def</span> ' \
+           '<span class="tok-function">greet</span></pre>'
+    article = create(:article, :published, content_html: html)
+
+    get user_article_path(slug: article.user.slug, uuid: article.uuid)
+
+    expect(response.body).to include('<span class="tok-keyword">def</span> <span class="tok-function">greet</span>')
+  end
 end

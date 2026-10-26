@@ -15,11 +15,11 @@ import {
 } from "lexical"
 import { $setBlocksType } from "@lexical/selection"
 import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text"
-import { $createCodeNode } from "@lexical/code"
+import { $createCodeNode, $isCodeNode } from "@lexical/code"
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html"
 import { $toggleLink } from "@lexical/link"
 
-import { createNamoemEditor } from "lib/lexical/editor_config"
+import { CODE_LANGUAGES, createNamoemEditor } from "lib/lexical/editor_config"
 import { ImageNode, $createImageNode } from "lib/lexical/nodes/image_node"
 import { $createVideoNode } from "lib/lexical/nodes/video_node"
 import { TweetNode, $createTweetNode } from "lib/lexical/nodes/tweet_node"
@@ -64,6 +64,8 @@ export default class extends Controller {
       },
       COMMAND_PRIORITY_LOW,
     )
+
+    this.setupCodeLanguageMenu()
 
     // Track dirty state + empty state for placeholder
     this.editor.registerUpdateListener(({ dirtyElements, dirtyLeaves, editorState, tags }) => {
@@ -331,6 +333,50 @@ export default class extends Controller {
         $setBlocksType(selection, () => $createCodeNode())
       }
     })
+  }
+
+  // === Code language ===
+
+  setupCodeLanguageMenu() {
+    this.codeLanguage = this.element.querySelector(".code-language")
+    if (!this.codeLanguage) return
+
+    CODE_LANGUAGES.forEach(([value, label]) => this.codeLanguage.add(new Option(label, value)))
+    this.editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => this.placeCodeLanguageMenu())
+    })
+  }
+
+  // Shows the menu in the top corner of the code block the caret is in, set to that block's language
+  placeCodeLanguageMenu() {
+    const selection = $getSelection()
+    const block = $isRangeSelection(selection) ? selection.anchor.getNode().getTopLevelElement() : null
+    if (!$isCodeNode(block)) {
+      this.codeLanguage.hidden = true
+      this.codeBlockKey = null
+      return
+    }
+
+    const element = this.editor.getElementByKey(block.getKey())
+    if (!element) return
+    const blockRect = element.getBoundingClientRect()
+    const editorRect = this.element.getBoundingClientRect()
+
+    this.codeBlockKey = block.getKey()
+    this.codeLanguage.value = block.getLanguage() || "plain"
+    this.codeLanguage.style.top = `${blockRect.top - editorRect.top + 6}px`
+    this.codeLanguage.style.right = `${editorRect.right - blockRect.right + 6}px`
+    this.codeLanguage.hidden = false
+  }
+
+  setCodeLanguage() {
+    const key = this.codeBlockKey
+    const language = this.codeLanguage.value
+    this.editor.update(() => {
+      const block = key && $getNodeByKey(key)
+      if ($isCodeNode(block)) block.setLanguage(language)
+    })
+    this.editor.focus()
   }
 
   // === Link ===

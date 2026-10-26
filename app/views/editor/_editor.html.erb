@@ -57,6 +57,9 @@
   </div>
   <hr class="h-px bg-slate-200 border-0 w-1/2">
 
+  <%# Language of the code block the caret is in; options are filled from CODE_LANGUAGES in editor_config.js %>
+  <select class="code-language" hidden aria-label="لغة الكود" data-action="change->editor#setCodeLanguage"></select>
+
   <div class="h-full editor-container mt-6 sm:mt-10" contenteditable="true" dir="rtl">
   </div>
 </div>
