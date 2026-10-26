@@ -119,6 +119,36 @@
   cursor: zoom-in;
 }
 
+/* A tall photo fills the column in a frame of its own colours (a blurred copy), instead of a narrow strip */
+.image-frame {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgb(var(--gray-100));
+  isolation: isolate;
+}
+
+.image-frame::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  z-index: -1;
+  background: var(--image-backdrop) center / cover no-repeat;
+  filter: blur(28px) saturate(1.15);
+  opacity: 0.6;
+}
+
+.dark .image-frame::before {
+  opacity: 0.45;
+}
+
+.article-content .image-frame img {
+  max-height: min(78vh, 680px);
+  border-radius: 0;
+  outline: none;
+}
+
 .article-content figure img:focus-visible {
   outline: 2px solid rgb(249 115 22);
   outline-offset: 3px;
@@ -634,11 +664,20 @@
   padding: 3.5rem 1rem 4.5rem;
   touch-action: none;
   user-select: none;
+}
+
+/* The magnifier only appears over a picture that can show more detail; zoomed in, it zooms back out */
+.image-viewer.is-zoomable .image-viewer-image {
   cursor: zoom-in;
 }
 
-.image-viewer.is-zoomed .image-viewer-stage {
-  cursor: grab;
+.image-viewer.is-zoomed .image-viewer-image {
+  cursor: zoom-out;
+}
+
+.image-viewer.is-zoomed.is-dragging .image-viewer-stage,
+.image-viewer.is-zoomed.is-dragging .image-viewer-image {
+  cursor: grabbing;
 }
 
 .image-viewer-image {
@@ -746,5 +785,84 @@
   .image-viewer-previous,
   .image-viewer-next {
     display: none;
+  }
+}
+
+/* Editor help dialog */
+.editor-help[open] {
+  animation: publish-sheet-in 220ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.editor-help[open]::backdrop {
+  animation: publish-fade-in 200ms ease-out both;
+}
+
+/* Editor help button: a raised pill with a soft orange ring; its label slides out on hover */
+.editor-help-button {
+  position: fixed;
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  left: 1.25rem;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 9999px;
+  background: rgb(var(--raised));
+  color: rgb(234 88 12);
+  box-shadow: 0 0 0 1.5px rgb(251 146 60 / 55%), 0 6px 20px rgb(0 0 0 / 10%);
+  cursor: pointer;
+  transition: box-shadow 200ms ease, transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.dark .editor-help-button {
+  color: rgb(251 146 60);
+  box-shadow: 0 0 0 1.5px rgb(251 146 60 / 45%), 0 6px 20px rgb(0 0 0 / 35%);
+}
+
+.editor-help-button svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.editor-help-label {
+  max-width: 0;
+  overflow: hidden;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transition: max-width 240ms cubic-bezier(0.23, 1, 0.32, 1), opacity 160ms ease, margin 240ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.editor-help-button:hover,
+.editor-help-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1.5px rgb(249 115 22 / 90%), 0 8px 24px rgb(249 115 22 / 18%);
+  transform: translateY(-1px);
+}
+
+.editor-help-button:hover .editor-help-label,
+.editor-help-button:focus-visible .editor-help-label {
+  max-width: 5rem;
+  margin-inline: 6px 4px;
+  opacity: 1;
+}
+
+.editor-help-button:active {
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editor-help-button,
+  .editor-help-label {
+    transition: none;
+  }
+
+  .editor-help-button:hover,
+  .editor-help-button:focus-visible {
+    transform: none;
   }
 }
