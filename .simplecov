@@ -8,7 +8,7 @@ end
 SimpleCov.start "rails" do
   enable_coverage :branch
   # Count every app file, not only the ones the suite happens to load
-  cover "{app,lib}/**/*.rb"
+  cover "{app,lib}/**/*.{rb,rake}"
 
   skip %r{^/(spec|config|db|vendor|bin)/}
 

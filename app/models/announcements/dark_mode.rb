@@ -18,14 +18,15 @@ module Announcements
       elsif deliver
         send_to_everyone(force:)
       else
-        @out.puts "Would send to #{self.class.audience.count} readers. Run with TO=you@example.com for a test copy, SEND=1 to send."
+        @out.puts "Would send to #{self.class.audience.count} readers. " \
+                  "Run with TO=you@example.com for a test copy, SEND=1 to send."
       end
     end
 
     private
 
     def test_copy(email)
-      user = User.find_by(email:) || raise(ArgumentError, "No user with the email #{email}")
+      user = User.find_by(email:) || raise(ArgumentError.new("No user with the email #{email}"))
       AnnouncementMailer.dark_mode(user).deliver_later
       @out.puts "Test copy queued for #{email}."
     end
