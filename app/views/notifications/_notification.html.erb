@@ -1,12 +1,12 @@
 <%= turbo_frame_tag dom_id(notification) do %>
   <% next unless notification.notifiable %>
   <% article = notification_article(notification) %>
-  <div id="<%= dom_id(notification) %>" class="rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5 mb-4 px-4 py-4 sm:px-6">
+  <div id="<%= dom_id(notification) %>" class="rounded-xl bg-surface shadow-sm ring-1 ring-gray-900/5 mb-4 px-4 py-4 sm:px-6">
     <div class="flex items-start gap-x-3">
       <%# Avatar %>
       <div class="flex-shrink-0">
         <% if notification.moderation? %>
-          <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-900 text-sm font-bold text-white">ن</span>
+          <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-900 text-sm font-bold text-surface">ن</span>
         <% elsif notification.actor.avatar.attached? %>
           <%= image_tag notification.actor.avatar.variant(resize_to_fill: [100, 100]), class: "h-10 w-10 rounded-full bg-gray-50" %>
         <% else %>

@@ -30,6 +30,7 @@ module Authentication
     )
     Current.session = session_record
     cookies.permanent[:session_token] = { value: session_record.signed_id, httponly: true, same_site: :lax }
+    remember_theme(user.theme)
     session_record
   end
 

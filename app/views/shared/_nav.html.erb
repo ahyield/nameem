@@ -1,4 +1,4 @@
-<nav class="bg-transparent inset-x-0 top-0 z-30 absolute shadow">
+<nav class="bg-transparent inset-x-0 top-0 z-30 absolute shadow dark:shadow-none dark:border-b dark:border-white/10">
   <div class="mx-auto w-full px-4 sm:px-6 lg:w-3/4 lg:px-8">
     <div class="flex h-16 justify-between items-center">
       <!-- Right section: logo + links -->
@@ -55,6 +55,7 @@
 
       <!-- Left section: actions -->
       <div class="flex items-center">
+        <%= render "shared/theme_menu" unless user_signed_in? %>
         <div class="hidden md:ml-24 md:flex md:flex-shrink-0 md:items-center">
           <% if user_signed_in? %>
             <!-- Notification bell -->
@@ -76,7 +77,7 @@
             <div class="relative ml-3" data-controller="dropdown"
                   data-action="click->dropdown#toggle click@window->dropdown#hide">
               <div>
-                <button type="button" class="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                <button type="button" class="relative flex rounded-full bg-surface text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                   <span class="absolute -inset-1.5"></span>
                   <span class="sr-only">Open user menu</span>
                   <% if Current.user.avatar.attached? %>
@@ -97,7 +98,7 @@
                   data-transition-leave="transition ease-in duration-150"
                   data-transition-leave-from="opacity-100 translate-y-0"
                   data-transition-leave-to="opacity-0 translate-y-1"
-                  class="absolute hidden right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  class="absolute hidden right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-raised py-1 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
                   role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
                 <%= link_to "الصفحة الشخصية", user_path(Current.user), data: { turbo: false }, class: "block px-4 py-2 hover:transition-all hover:duration-300
                 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr hover:from-amber-300 hover:to-orange-500", role: "menuitem", tabindex: "-1", id: "user-menu-item-0" %>
@@ -109,6 +110,8 @@
                   role: "menuitem", tabindex: "-1", id: "user-menu-item-1", data: { turbo: false }  do %>
                   اعدادات الحساب
                 <% end %>
+
+                <%= render "shared/theme_switch", id: "menu", class: "mx-2 my-1 border-y border-gray-100 px-2 py-2" %>
 
                 <%= link_to "تسجيل خروج", logout_path, class: "block px-4 py-2 hover:transition-all hover:duration-300
                                                                           hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr
@@ -127,7 +130,7 @@
   </div>
 
   <!-- Mobile menu, show/hide based on menu state. -->
-  <div class="hidden lg:hidden bg-white mobile-menu overflow-x-hidden" id="mobile-menu">
+  <div class="hidden lg:hidden bg-surface mobile-menu overflow-x-hidden" id="mobile-menu">
     <div class="space-y-1 pb-3 pt-2">
       <a href="/about-nameem" class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium <%= active_nav_class("/about-nameem") %> sm:pl-5 sm:pr-6">عن نميم</a>
       <% if !user_signed_in? %>
@@ -166,6 +169,7 @@
           <%= link_to settings_user_settings_path, data: { turbo: false }, class: "block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6" do %>
             اعدادات الحساب
           <% end %>
+          <%= render "shared/theme_switch", id: "mobile", class: "px-4 py-2 sm:px-6" %>
           <%= link_to "تسجيل الخروج", logout_path, class: "block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6", method: :delete, 'data-turbo-method': :delete %>
         </div>
       <% else %>

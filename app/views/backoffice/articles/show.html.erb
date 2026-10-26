@@ -70,5 +70,5 @@
   <h2 class="text-sm font-semibold text-gray-900">حذف المقال</h2>
   <p class="mt-1 mb-3 text-sm text-gray-500">يحذف المقال وتعليقاته نهائيًا. لا يمكن التراجع عن ذلك.</p>
   <%= button_to "حذف المقال", backoffice_article_path(@article), method: :delete, class: "bo-btn bo-btn-danger -mr-3",
-      data: { turbo_confirm: "هل أنت متأكد من حذف هذا المقال؟" } %>
+      data: { turbo_confirm: "هل أنت متأكد من حذف هذا المقال؟", confirm_label: "حذف", confirm_destructive: true } %>
 </section>

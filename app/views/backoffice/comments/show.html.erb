@@ -45,7 +45,7 @@
             <p class="mt-0.5 text-gray-700"><%= reply.body.to_plain_text.truncate(200) %></p>
           </div>
           <%= button_to "حذف", backoffice_comment_path(reply), method: :delete, class: "bo-btn bo-btn-danger shrink-0 px-2 py-1 text-xs",
-              data: { turbo_confirm: "هل أنت متأكد من حذف هذا الرد؟" } %>
+              data: { turbo_confirm: "هل أنت متأكد من حذف هذا الرد؟", confirm_label: "حذف", confirm_destructive: true } %>
         </li>
       <% end %>
     </ul>
@@ -58,5 +58,5 @@
     <%= @comment.parent_id.nil? ? "يحذف التعليق وكل الردود عليه." : "يحذف هذا الرد." %> لا يمكن التراجع عن ذلك.
   </p>
   <%= button_to "حذف التعليق", backoffice_comment_path(@comment), method: :delete, class: "bo-btn bo-btn-danger -mr-3",
-      data: { turbo_confirm: "هل أنت متأكد من حذف هذا التعليق؟" } %>
+      data: { turbo_confirm: "هل أنت متأكد من حذف هذا التعليق؟", confirm_label: "حذف", confirm_destructive: true } %>
 </section>

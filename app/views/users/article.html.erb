@@ -18,7 +18,7 @@ twitter: {
 
 <%= render "shared/nav" %>
 
-<div class="bg-white px-6 py-32 lg:px-8" data-controller="drawer page-view report" data-page-view-viewable-type-value="Article" data-page-view-viewable-id-value="<%= @article.id %>">
+<div class="bg-surface px-6 py-32 lg:px-8" data-controller="drawer page-view report" data-page-view-viewable-type-value="Article" data-page-view-viewable-id-value="<%= @article.id %>">
   <div class="mx-auto max-w-3xl text-base leading-7 text-gray-700">
     <h1 class="mt-2 text-3xl font-bold leading-snug text-gray-900 sm:text-4xl [text-wrap:balance]"><%= @article.title %></h1>
 
@@ -44,6 +44,7 @@ twitter: {
             <span class="mx-1.5" aria-hidden="true">·</span>
             <span><%= reading_time_label(@article.reading_time_minutes) %></span>
           <% end %>
+          <%= render "articles/draft_badge", class: "ms-2 align-middle" if @article.draft? %>
         </p>
       </div>
     </div>
@@ -78,7 +79,7 @@ twitter: {
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
             </svg>
           </button>
-          <div class="hidden absolute left-0 z-50 w-48 mt-2 py-1 rounded-lg bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+          <div class="hidden absolute left-0 z-50 w-48 mt-2 py-1 rounded-lg bg-raised shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
                role="menu" data-dropdown-target="menu">
             <div data-controller="clipboard" data-clipboard-success-content-value="تم نسخ الرابط ✓">
               <input type="text" value="<%= user_article_url(slug: @user, uuid: @article) %>" class="hidden" data-clipboard-target="source" autocomplete="off">
@@ -119,7 +120,7 @@ twitter: {
                 <circle cx="19" cy="12" r="1.5" />
               </svg>
             </button>
-            <div class="hidden absolute left-0 z-50 w-40 mt-2 py-1 rounded-lg bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+            <div class="hidden absolute left-0 z-50 w-40 mt-2 py-1 rounded-lg bg-raised shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
                 role="menu" data-dropdown-target="menu">
               <button type="button" class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer transition-colors"
                 role="menuitem" data-action="modal#open">
@@ -167,7 +168,7 @@ twitter: {
                 <circle cx="19" cy="12" r="1.5" />
               </svg>
             </button>
-            <div class="hidden absolute left-0 z-50 w-44 mt-2 py-1 rounded-lg bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+            <div class="hidden absolute left-0 z-50 w-44 mt-2 py-1 rounded-lg bg-raised shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
                 role="menu" data-dropdown-target="menu">
               <button type="button" class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer transition-colors"
                 role="menuitem" data-action="report#open"
@@ -217,7 +218,7 @@ twitter: {
   <%# Comments Drawer %>
   <div class="hidden relative z-50" data-drawer-target="container" data-action="keydown@window->drawer#escape" role="dialog" aria-modal="true" aria-label="التعليقات">
   <%# Backdrop %>
-  <div class="fixed inset-0 bg-gray-500/75 transition-opacity duration-500 ease-in-out opacity-0" data-drawer-target="overlay"></div>
+  <div class="fixed inset-0 bg-gray-500/75 dark:bg-black/60 transition-opacity duration-500 ease-in-out opacity-0" data-drawer-target="overlay"></div>
 
   <div class="fixed inset-0 overflow-hidden">
     <div class="absolute inset-0 overflow-hidden" data-action="click->drawer#outside">
@@ -235,7 +236,7 @@ twitter: {
             </button>
           </div>
 
-          <div class="flex h-full flex-col bg-white shadow-xl">
+          <div class="flex h-full flex-col bg-raised shadow-xl">
             <%# Header %>
             <div class="border-b border-gray-200 px-4 py-4 sm:px-6">
               <h2 class="text-base font-semibold text-gray-900">

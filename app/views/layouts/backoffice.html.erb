@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html dir="rtl" lang="ar" data-theme="<%= current_theme %>" class="<%= "dark" if current_theme == "dark" %>">
   <head>
     <%= render "shared/head" %>
     <meta name="turbo-refresh-method" content="morph">
     <meta name="turbo-refresh-scroll" content="preserve">
   </head>
-  <body class="bo font-naskh bg-white text-gray-900 min-h-screen antialiased">
+  <body class="bo font-naskh bg-surface text-gray-900 min-h-screen antialiased">
     <%= render "backoffice/shared/nav" %>
 
     <main class="max-w-5xl mx-auto px-4 sm:px-6 py-8">

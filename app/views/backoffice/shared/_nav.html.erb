@@ -1,4 +1,4 @@
-<header class="sticky top-0 z-20 border-b border-gray-200/70 bg-white/90 backdrop-blur">
+<header class="sticky top-0 z-20 border-b border-gray-200/70 bg-surface/90 backdrop-blur">
   <div class="max-w-5xl mx-auto flex h-14 items-center gap-6 px-4 sm:px-6">
     <%= link_to "نميم", backoffice_root_path, class: "text-base font-bold text-gray-900 shrink-0" %>
 
@@ -22,6 +22,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17L7 7m0 0h10M7 7v10" />
         </svg>
       <% end %>
+      <%= render "shared/theme_menu" %>
       <%= backoffice_avatar(current_user, size: 28) %>
     </div>
   </div>

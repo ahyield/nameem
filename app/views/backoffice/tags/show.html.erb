@@ -61,7 +61,7 @@
       <h3 class="text-sm font-medium text-gray-900">حذف الموضوع</h3>
       <p class="mt-1 mb-3 text-sm text-gray-500">يُزال الموضوع من كل المقالات. لا يمكن التراجع عن ذلك.</p>
       <%= button_to "حذف الموضوع", backoffice_tag_path(@tag), method: :delete, class: "bo-btn bo-btn-danger -mr-3",
-          data: { turbo_confirm: "هل أنت متأكد من حذف هذا الموضوع؟" } %>
+          data: { turbo_confirm: "هل أنت متأكد من حذف هذا الموضوع؟", confirm_label: "حذف", confirm_destructive: true } %>
     </div>
   </div>
 </section>

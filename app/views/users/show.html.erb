@@ -33,7 +33,7 @@ twitter: {
             <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
           </svg>
         </button>
-        <div class="hidden ml-6 absolute left-0 z-50 w-28 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+        <div class="hidden ml-6 absolute left-0 z-50 w-28 origin-top-right rounded-md bg-raised py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
           role="menu" aria-orientation="vertical" aria-labelledby="options-menu-2-button" tabindex="-1" data-dropdown-target="menu">
           <% if policy(@user).edit? %>
             <%= link_to settings_user_settings_path, class: "block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900",
@@ -53,9 +53,9 @@ twitter: {
       </div>
 
       <section aria-labelledby="section-2-title" class="col-span-3">
-        <div class="rounded-lg bg-white">
+        <div class="rounded-lg bg-surface">
           <div class="p-6">
-            <div class="self-start sticky top-0 z-20 bg-white">
+            <div class="self-start sticky top-0 z-20 bg-surface">
               <div class="border-b border-gray-200">
                 <nav class="-mb-px flex space-x-4 rtl:space-x-reverse" data-controller="user-profile-active-link" data-turbo-frame="feed" aria-label="Tabs">
                   <%= link_to "المنشورات", user_articles_path, data: { turbo_stream: "articles" },
@@ -82,7 +82,7 @@ twitter: {
     <div class="grid my-6 grid-cols-1 gap-4 self-start sticky top-0">
       <section aria-labelledby="section-2-title">
         <h2 class="sr-only" id="section-2-title">اخترنا لك</h2>
-        <div class="overflow-hidden rounded-lg bg-white">
+        <div class="overflow-hidden rounded-lg bg-surface">
           <div class="p-6">
 
             <div class="flex items-start justify-between">
@@ -136,10 +136,10 @@ twitter: {
 
               <% if Current.user == @user %>
                 <div class="mt-6 flex flex-col gap-1 text-sm">
-                  <div class="text-orange-400 hover:text-black">
+                  <div class="text-orange-400 hover:text-gray-950">
                     <%= link_to "الإحصائيات", user_stats_path(@user) %>
                   </div>
-                  <div class="text-orange-400 hover:text-black">
+                  <div class="text-orange-400 hover:text-gray-950">
                     <%= link_to "اعدادات الحساب", settings_user_settings_path %>
                   </div>
                 </div>
