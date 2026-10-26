@@ -13,7 +13,7 @@ module ArticleBodyHelper
   # The article's HTML, sanitized, with its uploaded images served at a reading size (the original kept for the
   # image viewer) and sized up front so the page doesn't jump as they load. Cached until the article changes.
   def article_body(article)
-    Rails.cache.fetch([article, article.updated_at.to_f, "article_body/v2"]) do
+    Rails.cache.fetch([article, article.updated_at.to_f, "article_body/v3"]) do
       html = sanitize(article.content_html, tags: ARTICLE_TAGS, attributes: ARTICLE_ATTRIBUTES).to_s
       fragment = Nokogiri::HTML5.fragment(html)
       fragment.css("img").each_with_index { |img, index| prepare_image(img, lazy: index.positive?) }
@@ -38,8 +38,11 @@ module ArticleBodyHelper
     size(img, blob)
   end
 
-  # Sets the reading-size dimensions up front, and frames tall photos
+  # Sets the reading-size dimensions up front, and frames tall photos. Editor uploads are never attached to a
+  # record, so Active Storage doesn't analyze them; read their size once here (the result is stored, and the
+  # article's HTML is cached).
   def size(img, blob)
+    analyze(blob)
     width, height = blob.metadata.values_at("width", "height")
     return unless width && height
 
@@ -47,6 +50,12 @@ module ArticleBodyHelper
     img["width"] = (width * scale).round
     img["height"] = (height * scale).round
     frame(img, blob) if width.to_f / height < FRAME_BELOW_RATIO
+  end
+
+  def analyze(blob)
+    blob.analyze unless blob.analyzed?
+  rescue ActiveStorage::FileNotFoundError
+    nil
   end
 
   def frame(img, blob)
