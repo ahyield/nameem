@@ -1,25 +1,3 @@
-/* Shared toolbar button styles */
-
-.tooltip-controls button {
-  background: transparent;
-  color: #d4d4d4;
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  transition: background 0.15s, color 0.15s;
-}
-
-.tooltip-controls button:hover {
-  background: #333;
-  color: #fff;
-}
-
 /* Editor */
 
 #editor {
@@ -199,7 +177,7 @@
   }
 }
 
-/* Tooltip (formatting bar) */
+/* Formatting bar and the link/video/tweet fields: raised pills on the theme colours, like the insert menu */
 
 .tooltip-controls {
   position: absolute;
@@ -212,57 +190,82 @@
   display: flex;
   align-items: center;
   gap: 2px;
-  background: #1e1e1e;
-  border-radius: 8px;
-  padding: 4px 6px;
-  box-shadow: 0 4px 14px rgb(0 0 0 / 25%);
+  padding: 4px;
+  border-radius: 9999px;
+  background: rgb(var(--raised));
+  box-shadow: 0 0 0 1px rgb(var(--gray-900) / 8%), 0 8px 24px rgb(0 0 0 / 12%);
   white-space: nowrap;
 }
 
-.tooltip-controls button.active {
-  background: #374151;
-  color: #60a5fa;
+.tooltip-controls button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 9999px;
+  background: transparent;
+  color: rgb(var(--gray-500));
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 150ms ease, color 150ms ease, transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+.tooltip-controls button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.tooltip-controls button:hover {
+  background: rgb(var(--gray-100));
+  color: rgb(var(--gray-900));
+}
+
+.tooltip-controls button:active {
+  transform: scale(0.95);
+}
+
+/* B, I, H1, H2 and the quote mark are letters (in the site's Montserrat) rather than icons */
 .tooltip-btn-text {
-  font-weight: 700;
-  font-size: 13px !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: Montserrat, ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1;
 }
 
 .tooltip-separator {
   width: 1px;
-  height: 20px;
-  background: #444;
-  margin: 0 4px;
+  height: 18px;
+  margin: 0 2px;
   flex-shrink: 0;
+  background: rgb(var(--gray-200));
 }
 
 .tooltip-arrow {
   width: 10px;
   height: 10px;
-  background: #1e1e1e;
+  margin: -6px auto 0;
+  background: rgb(var(--raised));
+  box-shadow: 1px 1px 0 0 rgb(var(--gray-900) / 8%);
   transform: rotate(45deg);
-  margin: -5px auto 0;
-  border-radius: 0 0 2px;
 }
-
-/* The formatting bars are dark in both themes; on an ink page they need an edge to stand apart */
-.dark .tooltip-inner,
-.dark .link-tip,
-.dark .video-input,
-.dark .tweet-input {
-  outline: 1px solid rgb(255 255 255 / 12%);
-}
-
-/* Input tips */
 
 .link-tip,
 .video-input,
 .tweet-input {
   position: absolute;
   z-index: 10;
-  box-shadow: 0 4px 14px rgb(0 0 0 / 25%);
+  width: min(22rem, calc(100vw - 2rem));
+  padding: 0.5rem 1rem !important;
+  border-radius: 9999px !important;
+  background: rgb(var(--raised)) !important;
+  color: rgb(var(--gray-900)) !important;
+  box-shadow: 0 0 0 1px rgb(var(--gray-900) / 8%), 0 8px 24px rgb(0 0 0 / 12%);
+}
+
+.link-tip:focus,
+.video-input:focus,
+.tweet-input:focus {
+  box-shadow: 0 0 0 1px rgb(249 115 22 / 60%), 0 8px 24px rgb(0 0 0 / 12%);
 }
 
 .link-tip {

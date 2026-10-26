@@ -1,26 +1,30 @@
 <div id="editor" data-controller="editor" class="relative mx-auto w-full px-5 sm:w-3/5 sm:px-0">
   <div class="tooltip-controls hidden" data-action="click@window->editor#hideToolTip">
-    <div class="tooltip-inner">
-      <button data-action="click->editor#toggleBold" title="عريض"><i class="fa-solid fa-bold"></i></button>
-      <button data-action="click->editor#toggleItalic" title="مائل"><i class="fa-solid fa-italic"></i></button>
-      <button data-action="click->editor#toggleLink" title="رابط"><i class="fa-solid fa-link"></i></button>
-      <span class="tooltip-separator"></span>
-      <button data-action="click->editor#toggleHead1" title="عنوان رئيسي" class="tooltip-btn-text">H1</button>
-      <button data-action="click->editor#toggleHead2" title="عنوان فرعي" class="tooltip-btn-text">H2</button>
-      <button data-action="click->editor#toggleQuote" title="اقتباس"><i class="fa-solid fa-quote-right"></i></button>
-      <button data-action="click->editor#toggleCode" title="كود"><i class="fa-solid fa-code"></i></button>
+    <div class="tooltip-inner" role="toolbar" aria-label="تنسيق">
+      <button data-action="click->editor#toggleBold" title="عريض" aria-label="عريض" class="tooltip-btn-text" style="font-weight: 700">B</button>
+      <button data-action="click->editor#toggleItalic" title="مائل" aria-label="مائل" class="tooltip-btn-text" style="font-family: Georgia, serif; font-size: 17px; font-style: italic">I</button>
+      <button data-action="click->editor#toggleLink" title="رابط" aria-label="رابط">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" /></svg>
+      </button>
+      <span class="tooltip-separator" aria-hidden="true"></span>
+      <button data-action="click->editor#toggleHead1" title="عنوان رئيسي" aria-label="عنوان رئيسي" class="tooltip-btn-text" style="font-weight: 700">H1</button>
+      <button data-action="click->editor#toggleHead2" title="عنوان فرعي" aria-label="عنوان فرعي" class="tooltip-btn-text" style="font-size: 12px; font-weight: 700">H2</button>
+      <button data-action="click->editor#toggleQuote" title="اقتباس" aria-label="اقتباس" class="tooltip-btn-text" style="font-size: 22px; padding-top: 9px; font-family: Georgia, serif">&ldquo;</button>
+      <button data-action="click->editor#toggleCode" title="كود" aria-label="كود">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" /></svg>
+      </button>
     </div>
     <div class="tooltip-arrow"></div>
   </div>
   <input type="text" autocomplete="off" placeholder="الصق الرابط واضغط Enter..." dir="ltr" id="link"
         data-action="click@window->editor#hideLinkTip keydown.enter->editor#enterLinkTip keydown.esc->editor#closeTips"
-        class="link-tip hidden shadow-none focus:ring-0 border-0 placeholder:italic placeholder:text-gray-500 bg-[#1e1e1e] text-white text-sm rounded-lg px-3 py-2" name="link">
+        class="link-tip hidden shadow-none focus:ring-0 border-0 placeholder:italic placeholder:text-gray-500 text-sm" name="link">
   <input type="text" autocomplete="off" placeholder="الصق رابط الفيديو واضغط Enter..." dir="ltr" id="video"
         data-action="click@window->editor#hideVideoTip keydown.enter->editor#enterVideoTip keydown.esc->editor#closeTips"
-        class="video-input hidden shadow-none focus:ring-0 border-0 placeholder:italic placeholder:text-gray-500 bg-[#1e1e1e] text-white text-sm rounded-lg px-3 py-2" name="video">
+        class="video-input hidden shadow-none focus:ring-0 border-0 placeholder:italic placeholder:text-gray-500 text-sm" name="video">
   <input type="text" autocomplete="off" placeholder="الصق رابط التغريدة واضغط Enter..." dir="ltr" id="tweet"
         data-action="click@window->editor#hideTweetTip keydown.enter->editor#enterTweetTip keydown.esc->editor#closeTips"
-        class="tweet-input hidden shadow-none focus:ring-0 border-0 placeholder:italic placeholder:text-gray-500 bg-[#1e1e1e] text-white text-sm rounded-lg px-3 py-2" name="tweet">
+        class="tweet-input hidden shadow-none focus:ring-0 border-0 placeholder:italic placeholder:text-gray-500 text-sm" name="tweet">
 
   <div class="show-controls">
     <button data-action="click->editor#toggleControls" class="insert-toggle" aria-label="إدراج" title="إدراج">
