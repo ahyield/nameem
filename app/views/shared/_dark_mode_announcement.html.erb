@@ -1,0 +1,35 @@
+<%# Launch note for dark mode: a small card in the corner rather than a bar the top navigation would cover %>
+<aside class="dark-mode-announcement fixed bottom-4 start-4 z-40 w-[calc(100%-2rem)] max-w-sm rounded-2xl bg-raised p-4 text-gray-900 shadow-xl ring-1 ring-gray-900/10"
+       aria-labelledby="dark-mode-announcement-title"
+       data-controller="announcement theme" data-theme-url-value="<%= theme_path %>"
+       data-announcement-cookie-value="<%= ThemePreference::ANNOUNCEMENT_COOKIE %>">
+  <div class="flex items-start gap-3">
+    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-900 text-surface" aria-hidden="true">
+      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+      </svg>
+    </span>
+    <div class="min-w-0 flex-1">
+      <p id="dark-mode-announcement-title" class="text-sm font-semibold">جديد: الوضع الداكن</p>
+      <p class="mt-1 text-sm leading-6 text-gray-600">
+        صفحات بلون الحبر الدافئ للقراءة ليلاً. يتبع نميم جهازك تلقائياً، ويمكنك اختيار المظهر من <%= user_signed_in? ? "قائمة حسابك" : "زر القمر أعلى الصفحة" %>.
+      </p>
+      <div class="mt-3 flex items-center gap-3">
+        <button type="button" data-theme="dark" data-action="theme#choose announcement#dismiss"
+                class="rounded-full bg-gray-900 px-4 py-1.5 text-sm font-semibold text-surface transition-[transform,background-color] duration-150 hover:bg-gray-800 active:scale-[0.97] dark:hidden">
+          جرّبه
+        </button>
+        <button type="button" data-action="announcement#dismiss"
+                class="rounded-full px-3 py-1.5 text-sm text-gray-500 transition-[transform,background-color] duration-150 hover:bg-gray-100 active:scale-[0.97]">
+          حسناً
+        </button>
+      </div>
+    </div>
+    <button type="button" data-action="announcement#dismiss" aria-label="إغلاق"
+            class="-m-1 rounded-full p-1 text-gray-400 hover:text-gray-600">
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+</aside>
