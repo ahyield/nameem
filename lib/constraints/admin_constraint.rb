@@ -1,7 +1,9 @@
 module Constraints
+  # Routes only admins can reach (Mission Control). Reads the same signed session cookie as Authentication.
   class AdminConstraint
     def matches?(request)
-      request.session[:user_id].present? && User.find(request.session[:user_id]).admin?
+      session = Session.find_signed(request.cookie_jar[:session_token])
+      session&.user&.admin? || false
     end
   end
 end
