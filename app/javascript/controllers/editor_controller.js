@@ -322,16 +322,22 @@ export default class extends Controller {
     })
   }
 
+  // The selection toolbar's code button marks the selected words as inline code; code blocks come from the
+  // + menu (or ```). Inside a code block, the button turns it back into ordinary text.
   toggleCode() {
+    let inBlock = false
+    this.editor.getEditorState().read(() => {
+      const selection = $getSelection()
+      inBlock = $isRangeSelection(selection) && $isCodeNode(selection.anchor.getNode().getTopLevelElement())
+    })
+
+    if (!inBlock) {
+      this.editor.dispatchCommand(FORMAT_TEXT_COMMAND, "code")
+      return
+    }
     this.editor.update(() => {
       const selection = $getSelection()
-      if (!$isRangeSelection(selection)) return
-      const element = selection.anchor.getNode().getTopLevelElementOrThrow()
-      if (element.getType() === "code") {
-        $setBlocksType(selection, () => $createParagraphNode())
-      } else {
-        $setBlocksType(selection, () => $createCodeNode())
-      }
+      if ($isRangeSelection(selection)) $setBlocksType(selection, () => $createParagraphNode())
     })
   }
 
