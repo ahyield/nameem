@@ -32,7 +32,7 @@ module BackofficeHelper
 
   def active_filter_tab(current, tab)
     if current.to_s == tab.to_s
-      "bg-white text-gray-900 shadow-sm"
+      "bg-surface text-gray-900 shadow-sm"
     else
       "text-gray-500 hover:text-gray-900"
     end

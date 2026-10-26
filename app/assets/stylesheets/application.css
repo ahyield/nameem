@@ -44,7 +44,7 @@
 .editor-container blockquote,
 .editor-blockquote {
   border-left: none !important;
-  border-right: 4px solid #111;
+  border-right: 4px solid rgb(var(--gray-900));
   padding-right: 1em;
   line-height: 1.9em;
   min-height: 2em;
@@ -59,7 +59,7 @@
 
 .editor-container.editor-empty > p:first-child::before {
   content: "إبدأ بالكتابة...";
-  color: #d1d5db;
+  color: rgb(var(--gray-300));
   pointer-events: none;
   position: absolute;
   right: 0;
@@ -73,7 +73,7 @@
 
 .editor-hr {
   border: none;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid rgb(var(--gray-200));
   margin: 1.5em auto;
   width: 50%;
 }
@@ -96,13 +96,17 @@
   text-decoration: none;
 }
 
+.dark .article-content a {
+  color: rgb(96 165 250);
+}
+
 .article-content a:hover {
   text-decoration: underline;
 }
 
 .article-content blockquote {
   border-left: none;
-  border-right: 3px solid black;
+  border-right: 3px solid rgb(var(--gray-950));
   padding-right: 0.5em;
   font-style: italic;
   font-size: 1.25rem;
@@ -121,9 +125,17 @@
   max-width: 100%;
 }
 
+/* On ink, a light-backgrounded picture would bleed into the page without a faint edge */
+.dark .article-content img {
+  padding: 0;
+  margin: 1rem 0;
+  border-radius: 4px;
+  outline: 1px solid rgb(255 255 255 / 8%);
+}
+
 .article-content hr {
   border: none;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid rgb(var(--gray-200));
   margin: 1.5em auto;
   width: 50%;
 }
@@ -146,7 +158,7 @@
   align-items: center;
   justify-content: center;
   height: 200px;
-  background: #f3f4f6;
+  background: rgb(var(--gray-100));
   border-radius: 8px;
   animation: shimmer 1.5s ease-in-out infinite;
 }
@@ -154,17 +166,17 @@
 .editor-image-spinner {
   width: 28px;
   height: 28px;
-  border: 3px solid #e5e7eb;
-  border-top-color: #6b7280;
+  border: 3px solid rgb(var(--gray-200));
+  border-top-color: rgb(var(--gray-500));
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
 
 .editor-image-error {
-  color: #9ca3af;
+  color: rgb(var(--gray-400));
   font-size: 0.875rem;
   height: 80px;
-  background: #fef2f2;
+  background: rgb(var(--gray-50));
 }
 
 .editor-image {
@@ -181,11 +193,11 @@
 @keyframes shimmer {
   0%,
   100% {
-    background: #f3f4f6;
+    background: rgb(var(--gray-100));
   }
 
   50% {
-    background: #e5e7eb;
+    background: rgb(var(--gray-200));
   }
 }
 
@@ -237,6 +249,15 @@
   border-radius: 0 0 2px;
 }
 
+/* The formatting bars are dark in both themes; on an ink page they need an edge to stand apart */
+.dark .tooltip-inner,
+.dark .sidebar-inner,
+.dark .link-tip,
+.dark .video-input,
+.dark .tweet-input {
+  outline: 1px solid rgb(255 255 255 / 12%);
+}
+
 /* Input tips */
 
 .link-tip,
@@ -262,9 +283,9 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1.5px solid #d1d5db;
-  background: #fff;
-  color: #9ca3af;
+  border: 1.5px solid rgb(var(--gray-300));
+  background: rgb(var(--surface));
+  color: rgb(var(--gray-400));
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -274,9 +295,9 @@
 }
 
 .insert-toggle:hover {
-  border-color: #6b7280;
-  color: #374151;
-  background: #f9fafb;
+  border-color: rgb(var(--gray-500));
+  color: rgb(var(--gray-700));
+  background: rgb(var(--gray-50));
 }
 
 .sidebar-controls {

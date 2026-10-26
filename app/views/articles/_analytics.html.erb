@@ -1,12 +1,12 @@
 <%# Analytics Modal %>
 <div id="article-analytics" class="hidden relative z-50" data-modal-target="container" data-action="keydown@window->modal#escape" role="dialog" aria-modal="true" aria-label="إحصائيات المقال">
   <%# Backdrop %>
-  <div class="fixed inset-0 bg-gray-500/75 transition-opacity duration-200 ease-out opacity-0" data-modal-target="overlay"></div>
+  <div class="fixed inset-0 bg-gray-500/75 dark:bg-black/60 transition-opacity duration-200 ease-out opacity-0" data-modal-target="overlay"></div>
 
   <div class="fixed inset-0 z-10 overflow-y-auto">
     <div class="flex min-h-full items-center justify-center p-4" data-action="click->modal#outside">
       <%# Panel %>
-      <div class="relative w-full max-w-lg transform rounded-xl bg-white shadow-xl transition-all duration-200 ease-out opacity-0 scale-95" data-modal-target="panel">
+      <div class="relative w-full max-w-lg transform rounded-xl bg-raised shadow-xl transition-all duration-200 ease-out opacity-0 scale-95" data-modal-target="panel">
         <%# Header %>
         <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
           <h2 class="text-base font-semibold text-gray-900">إحصائيات المقال</h2>

@@ -8,7 +8,7 @@
   <%= form_with url: email_unsubscribe_path, method: :post, class: "mt-8" do %>
     <%= hidden_field_tag :token, params[:token] %>
     <%= submit_tag "إلغاء الاشتراك",
-          class: "cursor-pointer rounded-full bg-gray-900 px-6 py-2.5 text-sm font-semibold text-white transition-[transform,background-color] duration-150 hover:bg-gray-800 active:scale-[0.97]" %>
+          class: "cursor-pointer rounded-full bg-gray-900 px-6 py-2.5 text-sm font-semibold text-surface transition-[transform,background-color] duration-150 hover:bg-gray-800 active:scale-[0.97]" %>
   <% end %>
 
   <p class="mt-6 text-sm text-gray-500">

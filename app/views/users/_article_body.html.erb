@@ -62,7 +62,7 @@
         <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
       </svg>
     </button>
-    <div class="hidden ml-6 absolute z-50 w-16 mt-8 rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+    <div class="hidden ml-6 absolute z-50 w-16 mt-8 rounded-md bg-raised shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
       role="menu" aria-orientation="vertical" aria-labelledby="options-menu-2-button" tabindex="-1" data-dropdown-target="menu">
       <%= link_to user_edit_article_path(slug: @user, uuid: article),
         class: "block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900", role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0", data: { turbo: false }  do %>
