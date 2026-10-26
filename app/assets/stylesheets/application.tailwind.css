@@ -2,7 +2,78 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Theme colours. Light is Tailwind's own palette; dark is warm ink: a soft brown-black page with
+   off-white text, so long Arabic reading at night is easy on the eyes. The orange accent stays the same,
+   except for its pale tints and its darkest text shades, which would vanish on ink. */
 @layer base {
+  :root {
+    color-scheme: light;
+    --surface: 255 255 255;
+    --raised: 255 255 255;
+    --gray-50: 249 250 251;
+    --gray-100: 243 244 246;
+    --gray-200: 229 231 235;
+    --gray-300: 209 213 219;
+    --gray-400: 156 163 175;
+    --gray-500: 107 114 128;
+    --gray-600: 75 85 99;
+    --gray-700: 55 65 81;
+    --gray-800: 31 41 55;
+    --gray-900: 17 24 39;
+    --gray-950: 3 7 18;
+    --orange-50: 255 247 237;
+    --orange-100: 255 237 213;
+    --orange-200: 254 215 170;
+    --orange-700: 194 65 12;
+    --orange-800: 154 52 18;
+    --orange-900: 124 45 18;
+  }
+
+  .dark {
+    color-scheme: dark;
+    --surface: 27 25 22;
+    --raised: 38 35 31;
+    --gray-50: 35 32 29;
+    --gray-100: 44 41 37;
+    --gray-200: 58 54 49;
+    --gray-300: 82 77 70;
+    --gray-400: 133 126 117;
+    --gray-500: 163 155 145;
+    --gray-600: 186 178 168;
+    --gray-700: 207 200 191;
+    --gray-800: 223 217 209;
+    --gray-900: 236 230 223;
+    --gray-950: 246 242 237;
+    --orange-50: 50 33 22;
+    --orange-100: 66 40 22;
+    --orange-200: 94 54 26;
+    --orange-700: 251 146 60;
+    --orange-800: 253 186 116;
+    --orange-900: 254 215 170;
+  }
+
+  body {
+    @apply bg-surface text-gray-900;
+  }
+
+  /* The forms plugin paints fields white; on ink they take the page colour instead */
+  .dark :where([type="text"], [type="email"], [type="url"], [type="password"], [type="number"], [type="search"],
+               [type="tel"], [type="date"], textarea, select, [type="checkbox"], [type="radio"]) {
+    background-color: rgb(var(--surface));
+    border-color: rgb(var(--gray-300));
+  }
+
+  .dark :where([type="checkbox"], [type="radio"]):checked {
+    background-color: currentColor;
+    border-color: transparent;
+  }
+
+  /* Switching theme recolours the page at once rather than animating every colour transition */
+  .theme-switching,
+  .theme-switching * {
+    transition: none !important;
+  }
+
   h1 {
     @apply text-3xl;
   }

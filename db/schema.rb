@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_10_24_150000) do
+ActiveRecord::Schema[8.2].define(version: 2026_10_26_100000) do
   create_table "action_text_rich_texts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.text "body", size: :long
@@ -397,6 +397,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_24_150000) do
     t.boolean "email_weekly", default: true, null: false
     t.datetime "email_suppressed_at"
     t.string "email_suppression_reason"
+    t.string "theme", default: "system", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["featured"], name: "index_users_on_featured"
     t.index ["picked"], name: "index_users_on_picked"

@@ -71,6 +71,8 @@ Rails.application.routes.draw do
     get "stats", action: :stats, as: "stats"
   end
 
+  resource :theme, only: :update
+
   namespace :settings do
     get "profile", to: "profile#edit", as: "user_settings"
     put "profile", to: "profile#update", as: "update_profile"

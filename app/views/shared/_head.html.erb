@@ -1,4 +1,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<%# Before anything paints: show dark when chosen, or when following a device that's in dark mode %>
+<script>
+  (function (root) {
+    var theme = root.dataset.theme
+    root.classList.toggle("dark", theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches))
+  })(document.documentElement)
+</script>
 <%= csrf_meta_tags %>
 <%= csp_meta_tag %>
 <%= display_meta_tags(
@@ -17,7 +24,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="<%= asset_path "brand/favicon-32x32.png" %>">
 <link rel="icon" type="image/png" sizes="16x16" href="<%= asset_path "brand/favicon-16x16.png" %>">
 <meta name="msapplication-TileColor" content="#da532c">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1b1916" media="(prefers-color-scheme: dark)">
 
 <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>

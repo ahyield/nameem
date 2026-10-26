@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   include Pagy::Method
   include Pundit::Authorization
   include SuspensionGuard
+  include ThemePreference
 
   before_action :set_canonical_url
 

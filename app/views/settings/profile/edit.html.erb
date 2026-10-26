@@ -104,6 +104,21 @@
           </div>
         <% end %>
       </div>
+
+      <section class="border-t border-gray-900/5 pt-10 sm:max-w-xl" aria-labelledby="appearance-heading"
+               data-controller="theme" data-theme-url-value="<%= theme_path %>">
+        <h2 id="appearance-heading" class="text-base font-semibold text-gray-900">المظهر</h2>
+        <p class="mt-1 text-sm text-gray-500">«تلقائي» يتبع إعداد جهازك. يُحفظ اختيارك في حسابك.</p>
+        <div class="mt-4 inline-flex rounded-full bg-gray-100 p-1" role="radiogroup" aria-labelledby="appearance-heading">
+          <% [["light", "فاتح"], ["dark", "داكن"], ["system", "تلقائي"]].each do |theme, label| %>
+            <button type="button" role="radio" aria-checked="<%= current_theme == theme %>"
+                    data-theme="<%= theme %>" data-theme-target="option" data-action="theme#choose"
+                    class="rounded-full px-4 py-1.5 text-sm text-gray-600 transition-[transform,background-color,color] duration-150 active:scale-95 aria-checked:bg-surface aria-checked:font-semibold aria-checked:text-gray-900 aria-checked:shadow-sm">
+              <%= label %>
+            </button>
+          <% end %>
+        </div>
+      </section>
     </div>
   </main>
 </div>

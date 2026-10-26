@@ -55,6 +55,7 @@
 
       <!-- Left section: actions -->
       <div class="flex items-center">
+        <%= render "shared/theme_menu" unless user_signed_in? %>
         <div class="hidden md:ml-24 md:flex md:flex-shrink-0 md:items-center">
           <% if user_signed_in? %>
             <!-- Notification bell -->
@@ -109,6 +110,8 @@
                   role: "menuitem", tabindex: "-1", id: "user-menu-item-1", data: { turbo: false }  do %>
                   اعدادات الحساب
                 <% end %>
+
+                <%= render "shared/theme_switch", id: "menu", class: "mx-2 my-1 border-y border-gray-100 px-2 py-2" %>
 
                 <%= link_to "تسجيل خروج", logout_path, class: "block px-4 py-2 hover:transition-all hover:duration-300
                                                                           hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-tr
@@ -166,6 +169,7 @@
           <%= link_to settings_user_settings_path, data: { turbo: false }, class: "block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6" do %>
             اعدادات الحساب
           <% end %>
+          <%= render "shared/theme_switch", id: "mobile", class: "px-4 py-2 sm:px-6" %>
           <%= link_to "تسجيل الخروج", logout_path, class: "block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6", method: :delete, 'data-turbo-method': :delete %>
         </div>
       <% else %>

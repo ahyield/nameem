@@ -4,6 +4,9 @@ class User < ApplicationRecord
 
   friendly_id :email, use: :slugged
 
+  # Light, dark, or follow the device ("system")
+  enum :theme, { system: "system", light: "light", dark: "dark" }, prefix: true, validate: true
+
   has_many :articles, dependent: :destroy
   has_many :article_likes, dependent: :destroy
   has_many :comments, dependent: :destroy
