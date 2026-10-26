@@ -1,8 +1,18 @@
-import { createEditor } from "lexical"
+import {
+  $createParagraphNode,
+  $getSelection,
+  $isLineBreakNode,
+  $isParagraphNode,
+  $isRangeSelection,
+  COMMAND_PRIORITY_HIGH,
+  createEditor,
+  KEY_ENTER_COMMAND,
+  RootNode,
+} from "lexical"
 import { HeadingNode, QuoteNode, registerRichText } from "@lexical/rich-text"
 import { LinkNode } from "@lexical/link"
 import { createEmptyHistoryState, registerHistory } from "@lexical/history"
-import { CodeHighlightNode, CodeNode, PrismTokenizer, registerCodeHighlighting } from "@lexical/code"
+import { $isCodeNode, CodeHighlightNode, CodeNode, PrismTokenizer, registerCodeHighlighting } from "@lexical/code"
 import "prismjs/components/prism-ruby"
 import "prismjs/components/prism-bash"
 import "prismjs/components/prism-json"
@@ -59,6 +69,42 @@ export function createNamoemEditor(container) {
   registerMarkdownShortcuts(editor, [CODE, INLINE_CODE])
   // Colours come from Prism as you type and are saved with the article; a block stays plain until its language is chosen
   registerCodeHighlighting(editor, { ...PrismTokenizer, defaultLanguage: "plain" })
+  registerCodeBlockExits(editor)
 
   return editor
+}
+
+// Ways out of a code block: Enter on an empty last line leaves it (dropping that line), and a block at the end
+// of the article always has a paragraph after it to click or arrow into
+function registerCodeBlockExits(editor) {
+  editor.registerCommand(KEY_ENTER_COMMAND, (event) => {
+    const selection = $getSelection()
+    if (event?.shiftKey || !$isRangeSelection(selection) || !selection.isCollapsed()) return false
+
+    const code = selection.anchor.getNode().getTopLevelElement()
+    if (!$isCodeNode(code) || !$isLineBreakNode(code.getLastChild()) || !isAtEnd(selection, code)) return false
+
+    event?.preventDefault()
+    code.getLastChild().remove()
+    const next = code.getNextSibling()
+    if ($isParagraphNode(next) && next.getTextContent() === "") {
+      next.selectStart()
+    } else {
+      const paragraph = $createParagraphNode()
+      code.insertAfter(paragraph)
+      paragraph.select()
+    }
+    return true
+  }, COMMAND_PRIORITY_HIGH)
+
+  editor.registerNodeTransform(RootNode, (root) => {
+    if ($isCodeNode(root.getLastChild())) root.append($createParagraphNode())
+  })
+}
+
+function isAtEnd(selection, code) {
+  const { anchor } = selection
+  const node = anchor.getNode()
+  if (node.is(code)) return anchor.offset === code.getChildrenSize()
+  return node.is(code.getLastDescendant()) && anchor.offset === node.getTextContentSize()
 }
