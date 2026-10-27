@@ -28,9 +28,14 @@ module SeoSettings
 
   def canonical_url_points_elsewhere
     uri = URI.parse(canonical_url)
-    errors.add(:canonical_url, :invalid) unless uri.is_a?(URI::HTTPS) && uri.host.present? && !uri.host.end_with?("nameem.com")
+    errors.add(:canonical_url, :invalid) unless uri.is_a?(URI::HTTPS) && uri.host.present? && !nameem_host?(uri.host)
   rescue URI::InvalidURIError
     errors.add(:canonical_url, :invalid)
+  end
+
+  def nameem_host?(host)
+    host = host.downcase
+    host == "nameem.com" || host.end_with?(".nameem.com")
   end
 
   def cover_is_in_the_article

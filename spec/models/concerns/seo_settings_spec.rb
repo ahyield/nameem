@@ -39,11 +39,14 @@ RSpec.describe SeoSettings do
 
   describe "the original address" do
     it "is a full https address on another site" do
+      article.canonical_url = "https://mynameem.com/post"
+      expect(article).to be_valid
+
       article.canonical_url = "  https://example.com/original  "
       expect(article).to be_valid
       expect(article.canonical_url).to eq("https://example.com/original")
 
-      ["http://example.com/a", "https://nameem.com/someone/else", "not a url", "https://"].each do |url|
+      ["http://example.com/a", "https://nameem.com/someone/else", "https://www.Nameem.com/x", "not a url", "https://"].each do |url|
         article.canonical_url = url
         expect(article).not_to be_valid, url
       end
