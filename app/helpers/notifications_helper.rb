@@ -1,4 +1,6 @@
 module NotificationsHelper
+  include ArticleLinksHelper
+
   NOTIFICATION_MESSAGES = {
     "liked"           => "أعجب بمقالك",
     "commented"       => "علّق على مقالك",
@@ -23,19 +25,10 @@ module NotificationsHelper
   end
 
   def notification_path_for(notification)
-    case notification.notifiable_type
-    when "ArticleLike", "Comment", "Report"
-      article = notification.notifiable&.article
-      user_article_path(slug: article.user, uuid: article) if article
-    when "CommentLike"
-      article = notification.notifiable&.comment&.article
-      user_article_path(slug: article.user, uuid: article) if article
-    when "Article"
-      article = notification.notifiable
-      user_article_path(slug: article.user, uuid: article) if article
-    when "Follow"
-      user_path(slug: notification.actor)
-    end
+    return user_path(slug: notification.actor) if notification.notifiable_type == "Follow"
+
+    article = notification_article(notification)
+    article_link(article) if article
   end
 
   def notification_article(notification)

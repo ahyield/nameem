@@ -26,7 +26,7 @@
       <time class="text-gray-500"><%= short_date(article.published_at || article.created_at) %> </time>
     </div>
     <div class="group relative">
-      <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false } do %>
+      <%= link_to article_link(article), data: { turbo: false } do %>
         <h1 class="mt-2 text-2xl font-semibold text-gray-900">
           <span class="absolute inset-0"></span>
           <% if article.title.blank? %>
@@ -46,7 +46,7 @@
 
   </div>
   <% if (cover = card_cover_url(article, [384, 256])) %>
-    <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false }, class: "shrink-0" do %>
+    <%= link_to article_link(article), data: { turbo: false }, class: "shrink-0" do %>
       <div class="relative mt-4 aspect-[3/2] w-28 md:w-36 lg:w-48 rounded-lg overflow-hidden bg-gray-50 ring-1 ring-inset ring-gray-900/5">
         <%= image_tag cover, alt: "", loading: "lazy", decoding: "async", class: "absolute inset-0 h-full w-full object-cover" %>
       </div>

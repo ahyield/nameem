@@ -18,13 +18,13 @@ RSpec.describe NotificationsHelper do
 
   it "links a report notice to the article" do
     expect(helper.notification_article(notification)).to eq(article)
-    expect(helper.notification_path_for(notification)).to eq(user_article_path(slug: article.user, uuid: article))
+    expect(helper.notification_path_for(notification)).to eq(user_article_path(slug: article.user, uuid: article.permalink_param))
   end
 
   describe "#notification_path_for and #notification_article" do
     let(:reader) { create(:user) }
     let(:comment) { create(:comment, article:) }
-    let(:article_path) { user_article_path(slug: article.user, uuid: article) }
+    let(:article_path) { user_article_path(slug: article.user, uuid: article.permalink_param) }
 
     def notice(notifiable, action = :liked)
       build(:notification, notifiable:, action:)

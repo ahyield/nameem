@@ -1,6 +1,6 @@
 <% lead, *stories = @trending %>
 <% title_for = ->(article) { article.title.presence || first_paragraph(article).to_s.truncate(80) } %>
-<% url_for_article = ->(article) { user_article_url(slug: article.user, uuid: article) } %>
+<% url_for_article = ->(article) { article_link_url(article) } %>
 <% content_for :title, "حصاد الأسبوع على نميم" %>
 <% content_for :preheader, @trending.first(2).map { |article| title_for.call(article) }.join(" · ") %>
 

@@ -2,7 +2,7 @@
 <article class="group/card flex flex-col">
   <% cover = cover_image_url(article, [640, 400]) %>
   <% if cover %>
-    <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false }, tabindex: -1, aria: { hidden: true } do %>
+    <%= link_to article_link(article), data: { turbo: false }, tabindex: -1, aria: { hidden: true } do %>
       <div class="aspect-[16/10] w-full overflow-hidden rounded-lg bg-gray-100">
         <%= image_tag cover, alt: "", width: 320, height: 200, loading: "lazy",
                              class: "h-full w-full object-cover transition-transform duration-300 ease-out group-hover/card:scale-[1.02]" %>
@@ -27,7 +27,7 @@
   </div>
   <% end %>
 
-  <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false }, class: "group" do %>
+  <%= link_to article_link(article), data: { turbo: false }, class: "group" do %>
     <h3 dir="auto" class="<%= show_author || cover ? "mt-2" : "mt-0" %> text-base font-bold text-gray-900 leading-snug group-hover:text-gray-600 transition-colors line-clamp-2">
       <% if article.title.blank? %>
         <%= first_paragraph(article)&.truncate(100) %>

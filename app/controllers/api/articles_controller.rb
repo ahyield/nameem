@@ -5,7 +5,8 @@ module Api
 
     def show
       @user = User.find_by!(slug: params[:slug])
-      @article = @user.articles.find_by!(uuid: params[:uuid])
+      # Public, so only published articles; authors load their drafts through #edit
+      @article = @user.articles.published.find_by!(uuid: params[:uuid])
       render json: @article.as_json(only: %i[uuid title content content_html description published])
     end
 

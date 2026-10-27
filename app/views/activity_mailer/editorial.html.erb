@@ -1,5 +1,5 @@
 <% heading = @notification.featured? ? "مُيِّز موضوعك" : "اختار المحررون موضوعك" %>
-<% article_url = user_article_url(slug: @article.user, uuid: @article) %>
+<% article_url = article_link_url(@article) %>
 <% content_for :title, heading %>
 <% content_for :preheader, "«#{@article.title}» #{@notification.featured? ? 'يظهر الآن في الصفحة الرئيسية' : 'ضمن اختيارات المحررين'}." %>
 

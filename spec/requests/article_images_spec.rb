@@ -8,7 +8,7 @@ RSpec.describe "Images in articles" do
     article = create(:article, :published,
                      content_html: %(<figure><img src="#{original}" alt="غروب"><figcaption>غروب على النيل</figcaption></figure>))
 
-    get user_article_path(slug: article.user.slug, uuid: article.uuid)
+    get user_article_path(slug: article.user, uuid: article.permalink_param)
 
     expect(response.body).to include(%(data-full-src="#{original}"), "/rails/active_storage/representations/")
     expect(response.body).to include("<figcaption>غروب على النيل</figcaption>", "image-viewer")

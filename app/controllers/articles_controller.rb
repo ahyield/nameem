@@ -31,7 +31,7 @@ class ArticlesController < ApplicationController
 
     sync_tags(@article, params[:tag_names])
 
-    redirect_to user_article_path(uuid: @article.uuid, slug: @user.slug)
+    redirect_to helpers.article_link(@article)
   end
 
   def show_modal

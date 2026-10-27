@@ -88,6 +88,22 @@ RSpec.describe Article do
         expect(article.reload.description).to eq("وصف كتبه الكاتب")
       end
 
+      it "puts a space between paragraphs and cuts a long opening at a word" do
+        article.update(content_html: "<p>أحبه.</p><p>#{'كلام ' * 60}</p>")
+
+        expect(article.description).to start_with("أحبه. كلام")
+        expect(article.description).to end_with("كلام…")
+        expect(article.description.length).to be <= Metable::SUMMARY_LENGTH
+      end
+
+      it "still follows the content when the description is an older, shorter summary" do
+        long = "<p>#{'كلمة ' * 40}</p>"
+        article.update_columns(content_html: long, description: Nokogiri::HTML.fragment(long).text.squish.truncate(100))
+
+        article.update(content_html: "<p>نص جديد</p>")
+        expect(article.description).to eq("نص جديد")
+      end
+
       it "keeps a description written in the same save as the content" do
         article.update(content_html: "<p>نص</p>", description: "وصف خاص")
         expect(article.reload.description).to eq("وصف خاص")
@@ -230,6 +246,30 @@ RSpec.describe Article do
       expect do
         article.update(picked: false)
       end.not_to change(Notification, :count)
+    end
+  end
+
+  describe ".backfill_seo" do
+    let(:long) { "<p>#{'كلمة ' * 40}</p>" }
+
+    it "gives older articles a slug and a fuller summary without touching updated_at" do
+      article = create(:article, :published, title: "قديم")
+      legacy = Nokogiri::HTML.fragment(long).text.squish.truncate(100)
+      article.update_columns(slug: nil, content_html: long, description: legacy, updated_at: 1.year.ago)
+
+      expect { described_class.backfill_seo }.not_to(change { article.reload.updated_at })
+      expect(article.slug).to eq("قديم")
+      expect(article.description).to end_with("…")
+    end
+
+    it "leaves descriptions authors wrote and articles that are up to date" do
+      written = create(:article, :published)
+      written.update_columns(content_html: long, description: "وصف كتبه الكاتب")
+      current = create(:article, :published, content_html: long)
+
+      expect(described_class.backfill_seo).to eq(0)
+      expect(written.reload.description).to eq("وصف كتبه الكاتب")
+      expect(current.reload.slug).to eq("new-article")
     end
   end
 end

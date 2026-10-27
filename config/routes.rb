@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   draw :backoffice
   get "search", to: "search#index", as: "search"
+  get "sitemap.xml", to: "sitemaps#show", as: "sitemap", defaults: { format: :xml }
+  get "rss", to: "feeds#index", as: "rss"
   get "search/autocomplete", to: "search#autocomplete", as: "search_autocomplete"
   resources :feed, only: [:index]
   resources :topics, only: %i[index show], param: :slug do
@@ -32,8 +34,9 @@ Rails.application.routes.draw do
   end
   scope(path: ":slug", as: :user, constraints: Constraints::RootNamespaceRoutesConstraint.new, controller: :users) do
     get "/", action: :show
+    get "rss", to: "feeds#author", as: "rss"
 
-    get ":uuid", action: :article, as: "article", constraints: Constraints::ArticleUuidConstraint.new
+    get ":uuid", action: :article, as: "article", constraints: Constraints::ArticleLinkConstraint.new
     delete ":uuid", action: :destroy, as: "destroy_article", constraints: Constraints::ArticleUuidConstraint.new
 
     post ":uuid/like", action: :create, as: "like_article",

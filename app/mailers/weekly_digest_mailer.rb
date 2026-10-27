@@ -1,5 +1,5 @@
 class WeeklyDigestMailer < ApplicationMailer
-  helper ApplicationHelper, EmailHelper
+  helper ApplicationHelper, EmailHelper, ArticleLinksHelper
 
   def best_of(user, digest = WeeklyDigest.current)
     @user = user

@@ -66,7 +66,7 @@ RSpec.describe ArticlesController do
         patch :update, params: { slug: user.slug, uuid: article.uuid, publish: true }
         article.reload
         expect(article.published).to be_truthy
-        expect(response).to redirect_to(user_article_path(uuid: article.uuid, slug: user.slug))
+        expect(response).to redirect_to(user_article_path(uuid: article.permalink_param, slug: user.slug))
       end
 
       it "sets the published_at date if not already set" do

@@ -43,7 +43,7 @@ RSpec.describe "Suspended users" do
   end
 
   it "can still read and sees a notice" do
-    get user_article_path(slug: author.slug, uuid: article.uuid)
+    get user_article_path(slug: author, uuid: article.permalink_param)
 
     expect(response).to have_http_status(:ok)
     expect(response.body).to include("حسابك موقوف حالياً")

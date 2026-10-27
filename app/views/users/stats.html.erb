@@ -81,7 +81,7 @@
                   <% if top %>
                     <span class="inline-flex items-center rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-medium text-orange-700 whitespace-nowrap">الأكثر مشاهدة</span>
                   <% end %>
-                  <%= link_to article.title, user_article_path(slug: @user.slug, uuid: article.uuid),
+                  <%= link_to article.title, article_link(article),
                       class: "text-sm font-medium text-gray-900 group-hover:text-orange-600 transition-colors truncate block" %>
                 </div>
               </td>

@@ -5,7 +5,6 @@ FactoryBot.define do
   factory :article do
     title { "New Article" }
     content { { ops: [{ insert: "New Article" }] } }
-    slug { "slug-article" }
     user
     uuid { SecureRandom.uuid }
     published_at { DateTime.now }

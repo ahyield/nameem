@@ -23,7 +23,7 @@
         <% if group.article %>
           <p style="margin: 2px 0 0;">
             <%= link_to (group.article.title.presence || "بدون عنوان").truncate(70),
-                        user_article_url(slug: group.article.user, uuid: group.article), class: "story-title", style: "font-size: 15px;" %>
+                        article_link_url(group.article), class: "story-title", style: "font-size: 15px;" %>
           </p>
         <% end %>
         <% if group.comment %>

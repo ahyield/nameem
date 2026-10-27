@@ -1,20 +1,7 @@
-<% title "#{@article.title || @article.alternative_titles.first&.truncate(20)} بقلم #{@user.name}" %>
-<% description @article.description&.truncate(160) %>
-<% set_meta_tags og: {
-  type: "article",
-  title: @article.title,
-  description: @article.description&.truncate(160),
-  image: article_cover(@article) || asset_url("brand/logo.png"),
-  url: user_article_url(slug: @article.user, uuid: @article)
-},
-article: {
-  published_time: @article.published_at&.iso8601,
-  author: @user.name
-},
-twitter: {
-  image: article_cover(@article) || asset_url("brand/logo.png")
-} %>
+<% article_meta_tags(@article, @user) %>
+<% content_for :feeds, auto_discovery_link_tag(:rss, user_rss_url(slug: @user.slug), title: "#{@user.name} — نميم") %>
 <%= json_ld_tag(article_json_ld(@article, @user)) %>
+<%= json_ld_tag(article_breadcrumb_json_ld(@article, @user)) %>
 
 <%= render "shared/nav" %>
 
@@ -82,7 +69,7 @@ twitter: {
           <div class="hidden absolute left-0 z-50 w-48 mt-2 py-1 rounded-lg bg-raised shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
                role="menu" data-dropdown-target="menu">
             <div data-controller="clipboard" data-clipboard-success-content-value="تم نسخ الرابط ✓">
-              <input type="text" value="<%= user_article_url(slug: @user, uuid: @article) %>" class="hidden" data-clipboard-target="source" autocomplete="off">
+              <input type="text" value="<%= article_link_url(@article) %>" class="hidden" data-clipboard-target="source" autocomplete="off">
               <button type="button" class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
               data-action="clipboard#copy" data-clipboard-target="button" role="menuitem">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -91,14 +78,14 @@ twitter: {
                 نسخ الرابط
               </button>
             </div>
-            <a href="https://x.com/intent/tweet?url=<%= CGI.escape(user_article_url(slug: @user, uuid: @article)) %>&text=<%= CGI.escape(@article.title.to_s) %>" target="_blank" rel="noopener"
+            <a href="https://x.com/intent/tweet?url=<%= CGI.escape(article_link_url(@article)) %>&text=<%= CGI.escape(@article.title.to_s) %>" target="_blank" rel="noopener"
                class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors" role="menuitem">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
               </svg>
               مشاركة على X
             </a>
-            <a href="https://www.facebook.com/sharer/sharer.php?u=<%= CGI.escape(user_article_url(slug: @user, uuid: @article)) %>" target="_blank" rel="noopener"
+            <a href="https://www.facebook.com/sharer/sharer.php?u=<%= CGI.escape(article_link_url(@article)) %>" target="_blank" rel="noopener"
                class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors" role="menuitem">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
@@ -185,7 +172,7 @@ twitter: {
       </div>
     </div>
 
-    <div class="article-content mt-4" dir="rtl" data-controller="tweet-embed code-copy image-viewer" data-page-view-target="content">
+    <div class="article-content mt-4" dir="rtl" lang="<%= article_language(@article) %>" data-controller="tweet-embed code-copy image-viewer" data-page-view-target="content">
       <%= article_body(@article) %>
     </div>
 
