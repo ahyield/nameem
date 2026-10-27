@@ -14,7 +14,7 @@ class SitemapsController < ApplicationController
   helper_method :indexed_articles, :indexed_authors, :indexed_topics
 
   def indexed_articles
-    Article.published.includes(:user)
+    Article.published.where(noindex: false, canonical_url: nil).includes(:user)
   end
 
   def indexed_authors

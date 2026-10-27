@@ -1,0 +1,116 @@
+<%# The publish dialog's advanced section: how the article shows up in search results and when it's shared %>
+<% images = article.article_images %>
+<% default_title = "#{article.title.presence || first_paragraph(article)} بقلم #{user.name}" %>
+<% open = article.seo_title.present? || article.canonical_url.present? || article.noindex? ||
+          article.cover_image_src.present? || article.errors.any? %>
+<details class="publish-advanced group mt-8" <%= "open" if open %>>
+  <summary class="flex cursor-pointer list-none items-center justify-between gap-4 rounded-xl p-4 ring-1 ring-gray-900/5 transition-colors hover:bg-gray-50 [&::-webkit-details-marker]:hidden">
+    <span>
+      <span class="block text-sm font-semibold text-gray-900">إعدادات متقدمة</span>
+      <span class="mt-1 block text-sm text-gray-500">كيف يظهر موضوعك في محركات البحث وعند المشاركة.</span>
+    </span>
+    <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+    </svg>
+  </summary>
+
+  <div class="space-y-8 px-1 pt-6">
+    <%# What a search result for the article looks like, kept up to date as the fields change %>
+    <div aria-hidden="true">
+      <p class="mb-2 text-xs font-medium text-gray-500">في نتائج البحث</p>
+      <div class="rounded-xl bg-gray-50 p-4">
+        <%# The slug can be Arabic inside a left-to-right address, so it's isolated to keep the parts in order %>
+        <p class="truncate text-xs text-gray-500" dir="ltr">
+          nameem.com › <%= user.slug %> › <bdi data-modals--article-modal-target="previewSlug"><%= article.permalink_slug %></bdi>-<%= article.short_id %>
+        </p>
+        <p class="mt-1 line-clamp-1 text-lg leading-snug text-blue-700 dark:text-blue-300" data-modals--article-modal-target="previewTitle">
+          <%= article.seo_title.presence || default_title %> — نميم
+        </p>
+        <p class="mt-1 line-clamp-2 text-sm leading-relaxed text-gray-600" data-modals--article-modal-target="previewDescription">
+          <%= article.description %>
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div class="flex items-baseline justify-between gap-4">
+        <label for="seo-title" class="block text-sm font-semibold text-gray-900">عنوان محركات البحث</label>
+        <span class="text-xs tabular-nums text-gray-500" dir="ltr" data-modals--article-modal-target="seoTitleCount">
+          <%= article.seo_title.to_s.length %> / <%= SeoSettings::SEO_TITLE_LENGTH %>
+        </span>
+      </div>
+      <p id="seo-title-hint" class="mt-1 text-sm text-gray-500">يظهر في نتائج البحث وعند المشاركة بدلاً من العنوان. اتركه فارغاً لاستخدام عنوان الموضوع.</p>
+      <input type="text" id="seo-title" name="seo[title]" value="<%= article.seo_title %>" maxlength="<%= SeoSettings::SEO_TITLE_LENGTH %>"
+             dir="auto" autocomplete="off" aria-describedby="seo-title-hint" placeholder="<%= default_title %>"
+             data-modals--article-modal-target="seoTitle" data-action="input->modals--article-modal#updatePreview"
+             class="mt-3 block w-full rounded-lg border-0 bg-surface px-3 py-2.5 text-sm text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-500">
+    </div>
+
+    <div>
+      <label for="seo-slug" class="block text-sm font-semibold text-gray-900">رابط الموضوع</label>
+      <p id="seo-slug-hint" class="mt-1 text-sm text-gray-500">كلمات قصيرة تصف الموضوع. الروابط القديمة تبقى تعمل وتنقل القارئ إلى الجديد.</p>
+      <div class="mt-3 flex items-center rounded-lg bg-surface text-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-orange-500" dir="ltr">
+        <span class="shrink-0 py-2.5 pl-3 text-gray-400">nameem.com/<%= user.slug %>/</span>
+        <input type="text" id="seo-slug" name="seo[slug]" value="<%= article.permalink_slug %>" dir="auto" autocomplete="off"
+               aria-describedby="seo-slug-hint" placeholder="<%= Article.slug_from(article.title.presence || first_paragraph(article)) %>"
+               data-modals--article-modal-target="slug"
+               data-action="input->modals--article-modal#updatePreview change->modals--article-modal#tidySlug"
+               class="min-w-0 flex-1 border-0 bg-transparent px-0 py-2.5 text-gray-900 placeholder:text-gray-400 focus:ring-0">
+        <span class="shrink-0 py-2.5 pr-3 text-gray-400">-<%= article.short_id %></span>
+      </div>
+    </div>
+
+    <fieldset>
+      <legend class="block text-sm font-semibold text-gray-900">صورة المشاركة</legend>
+      <% if images.size > 1 %>
+        <p class="mt-1 text-sm text-gray-500">الصورة التي تظهر مع الموضوع في الصفحة الرئيسية وعند مشاركة رابطه.</p>
+        <div class="mt-3 flex gap-3 overflow-x-auto pb-1">
+          <% images.each_with_index do |src, index| %>
+            <label class="relative shrink-0 cursor-pointer">
+              <input type="radio" name="seo[cover_image_src]" value="<%= index.zero? ? "" : src %>" class="peer sr-only"
+                     <%= "checked" if src == article.cover_image %>
+                     data-cover-url="<%= cropped_image_url(src, [1280, 720]) %>"
+                     data-action="change->modals--article-modal#chooseCover">
+              <%= image_tag cropped_image_url(src, [320, 180]), alt: "الصورة #{index + 1}",
+                            class: "h-[4.5rem] w-32 rounded-lg bg-gray-100 object-cover opacity-70 ring-1 ring-gray-900/5 transition peer-checked:opacity-100 peer-checked:ring-2 peer-checked:ring-orange-500 peer-focus-visible:ring-2 peer-focus-visible:ring-orange-500" %>
+            </label>
+          <% end %>
+        </div>
+      <% elsif images.one? %>
+        <p class="mt-1 text-sm text-gray-500">صورة الموضوع الوحيدة هي غلافه. أضف صوراً أخرى داخل الموضوع لتختار بينها.</p>
+      <% else %>
+        <p class="mt-1 text-sm text-gray-500">لا صور في الموضوع بعد، فيظهر بغلاف نميم. أضف صورة داخل الموضوع لتختارها هنا.</p>
+      <% end %>
+      <% if article.errors[:cover_image_src].any? %>
+        <p class="mt-2 text-sm text-red-600">هذه الصورة لم تعد في الموضوع، اختر غيرها.</p>
+      <% end %>
+    </fieldset>
+
+    <div>
+      <label for="seo-canonical" class="block text-sm font-semibold text-gray-900">الرابط الأصلي</label>
+      <p id="seo-canonical-hint" class="mt-1 text-sm text-gray-500">إن نُشر الموضوع أولاً في مكان آخر، ضع رابطه هنا لتنسب محركات البحث الأصل إليه.</p>
+      <input type="url" id="seo-canonical" name="seo[canonical_url]" value="<%= article.canonical_url %>" dir="ltr" autocomplete="off"
+             aria-describedby="seo-canonical-hint" placeholder="https://" pattern="https://.+"
+             aria-invalid="<%= article.errors[:canonical_url].any? %>"
+             class="mt-3 block w-full rounded-lg border-0 bg-surface px-3 py-2.5 text-sm text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-500 aria-[invalid=true]:ring-red-500">
+      <% if article.errors[:canonical_url].any? %>
+        <p class="mt-2 text-sm text-red-600">ضع رابطاً كاملاً يبدأ بـ https:// لموقع غير نميم.</p>
+      <% end %>
+    </div>
+
+    <div class="flex items-start justify-between gap-4 rounded-xl p-4 ring-1 ring-gray-900/5">
+      <div>
+        <p id="seo-noindex-label" class="text-sm font-semibold text-gray-900">إخفاء من محركات البحث</p>
+        <p id="seo-noindex-hint" class="mt-1 text-sm text-gray-500">يبقى الموضوع منشوراً على نميم، لكن لن يظهر في نتائج البحث.</p>
+      </div>
+      <%= hidden_field_tag "seo[noindex]", "0", id: nil %>
+      <label class="relative inline-flex shrink-0 cursor-pointer items-center">
+        <%= check_box_tag "seo[noindex]", "1", article.noindex?, id: "seo-noindex",
+                          role: "switch", class: "peer sr-only",
+                          aria: { labelledby: "seo-noindex-label", describedby: "seo-noindex-hint" } %>
+        <span class="h-6 w-11 rounded-full bg-gray-200 transition-colors duration-150 peer-checked:bg-gray-900 peer-focus-visible:ring-2 peer-focus-visible:ring-orange-500 peer-focus-visible:ring-offset-2"></span>
+        <span class="pointer-events-none absolute right-0.5 top-0.5 h-5 w-5 rounded-full bg-surface shadow-sm transition-transform duration-200 ease-out peer-checked:-translate-x-5"></span>
+      </label>
+    </div>
+  </div>
+</details>

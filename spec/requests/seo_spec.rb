@@ -75,6 +75,30 @@ RSpec.describe "Search engines" do
     end
   end
 
+  describe "the author's settings" do
+    it "uses the search title, points to the original and hides the article when asked" do
+      article.update!(seo_title: "عنوان للبحث", canonical_url: "https://example.com/original", noindex: true)
+
+      get permalink
+      page = response.parsed_body
+
+      expect(page.at_css("title").text).to eq("عنوان للبحث — نميم")
+      expect(page.at_css("meta[property='og:title']")["content"]).to eq("عنوان للبحث")
+      expect(page.at_css("link[rel=canonical]")["href"]).to eq("https://example.com/original")
+      expect(page.at_css("meta[name=robots]")["content"]).to eq("noindex, follow")
+    end
+
+    it "leaves hidden articles and copies of other sites' articles out of the sitemap" do
+      hidden = create(:article, :published, user: author, title: "مخفي", noindex: true)
+      copy = create(:article, :published, user: author, title: "منقول", canonical_url: "https://example.com/a")
+
+      get "/sitemap.xml"
+
+      expect(response.body).to include(article.short_id)
+      expect(response.body).not_to include(hidden.short_id, copy.short_id)
+    end
+  end
+
   it "keeps the page number but no other query in a list's canonical address" do
     get "/topics?page=2&utm_source=x"
 

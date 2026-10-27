@@ -35,4 +35,24 @@ RSpec.describe CoverImageHelper do
       expect(helper.card_cover_url(build(:article), [300, 200])).to be_nil
     end
   end
+
+  describe "the chosen cover" do
+    let(:src) { "https://nameem.com/rails/active_storage/blobs/proxy/#{blob.signed_id}/c.jpeg" }
+    let(:other) do
+      ActiveStorage::Blob.create_and_upload!(io: Rails.root.join("spec/fixtures/files/avatar-3.jpeg").open,
+                                             filename: "other.jpeg", content_type: "image/jpeg")
+    end
+
+    it "is cropped from the image the author picked rather than the first" do
+      chosen = "https://nameem.com/rails/active_storage/blobs/proxy/#{other.signed_id}/o.jpeg"
+      article = build(:article, content_html: %(<img src="#{src}"><img src="#{chosen}">), cover_image_src: chosen)
+
+      expect(helper.cover_image_blob(article)).to eq(other)
+    end
+
+    it "offers each image cropped for picking, or as it is when it can't be cropped" do
+      expect(helper.cropped_image_url(src, [320, 180])).to include("/rails/active_storage/representations/")
+      expect(helper.cropped_image_url("https://example.com/photo.jpg", [320, 180])).to eq("https://example.com/photo.jpg")
+    end
+  end
 end

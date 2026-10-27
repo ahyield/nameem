@@ -7,7 +7,7 @@ module ArticleSeoHelper
   DESCRIPTION_LIMIT = 160
 
   def article_seo_title(article)
-    article.title.presence || article.alternative_titles.first&.truncate(60)
+    article.seo_title.presence || article.title.presence || article.alternative_titles.first&.truncate(60)
   end
 
   def article_seo_description(article)
@@ -31,13 +31,14 @@ module ArticleSeoHelper
     description = article_seo_description(article)
     image = article_share_image(article)
 
-    set_meta_tags title:       "#{title} بقلم #{user.name}",
+    set_meta_tags title:       article.seo_title.presence || "#{title} بقلم #{user.name}",
                   description:,
-                  canonical:   article_link_url(article),
+                  canonical:   article.canonical_url.presence || article_link_url(article),
                   og:          { type: "article", title:, description:, url: article_link_url(article),
                         image: { _: image[:url], width: image[:width], height: image[:height], alt: title }.compact },
                   article:     { published_time: article.published_at&.iso8601, modified_time: article.updated_at.iso8601,
                              author: user_url(slug: user.slug), tag: article.tags.map(&:name) },
                   twitter:     { title:, description:, image: image[:url] }
+    set_meta_tags noindex: true, follow: true if article.noindex?
   end
 end

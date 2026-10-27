@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_10_26_200000) do
+ActiveRecord::Schema[8.2].define(version: 2026_10_27_100000) do
   create_table "action_text_rich_texts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.text "body", size: :long
@@ -91,6 +91,10 @@ ActiveRecord::Schema[8.2].define(version: 2026_10_26_200000) do
     t.float "trending_score", default: 0.0, null: false
     t.integer "trending_rank"
     t.boolean "mostly_latin", default: false, null: false
+    t.string "seo_title", limit: 70
+    t.string "canonical_url"
+    t.boolean "noindex", default: false, null: false
+    t.string "cover_image_src", limit: 1024
     t.index ["featured"], name: "index_articles_on_featured"
     t.index ["picked"], name: "index_articles_on_picked"
     t.index ["published"], name: "index_articles_on_published"
