@@ -42,12 +42,15 @@ RSpec.describe RelatedArticles do
     expect(described_class.for(article).first(2)).to eq([tagged, plain])
   end
 
+  # The other-language article shares the words, so only the language rule keeps it out; and there are enough
+  # same-language matches that the any-language top-up never runs
   it "keeps to the article's language when matching text" do
     article = published("الحنين إلى البيت القديم ورائحة الياسمين", user: author)
-    english = published("Longing for the old house and the smell of jasmine in the morning")
-    english.update_column(:mostly_latin, true)
+    matches = Array.new(3) { published("رائحة الياسمين والحنين إلى البيت القديم") }
+    other_language = published("الحنين إلى البيت القديم ورائحة الياسمين in a mostly English article")
+    other_language.update_column(:mostly_latin, true)
 
-    expect(described_class.for(article)).not_to include(english)
+    expect(described_class.for(article)).to match_array(matches)
   end
 
   it "doesn't top up when the text finds enough" do
