@@ -5,7 +5,7 @@ RSpec.describe "Article Analytics" do
   let(:article) { create(:article, :published, user: author, real_views_count: 42) }
 
   def article_path
-    "/#{author.slug}/#{article.uuid}"
+    "/#{author.slug}/#{article.permalink_param}"
   end
 
   describe "visibility" do

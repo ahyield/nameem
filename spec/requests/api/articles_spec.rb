@@ -6,10 +6,16 @@ RSpec.describe "Api::Articles" do
   let(:article) { create(:article, user:) }
 
   describe "GET /api/articles/:slug/:uuid" do
-    it "returns the article as JSON" do
+    it "returns a published article as JSON" do
+      article.update!(published: true)
       get "/api/articles/#{user.slug}/#{article.uuid}"
       expect(response).to have_http_status(:success)
       expect(json["uuid"]).to eq(article.uuid)
+    end
+
+    it "doesn't show drafts to anyone" do
+      get "/api/articles/#{user.slug}/#{article.uuid}"
+      expect(response).to have_http_status(:not_found)
     end
   end
 

@@ -11,6 +11,7 @@
 twitter: {
   image: profile_image
 } %>
+<% content_for :feeds, auto_discovery_link_tag(:rss, user_rss_url(slug: @user.slug), title: "#{@user.name} — نميم") %>
 <%= json_ld_tag(profile_json_ld(@user)) %>
 
 <%= render "shared/nav" %>

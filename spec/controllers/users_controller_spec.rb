@@ -25,12 +25,12 @@ RSpec.describe UsersController do
       end
 
       it "returns a successful response" do
-        get :article, params: { slug: user.slug, uuid: article.uuid }
+        get :article, params: { slug: user.slug, uuid: article.permalink_param }
         expect(response).to be_successful
       end
 
       it "assigns the requested article to @article" do
-        get :article, params: { slug: user.slug, uuid: article.uuid }
+        get :article, params: { slug: user.slug, uuid: article.permalink_param }
         expect(assigns(:article)).to eq(article)
       end
 
@@ -47,7 +47,7 @@ RSpec.describe UsersController do
 
       it "responds with not found" do
         article.unpublish
-        get :article, params: { slug: user.slug, uuid: article.uuid }
+        get :article, params: { slug: user.slug, uuid: article.permalink_param }
         expect(response).to have_http_status(:not_found)
       end
     end

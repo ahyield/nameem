@@ -88,7 +88,7 @@ RSpec.describe "Turning comments off on an article" do
     end
 
     it "keeps existing comments but shows no forms" do
-      get user_article_path(slug: author.slug, uuid: closed_article.uuid)
+      get user_article_path(slug: author, uuid: closed_article.permalink_param)
 
       expect(response.body).to include("تعليق سابق")
       expect(response.body).to include("التعليقات مغلقة على هذا الموضوع")
@@ -98,7 +98,7 @@ RSpec.describe "Turning comments off on an article" do
 
     it "shows the forms when comments are on" do
       create(:comment, article:)
-      get user_article_path(slug: author.slug, uuid: article.uuid)
+      get user_article_path(slug: author, uuid: article.permalink_param)
 
       expect(response.body).not_to include("التعليقات مغلقة على هذا الموضوع")
       expect(response.body).to include('id="comment_form"')

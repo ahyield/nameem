@@ -1,6 +1,7 @@
 <% title "#{@tag.name}" %>
 <% description "مقالات عن #{@tag.name} على نميم" %>
-<% set_meta_tags og: { description: "مقالات عن #{@tag.name} على نميم" } %>
+<% set_meta_tags og: { title: @tag.name, description: "مقالات عن #{@tag.name} على نميم", url: topic_url(@tag) } %>
+<%= json_ld_tag(topic_json_ld(@tag)) %>
 
 <%= render "shared/nav" %>
 

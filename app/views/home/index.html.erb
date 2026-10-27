@@ -14,6 +14,7 @@ twitter: {
   image:       asset_url("brand/og-default.png"),
   card:        "summary_large_image"
 } %>
+<%= json_ld_tag(website_json_ld) %>
 
 <%= render "shared/nav" %>
 <%= render "hero" %>

@@ -12,9 +12,11 @@
   site: "نميم",
   reverse: true,
   separator: "—",
-  og: { site_name: "نميم", locale: "ar_AR", type: "website", image: asset_url("brand/logo.png") },
+  og: { site_name: "نميم", locale: "ar_AR", type: "website", image: asset_url("brand/og-default.png") },
   twitter: { site: "@nameemofficial", card: "summary_large_image" }
 ) %>
+<%= auto_discovery_link_tag(:rss, rss_url, title: "نميم") %>
+<%= yield :feeds %>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

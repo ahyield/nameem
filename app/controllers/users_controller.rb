@@ -15,9 +15,8 @@ class UsersController < ApplicationController
 
   def article
     @user = User.friendly.find(params[:slug])
-    @article = @user.articles.find_by(uuid: params[:uuid])
-
-    authorize @article, :show?
+    @article = find_article
+    return if performed?
 
     @liked = Current.user&.article_likes&.exists?(article: @article)
     @bookmarked = Current.user&.bookmarks&.exists?(article: @article)
@@ -33,14 +32,7 @@ class UsersController < ApplicationController
                             .limit(3)
                             .includes(:tags, images_attachments: :blob)
 
-    if policy(@article).edit?
-      @likers = @article.article_likes
-                        .includes(user: { avatar_attachment: :blob })
-                        .order(created_at: :desc)
-                        .map(&:user)
-      @commenters = User.where(id: @article.comments.select(:user_id))
-                        .includes(avatar_attachment: :blob)
-    end
+    load_engagement if policy(@article).edit?
 
     respond_to do |format|
       format.html
@@ -128,6 +120,32 @@ class UsersController < ApplicationController
   end
 
   private
+
+  # Who liked and commented, for the author's analytics
+  def load_engagement
+    @likers = @article.article_likes
+                      .includes(user: { avatar_attachment: :blob })
+                      .order(created_at: :desc)
+                      .map(&:user)
+    @commenters = User.where(id: @article.comments.select(:user_id))
+                      .includes(avatar_attachment: :blob)
+  end
+
+  # The article at this address, or a 404 or a redirect to its current address
+  def find_article
+    article = @user.articles.at_link(params[:uuid])
+    return render_not_found unless article
+
+    authorize article, :show?
+    noindex! if article.draft?
+    redirect_to(helpers.article_link(article), status: :moved_permanently) if moved?(article)
+    article
+  end
+
+  # Published articles live at one address; older UUID links and changed slugs point readers there
+  def moved?(article)
+    !request.format.json? && article.published? && params[:uuid] != article.permalink_param
+  end
 
   # New unique readers per day (a page view is recorded once per visitor), oldest first
   def daily_readers(article_ids, days:)

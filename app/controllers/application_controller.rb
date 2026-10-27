@@ -19,7 +19,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # The page's address without tracking or other query strings, so variants count as one page; later pages
+  # of a list keep their page number
   def set_canonical_url
-    set_meta_tags canonical: request.original_url
+    page = params[:page].to_i
+    set_meta_tags canonical: request.base_url + request.path + (page > 1 ? "?page=#{page}" : "")
+  end
+
+  # For pages search engines shouldn't list, though they may follow the links on them
+  def noindex!
+    set_meta_tags noindex: true, follow: true
   end
 end

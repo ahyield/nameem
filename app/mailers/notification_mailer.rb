@@ -9,7 +9,7 @@ class NotificationMailer < ApplicationMailer
     end
   end
 
-  helper NotificationsHelper, EmailHelper
+  helper NotificationsHelper, EmailHelper, ArticleLinksHelper
 
   def digest(user, notifications)
     @user = user

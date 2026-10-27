@@ -30,7 +30,7 @@
   <% when Comment %>
     <div class="prose prose-sm max-w-none text-gray-900"><%= reportable.body %></div>
     <p class="mt-4 text-xs text-gray-500">
-      على <%= link_to reportable.article.title.presence || "بدون عنوان", user_article_path(slug: reportable.article.user, uuid: reportable.article),
+      على <%= link_to reportable.article.title.presence || "بدون عنوان", article_link(reportable.article),
                       class: "text-gray-900 hover:underline", target: "_blank", rel: "noopener" %>
     </p>
   <% when Article %>
@@ -38,7 +38,7 @@
     <p class="mt-1 text-sm text-gray-600"><%= reportable.description %></p>
     <p class="mt-4 flex items-center gap-2 text-xs text-gray-500">
       <%= status_badge(reportable.published? ? "منشور" : "غير منشور", reportable.published? ? :active : :default) %>
-      <%= link_to "فتح الموضوع", user_article_path(slug: reportable.user, uuid: reportable), class: "text-gray-900 hover:underline",
+      <%= link_to "فتح الموضوع", article_link(reportable), class: "text-gray-900 hover:underline",
                   target: "_blank", rel: "noopener" %>
     </p>
   <% else %>

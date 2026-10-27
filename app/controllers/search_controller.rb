@@ -3,6 +3,7 @@ class SearchController < ApplicationController
 
   skip_before_action :require_authentication
   before_action :resume_session
+  before_action :noindex!
 
   NORMALIZE_SQL = "REPLACE(REPLACE(REPLACE(%s, 'أ', 'ا'), 'إ', 'ا'), 'آ', 'ا')".freeze
   # Full-text match, or a hamza-insensitive LIKE on title, description or body.

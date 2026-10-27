@@ -52,6 +52,7 @@ module Constraints
       sitemap
       sitemap.xml
       sitemap.xml.gz
+      rss
       uploads
       users
       latest_feed

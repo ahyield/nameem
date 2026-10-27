@@ -11,7 +11,7 @@ RSpec.describe "Draft badge" do
     get user_edit_article_path(slug: author.slug, uuid: draft.uuid)
     expect(response.body).to include("لا يراه القرّاء بعد")
 
-    get user_article_path(slug: author.slug, uuid: draft.uuid)
+    get user_article_path(slug: author, uuid: draft.permalink_param)
     expect(response.body).to include("لا يراه القرّاء بعد")
   end
 
@@ -25,7 +25,7 @@ RSpec.describe "Draft badge" do
     get user_edit_article_path(slug: author.slug, uuid: published.uuid)
     expect(response.body).not_to include("لا يراه القرّاء بعد")
 
-    get user_article_path(slug: author.slug, uuid: published.uuid)
+    get user_article_path(slug: author, uuid: published.permalink_param)
     expect(response.body).not_to include("لا يراه القرّاء بعد")
   end
 end

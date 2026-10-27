@@ -6,7 +6,7 @@ RSpec.describe "Code in articles" do
            '<pre class="editor-code" spellcheck="false"><span>def hi</span><br><span>  puts 1</span></pre>'
     article = create(:article, :published, content_html: html)
 
-    get user_article_path(slug: article.user.slug, uuid: article.uuid)
+    get user_article_path(slug: article.user, uuid: article.permalink_param)
 
     expect(response.body).to include('<code class="editor-inline-code">git status</code>')
     expect(response.body).to include('<pre class="editor-code"><span>def hi</span><br><span>  puts 1</span></pre>')
@@ -18,7 +18,7 @@ RSpec.describe "Code in articles" do
            '<span class="tok-function">greet</span></pre>'
     article = create(:article, :published, content_html: html)
 
-    get user_article_path(slug: article.user.slug, uuid: article.uuid)
+    get user_article_path(slug: article.user, uuid: article.permalink_param)
 
     expect(response.body).to include('<span class="tok-keyword">def</span> <span class="tok-function">greet</span>')
   end

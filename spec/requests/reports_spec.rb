@@ -72,7 +72,7 @@ RSpec.describe "Reporting content" do
       create(:comment, article:, user: author)
       authenticate_user(reader)
 
-      get user_article_path(slug: author.slug, uuid: article.uuid)
+      get user_article_path(slug: author, uuid: article.permalink_param)
 
       expect(response.body).to include("الإبلاغ عن الموضوع")
       expect(response.body).to include('data-report-type-param="Comment"')
@@ -82,7 +82,7 @@ RSpec.describe "Reporting content" do
     it "offers reporting to staff alongside their editing tools" do
       authenticate_user(create(:editor))
 
-      get user_article_path(slug: author.slug, uuid: article.uuid)
+      get user_article_path(slug: author, uuid: article.permalink_param)
 
       expect(response.body).to include("تعديل")
       expect(response.body).to include('data-report-type-param="Article"')
@@ -92,7 +92,7 @@ RSpec.describe "Reporting content" do
       create(:comment, article:, user: author)
       authenticate_user(author)
 
-      get user_article_path(slug: author.slug, uuid: article.uuid)
+      get user_article_path(slug: author, uuid: article.permalink_param)
 
       expect(response.body).not_to include('data-report-type-param="Article"')
       expect(response.body).not_to include('data-report-type-param="Comment"')

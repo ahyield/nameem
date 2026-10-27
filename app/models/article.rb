@@ -3,6 +3,7 @@ class Article < ApplicationRecord
   RANKING_EXCLUDED_USER_ID = 1
 
   include Metable
+  include Permalinkable
 
   has_many_attached :images
 
@@ -52,6 +53,27 @@ class Article < ApplicationRecord
 
   def to_param
     uuid
+  end
+
+  # Gives articles saved before readable URLs and fuller summaries their slug and description, without
+  # touching updated_at. Returns how many changed.
+  def self.backfill_seo
+    find_each.count do |article|
+      changes = article.seo_backfill
+      article.update_columns(changes) if changes.any?
+      changes.any?
+    end
+  end
+
+  def seo_backfill
+    doc = Nokogiri::HTML.fragment(content_html.to_s)
+    summary = content_summary(doc)
+    changes = {}
+    changes[:slug] = permalink_slug if slug.blank? && permalink_slug
+    if summary && summary != description && (description.blank? || description == legacy_content_summary(doc))
+      changes[:description] = summary
+    end
+    changes
   end
 
   def publish

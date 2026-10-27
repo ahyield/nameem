@@ -115,7 +115,7 @@
                         <% end %>
                         <span class="text-xs text-gray-500 truncate group-hover:text-gray-900 transition-colors"><%= article.user.name %></span>
                       <% end %>
-                      <%= link_to user_article_path(uuid: article, slug: article.user), data: { turbo: false },
+                      <%= link_to article_link(article), data: { turbo: false },
                           class: "text-sm font-semibold text-gray-900 hover:text-gray-600 transition-colors line-clamp-2" do %>
                         <%= article.title&.truncate(80) %>
                       <% end %>

@@ -14,7 +14,7 @@
     <% end %>
   </div>
   <% if @article.published? %>
-    <%= link_to "عرض في الموقع", user_article_path(slug: @article.user.slug, uuid: @article.uuid),
+    <%= link_to "عرض في الموقع", article_link(@article),
         class: "bo-btn bo-btn-ghost", target: "_blank", rel: "noopener" %>
   <% end %>
 </div>
