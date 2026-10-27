@@ -31,6 +31,22 @@ RSpec.describe ArticleBodyHelper do
     expect(frame.at_css("img")["data-full-src"]).to eq(original)
   end
 
+  it "reads the size of editor uploads that were never analyzed" do
+    blob.update!(metadata: {})
+    img = body(%(<figure><img src="#{original}"></figure>)).at_css("img")
+
+    expect(blob.reload).to be_analyzed
+    expect(img["width"]).to be_present
+  end
+
+  it "carries on without a size when the file is missing" do
+    blob.update!(metadata: {})
+    allow(ActiveStorage::Blob).to receive(:find_signed).and_return(blob)
+    allow(blob).to receive(:analyze).and_raise(ActiveStorage::FileNotFoundError)
+
+    expect(body(%(<figure><img src="#{original}"></figure>)).at_css("img")["width"]).to be_nil
+  end
+
   it "leaves wide photos unframed" do
     expect(body(%(<figure><img src="#{original}"></figure>)).at_css(".image-frame")).to be_nil
   end
