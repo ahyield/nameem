@@ -62,6 +62,18 @@ RSpec.describe ArticleBodyHelper do
     expect(fragment.at_css("figcaption").text).to eq("غروب")
   end
 
+  it "takes dividers out of the paragraphs older articles saved them in" do
+    html = body(%(<p>قبل</p><p class="editor-paragraph" dir="rtl"><hr class="editor-hr"></p><p>بعد</p>)).to_html
+
+    expect(html).to eq(%(<p>قبل</p><hr class="editor-hr"><p>بعد</p>))
+  end
+
+  it "keeps what sits next to a divider when it isn't an empty paragraph" do
+    html = body(%(<hr><p>بعد</p><hr><h2>عنوان</h2>)).to_html
+
+    expect(html).to eq(%(<hr><p>بعد</p><hr><h2>عنوان</h2>))
+  end
+
   it "still strips anything unsafe" do
     fragment = body(%(<p onclick="x()">نص</p><script>alert(1)</script><img src="x.jpg" onerror="alert(1)">))
 

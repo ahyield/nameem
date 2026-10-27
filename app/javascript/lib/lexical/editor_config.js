@@ -1,5 +1,6 @@
 import {
   $createParagraphNode,
+  $getRoot,
   $getSelection,
   $isLineBreakNode,
   $isParagraphNode,
@@ -70,6 +71,7 @@ export function createNamoemEditor(container) {
   // Colours come from Prism as you type and are saved with the article; a block stays plain until its language is chosen
   registerCodeHighlighting(editor, { ...PrismTokenizer, defaultLanguage: "plain" })
   registerCodeBlockExits(editor)
+  registerDividerLift(editor)
 
   return editor
 }
@@ -100,6 +102,28 @@ function registerCodeBlockExits(editor) {
   editor.registerNodeTransform(RootNode, (root) => {
     if ($isCodeNode(root.getLastChild())) root.append($createParagraphNode())
   })
+}
+
+// Older articles saved the divider inside a paragraph; move it out so it stands on its own line
+function registerDividerLift(editor) {
+  editor.registerNodeTransform(DividerNode, $liftDivider)
+}
+
+// Loading a saved state doesn't run transforms, so this lifts the dividers of a just-loaded article
+export function liftSavedDividers(editor) {
+  editor.update(() => {
+    $getRoot().getChildren().forEach((block) => {
+      if ($isParagraphNode(block)) block.getChildren().filter((node) => node instanceof DividerNode).forEach($liftDivider)
+    })
+  }, { tag: "nameem-setup" })
+}
+
+function $liftDivider(divider) {
+  const paragraph = divider.getParent()
+  if (!$isParagraphNode(paragraph)) return
+
+  paragraph.insertAfter(divider)
+  if (paragraph.getChildrenSize() === 0) paragraph.remove()
 }
 
 function isAtEnd(selection, code) {

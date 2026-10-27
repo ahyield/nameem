@@ -19,7 +19,7 @@ import { $createCodeNode, $isCodeNode } from "@lexical/code"
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html"
 import { $toggleLink } from "@lexical/link"
 
-import { CODE_LANGUAGES, createNamoemEditor } from "lib/lexical/editor_config"
+import { CODE_LANGUAGES, createNamoemEditor, liftSavedDividers } from "lib/lexical/editor_config"
 import { ImageNode, $createImageNode } from "lib/lexical/nodes/image_node"
 import { $createVideoNode } from "lib/lexical/nodes/video_node"
 import { TweetNode, $createTweetNode } from "lib/lexical/nodes/tweet_node"
@@ -161,6 +161,7 @@ export default class extends Controller {
         // Lexical JSON format
         const editorState = this.editor.parseEditorState(article.content)
         this.editor.setEditorState(editorState)
+        liftSavedDividers(this.editor)
       } else if (article.content_html) {
         // Migrated HTML format
         this.editor.update(() => {
