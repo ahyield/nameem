@@ -46,7 +46,8 @@ RSpec.describe SeoSettings do
       expect(article).to be_valid
       expect(article.canonical_url).to eq("https://example.com/original")
 
-      ["http://example.com/a", "https://nameem.com/someone/else", "https://www.Nameem.com/x", "not a url", "https://"].each do |url|
+      invalid = ["http://example.com/a", "https://nameem.com/someone/else", "https://www.Nameem.com/x", "not a url", "https://"]
+      invalid.each do |url|
         article.canonical_url = url
         expect(article).not_to be_valid, url
       end
