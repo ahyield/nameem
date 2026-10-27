@@ -11,8 +11,9 @@ module Permalinkable
   PERMALINK = /\A(?:(?<slug>.+)-)?(?<short_id>[0-9a-f]{#{SHORT_ID_LENGTH}})\z/
 
   included do
-    # The slug follows the title while the article is a draft and stays put once it's published
-    before_save :refresh_slug, unless: -> { published_in_database && slug.present? }
+    # The slug follows the title while the article is a draft, until the author writes their own; it stays put
+    # once the article is published
+    before_save :refresh_slug, if: :slug_follows_title?
   end
 
   class_methods do
@@ -53,6 +54,14 @@ module Permalinkable
   end
 
   private
+
+  def slug_follows_title?
+    return false if slug_changed? && slug.present?
+    return true if slug.blank?
+
+    !published_in_database && slug == self.class.slug_from(title_in_database.presence ||
+                                                           alternative_titles(content_html_in_database).first)
+  end
 
   def refresh_slug
     self.slug = self.class.slug_from(slug_source)

@@ -25,13 +25,16 @@ class ArticlesController < ApplicationController
 
     @article.description = params[:description].presence if params.key?(:description)
     @article.comments_enabled = params[:comments_enabled] == "1" if params.key?(:comments_enabled)
+    @article.assign_attributes(seo_params)
     @article.published = params[:publish]
     @article.published_at = DateTime.now if @article.published_at.nil? && @article.published?
-    @article.save!
 
-    sync_tags(@article, params[:tag_names])
-
-    redirect_to helpers.article_link(@article)
+    if @article.save
+      sync_tags(@article, params[:tag_names])
+      redirect_to helpers.article_link(@article)
+    else
+      render :show_modal, status: :unprocessable_content
+    end
   end
 
   def show_modal
@@ -41,6 +44,17 @@ class ArticlesController < ApplicationController
   end
 
   private
+
+  # The publish dialog's advanced section. A blank slug goes back to following the title.
+  def seo_params
+    seo = params.fetch(:seo, {}).permit(:title, :slug, :canonical_url, :noindex, :cover_image_src)
+    attributes = seo.slice(:canonical_url).to_h
+    attributes[:seo_title] = seo[:title] if seo.key?(:title)
+    attributes[:slug] = Article.slug_from(seo[:slug]) if seo.key?(:slug)
+    attributes[:noindex] = seo[:noindex] == "1" if seo.key?(:noindex)
+    attributes[:cover_image_src] = seo[:cover_image_src].presence if seo.key?(:cover_image_src)
+    attributes
+  end
 
   def sync_tags(article, tag_names)
     tag_names = Array(tag_names).map(&:strip).compact_blank.first(5)

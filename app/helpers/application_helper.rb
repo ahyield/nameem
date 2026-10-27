@@ -30,7 +30,7 @@ module ApplicationHelper
   end
 
   def article_cover(article)
-    article.article_images.first
+    article.cover_image
   end
 
   def short_date(date)

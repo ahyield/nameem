@@ -1,8 +1,11 @@
-<% published = @article.published? %>
+<%# After a failed save the article holds the submitted values; the dialog still describes what is saved %>
+<% published = @article.published_was %>
 <% can_publish = @article.title.present? || @article.alternative_titles.present? %>
 <%= turbo_frame_tag "modal", target: "_top" do %>
   <div class="relative z-10 font-naskh" dir="rtl" role="dialog" aria-modal="true" aria-labelledby="publish-dialog-title"
-       data-controller="modals--article-modal" data-action="keydown@window->modals--article-modal#escape">
+       data-controller="modals--article-modal" data-action="keydown@window->modals--article-modal#escape"
+       data-modals--article-modal-close-url-value="<%= user_edit_article_path(slug: @user.slug, uuid: @article.uuid) %>"
+       data-modals--article-modal-default-title-value="<%= "#{@article.title.presence || first_paragraph(@article)} بقلم #{@user.name}" %>">
     <div class="publish-backdrop fixed inset-0 bg-surface"></div>
 
     <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -28,7 +31,7 @@
 
           <%= form_tag user_update_article_path(slug: params[:slug], uuid: params[:uuid]), method: :put,
                 data: { turbo: false, controller: "tag-input",
-                        "tag-input-existing-value": (@article&.tags&.pluck(:name) || []).to_json } do %>
+                        "tag-input-existing-value": (params[:tag_names] || @article.tags.pluck(:name)).to_json } do %>
             <div class="grid gap-12 lg:grid-cols-2">
 
               <%# Preview: the card readers see on the home page and when the link is shared %>
@@ -37,7 +40,8 @@
 
                 <div class="overflow-hidden rounded-2xl bg-surface shadow-sm ring-1 ring-gray-900/5">
                   <% if @article.article_images.any? %>
-                    <%= image_tag card_cover_url(@article, [1280, 720]), alt: "", class: "aspect-video w-full bg-gray-100 object-cover" %>
+                    <%= image_tag card_cover_url(@article, [1280, 720]), alt: "", class: "aspect-video w-full bg-gray-100 object-cover",
+                                  data: { "modals--article-modal-target": "cover" } %>
                   <% else %>
                     <%# Not a drop zone: a quiet empty cover with a tip in its corner, so it reads as information %>
                     <div class="flex aspect-[3/1] w-full items-end bg-gradient-to-l from-orange-50 to-gray-50 p-4">
@@ -60,7 +64,7 @@
                     <label for="publish-description" class="mt-4 block text-xs font-medium text-gray-500">الوصف</label>
                     <textarea id="publish-description" name="description" rows="3" maxlength="160"
                               aria-describedby="publish-description-count"
-                              data-action="input->modals--article-modal#updateDescription"
+                              data-action="input->modals--article-modal#updateDescription input->modals--article-modal#updatePreview"
                               data-modals--article-modal-target="description"
                               placeholder="جملة أو جملتان تشدّان القارئ…"
                               class="mt-1 block w-full resize-none border-0 bg-transparent p-0 text-sm leading-relaxed text-gray-700 placeholder:text-gray-400 focus:ring-0"><%= @article.description %></textarea>
@@ -109,6 +113,8 @@
                     <span class="pointer-events-none absolute right-0.5 top-0.5 h-5 w-5 rounded-full bg-surface shadow-sm transition-transform duration-200 ease-out peer-checked:-translate-x-5"></span>
                   </label>
                 </div>
+
+                <%= render "articles/seo_settings", article: @article, user: @user %>
 
                 <div class="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-gray-100 pt-6 lg:mt-auto">
                   <button type="submit" name="publish" value="true" <%= "disabled" unless can_publish %>

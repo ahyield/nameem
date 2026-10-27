@@ -108,7 +108,6 @@ class SearchController < ApplicationController
   end
 
   def article_cover_url(article)
-    images = article.article_images
-    images.first if images.any?
+    article.cover_image
   end
 end

@@ -4,6 +4,7 @@ class Article < ApplicationRecord
 
   include Metable
   include Permalinkable
+  include SeoSettings
 
   has_many_attached :images
 

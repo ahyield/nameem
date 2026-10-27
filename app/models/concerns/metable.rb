@@ -45,10 +45,10 @@ module Metable
       doc.text.squish.truncate(100).presence
     end
 
-    def alternative_titles
-      return [] if content_html.blank?
+    def alternative_titles(html = content_html)
+      return [] if html.blank?
 
-      doc = Nokogiri::HTML.fragment(content_html)
+      doc = Nokogiri::HTML.fragment(html)
       doc.css("h1, h2, p").map { |el| el.text.strip }.select { |t| t.length >= 5 }
     end
 
