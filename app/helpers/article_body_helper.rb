@@ -13,15 +13,23 @@ module ArticleBodyHelper
   # The article's HTML, sanitized, with its uploaded images served at a reading size (the original kept for the
   # image viewer) and sized up front so the page doesn't jump as they load. Cached until the article changes.
   def article_body(article)
-    Rails.cache.fetch([article, article.updated_at.to_f, "article_body/v3"]) do
+    Rails.cache.fetch([article, article.updated_at.to_f, "article_body/v4"]) do
       html = sanitize(article.content_html, tags: ARTICLE_TAGS, attributes: ARTICLE_ATTRIBUTES).to_s
       fragment = Nokogiri::HTML5.fragment(html)
       fragment.css("img").each_with_index { |img, index| prepare_image(img, lazy: index.positive?) }
+      fragment.css("hr").each { |divider| drop_empty_neighbours(divider) }
       fragment.to_html
-    end.html_safe # rubocop:disable Rails/OutputSafety -- sanitized above; we only rewrote img attributes
+    end.html_safe # rubocop:disable Rails/OutputSafety -- sanitized above; we only rewrote img attributes and unwrapped dividers
   end
 
   private
+
+  # Older articles saved the divider inside a paragraph, which parsing splits into empty paragraphs around it
+  def drop_empty_neighbours(divider)
+    [divider.previous_element, divider.next_element].each do |neighbour|
+      neighbour.remove if neighbour&.name == "p" && neighbour.children.empty?
+    end
+  end
 
   def prepare_image(img, lazy:)
     if lazy

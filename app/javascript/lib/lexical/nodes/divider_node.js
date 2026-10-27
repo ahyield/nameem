@@ -30,6 +30,11 @@ export class DividerNode extends DecoratorNode {
     return hr
   }
 
+  // A block of its own: inline, it would sit inside an empty paragraph that adds space around it
+  isInline() {
+    return false
+  }
+
   updateDOM() {
     return false
   }
