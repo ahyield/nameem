@@ -357,6 +357,13 @@
   box-shadow: 0 0 0 1px rgb(249 115 22 / 60%), 0 8px 24px rgb(0 0 0 / 12%);
 }
 
+/* Links are typed left to right, but the Arabic hint reads right to left until there's something in the field */
+.link-tip:placeholder-shown,
+.video-input:placeholder-shown,
+.tweet-input:placeholder-shown {
+  direction: rtl;
+}
+
 .link-tip {
   transform: translateX(-50%);
 }
