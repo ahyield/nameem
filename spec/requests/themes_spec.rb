@@ -76,13 +76,15 @@ RSpec.describe "Theme" do
   end
 
   describe "the dark mode announcement" do
-    it "shows until the reader closes it, and not after the launch window" do
-      get "/about-nameem"
-      expect(response.body).to include("جديد: الوضع الداكن")
+    it "shows during the launch window until the reader closes it" do
+      Timecop.travel(ThemePreference::ANNOUNCE_DARK_MODE_UNTIL - 1.day) do
+        get "/about-nameem"
+        expect(response.body).to include("جديد: الوضع الداكن")
 
-      cookies[:dark_mode_announced] = "1"
-      get "/about-nameem"
-      expect(response.body).not_to include("جديد: الوضع الداكن")
+        cookies[:dark_mode_announced] = "1"
+        get "/about-nameem"
+        expect(response.body).not_to include("جديد: الوضع الداكن")
+      end
     end
 
     it "is gone after the launch window" do
