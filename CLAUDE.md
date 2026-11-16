@@ -24,6 +24,8 @@ bundle exec rspec spec/models/article_spec.rb  # Run specific spec
 npm test                   # Vitest (spec/javascript)
 bin/rubocop -a             # Lint Ruby and auto-fix
 bin/erb_lint --lint-all    # Lint templates
+gh workflow run deploy.yml --ref main && gh run watch   # Deploy from GitHub Actions
+scripts/deploy.sh          # Deploy from this machine (fallback, same Kamal deploy)
 ```
 
 ## Project Structure
@@ -128,3 +130,7 @@ Tags & Topics, Search, Follow System, Notifications, Threaded Comments, Author A
 - Articles use binary UUIDs (16 bytes) as public identifiers, not auto-increment IDs
 - Fonts: Noto Naskh Arabic (primary), Montserrat (secondary)
 - Production: Hetzner via Kamal; server and DB hosts come from `WEB_HOST` / `DB_HOST` env vars
+- Deploys: `.github/workflows/deploy.yml`, started by hand from `main` by the owner once CI passed; its secrets
+  live in the `production` GitHub environment. The repo is public, so the workflow keeps Kamal's output out
+  of the log (`scripts/deploy-progress` shows step names only) and uploads the full log encrypted to
+  `.github/deploy-log-key.asc`
