@@ -1,0 +1,178 @@
+# Deploys main to production with Kamal. Started by hand only, by the repo owner, from main, and only when CI
+# passed on that commit. The secrets live in the "production" environment, which only main can use.
+#
+# This repo is public, so anyone can read these logs, summaries and artifacts. Kamal's output (commands,
+# hosts, env flags) never reaches the log: it goes to a file, the log shows only which step was reached, and
+# the file is uploaded encrypted to the owner's GPG key (.github/deploy-log-key.asc).
+# Never turn on debug logging (ACTIONS_STEP_DEBUG / "Re-run with debug logging") for this workflow.
+#
+#   gh workflow run deploy.yml --ref main && gh run watch
+#   gh run download <run id> -n deploy-log && gpg -d deploy.log.gpg
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      check_only:
+        description: "Only check the secrets, the config and SSH access; don't deploy"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  checks: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  KAMAL_GEM_VERSION: 2.12.0
+
+jobs:
+  deploy:
+    name: deploy
+    if: github.actor == 'ahyield' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: production
+      url: https://nameem.com
+    steps:
+      - name: CI passed on this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # The latest run of each required check for this exact commit
+          gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/check-runs?per_page=100" \
+            --jq '.check_runs | group_by(.name) | map(max_by(.started_at)) | .[] | "\(.name) \(.status) \(.conclusion)"' \
+            > "$RUNNER_TEMP/checks"
+          failed=0
+          for check in lint security js specs; do
+            result=$(awk -v name="$check" '$1 == name { print $2 " " $3 }' "$RUNNER_TEMP/checks")
+            if [ "$result" = "completed success" ]; then
+              echo "✓ $check"
+            else
+              echo "::error::CI check '$check' has not passed on ${GITHUB_SHA::7} (${result:-missing})"
+              failed=1
+            fi
+          done
+          exit "$failed"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+
+      - name: Install Kamal
+        run: gem install kamal -v "$KAMAL_GEM_VERSION" --no-document > /dev/null
+
+      - name: SSH key and known hosts
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+          socket="$RUNNER_TEMP/ssh-agent.sock"
+          ssh-agent -a "$socket" > /dev/null
+          if ! printf '%s\n' "$DEPLOY_SSH_KEY" | SSH_AUTH_SOCK="$socket" ssh-add - > /dev/null 2>&1; then
+            echo "::error::DEPLOY_SSH_KEY is missing or isn't a valid private key"
+            exit 1
+          fi
+          echo "SSH_AUTH_SOCK=$socket" >> "$GITHUB_ENV"
+          echo "✓ deploy key loaded"
+
+      - name: Check config and server access
+        if: inputs.check_only
+        env:
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
+          MAILER_POSTAL_ADDRESS: ${{ secrets.MAILER_POSTAL_ADDRESS }}
+          WEB_HOST: ${{ secrets.WEB_HOST }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+        run: |
+          echo "Config check" > "$RUNNER_TEMP/deploy-last-step"
+          if kamal config -d production > /dev/null 2>&1; then
+            echo "✓ config resolves"
+          else
+            echo "::error::The Kamal config doesn't resolve; a secret is probably missing from the production environment"
+            exit 1
+          fi
+          echo "Server check" > "$RUNNER_TEMP/deploy-last-step"
+          if kamal app details -d production > "$RUNNER_TEMP/deploy.log" 2>&1; then
+            echo "✓ server reachable"
+          else
+            echo "::error::Couldn't reach the server over SSH or run Docker there; see the encrypted log"
+            exit 1
+          fi
+
+      - name: Deploy
+        if: ${{ ! inputs.check_only }}
+        env:
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
+          MAILER_POSTAL_ADDRESS: ${{ secrets.MAILER_POSTAL_ADDRESS }}
+          WEB_HOST: ${{ secrets.WEB_HOST }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+        run: |
+          log="$RUNNER_TEMP/deploy.log"
+          : > "$log"
+          kamal deploy -d production > "$log" 2>&1 &
+          deploy=$!
+          # Only the names of the steps reached are shown; the lines themselves stay in the log file
+          tail -n +1 -f --pid="$deploy" "$log" 2> /dev/null | scripts/deploy-progress "$RUNNER_TEMP/deploy-last-step"
+          if wait "$deploy"; then
+            echo "✓ deployed ${GITHUB_SHA::7}"
+          else
+            echo "::error::The deploy failed during: $(cat "$RUNNER_TEMP/deploy-last-step" 2>/dev/null || echo "setup"); see the encrypted log"
+            exit 1
+          fi
+
+      - name: Encrypt the log
+        if: always()
+        run: |
+          if [ -s "$RUNNER_TEMP/deploy.log" ]; then
+            gpg --batch --quiet --trust-model always --recipient-file .github/deploy-log-key.asc \
+              --output "$RUNNER_TEMP/deploy.log.gpg" --encrypt "$RUNNER_TEMP/deploy.log"
+          fi
+          rm -f "$RUNNER_TEMP/deploy.log"
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: deploy-log
+          path: ${{ runner.temp }}/deploy.log.gpg
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Summary
+        if: always()
+        env:
+          RESULT: ${{ job.status }}
+          CHECK_ONLY: ${{ inputs.check_only }}
+        run: |
+          {
+            if [ "$CHECK_ONLY" = "true" ]; then echo "### Check: $RESULT"; else echo "### Deploy: $RESULT"; fi
+            echo
+            echo "- Commit: \`${GITHUB_SHA::7}\`"
+            echo "- Started by: @$GITHUB_ACTOR"
+            echo "- Last step: $(cat "$RUNNER_TEMP/deploy-last-step" 2>/dev/null || echo "setup")"
+            if [ "$RESULT" != "success" ]; then
+              echo
+              echo "Full log, readable only with the owner's GPG key:"
+              echo '`gh run download '"$GITHUB_RUN_ID"' -n deploy-log && gpg -d deploy.log.gpg`'
+              echo
+              echo "If a later deploy reports the lock is held: \`kamal lock release -d production\`"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

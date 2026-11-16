@@ -1,0 +1,28 @@
+#!/bin/bash -e
+
+# Reads Kamal's deploy output on stdin and prints only the name of each step as it's reached, never the lines
+# themselves: the deploy workflow's log is public, and Kamal's output carries commands, hosts and env flags.
+# The last step reached is written to the file given as the first argument, for the run summary.
+
+LAST_STEP_FILE=${1:-/dev/null}
+STEPS=(
+  "Log into image registry"
+  "Build and push app image"
+  "Run database migrations"
+  "Ensure kamal-proxy is running"
+  "Detect stale containers"
+  "Start container"
+  "Prune old containers and images"
+  "Releasing the deploy lock"
+)
+reached="|"
+
+while IFS= read -r line; do
+  for step in "${STEPS[@]}"; do
+    if [[ "$line" == "$step"* && "$reached" != *"|$step|"* ]]; then
+      reached+="$step|"
+      echo "▶ $step"
+      echo "$step" > "$LAST_STEP_FILE"
+    fi
+  done
+done
