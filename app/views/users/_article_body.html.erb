@@ -1,80 +1,82 @@
-<article class="relative my-3 pb-4 isolate gap-x-6 flex flex-1 flex-row">
-  <div class="grow max-h-42">
-    <div class="flex items-center gap-x-4 text-xs">
-      <div class="flex">
-        <div class="relative flex items-center gap-x-4">
-          <% if article.user.avatar.attached? %>
-            <%= image_tag article.user.avatar.variant(resize_to_fill: [600, 600]), class: "h-9 w-9 rounded-full bg-gray-50" %>
-          <% else %>
-            <span class="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
-              <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-            </span>
-          <% end %>
-          <div class="text-sm leading-6">
-            <p class="font-semibold text-gray-900">
-            <%= link_to user_path(article.user), data: { turbo: false } do %>
-              <%= article.user.name %>
-              <span class="absolute inset-0"></span>
+<div id="<%= dom_id(article) %>">
+  <article class="relative my-3 pb-4 isolate gap-x-6 flex flex-1 flex-row">
+    <div class="grow max-h-42">
+      <div class="flex items-center gap-x-4 text-xs">
+        <div class="flex">
+          <div class="relative flex items-center gap-x-4">
+            <% if article.user.avatar.attached? %>
+              <%= image_tag article.user.avatar.variant(resize_to_fill: [600, 600]), class: "h-9 w-9 rounded-full bg-gray-50" %>
+            <% else %>
+              <span class="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
+                <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </span>
             <% end %>
-            </p>
+            <div class="text-sm leading-6">
+              <p class="font-semibold text-gray-900">
+              <%= link_to user_path(article.user), data: { turbo: false } do %>
+                <%= article.user.name %>
+                <span class="absolute inset-0"></span>
+              <% end %>
+              </p>
+            </div>
           </div>
         </div>
+        <span>.</span>
+        <time class="text-gray-500"><%= short_date(article.published_at || article.created_at) %> </time>
       </div>
-      <span>.</span>
-      <time class="text-gray-500"><%= short_date(article.published_at || article.created_at) %> </time>
+      <div class="group relative">
+        <%= link_to article_link(article), data: { turbo: false } do %>
+          <h1 class="mt-2 text-2xl font-semibold text-gray-900">
+            <span class="absolute inset-0"></span>
+            <% if article.title.blank? %>
+              <%= first_paragraph(article)&.truncate(150) %>
+            <% else %>
+              <%= article.title&.truncate(150) %>
+            <% end %>
+          </h1>
+        <% end %>
+        <p class="hidden lg:block mt-2 text-sm leading-6 text-gray-600"><%= article.description&.truncate(320) %></p>
+        <% if current_user && current_user != article.user %>
+          <div class="relative z-10 mt-2 [&>turbo-frame]:flex [&>turbo-frame]:items-center">
+            <%= render "bookmarks/button", article: article, bookmarked: current_user.bookmarks.exists?(article: article), size: "w-4 h-4" %>
+          </div>
+        <% end %>
+      </div>
+
     </div>
-    <div class="group relative">
-      <%= link_to article_link(article), data: { turbo: false } do %>
-        <h1 class="mt-2 text-2xl font-semibold text-gray-900">
-          <span class="absolute inset-0"></span>
-          <% if article.title.blank? %>
-            <%= first_paragraph(article)&.truncate(150) %>
-          <% else %>
-            <%= article.title&.truncate(150) %>
-          <% end %>
-        </h1>
-      <% end %>
-      <p class="hidden lg:block mt-2 text-sm leading-6 text-gray-600"><%= article.description&.truncate(320) %></p>
-      <% if current_user && current_user != article.user %>
-        <div class="relative z-10 mt-2 [&>turbo-frame]:flex [&>turbo-frame]:items-center">
-          <%= render "bookmarks/button", article: article, bookmarked: current_user.bookmarks.exists?(article: article), size: "w-4 h-4" %>
+    <% if (cover = card_cover_url(article, [384, 256])) %>
+      <%= link_to article_link(article), data: { turbo: false }, class: "shrink-0" do %>
+        <div class="relative mt-4 aspect-[3/2] w-28 md:w-36 lg:w-48 rounded-lg overflow-hidden bg-gray-50 ring-1 ring-inset ring-gray-900/5">
+          <%= image_tag cover, alt: "", loading: "lazy", decoding: "async", class: "absolute inset-0 h-full w-full object-cover" %>
         </div>
       <% end %>
-    </div>
-
-  </div>
-  <% if (cover = card_cover_url(article, [384, 256])) %>
-    <%= link_to article_link(article), data: { turbo: false }, class: "shrink-0" do %>
-      <div class="relative mt-4 aspect-[3/2] w-28 md:w-36 lg:w-48 rounded-lg overflow-hidden bg-gray-50 ring-1 ring-inset ring-gray-900/5">
-        <%= image_tag cover, alt: "", loading: "lazy", decoding: "async", class: "absolute inset-0 h-full w-full object-cover" %>
-      </div>
     <% end %>
-  <% end %>
-</article>
-<% if policy(article).edit? %>
-  <div class="flex border-gray-200 mb-4" data-controller="dropdown" data-action="click->dropdown#toggle click@window->dropdown#hide">
-    <button type="button" class="block text-gray-600 font-bold hover:text-gray-500" id="options-menu-2-button" aria-expanded="false"
-      aria-haspopup="true">
-      <span class="sr-only">Open options</span>
-      <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-        <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
-      </svg>
-    </button>
-    <div class="hidden ml-6 absolute z-50 w-16 mt-8 rounded-md bg-raised shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
-      role="menu" aria-orientation="vertical" aria-labelledby="options-menu-2-button" tabindex="-1" data-dropdown-target="menu">
-      <%= link_to user_edit_article_path(slug: @user, uuid: article),
-        class: "block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900", role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0", data: { turbo: false }  do %>
-        تعديل
-        <span class="sr-only">, Reform</span>
-      <% end %>
-      <%= button_to user_destroy_article_path(slug: @user, uuid: article), method: :delete,
-        class: "block px-3 py-1 text-sm leading-6 text-red-500 hover:text-gray-900", role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0", data: { turbo: false }  do %>
-        حذف
-        <span class="sr-only">, Reform</span>
-      <% end %>
+  </article>
+  <% if policy(article).edit? %>
+    <div class="flex border-gray-200 mb-4" data-controller="dropdown" data-action="click->dropdown#toggle click@window->dropdown#hide">
+      <button type="button" class="block text-gray-600 font-bold hover:text-gray-500" id="options-menu-2-button" aria-expanded="false"
+        aria-haspopup="true">
+        <span class="sr-only">Open options</span>
+        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
+        </svg>
+      </button>
+      <div class="hidden ml-6 absolute z-50 w-16 mt-8 rounded-md bg-raised shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+        role="menu" aria-orientation="vertical" aria-labelledby="options-menu-2-button" tabindex="-1" data-dropdown-target="menu">
+        <%= link_to user_edit_article_path(slug: @user, uuid: article),
+          class: "block px-3 py-1 text-sm leading-6 text-gray-500 hover:text-gray-900", role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0", data: { turbo: false }  do %>
+          تعديل
+          <span class="sr-only">, Reform</span>
+        <% end %>
+        <%= button_to user_destroy_article_path(slug: @user, uuid: article), method: :delete, params: { from: "list" },
+          class: "block px-3 py-1 text-sm leading-6 text-red-500 hover:text-gray-900", role: "menuitem", tabindex: "-1", id: "options-menu-2-item-0", data: delete_article_data(article)  do %>
+          حذف
+          <span class="sr-only">, Reform</span>
+        <% end %>
+      </div>
     </div>
-  </div>
-<% end %>
-<div class=" border-b border-gray-200"></div>
+  <% end %>
+  <div class=" border-b border-gray-200"></div>
+</div>

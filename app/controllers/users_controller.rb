@@ -116,7 +116,12 @@ class UsersController < ApplicationController
 
     @article.destroy
 
-    redirect_to user_path(@user)
+    # From the profile's list the article just leaves the list, so the reader stays on the tab they were on
+    if params[:from] == "list" && request.format.turbo_stream?
+      render turbo_stream: turbo_stream.remove(@article)
+    else
+      redirect_to user_path(@user), status: :see_other
+    end
   end
 
   private
