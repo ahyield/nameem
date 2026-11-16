@@ -5,24 +5,29 @@
 # The last step reached is written to the file given as the first argument, for the run summary.
 
 LAST_STEP_FILE=${1:-/dev/null}
+# "<pattern>|<step name>". Kamal prints most steps as an unindented header; the migrations only show as the
+# pre-deploy hook starting.
 STEPS=(
-  "Log into image registry"
-  "Build and push app image"
-  "Run database migrations"
-  "Ensure kamal-proxy is running"
-  "Detect stale containers"
-  "Start container"
-  "Prune old containers and images"
-  "Releasing the deploy lock"
+  "Build and push app image*|Build and push app image"
+  "Acquiring the deploy lock*|Acquiring the deploy lock"
+  "*.kamal/hooks/pre-deploy*|Run database migrations"
+  "Ensure kamal-proxy is running*|Ensure kamal-proxy is running"
+  "Detect stale containers*|Detect stale containers"
+  "Start container*|Start container"
+  "Prune old containers and images*|Prune old containers and images"
+  "Releasing the deploy lock*|Releasing the deploy lock"
 )
 reached="|"
 
 while IFS= read -r line; do
   for step in "${STEPS[@]}"; do
-    if [[ "$line" == "$step"* && "$reached" != *"|$step|"* ]]; then
-      reached+="$step|"
-      echo "▶ $step"
-      echo "$step" > "$LAST_STEP_FILE"
+    pattern=${step%%|*}
+    name=${step#*|}
+    # shellcheck disable=SC2053 # the pattern is a glob on purpose
+    if [[ "$line" == $pattern && "$reached" != *"|$name|"* ]]; then
+      reached+="$name|"
+      echo "▶ $name"
+      echo "$name" > "$LAST_STEP_FILE"
     fi
   done
 done

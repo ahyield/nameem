@@ -105,8 +105,20 @@ jobs:
             echo "::error::The Kamal config doesn't resolve; a secret is probably missing from the production environment"
             exit 1
           fi
+          # A deploy connects to every host, the database's too, so each must take the deploy key and be in
+          # known_hosts. BatchMode fails instead of falling back to a password prompt.
+          echo "SSH check" > "$RUNNER_TEMP/deploy-last-step"
+          for role in WEB_HOST DB_HOST; do
+            if ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 "root@${!role}" true \
+                >> "$RUNNER_TEMP/deploy.log" 2>&1; then
+              echo "✓ SSH to $role"
+            else
+              echo "::error::SSH to $role failed: add the deploy key there and its host key to SSH_KNOWN_HOSTS"
+              exit 1
+            fi
+          done
           echo "Server check" > "$RUNNER_TEMP/deploy-last-step"
-          if kamal app details -d production > "$RUNNER_TEMP/deploy.log" 2>&1; then
+          if kamal app details -d production >> "$RUNNER_TEMP/deploy.log" 2>&1; then
             echo "✓ server reachable"
           else
             echo "::error::Couldn't reach the server over SSH or run Docker there; see the encrypted log"
